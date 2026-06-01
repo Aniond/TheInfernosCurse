@@ -50,3 +50,14 @@ Desktop.ini
 *.log
 *.bak
 *.orig
+
+# ── Project docs (local reference only, not version controlled) ──────────────
+story_bible.md
+core_systems.md
+dev_setup.md
+ai_integration.md
+
+# ── Misc root-level files ─────────────────────────────────────────────────────
+*.winmd
+*.exe
+*.code-workspace
