@@ -5,7 +5,7 @@
 /// @param {string} name          Display name shown in the dialogue box
 /// @param {string} role          One-word role, e.g. "elder", "merchant"
 /// @param {string} location      Location string fed into the system prompt
-/// @param {real}   circle        Circle index 1-7 (sets corruption context)
+/// @param {real}   circle        Circle index 0-6 (use CIRCLE_* macros)
 /// @param {string} personality   Short descriptor fed into the system prompt
 /// @returns {struct}
 function scr_npc_create(id, name, role, location, circle, personality) {

@@ -6,15 +6,19 @@
 // It is placed FIRST in Room1's creation order so every other object can
 // safely read globals from their own Create events.
 //
-// Array indexing convention used throughout this project:
-//   Index 0 = Limbo    Index 1 = Lust      Index 2 = Gluttony
-//   Index 3 = Greed    Index 4 = Wrath     Index 5 = Heresy
-//   Index 6 = Violence
+// Circle array indexing (0-based) used throughout the entire project:
+//   [0] Limbo  [1] Lust  [2] Gluttony  [3] Greed
+//   [4] Wrath  [5] Heresy  [6] Violence
+//
+// All functions in scr_corruption.gml use the same 0-based scheme.
+// The CIRCLE_* macros (CIRCLE_LIMBO=0 … CIRCLE_VIOLENCE=6) are defined
+// in scr_corruption.gml and are available globally.
 // =============================================================================
 
 
 // ── API / AI ──────────────────────────────────────────────────────────────────
-// Populated by scr_config_load() below. Never hardcode a key here.
+// Populated by scr_config_load() at the end of this event.
+// Never hardcode a key here.
 global.claude_api_key = "";
 
 // Instance ID of the NPC currently speaking in a dialogue box.
@@ -23,53 +27,83 @@ global.dialogue_npc = noone;
 
 
 // ── Core game state ───────────────────────────────────────────────────────────
-// High-level flow controller. Valid values: "playing" | "paused" | "game_over"
+// High-level flow controller.
+// Valid values: "playing" | "paused" | "game_over"
 global.game_state = "playing";
 
-// In-world days elapsed. Drives NPC schedules and world progression events.
+// In-world days elapsed. Drives NPC schedules and world-progression events.
 global.day_count = 1;
 
-// Index (0-6) of the circle the player is currently in.
-// 0 = Limbo (starting circle); increases as the player descends.
+// Index (0-6) of the circle the player is currently occupying.
+// 0 = Limbo (starting circle). Increases as the player descends.
 global.current_circle = 0;
 
 
-// ── Per-circle corruption arrays (indices 0-6) ────────────────────────────────
-// Each circle tracks its own corruption independently. Circles can bleed into
-// neighbours via the spread mechanic (see scr_corruption_spread).
+// ── Circle name tables (0-indexed, parallel to all circle arrays) ─────────────
+// Used by scr_build_npc_system_prompt() and UI elements.
+// Index matches circle: [0]=Limbo … [6]=Violence.
+global.circle_names = [
+    "Limbo",     // 0
+    "Lust",      // 1
+    "Gluttony",  // 2
+    "Greed",     // 3
+    "Wrath",     // 4
+    "Heresy",    // 5
+    "Violence"   // 6
+];
 
+// The sin that defines each circle (used in system prompt context).
+global.sin_names = [
+    "Grief",     // 0 — Limbo's essence is loss and forgetting
+    "Lust",      // 1
+    "Gluttony",  // 2
+    "Greed",     // 3
+    "Wrath",     // 4
+    "Heresy",    // 5
+    "Violence"   // 6
+];
+
+
+// ── Per-circle corruption (indices 0-6) ───────────────────────────────────────
 // How corrupted each circle currently is (0 = pristine, 100 = fully consumed).
-global.circle_corruption    = array_create(7, 0);
+global.circle_corruption = array_create(7, 0);
 
-// How fast corruption bleeds into adjacent circles per spread event (0.0-1.0).
-// Default 0.1 = 10% of the source circle's corruption spreads per tick.
-global.circle_bleed_rate    = array_create(7, 0.1);
+// Rate at which a circle bleeds corruption into its neighbours per spread event.
+// 0.1 = the neighbour receives 10% of this circle's corruption per tick.
+global.circle_bleed_rate = array_create(7, 0.1);
 
-// The corruption level a circle must reach before it starts bleeding outward.
-// Below this threshold the circle is contained; above it, spread begins.
+// Corruption level a circle must exceed before it bleeds outward.
+// Below this value the circle is contained; at or above it, spread begins.
 global.circle_bleed_threshold = array_create(7, 50);
 
+
 // ── Per-circle player sin affinity (indices 0-6) ──────────────────────────────
-// Tracks how deeply the player has engaged with each circle's sin (0-100).
-// High affinity unlocks sin-specific abilities but closes off other paths.
-global.player_sin_affinity  = array_create(7, 0);
+// How deeply the player has engaged with each circle's sin (0-100).
+// High affinity unlocks sin abilities but closes off alternative paths.
+global.player_sin_affinity = array_create(7, 0);
+
+
+// ── World event log ───────────────────────────────────────────────────────────
+// Rolling log of narrative events passed as context to the Claude API.
+// Managed by scr_world_event_log() in scr_corruption.gml.
+// Newest entry is always at index 0; capped at 20 entries.
+global.world_event_log = [];
 
 
 // ── Player psychological state ────────────────────────────────────────────────
-// Sanity decreases as the player witnesses corruption and takes unholy damage.
-// At 0, hallucinations and gameplay distortions begin.
+// Sanity decreases from witnessing corruption and taking unholy damage.
+// At 0, hallucinations and gameplay distortions activate.
 global.sanity = 100;
 
-// Controls how intense the hallucination / corruption visual overlays are.
-// Driven by low sanity and high local corruption (0 = none, 100 = overwhelming).
+// Controls hallucination / corruption overlay intensity (0 = none, 100 = max).
+// Driven by low sanity and high local corruption.
 global.vision_intensity = 0;
 
-// True when an active hallucination or corruption manifestation is on screen.
-// Prevents stacking multiple manifestations simultaneously.
+// True when an active hallucination manifestation is on screen.
+// Prevents multiple manifestations stacking simultaneously.
 global.manifestation_active = false;
 
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
-// Load the API key last, after all globals exist, so any future init scripts
-// called from here can safely reference the globals above.
+// Called last so all globals above are defined before the key is checked.
 scr_config_load();
