@@ -14,3 +14,12 @@ if (_dx != 0 && _dy != 0) {
 
 x += _dx * move_spd;
 y += _dy * move_spd;
+
+// ── Wall collision ────────────────────────────────────────────────────────────
+// Border walls are 32 px thick on all four sides. Player placeholder is 32x32
+// with its origin at centre, so we offset by half-size (16 px) to keep the
+// visible rectangle fully inside the walls.
+var _wall_thick = 32;
+var _half       = 16; // half of the 32x32 placeholder size
+x = clamp(x, _wall_thick + _half, room_width  - _wall_thick - _half);
+y = clamp(y, _wall_thick + _half, room_height - _wall_thick - _half);
