@@ -1,0 +1,52 @@
+# ── GameMaker Studio 2 / GameMaker 2024 ─────────────────────────────────────
+
+# Compiled output
+*.win
+*.ios
+*.droid
+*.linux
+*.mac
+*.ps4
+*.xboxone
+*.switch
+*.uwp
+*.tvos
+*.gml.cache
+
+# Cache and temp files
+.cache/
+*.tmp
+
+# IDE build output
+/builds/
+/output/
+
+# Local IDE settings that shouldn't be shared
+*.user
+local.settings.json
+
+# Texture atlases — regenerated on build, can be large
+/TextureGroups/
+
+# Audio groups — regenerated on build
+/AudioGroups/
+
+# Runtime cache (GameMaker generates this)
+*.yymps
+*.yymp
+
+# macOS artifacts
+.DS_Store
+__MACOSX/
+
+# Windows artifacts
+Thumbs.db
+Desktop.ini
+
+# IDE project lock (GameMaker creates this while open)
+*.lock
+
+# ── General ──────────────────────────────────────────────────────────────────
+*.log
+*.bak
+*.orig
