@@ -29,6 +29,7 @@
     {"id":{"name":"obj_npc_base","path":"objects/obj_npc_base/obj_npc_base.yy",},},
     {"id":{"name":"obj_npc_test","path":"objects/obj_npc_test/obj_npc_test.yy",},},
     {"id":{"name":"obj_dialogue_box","path":"objects/obj_dialogue_box/obj_dialogue_box.yy",},},
+    {"id":{"name":"scr_config_load","path":"scripts/scr_config_load/scr_config_load.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
