@@ -1,5 +1,5 @@
-{
-  "$GMObject":"v1",
+﻿{
+  "$GMObject":"v0",
   "%Name":"obj_npc_test",
   "eventList":[
     {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnd":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
@@ -11,7 +11,10 @@
     "name":"The Inferno's Curse",
     "path":"The Inferno's Curse.yyp",
   },
-  "parentObjectId":{"name":"obj_npc_base","path":"objects/obj_npc_base/obj_npc_base.yy",},
+  "parentObjectId":{
+    "name":"obj_npc_base",
+    "path":"objects/obj_npc_base/obj_npc_base.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsCollisionGroup":1,
