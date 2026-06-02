@@ -10,56 +10,36 @@
 if (!is_active) exit;
 
 // ── Layout constants ──────────────────────────────────────────────────────────
-var _gw  = display_get_gui_width();
-var _gh  = display_get_gui_height();
-var _pad = 18;
-var _bx  = 16;
-var _by  = _gh - 160;
-var _bw  = _gw - 32;
-var _bh  = 144;
+var _gw      = display_get_gui_width();
+var _gh      = display_get_gui_height();
+var _frame_x = 0;
+var _frame_y = _gh - 200;
+var _frame_w = _gw;
+var _frame_h = 200;
+
+// Text layout — inset from the torch sconces on each side
+var _text_left   = 160;
+var _text_right  = _gw - 160;
+var _text_width  = _gw - 320;
 
 // ── Corruption factor (0-1) ───────────────────────────────────────────────────
-// Maps npc_memory_corruption (0-200) to a 0-1 scale for lerping colours.
-// At 0 the NPC is fully present; at 1 they are almost gone.
 var _cf = clamp(corruption_level / 200, 0, 1);
 
 // =============================================================================
-// BOX — background fill
+// FRAME — gothic parchment art
 // =============================================================================
-draw_set_alpha(0.92);
-draw_set_color(make_color_rgb(10, 10, 15));
-draw_rectangle(_bx, _by, _bx + _bw, _by + _bh, false);
-draw_set_alpha(1);
-
-// ── Border — colour fades from cool stone toward deep blood as corruption rises
-// 0-25%: slate   100,100,120
-// 25-50%: muted mauve  80, 60, 80
-// 50-75%: bruised red  60, 20, 40
-// 75-100%: void black  40,  0,  0
-var _border_col;
-if (_cf <= 0.25) {
-    _border_col = merge_color(
-        make_color_rgb(100, 100, 120),
-        make_color_rgb(80,   60,  80),
-        _cf / 0.25
-    );
-} else if (_cf <= 0.50) {
-    _border_col = merge_color(
-        make_color_rgb(80,  60,  80),
-        make_color_rgb(60,  20,  40),
-        (_cf - 0.25) / 0.25
-    );
-} else if (_cf <= 0.75) {
-    _border_col = merge_color(
-        make_color_rgb(60,  20,  40),
-        make_color_rgb(40,   0,   0),
-        (_cf - 0.50) / 0.25
-    );
-} else {
-    _border_col = make_color_rgb(40, 0, 0);
+// At high corruption the frame darkens toward void-black, as if the parchment
+// itself is being consumed. Below 50% corruption it renders clean.
+var _frame_blend = c_white;
+if (_cf > 0.5) {
+    var _dark = (_cf - 0.5) / 0.5;
+    _frame_blend = merge_color(c_white, make_color_rgb(40, 0, 0), _dark);
 }
-draw_set_color(_border_col);
-draw_rectangle(_bx, _by, _bx + _bw, _by + _bh, true);
+draw_sprite_stretched_ext(
+    spr_ui_dialogue_frame, 0,
+    _frame_x, _frame_y, _frame_w, _frame_h,
+    _frame_blend, 1
+);
 
 // =============================================================================
 // NPC NAME
@@ -95,19 +75,18 @@ if (_cf <= 0.25) {
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 draw_set_color(_name_col);
-draw_text(_bx + _pad, _by + _pad - 4, npc_name_display);
+draw_text(_text_left, _frame_y + 15, npc_name_display);
 
 // ── Divider below name ────────────────────────────────────────────────────────
-// Colour tracks the border so the whole box breathes together.
-draw_set_color(_border_col);
-draw_line(_bx + _pad, _by + _pad + 16, _bx + _bw - _pad, _by + _pad + 16);
+draw_set_color(make_color_rgb(80, 60, 40));
+draw_line(_text_left, _frame_y + 34, _text_right, _frame_y + 34);
 
 // =============================================================================
 // BODY TEXT
 // =============================================================================
-var _text_y = _by + _pad + 22;
-var _text_x = _bx + _pad;
-var _text_w = _bw - _pad * 2;
+var _text_y = _frame_y + 40;
+var _text_x = _text_left;
+var _text_w = _text_width;
 
 if (is_loading) {
     // ── Loading state — waiting for Claude ───────────────────────────────────
@@ -164,7 +143,7 @@ if (is_complete && !is_loading) {
         draw_set_color(make_color_rgb(150, 150, 150));
         draw_set_halign(fa_right);
         draw_set_valign(fa_bottom);
-        draw_text(_bx + _bw - _pad, _by + _bh - _pad + 4, "[ E / SPACE ] Continue");
+        draw_text(_gw - 200, _gh - 30, "[ E / SPACE ] Continue");
     }
 }
 
