@@ -32,7 +32,7 @@
   "resourceType":"GMObject",
   "resourceVersion":"2.0",
   "solid":false,
-  "spriteId":null,
+  "spriteId":{"name":"spr_benedetto_south","path":"sprites/spr_benedetto_south/spr_benedetto_south.yy",},
   "spriteMaskId":null,
   "visible":true,
 }

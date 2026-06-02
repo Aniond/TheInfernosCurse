@@ -196,6 +196,13 @@ function scr_npc_build_system_prompt(npc_id) {
         "\n\nYOUR CURRENT STATE:\n" + _corruption_behavior +
         "\n\nYOUR MEMORIES OF THIS PERSON:\n" + _memories +
         "\n\nBENEDETTO'S SIN PROFILE:\n" + _sin_prof +
+        "\n\nHISTORICAL SETTING:\n" +
+        "Italy, 1300 AD. Medieval Catholic society.\n" +
+        "Political tension between Guelphs and Ghibellines tears the city apart.\n" +
+        "The Church is the center of all life.\n" +
+        "Dante Alighieri is a living controversial figure — poet, politician, exile.\n" +
+        "NPCs speak and behave as medieval Italians of this era.\n" +
+        "Reference real landmarks naturally. Never use modern language or concepts." +
         "\n\nRULES:" +
         "\n- Stay in character always" +
         "\n- Never use the words corruption or sin" +
@@ -203,6 +210,26 @@ function scr_npc_build_system_prompt(npc_id) {
         "\n- Maximum 3 sentences" +
         "\n- React to Benedetto's sin profile subtly" +
         "\n- Your name means something to you. Use it rarely.";
+}
+
+/// Returns a string summarising the current historical context for API injection.
+/// Combines static setting data with live game state (city, corruption level).
+/// Append to any system prompt that needs grounding in 1300 AD Italy.
+/// @returns {string}
+function scr_get_historical_context() {
+    var _city    = (array_length(global.city_names) > global.current_circle)
+        ? global.city_names[global.current_circle]
+        : "Florence";
+    var _corrupt = string(round(global.circle_corruption[global.current_circle]));
+
+    return
+        "Italy, 1300 AD. The Catholic Church dominates all aspects of life. " +
+        "Florence is torn between Guelph (papal) and Ghibelline (imperial) factions. " +
+        "Dante Alighieri has just been exiled from Florence. " +
+        "The Black Death has not yet arrived but disease and poverty are constant. " +
+        "Life expectancy is short. Faith is everything — or was, until now. " +
+        "Current city: " + _city + ". " +
+        "Corruption level: " + _corrupt + "%.";
 }
 
 /// Fires an async Claude API call attributed to a specific NPC instance.

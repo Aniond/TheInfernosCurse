@@ -325,25 +325,25 @@ function scr_get_sin_behavior_description() {
         var _intensity = round((_c / 200) * 100); // percentage of max
         switch (_i) {
             case CIRCLE_LIMBO:
-                _out += "Grief fills the air. Minds wander and forget (" + string(_intensity) + "%). ";
+                _out += "The bells of Santa Maria del Fiore ring at the wrong hours (" + string(_intensity) + "%). ";
                 break;
             case CIRCLE_LUST:
-                _out += "Desire pulls at everything — a gravitational wrongness (" + string(_intensity) + "%). ";
+                _out += "The Piazza shimmers like heat from the forge district (" + string(_intensity) + "%). ";
                 break;
             case CIRCLE_GLUTTONY:
-                _out += "Everything feels heavier. Movement costs more than it should (" + string(_intensity) + "%). ";
+                _out += "The market stalls overflow but nothing satisfies (" + string(_intensity) + "%). ";
                 break;
             case CIRCLE_GREED:
-                _out += "The value of things has shifted. Nothing costs what it should (" + string(_intensity) + "%). ";
+                _out += "The merchants count coins that no longer exist (" + string(_intensity) + "%). ";
                 break;
             case CIRCLE_WRATH:
-                _out += "Violence hums beneath every surface. Tempers are razor-thin (" + string(_intensity) + "%). ";
+                _out += "Another Guelph and Ghibelline skirmish in the streets (" + string(_intensity) + "%). ";
                 break;
             case CIRCLE_HERESY:
-                _out += "Truth has become unreliable. Even certainties feel doubtful (" + string(_intensity) + "%). ";
+                _out += "The priests preach but their words mean nothing now (" + string(_intensity) + "%). ";
                 break;
             case CIRCLE_VIOLENCE:
-                _out += "Control is slipping. Actions produce wrong results (" + string(_intensity) + "%). ";
+                _out += "The stones remember every battle fought here (" + string(_intensity) + "%). ";
                 break;
         }
     }

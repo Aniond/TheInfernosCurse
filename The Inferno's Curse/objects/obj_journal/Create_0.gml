@@ -10,7 +10,7 @@ last_entry_day = 0;
 // ── TEST ENTRY — remove once real journal generation is working ───────────────
 var _test = {
     day:              1,
-    city:             "Ashenveil",
+    city:             "Florence",
     text:             "The wall moved today. I told myself it was exhaustion. I am not exhausted.",
     sanity_at_entry:  95,
     dominant_sin:     "Limbo",

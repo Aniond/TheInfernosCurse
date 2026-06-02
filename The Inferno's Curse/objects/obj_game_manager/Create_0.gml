@@ -63,6 +63,30 @@ global.sin_names = [
     "Violence"   // 6
 ];
 
+// ── Italian city names (parallel to circle indices) ───────────────────────────
+// Real historical Italy, 1300 AD. Florence = starting city. Ravenna = finale.
+// Where Dante actually died. The streets he walked — now consumed by the Curse.
+global.city_names = [
+    "Florence",  // 0 — Limbo
+    "Siena",     // 1 — Lust
+    "Genoa",     // 2 — Gluttony
+    "Venice",    // 3 — Greed
+    "Naples",    // 4 — Wrath
+    "Rome",      // 5 — Heresy
+    "Ravenna"    // 6 — Violence
+];
+
+// ── City entry descriptions (shown when entering each circle / city) ──────────
+global.city_desc = [
+    "Florence, 1300 AD. City of Dante. City of faith. City of forgetting.",
+    "Siena. Beautiful. Dangerous. Nothing here is what it appears.",
+    "Genoa. The port city devours itself. Even the sea smells of rot.",
+    "Venice. Everything floats. Everything has a price. Even passage.",
+    "Naples. They have always fought here. Now they cannot stop.",
+    "Rome. The holy city. Nothing holy remains.",
+    "Ravenna. The last city. He knew he would end here."
+];
+
 
 // ── Per-circle corruption (indices 0-6) ───────────────────────────────────────
 // How corrupted each circle currently is (0 = pristine, 100 = fully consumed).
@@ -140,9 +164,20 @@ global.input_lock_timer = 0;
 global.vision_cooldown = 300;
 
 
+// ── Debug mode ────────────────────────────────────────────────────────────────
+// true  = placeholder rectangles visible (dev/testing mode)
+// false = all placeholders hidden (player-facing build)
+// Every placeholder object's Draw event checks this flag before drawing.
+global.debug_mode = false;
+
 // ── Boot sequence ─────────────────────────────────────────────────────────────
 // Called last so all globals above are defined before the key is checked.
 scr_config_load();
+
+// Disable texture filtering globally — keeps pixel art sharp at any zoom level.
+// options_windows.yy also sets interpolate_pixels:false but this runtime call
+// guarantees filtering is off even if a platform option is missed.
+gpu_set_tex_filter(false);
 
 // NOTE: obj_journal and obj_vision_manager are placed directly in Room1 (see the
 // room's instance list), so they are NOT spawned here — doing both would create

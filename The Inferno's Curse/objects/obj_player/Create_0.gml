@@ -17,3 +17,18 @@ facing_dir    = 270; // degrees (GameMaker: 0=right, 90=up, 180=left, 270=down)
 // --- Combat ---
 attack_speed    = 1.0;  // multiplied by global.attack_speed_modifier (Wrath effect)
 attack_accuracy = 1.0;  // 0.0-1.0; reduced by global.attack_accuracy (Wrath effect)
+
+// --- Sprites ---
+// 8-way facing lookup, indexed by round(facing_dir / 45) mod 8.
+// Index: 0=E 1=NE 2=N 3=NW 4=W 5=SW 6=S 7=SE  (GameMaker degrees, counter-clockwise)
+dir_sprites = [
+    spr_benedetto_east,
+    spr_benedetto_north_east,
+    spr_benedetto_north,
+    spr_benedetto_north_west,
+    spr_benedetto_west,
+    spr_benedetto_south_west,
+    spr_benedetto_south,
+    spr_benedetto_south_east,
+];
+image_speed = 0.15;  // walk-cycle animation rate

@@ -1,22 +1,22 @@
-// ── Elder Maren (Test NPC): Create ───────────────────────────────────────────
-// Limbo NPC used to exercise the full corruption + dialogue pipeline.
-// Replace with proper NPC objects as content is built.
+// ── Brother Anselmo (Test NPC): Create ───────────────────────────────────────
+// Florence Circle 0 (Limbo) NPC — exercises the full corruption + dialogue pipeline.
+// An elderly Franciscan monk who has lived near Santa Croce his entire life.
 
 // Set npc_data BEFORE event_inherited() so the parent can reference it safely
 npc_data = scr_npc_create(
-    "elder_maren",
-    "Elder Maren",
-    "elder",
-    "The Threshold",      // Limbo's entry zone — edge of the first circle
+    "brother_anselmo",
+    "Brother Anselmo",
+    "monk",
+    "The monastery near Santa Croce, Florence",
     CIRCLE_LIMBO,
-    "Haunted and wise, slowly losing her memories to Limbo's corruption"
+    "An elderly Franciscan monk. Gentle, deeply faithful, but increasingly confused. He has lived near Santa Croce his entire life and knows every face in the quarter — or did. He cannot remember the last time the bells rang at the right hour."
 );
 
 // Pre-seed one memory so the API context is never empty on first run
 scr_npc_add_memory(
     npc_data,
     "player_arrived",
-    "A stranger came through the Threshold gate.",
+    "A priest from another parish came to the monastery asking strange questions about the bells.",
     "curious"
 );
 

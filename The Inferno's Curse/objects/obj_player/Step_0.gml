@@ -27,14 +27,19 @@ if (_dx != 0 || _dy != 0) {
     facing_dir = point_direction(0, 0, _dx, _dy);
 }
 
+// ── Directional sprite ────────────────────────────────────────────────────────
+// Pick the facing sprite from the 8-way lookup. facing_dir only changes while
+// moving, so when idle this keeps the last sprite the player faced.
+sprite_index = dir_sprites[(round(facing_dir / 45)) mod 8];
+
 // ── Building collision (obj_wall_stone + obj_wall) ────────────────────────────
 // These walls have no sprite/mask and are sized per-instance via wall_w / wall_h,
 // so place_meeting() cannot detect them. Instead we test the player's 32x32 AABB
 // (centred origin) against each wall rectangle — top-left origin, extending
 // wall_w to the right and wall_h down — and resolve the X and Y axes separately
 // so the player slides along a wall instead of sticking to it.
-var _phw = 16; // player half-width  (32x32 placeholder)
-var _phh = 16; // player half-height
+var _phw = 16; // player half-width  — tight foot zone, lets Benedetto stand close to doors
+var _phh = 8;  // player half-height — small base collision so he reaches building face
 
 // Returns true if a box of half-size (_hw,_hh) centred at (_px,_py) overlaps any
 // wall. Standard AABB overlap test against both wall object types.

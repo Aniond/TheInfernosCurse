@@ -19,6 +19,14 @@
 wall_w = 32 * image_xscale;
 wall_h = 32 * image_yscale;
 
+// ── Sprite auto-detection ─────────────────────────────────────────────────────
+// Square footprint (wall_w ≈ wall_h within 16px) = residential house → use the
+// Florence house sprite. Asymmetric = church / market / structural → keep the
+// grey rectangle placeholder until dedicated art ships for those buildings.
+wall_sprite = (abs(wall_w - wall_h) < 16) ? spr_florence_house_south : -1;
+
+// Directional override removed — all street houses use south-facing sprite.
+
 // ── Corruption / breathing state ──────────────────────────────────────────────
 wall_corruption = 0;             // mirrors global.circle_corruption[0] each step
 breathe_offset  = random(360);   // random phase so walls don't pulse in unison

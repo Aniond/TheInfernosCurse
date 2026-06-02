@@ -21,11 +21,13 @@ draw_rectangle(_x, _y, _x + _w, _y + _h, true);
 draw_set_color(make_color_rgb(180, 150, 100));
 draw_set_halign(fa_center);
 draw_set_valign(fa_top);
-draw_text(display_get_gui_width() / 2, _y + 20, "CODEX OF FATHER BENEDETTO");
+draw_text(display_get_gui_width() / 2, _y + 16, "CODEX OF FATHER BENEDETTO");
+draw_set_color(make_color_rgb(120, 100, 70));
+draw_text(display_get_gui_width() / 2, _y + 34, "Priest of Florence  ·  Anno Domini 1300");
 
 // Separator line under title
 draw_set_color(make_color_rgb(80, 60, 40));
-draw_line(_x + 20, _y + 50, _x + _w - 20, _y + 50);
+draw_line(_x + 20, _y + 56, _x + _w - 20, _y + 56);
 
 // Entry content
 draw_set_color(make_color_rgb(200, 180, 140));
