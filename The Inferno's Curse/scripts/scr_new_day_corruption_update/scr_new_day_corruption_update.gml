@@ -13,6 +13,9 @@
 /// NOTE: This function writes directly to the global corruption arrays.
 /// Do NOT use scr_corruption_modify() here — that function caps at 100.
 
+// DESIGN: Limbo is the root corruption.
+// Solving Limbo stops all downstream bleed.
+// Each circle only bleeds when its upstream trigger threshold is met.
 function scr_new_day_corruption_update() {
 
     // ── Primary corruption advance ────────────────────────────────────────────

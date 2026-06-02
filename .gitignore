@@ -61,3 +61,6 @@ ai_integration.md
 *.winmd
 *.exe
 *.code-workspace
+
+# ── External tooling (not game content) ──────────────────────────────────────
+ComfyUI/

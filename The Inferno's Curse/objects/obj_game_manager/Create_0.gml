@@ -103,7 +103,47 @@ global.vision_intensity = 0;
 // Prevents multiple manifestations stacking simultaneously.
 global.manifestation_active = false;
 
+// Step index of the last triggered vision (used to enforce cooldown).
+// Compared against current_time each step in scr_check_trigger_vision().
+global.last_vision_time = 0;
+
+// Minimum steps between visions (dynamically shortened at low sanity).
+// Base value; scr_check_trigger_vision() computes the live cooldown.
+global.vision_cooldown = 300;
+
+// String tag of the most recently triggered vision type.
+// Logged to world_state and read by obj_vision_manager for overlay colour.
+global.last_vision_type = "";
+
+// Running count of visions Benedetto has witnessed this run.
+// Shown on game-over screen; feeds into narrative severity.
+global.manifestation_count = 0;
+
+
+// ── Combat and economy modifiers ─────────────────────────────────────────────
+// Written every step by scr_apply_active_sin_effects() for active circles.
+// Reset to 1.0 / false by scr_solve_circle() when a circle is cleansed.
+global.shop_price_modifier   = 1.0;  // multiplied against all shop prices
+global.attack_speed_modifier = 1.0;  // multiplied against base attack rate
+global.attack_accuracy       = 1.0;  // 1.0 = perfect; lower = more misses
+
+// ── Input lock (Limbo / Violence dissociation) ────────────────────────────────
+// When input_locked is true, obj_player ignores movement and action input.
+// input_lock_timer counts down each step; hitting 0 clears the lock.
+global.input_locked     = false;
+global.input_lock_timer = 0;
+
+// ── Vision cooldown base ──────────────────────────────────────────────────────
+// Base step count between visions. obj_safe_house raises this to 600 while the
+// player is resting (halving vision frequency) and resets it to 300 on exit.
+// scr_check_trigger_vision() reads it as its base cooldown.
+global.vision_cooldown = 300;
+
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
 // Called last so all globals above are defined before the key is checked.
 scr_config_load();
+
+// NOTE: obj_journal and obj_vision_manager are placed directly in Room1 (see the
+// room's instance list), so they are NOT spawned here — doing both would create
+// duplicate instances because this Create runs before the room instances exist.

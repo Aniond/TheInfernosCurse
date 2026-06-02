@@ -1,8 +1,8 @@
 {
   "$GMScript":"v1",
   "%Name":"scr_config_load",
-  "isDnD":false,
   "isCompatibility":false,
+  "isDnD":false,
   "name":"scr_config_load",
   "parent":{
     "name":"The Inferno's Curse",

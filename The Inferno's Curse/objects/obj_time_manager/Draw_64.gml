@@ -12,15 +12,15 @@ var _tod   = global.time_of_day;
 // sky colour. Gets greyer as Limbo corruption rises.
 var _sky_col = scr_get_sky_color();
 
-draw_set_alpha(0.55); // semi-transparent so UI elements beneath still read
+draw_set_alpha(0.6); // semi-transparent so UI elements beneath still read
 draw_set_color(_sky_col);
-draw_rectangle(0, 0, _gui_w, 52, false);
+draw_rectangle(0, 0, _gui_w, 60, false);
 draw_set_alpha(1.0);
 
 // Thin bottom edge of the sky band, slightly more opaque for definition
-draw_set_alpha(0.75);
+draw_set_alpha(0.8);
 draw_set_color(_sky_col);
-draw_rectangle(0, 50, _gui_w, 52, false);
+draw_rectangle(0, 58, _gui_w, 60, false);
 draw_set_alpha(1.0);
 
 // ── Time period label ─────────────────────────────────────────────────────────

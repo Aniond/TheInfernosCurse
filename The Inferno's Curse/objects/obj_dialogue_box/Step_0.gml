@@ -1,53 +1,55 @@
-// ── Dialogue Box: Step ───────────────────────────────────────────────────────
+// =============================================================================
+// obj_dialogue_box — Step Event
+// =============================================================================
 
-// Wait for text to arrive from the active NPC.
-// In mock mode this is populated immediately; in real API mode it arrives
-// after the async HTTP response updates npc_data.last_response.
-if (!text_loaded && instance_exists(global.dialogue_npc)) {
-    var _response = global.dialogue_npc.npc_data.last_response;
-    if (_response != "") {
-        full_text    = _response;
-        npc_name     = global.dialogue_npc.npc_data.name;
-        text_loaded  = true;
-        char_index   = 0;
-        char_timer   = 0;
-        display_text = "";
-        finished     = false;
+// ── Master gate ───────────────────────────────────────────────────────────────
+if (!is_active) exit;
+
+// ── Loading animation ─────────────────────────────────────────────────────────
+// Cycles "." → ".." → "..." every 20 steps while waiting for the API.
+// The Draw GUI event reads dot_string directly.
+if (is_loading) {
+    dot_timer++;
+    if (dot_timer >= 20) {
+        dot_timer = 0;
+        switch (dot_string) {
+            case ".":   dot_string = "..";  break;
+            case "..":  dot_string = "..."; break;
+            default:    dot_string = ".";   break;
+        }
+    }
+    exit; // nothing else runs while loading
+}
+
+// ── Typewriter reveal ─────────────────────────────────────────────────────────
+// Adds one character every typewriter_speed steps until the full text is shown.
+if (!is_complete && dialogue_text != "") {
+    typewriter_timer++;
+    if (typewriter_timer >= typewriter_speed) {
+        typewriter_timer = 0;
+        char_index++;
+        display_text = string_copy(dialogue_text, 1, char_index);
+        if (char_index >= string_length(dialogue_text)) {
+            is_complete  = true;
+            // Keep aliases in sync so any legacy code reading them still works.
+            finished     = true;
+        }
     }
 }
 
-// Typewriter — reveal one character every char_delay steps
-if (text_loaded && !finished) {
-    char_timer++;
-    if (char_timer >= char_delay) {
-        char_timer = 0;
-        char_index = min(char_index + 1, string_length(full_text));
-        display_text = string_copy(full_text, 1, char_index);
-        finished = (char_index >= string_length(full_text));
-    }
-}
+// ── Input: skip or close ──────────────────────────────────────────────────────
+var _interact = keyboard_check_pressed(vk_space)
+             || keyboard_check_pressed(ord("E"));
 
-// E key handling
-if (keyboard_check_pressed(ord("E"))) {
-    if (!finished) {
-        // Skip typewriter — show the full line instantly
-        char_index   = string_length(full_text);
-        display_text = full_text;
+if (_interact) {
+    if (!is_complete) {
+        // Skip typewriter — reveal the full line instantly.
+        char_index   = string_length(dialogue_text);
+        display_text = dialogue_text;
+        is_complete  = true;
         finished     = true;
     } else {
-        // Close dialogue and record the interaction in the NPC's memory
-        if (instance_exists(global.dialogue_npc)) {
-            var _npc = global.dialogue_npc;
-            scr_npc_add_memory(
-                _npc.npc_data,
-                "player_spoke",
-                "Player initiated conversation.",
-                "neutral"
-            );
-            _npc.is_talking        = false;
-            _npc.interact_cooldown = 10; // block same-frame re-trigger
-        }
-        global.dialogue_npc = noone;
-        instance_destroy();
+        // Line fully revealed — player dismisses.
+        scr_close_dialogue();
     }
 }

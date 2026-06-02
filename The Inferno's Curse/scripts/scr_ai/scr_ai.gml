@@ -67,6 +67,15 @@ function scr_mock_api_response(npc_name, corruption, player_input) {
 }
 
 // ── Real API ─────────────────────────────────────────────────────────────────
+//
+// MODEL STRATEGY:
+//   Haiku — NPC dialogue (fast, frequent, cheap — best for real-time interaction)
+//   Sonnet — Journal entries, lore summaries, world state (richer, less frequent)
+//   Opus — Architecture & design decisions only (not called at runtime)
+//
+// This script uses Haiku for scr_ai_call() — NPC responses must be quick
+// to keep dialogue flowing. Other scripts reserve Sonnet/Opus for
+// async generation tasks outside the play loop.
 
 /// Fires an async POST to the Claude API.
 /// Returns the request ID so obj_game_manager can match responses.
@@ -84,7 +93,7 @@ function scr_ai_call(prompt, system_prompt) {
     ds_map_add(_headers, "anthropic-version", "2023-06-01");
 
     var _body = json_stringify({
-        model:      "claude-sonnet-4-6",
+        model:      "claude-haiku-4-5-20251001",
         max_tokens: 150,
         system:     system_prompt,
         messages:   [{ role: "user", content: prompt }]
@@ -110,11 +119,16 @@ function scr_build_npc_system_prompt(npc_data) {
 
     // Tone instruction shifts automatically with corruption so the AI's voice
     // grows more fragmented as the circle is consumed.
-    var _tone =
-        (_corrupt >= 75) ? "Be fragmented, unnerving, barely coherent." :
-        (_corrupt >= 50) ? "Be haunted and fearful, on the edge of breaking." :
-        (_corrupt >= 25) ? "Be uneasy but coherent — show the cracks." :
-                           "Be wary but grounded. The world is wrong but you still know yourself.";
+    var _tone;
+    if (_corrupt >= 75) {
+        _tone = "Be fragmented, unnerving, barely coherent.";
+    } else if (_corrupt >= 50) {
+        _tone = "Be haunted and fearful, on the edge of breaking.";
+    } else if (_corrupt >= 25) {
+        _tone = "Be uneasy but coherent — show the cracks.";
+    } else {
+        _tone = "Be wary but grounded. The world is wrong but you still know yourself.";
+    }
 
     return
         "You are " + npc_data.name + ", a " + npc_data.role +
@@ -129,4 +143,81 @@ function scr_build_npc_system_prompt(npc_data) {
         "Player sin profile: " + scr_sin_profile_to_string() + ".\n" +
         "Rules: stay in character always. Max 2-3 sentences. " +
         "Reference the corruption naturally. " + _tone;
+}
+
+
+// =============================================================================
+// Instance-based API interface
+// (Takes instance IDs; bridges to the struct-based functions above)
+// =============================================================================
+
+/// Builds the full system prompt for an NPC instance using all available
+/// world and sin context. Returns a richer prompt than scr_build_npc_system_prompt.
+///
+/// ATMOSPHERE uses scr_get_sin_behavior_description() — a plain-language
+/// description of active sin effects that the AI can reference naturally.
+/// BENEDETTO'S SIN PROFILE is fed in so the NPC reacts subtly to what he's done.
+///
+/// @param {Id.Instance} npc_id   Instance of any obj_npc_base child
+/// @returns {string}   Complete system prompt
+function scr_npc_build_system_prompt(npc_id) {
+    if (!instance_exists(npc_id)) return "";
+
+    var _bleed      = scr_get_bleed_context();
+    var _sin_fx     = scr_get_sin_behavior_description();
+    var _memories   = scr_npc_get_memory_string(npc_id);
+    var _sin_prof   = scr_get_player_sin_profile();
+    var _c          = npc_id.npc_memory_corruption;
+
+    // ── Corruption behaviour string ───────────────────────────────────────────
+    var _corruption_behavior;
+    if (_c > 150) {
+        _corruption_behavior =
+            "You speak in fragments. You confuse this person for someone else. " +
+            "You forget mid-sentence.";
+    } else if (_c > 100) {
+        _corruption_behavior =
+            "You are confused about who this person is. " +
+            "You trail off sometimes. You repeat yourself occasionally.";
+    } else if (_c > 50) {
+        _corruption_behavior =
+            "You are slightly forgetful. You occasionally pause mid-thought.";
+    } else {
+        _corruption_behavior = "You are fully yourself.";
+    }
+
+    return
+        "You are " + npc_id.npc_name +
+        ", a " + npc_id.npc_role +
+        " in " + npc_id.npc_location + "." +
+        "\n\nPERSONALITY: " + npc_id.npc_personality +
+        "\n\nWORLD STATE:\n" + _bleed +
+        "\n\nATMOSPHERE:\n" + _sin_fx +
+        "\n\nYOUR CURRENT STATE:\n" + _corruption_behavior +
+        "\n\nYOUR MEMORIES OF THIS PERSON:\n" + _memories +
+        "\n\nBENEDETTO'S SIN PROFILE:\n" + _sin_prof +
+        "\n\nRULES:" +
+        "\n- Stay in character always" +
+        "\n- Never use the words corruption or sin" +
+        "\n- Show your state through behavior not explanation" +
+        "\n- Maximum 3 sentences" +
+        "\n- React to Benedetto's sin profile subtly" +
+        "\n- Your name means something to you. Use it rarely.";
+}
+
+/// Fires an async Claude API call attributed to a specific NPC instance.
+/// Stores the request ID on the instance so Async_62.gml can route the response.
+/// Falls back to mock if no API key is set.
+///
+/// @param {Id.Instance} npc_id        Instance of any obj_npc_base child
+/// @param {string}      player_input  What the player said (empty string for greeting)
+function scr_npc_call_api(npc_id, player_input) {
+    if (!instance_exists(npc_id)) exit;
+
+    var _system = scr_npc_build_system_prompt(npc_id);
+    var _req_id = scr_ai_call(player_input, _system);
+
+    npc_id.request_id               = _req_id;
+    npc_id.api_pending              = true;
+    npc_id.npc_data.pending_request = _req_id;
 }

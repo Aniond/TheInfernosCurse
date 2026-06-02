@@ -31,26 +31,14 @@ function scr_config_load() {
     // Always close the INI handle, even if the read failed.
     ini_close();
 
-    // ── Gate: API key is required to run ─────────────────────────────────────
-    // The game is built around live Claude API responses for NPC dialogue,
-    // world events, and adaptive enemy behaviour. Without a valid key there
-    // is no meaningful gameplay, so we block launch rather than silently
-    // running in a broken state.
     if (global.claude_api_key == "") {
-        show_message(
-            "No API key found." + "\n\n" +
-            "Please create config.ini in the game folder with:" + "\n" +
-            "  [API]" + "\n" +
-            "  key=your_claude_api_key_here"
+        global.api_mock_mode = true;
+        show_debug_message("[Config] No API key found — running in mock mode.");
+    } else {
+        global.api_mock_mode = false;
+        show_debug_message(
+            "[Config] API key loaded: " +
+            string_copy(global.claude_api_key, 1, 12) + "..."
         );
-        game_end();
     }
-
-    // Key loaded successfully — log to the output window for debugging.
-    // We only print the first 12 characters so the full key never appears
-    // in run logs or screenshots.
-    show_debug_message(
-        "[Config] API key loaded: " +
-        string_copy(global.claude_api_key, 1, 12) + "..."
-    );
 }

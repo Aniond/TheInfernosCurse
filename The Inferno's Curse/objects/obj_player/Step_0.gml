@@ -1,5 +1,9 @@
 // ── Player: Step ────────────────────────────────────────────────────────────
 
+// Freeze the player while a menu or dialogue has taken input (journal, dialogue
+// box, sin-induced dissociation). Movement and collision are skipped entirely.
+if (global.input_locked) exit;
+
 // 8-directional movement — WASD and arrow keys
 var _dx = (keyboard_check(ord("D")) || keyboard_check(vk_right))
         - (keyboard_check(ord("A")) || keyboard_check(vk_left));
@@ -12,14 +16,60 @@ if (_dx != 0 && _dy != 0) {
     _dy *= 0.7071;
 }
 
-x += _dx * move_spd;
-y += _dy * move_spd;
+// Intended movement this step (kept separate so we can resolve each axis alone)
+var _mx = _dx * move_spd;
+var _my = _dy * move_spd;
 
-// ── Wall collision ────────────────────────────────────────────────────────────
-// Border walls are 32 px thick on all four sides. Player placeholder is 32x32
-// with its origin at centre, so we offset by half-size (16 px) to keep the
-// visible rectangle fully inside the walls.
+// ── Facing direction ──────────────────────────────────────────────────────────
+// Only update when the player is actually moving so idle facing is preserved.
+// obj_manifestation reads this to decide whether it's in the player's arc.
+if (_dx != 0 || _dy != 0) {
+    facing_dir = point_direction(0, 0, _dx, _dy);
+}
+
+// ── Building collision (obj_wall_stone + obj_wall) ────────────────────────────
+// These walls have no sprite/mask and are sized per-instance via wall_w / wall_h,
+// so place_meeting() cannot detect them. Instead we test the player's 32x32 AABB
+// (centred origin) against each wall rectangle — top-left origin, extending
+// wall_w to the right and wall_h down — and resolve the X and Y axes separately
+// so the player slides along a wall instead of sticking to it.
+var _phw = 16; // player half-width  (32x32 placeholder)
+var _phh = 16; // player half-height
+
+// Returns true if a box of half-size (_hw,_hh) centred at (_px,_py) overlaps any
+// wall. Standard AABB overlap test against both wall object types.
+var _wall_at = function(_px, _py, _hw, _hh) {
+    var _hit = false;
+    with (obj_wall_stone) {
+        if (_px + _hw > x && _px - _hw < x + wall_w
+         && _py + _hh > y && _py - _hh < y + wall_h) { _hit = true; }
+    }
+    if (!_hit) {
+        with (obj_wall) {
+            if (_px + _hw > x && _px - _hw < x + wall_w
+             && _py + _hh > y && _py - _hh < y + wall_h) { _hit = true; }
+        }
+    }
+    return _hit;
+};
+
+// Horizontal axis — move, and undo only X if it lands us in a wall.
+if (_mx != 0) {
+    x += _mx;
+    if (_wall_at(x, y, _phw, _phh)) x -= _mx;
+}
+
+// Vertical axis — move, and undo only Y if it lands us in a wall.
+if (_my != 0) {
+    y += _my;
+    if (_wall_at(x, y, _phw, _phh)) y -= _my;
+}
+
+// ── Room border clamp (safety net) ────────────────────────────────────────────
+// Border walls are 32 px thick on all four sides; the player is 32x32 centred,
+// so we keep its centre at least 48 px from each room edge. Backs up the AABB
+// test above against the border obj_wall instances.
 var _wall_thick = 32;
-var _half       = 16; // half of the 32x32 placeholder size
+var _half       = 16;
 x = clamp(x, _wall_thick + _half, room_width  - _wall_thick - _half);
 y = clamp(y, _wall_thick + _half, room_height - _wall_thick - _half);
