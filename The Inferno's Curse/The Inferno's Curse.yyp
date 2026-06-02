@@ -19,6 +19,8 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"scr_world_state","path":"scripts/scr_world_state/scr_world_state.yy",},},
+    {"id":{"name":"obj_save_indicator","path":"objects/obj_save_indicator/obj_save_indicator.yy",},},
     {"id":{"name":"obj_npc_marco","path":"objects/obj_npc_marco/obj_npc_marco.yy",},},
     {"id":{"name":"obj_door_placeholder","path":"objects/obj_door_placeholder/obj_door_placeholder.yy",},},
     {"id":{"name":"obj_dialogue_box","path":"objects/obj_dialogue_box/obj_dialogue_box.yy",},},

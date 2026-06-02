@@ -9,4 +9,5 @@ near_player = instance_exists(obj_player)
 // Placeholder interact — fires when player presses E while near the door
 if (near_player && keyboard_check_pressed(ord("E"))) {
     show_debug_message("[Door] Interact triggered — door interior not yet implemented.");
+    scr_save_world_state(); // auto-save on building entry
 }

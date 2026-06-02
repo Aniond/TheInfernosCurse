@@ -57,23 +57,8 @@ function scr_new_day_corruption_update() {
     // Propagate new corruption levels to NPC behaviours, world events, etc.
     scr_update_city_state();
 
-    // ── Persist world state to disk ───────────────────────────────────────────
-    // world_state.json lives in the game's working directory. It is a
-    // snapshot used for debugging and, eventually, cross-session persistence.
-    var _state = {
-        day:                 global.day_count,
-        time_of_day:         round(global.time_of_day * 100) / 100,
-        current_circle:      global.current_circle,
-        circle_corruption:   global.circle_corruption,
-        player_sin_affinity: global.player_sin_affinity,
-        is_night:            global.is_night,
-        sanity:              global.sanity,
-        vision_intensity:    global.vision_intensity
-    };
-
-    var _file = file_text_open_write("world_state.json");
-    file_text_write_string(_file, json_stringify(_state, true));
-    file_text_close(_file);
+    // ── Auto-save full world state at day end ─────────────────────────────────
+    scr_save_world_state();
 
     show_debug_message(
         "[Day " + string(global.day_count) + "] Corruption — " +

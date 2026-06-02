@@ -170,13 +170,36 @@ global.vision_cooldown = 300;
 // Every placeholder object's Draw event checks this flag before drawing.
 global.debug_mode = false;
 
+// ── NPC persistence globals ───────────────────────────────────────────────────
+// These hold the last saved state for NPC instances that need cross-session
+// persistence. scr_load_world_state() overwrites them from disk; NPC Create
+// events read them after event_inherited().
+global.marco_met            = false;
+global.marco_recognition    = 100;
+global.marco_corruption_arc = 0;
+global.marco_day_first_met  = 0;
+
+// ── Codex persistence globals ─────────────────────────────────────────────────
+global.codex_entries     = [];
+global.codex_entry_count = 0;
+
+// ── Player spawn globals (restored from save, applied when player Create runs) ─
+global.save_player_x    = 1100;
+global.save_player_y    = 1600;
+global.save_player_room = "Room1";
+
+// ── Save indicator UI state ───────────────────────────────────────────────────
+// Drives obj_save_indicator's fade-out flash in the top-right corner.
+global.save_indicator_timer = 0;   // counts down from 120 (2 sec); 0 = hidden
+global.save_indicator_text  = "";  // "SAVED" or "LOADED"
+
 // ── Boot sequence ─────────────────────────────────────────────────────────────
-// Called last so all globals above are defined before the key is checked.
+// Order matters: config (API key) must load before world state, so mock-mode
+// is known before any NPC or corruption data is restored.
 scr_config_load();
+scr_load_world_state();
 
 // Disable texture filtering globally — keeps pixel art sharp at any zoom level.
-// options_windows.yy also sets interpolate_pixels:false but this runtime call
-// guarantees filtering is off even if a platform option is missed.
 gpu_set_tex_filter(false);
 
 // NOTE: obj_journal and obj_vision_manager are placed directly in Room1 (see the

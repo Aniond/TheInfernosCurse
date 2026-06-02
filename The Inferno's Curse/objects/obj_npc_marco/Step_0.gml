@@ -9,9 +9,15 @@
 // Inherit base step (interaction, cooldown, npc_memory_corruption mirror)
 event_inherited();
 
+// ── Sync instance vars → globals (so save system always has current data) ─────
+global.marco_met            = marco_met;
+global.marco_recognition    = marco_recognition;
+global.marco_day_first_met  = marco_day_first_met;
+
 // ── Corruption arc ────────────────────────────────────────────────────────────
 // Maps Limbo corruption (0-100) to Marco's five-stage dissolution arc.
 // The arc drives the personality string injected into his system prompt.
+var _prev_arc = marco_corruption_arc;
 var _c = global.circle_corruption[CIRCLE_LIMBO];
 
 if (_c < 25) {
@@ -51,4 +57,10 @@ if (_c < 25) {
     // The bread in his hands is rotten. He hasn't noticed.
     marco_corruption_arc = 4;
     marco_recognition    = 0;
+}
+
+// ── Sync arc to global + auto-save on arc change ──────────────────────────────
+global.marco_corruption_arc = marco_corruption_arc;
+if (marco_corruption_arc != _prev_arc) {
+    scr_save_world_state();
 }

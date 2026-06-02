@@ -21,6 +21,13 @@ scr_update_vision_intensity();
 scr_check_trigger_vision();
 
 
+// ── Save / load keyboard shortcuts ───────────────────────────────────────────
+if (keyboard_check_pressed(vk_f5)) scr_save_world_state();
+if (keyboard_check_pressed(vk_f9)) scr_load_world_state();
+
+// ── Save indicator countdown ──────────────────────────────────────────────────
+if (global.save_indicator_timer > 0) global.save_indicator_timer--;
+
 // ── Input lock timer ──────────────────────────────────────────────────────────
 // Sin effects that seize control (Limbo dissociation, Violence inversion)
 // set input_lock_timer to a step count and input_locked to true.

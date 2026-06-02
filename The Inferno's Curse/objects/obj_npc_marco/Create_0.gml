@@ -38,3 +38,12 @@ scr_npc_add_memory(
 
 // Inherit shared NPC state from obj_npc_base
 event_inherited();
+
+// ── Restore from saved world state ───────────────────────────────────────────
+// scr_load_world_state() runs before room instances are created, so globals
+// already hold the correct saved values by the time Marco's Create fires.
+marco_met            = global.marco_met;
+marco_recognition    = global.marco_recognition;
+marco_corruption_arc = global.marco_corruption_arc;
+marco_day_first_met  = global.marco_day_first_met;
+bread_offering_made  = global.marco_met; // already offered bread if they've met

@@ -57,6 +57,9 @@ function scr_generate_journal_entry() {
             "He has known me for eleven years.";
     }
 
+    // Auto-save after codex entry so journal progress survives a crash
+    scr_save_world_state();
+
     return _entry;
 }
 
