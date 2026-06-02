@@ -13,9 +13,9 @@ if (!is_active) exit;
 var _gw      = display_get_gui_width();
 var _gh      = display_get_gui_height();
 var _frame_x = 0;
-var _frame_y = _gh - 200;
+var _frame_y = _gh - 230;
 var _frame_w = _gw;
-var _frame_h = 200;
+var _frame_h = 230;
 
 // Text layout — inset from the torch sconces on each side
 var _text_left   = 160;
@@ -49,27 +49,29 @@ draw_sprite_stretched_ext(
 // 25-50%: warm grey        220,200,200
 // 50-75%: washed rose      180,150,150
 // 75-100%: faded bloodstone 140,100,100
+// Name colour: deep brown at low corruption, bleeding toward blood-red as
+// the NPC loses themselves. Both readable on parchment.
 var _name_col;
 if (_cf <= 0.25) {
     _name_col = merge_color(
-        c_white,
-        make_color_rgb(220, 200, 200),
+        make_color_rgb(60, 30, 10),
+        make_color_rgb(80, 40, 20),
         _cf / 0.25
     );
 } else if (_cf <= 0.50) {
     _name_col = merge_color(
-        make_color_rgb(220, 200, 200),
-        make_color_rgb(180, 150, 150),
+        make_color_rgb(80, 40, 20),
+        make_color_rgb(120, 40, 20),
         (_cf - 0.25) / 0.25
     );
 } else if (_cf <= 0.75) {
     _name_col = merge_color(
-        make_color_rgb(180, 150, 150),
-        make_color_rgb(140, 100, 100),
+        make_color_rgb(120, 40, 20),
+        make_color_rgb(140, 20, 10),
         (_cf - 0.50) / 0.25
     );
 } else {
-    _name_col = make_color_rgb(140, 100, 100);
+    _name_col = make_color_rgb(140, 20, 10);
 }
 
 draw_set_halign(fa_left);
@@ -90,7 +92,7 @@ var _text_w = _text_width;
 
 if (is_loading) {
     // ── Loading state — waiting for Claude ───────────────────────────────────
-    draw_set_color(make_color_rgb(150, 150, 150));
+    draw_set_color(make_color_rgb(80, 50, 20));
     draw_set_halign(fa_left);
     draw_text(_text_x, _text_y, "Benedetto listens" + dot_string);
 
@@ -119,7 +121,7 @@ if (is_loading) {
         }
     }
 
-    draw_set_color(c_white);
+    draw_set_color(make_color_rgb(50, 25, 8));
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_text_ext(
@@ -140,7 +142,7 @@ if (is_complete && !is_loading) {
     // Blinks every 30 steps so the player knows to press a key.
     var _blink = (floor(current_time / (30 * (1000 / game_get_speed(gamespeed_fps)))) & 1) == 0;
     if (_blink) {
-        draw_set_color(make_color_rgb(150, 150, 150));
+        draw_set_color(make_color_rgb(80, 50, 20));
         draw_set_halign(fa_right);
         draw_set_valign(fa_bottom);
         draw_text(_gw - 200, _gh - 30, "[ E / SPACE ] Continue");
