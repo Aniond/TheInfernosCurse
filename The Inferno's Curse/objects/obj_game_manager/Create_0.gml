@@ -193,6 +193,14 @@ global.save_player_room = "Room1";
 global.save_indicator_timer = 0;   // counts down from 120 (2 sec); 0 = hidden
 global.save_indicator_text  = "";  // "SAVED" or "LOADED"
 
+// ── Battle globals ────────────────────────────────────────────────────────────
+global.battle_active       = false;
+global.battle_corruption   = 0;
+global.battle_enemy_count  = 2;    // default; overwritten by scr_battle_trigger()
+global.battle_turn         = 0;
+global.battle_round        = 1;
+global.battle_result       = "";
+
 // ── Boot sequence ─────────────────────────────────────────────────────────────
 // Order matters: config (API key) must load before world state, so mock-mode
 // is known before any NPC or corruption data is restored.

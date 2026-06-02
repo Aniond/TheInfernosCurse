@@ -25,6 +25,13 @@ scr_check_trigger_vision();
 if (keyboard_check_pressed(vk_f5)) scr_save_world_state();
 if (keyboard_check_pressed(vk_f9)) scr_load_world_state();
 
+// ── DEBUG: battle trigger — remove when proper battle triggers are wired ──────
+if (global.debug_mode) {
+    if (room == Room1 && keyboard_check_pressed(ord("B"))) {
+        scr_battle_trigger(3);   // 3 Hollows, Florence corruption level
+    }
+}
+
 // ── Save indicator countdown ──────────────────────────────────────────────────
 if (global.save_indicator_timer > 0) global.save_indicator_timer--;
 

@@ -355,6 +355,15 @@ function scr_battle_globals_init(corruption_override) {
     global.input_locked       = false;
 }
 
+/// Triggers a battle transition from the exploration room.
+/// Stores the enemy count globally so obj_battle_manager reads it on load.
+/// @param {real} enemy_count   Number of Hollow enemies to spawn (clamped 1-5)
+function scr_battle_trigger(enemy_count) {
+    global.battle_enemy_count = clamp(enemy_count, 1, 5);
+    global.battle_corruption  = global.circle_corruption[CIRCLE_LIMBO];
+    room_goto(room_battle);
+}
+
 /// Cleans up battle globals on exit. Called when battle room transitions away.
 function scr_battle_globals_cleanup() {
     global.battle_active     = false;

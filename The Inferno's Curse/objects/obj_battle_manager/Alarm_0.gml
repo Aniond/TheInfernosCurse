@@ -1,17 +1,23 @@
 // Alarm 0 — fires 2 steps after Create so obj_unit_benedetto exists.
 // Spawns enemy Hollows, builds turn order, places Limbo tiles, starts round 1.
 
-// ── Spawn Circle 1 encounter: two Hollows on the right side of the grid ───────
+// ── Spawn Hollow enemies (count from global.battle_enemy_count) ───────────────
+// Spread positions on the right side of the grid — up to 5 slots.
 // Positions are set directly so there's no per-instance creation-code risk.
-var _h1 = instance_create_layer(0, 0, "Instances", obj_unit_hollow);
-_h1.grid_x    = 8;
-_h1.grid_y    = 2;
-_h1.unit_name = "The Hollow";
-
-var _h2 = instance_create_layer(0, 0, "Instances", obj_unit_hollow);
-_h2.grid_x    = 8;
-_h2.grid_y    = 5;
-_h2.unit_name = "The Hollow";   // identical names intentional — they've forgotten themselves
+var _hollow_slots = [
+    [8, 1],
+    [8, 4],
+    [8, 6],
+    [7, 2],
+    [7, 5],
+];
+var _count = clamp(global.battle_enemy_count, 1, array_length(_hollow_slots));
+for (var _i = 0; _i < _count; _i++) {
+    var _h = instance_create_layer(0, 0, "Instances", obj_unit_hollow);
+    _h.grid_x    = _hollow_slots[_i][0];
+    _h.grid_y    = _hollow_slots[_i][1];
+    _h.unit_name = "The Hollow";   // identical names — they've forgotten themselves
+}
 
 // ── Build turn order: player units first, then enemies ────────────────────────
 turn_order = [];
