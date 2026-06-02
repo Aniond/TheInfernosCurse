@@ -1,5 +1,23 @@
 # GameMaker LTS2026 (runtime 2026.0.0.23) — .yy File Format Templates
 
+## ⚠️ CRITICAL WARNINGS — READ BEFORE EDITING
+
+1. **Always close GameMaker before Claude Code edits any `.yy` or `.yyp` file.**
+   GM caches the project and can overwrite external edits (and it caches *failed*
+   loads — a bad edit sticks until a full quit).
+2. **VS Code can silently revert `.yyp` changes.** If the `.yyp` (or a `.yy`) is open
+   in a VS Code buffer while Claude Code edits it on disk, a later (auto)save of the
+   stale buffer clobbers the on-disk edit. *Observed 2026-06-01:* 8 freshly-registered
+   sprite entries vanished this way. Close the file in VS Code before external edits.
+3. **Always fully reload GameMaker after Claude Code makes changes** (quit + reopen,
+   then File → Save) so GM re-reads from disk and rewrites the files canonically.
+4. **Never hand-edit `.yy` files free-form — use the verified templates in this file
+   only.** Field order is a fixed per-record schema; reordering or "tidying" causes
+   load failures.
+5. **Run `import_sprites.ps1` from the project root (`C:\TheInfernoCurse\`), not from a
+   subfolder** — its default `-SourceFolder`/`-ProjectRoot` paths are resolved relative
+   to the script's own location.
+
 > # ⚠️ VERIFIED WORKING FORMATS — DO NOT DEVIATE
 > Every template below was accepted by an actual clean IDE load. Copy them
 > byte-for-byte. Do not "tidy", reorder, or alphabetize fields — the parser
