@@ -1,0 +1,65 @@
+// =============================================================================
+// obj_unit_base — Create
+// Base for all battle units (Benedetto, Marco, Dante, Hollow enemies).
+// Child objects call event_inherited() then override what they need.
+// =============================================================================
+
+// ── Grid position ─────────────────────────────────────────────────────────────
+grid_x = 0;
+grid_y = 0;
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+unit_name    = "Unit";
+max_hp       = 100;
+hp           = max_hp;
+max_ap       = 3;       // action points per turn
+ap           = 0;       // current AP (reset by scr_battle_start_round)
+team         = 0;       // 0 = player side, 1 = enemy side
+is_hollow    = false;   // set true on Hollow enemy units
+
+// ── Turn flags ────────────────────────────────────────────────────────────────
+is_active_turn      = false;
+turn_done           = false;   // set true by unit when it finishes; manager reads this
+sanity_zero_message = false;   // used by Benedetto's frozen display
+
+// ── Status effects ────────────────────────────────────────────────────────────
+// String array. Valid values: "forgotten", "frozen", "burning", etc.
+status_effects = [];
+
+// ── Display ───────────────────────────────────────────────────────────────────
+unit_color = c_white;   // overridden in child Create events
+
+// ── SnowState FSM ─────────────────────────────────────────────────────────────
+// States: "waiting" | "acting" | "forgotten" | "frozen" | "dead"
+fsm = new SnowState("waiting");
+
+fsm.add("waiting", {
+    enter: function() {
+        is_active_turn = false;
+    },
+});
+
+fsm.add("acting", {
+    enter: function() {
+        is_active_turn = true;
+    },
+});
+
+fsm.add("forgotten", {
+    enter: function() {
+        is_active_turn = false;
+    },
+});
+
+fsm.add("frozen", {
+    enter: function() {
+        is_active_turn = false;
+    },
+});
+
+fsm.add("dead", {
+    enter: function() {
+        hp             = 0;
+        is_active_turn = false;
+    },
+});
