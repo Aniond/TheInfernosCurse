@@ -6,6 +6,7 @@ dot_timer = 0;
 dot_string = ".";
 generating = false;
 last_entry_day = 0;
+codex_cover_alpha = 0;
 
 // ── TEST ENTRY — remove once real journal generation is working ───────────────
 var _test = {

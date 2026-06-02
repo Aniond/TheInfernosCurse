@@ -19,6 +19,7 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_ui_codex_cover","path":"sprites/spr_ui_codex_cover/spr_ui_codex_cover.yy",},},
     {"id":{"name":"spr_ui_dialogue_frame","path":"sprites/spr_ui_dialogue_frame/spr_ui_dialogue_frame.yy",},},
     {"id":{"name":"scr_world_state","path":"scripts/scr_world_state/scr_world_state.yy",},},
     {"id":{"name":"obj_save_indicator","path":"objects/obj_save_indicator/obj_save_indicator.yy",},},

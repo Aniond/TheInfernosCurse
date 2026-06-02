@@ -65,8 +65,9 @@ function scr_generate_journal_entry() {
 
 function scr_journal_open() {
     with (obj_journal) {
-        is_open     = true;
-        total_pages = ds_list_size(journal_entries);
+        is_open           = true;
+        codex_cover_alpha = 1.0;
+        total_pages       = ds_list_size(journal_entries);
         if (total_pages > 0) {
             current_page = total_pages - 1;
         }
