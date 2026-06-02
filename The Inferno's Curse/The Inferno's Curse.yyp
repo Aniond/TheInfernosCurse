@@ -100,6 +100,7 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"obj_unit_hollow","path":"objects/obj_unit_hollow/obj_unit_hollow.yy",},},
     {"id":{"name":"scr_battle","path":"scripts/scr_battle/scr_battle.yy",},},
     {"id":{"name":"obj_battle_manager","path":"objects/obj_battle_manager/obj_battle_manager.yy",},},
     {"id":{"name":"obj_unit_base","path":"objects/obj_unit_base/obj_unit_base.yy",},},
