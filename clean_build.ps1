@@ -17,22 +17,23 @@
 
 .NOTES
     Cache lives in AppData (NOT under the project root), so deletion is safe and
-    fully regenerated on the next build.
+    fully regenerated on the next build. ASCII-only: PowerShell 5.1 mis-reads
+    non-ASCII chars in .ps1 files and throws parser errors.
 #>
 
 $ErrorActionPreference = 'Stop'
 
-# ── 1. Verify GameMaker is closed ─────────────────────────────────────────────
+# -- 1. Verify GameMaker is closed --------------------------------------------
 $procs = Get-Process | Where-Object { $_.ProcessName -match 'GameMaker|Igor|Runner' }
 if ($procs) {
     Write-Host "GameMaker is still running. Close it fully before cleaning:" -ForegroundColor Yellow
     $procs | Select-Object ProcessName, Id | Format-Table -AutoSize
-    Write-Host "Aborted — no changes made." -ForegroundColor Yellow
+    Write-Host "Aborted -- no changes made." -ForegroundColor Yellow
     return
 }
 Write-Host "Confirmed: no GameMaker / Igor / Runner processes."
 
-# ── 2. Delete the project build cache ─────────────────────────────────────────
+# -- 2. Delete the project build cache ----------------------------------------
 $cacheRoot = "C:\Users\david\AppData\Roaming\GameMakerStudio2-LTS2026\Cache\GMS2CACHE"
 $removed   = $false
 if (Test-Path $cacheRoot) {
@@ -45,7 +46,7 @@ if (Test-Path $cacheRoot) {
 }
 if (-not $removed) { Write-Host "No project cache found (already clean)." }
 
-# ── 3. Clear the temp build folder ────────────────────────────────────────────
+# -- 3. Clear the temp build folder -------------------------------------------
 $tempRoot = "C:\Users\david\AppData\Local\GameMakerStudio2-LTS2026\GMS2TEMP"
 if (Test-Path $tempRoot) {
     Get-ChildItem $tempRoot -Directory -ErrorAction SilentlyContinue | ForEach-Object {
