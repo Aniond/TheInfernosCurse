@@ -26,6 +26,11 @@ sanity_zero_message = false;   // used by Benedetto's frozen display
 // String array. Valid values: "forgotten", "frozen", "burning", etc.
 status_effects = [];
 
+// ── Limbo teleport tracking ───────────────────────────────────────────────────
+// Incremented before each recursive chain call; reset to 0 after resolution.
+// Limits chain teleports to 2 depth maximum.
+teleport_chain_count = 0;
+
 // ── Display ───────────────────────────────────────────────────────────────────
 unit_color = c_white;   // overridden in child Create events
 

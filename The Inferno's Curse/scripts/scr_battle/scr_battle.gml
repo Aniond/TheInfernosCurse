@@ -101,26 +101,28 @@ function scr_battle_random_empty_cell() {
 // =============================================================================
 
 /// How many Limbo tiles to place given a corruption level (0-100).
-/// Scales linearly from LIMBO_TILE_MIN to LIMBO_TILE_MAX.
+/// Stepped thresholds: <25→2, ≥25→4, ≥50→6, ≥75→9.
 /// @param {real} corruption   0-100
 /// @returns {real}
 function scr_battle_tile_count(corruption) {
-    return clamp(
-        LIMBO_TILE_MIN + floor((corruption / 100) * (LIMBO_TILE_MAX - LIMBO_TILE_MIN)),
-        LIMBO_TILE_MIN, LIMBO_TILE_MAX
-    );
+    if (corruption >= 75) return 9;
+    if (corruption >= 50) return 6;
+    if (corruption >= 25) return 4;
+    return 2;
 }
 
 /// Spawns Limbo tiles on random empty cells according to current corruption.
-/// Called once from obj_battle_manager Create after units are placed.
+/// Keeps a 1-tile inner border: tiles never spawn on the outermost row/column.
+/// Called once from obj_battle_manager Alarm[0] after units are placed.
 /// @param {real} corruption   Current battle_corruption (0-100)
 function scr_battle_place_limbo_tiles(corruption) {
     var _count = scr_battle_tile_count(corruption);
     var _placed = 0;
     repeat (200) {
         if (_placed >= _count) break;
-        var _gx = irandom(BATTLE_GRID_W - 1);
-        var _gy = irandom(BATTLE_GRID_H - 1);
+        // 1-tile border: avoid x=0, x=W-1, y=0, y=H-1
+        var _gx = irandom_range(1, BATTLE_GRID_W - 2);
+        var _gy = irandom_range(1, BATTLE_GRID_H - 2);
         if (!scr_battle_cell_occupied(_gx, _gy, noone)) {
             var _pos = scr_battle_grid_to_screen(_gx, _gy);
             var _tile = instance_create_layer(_pos.x, _pos.y, "Instances", obj_limbo_tile);
@@ -156,37 +158,308 @@ function scr_battle_move_limbo_tiles() {
 }
 
 /// Checks if any Limbo tile occupies the same cell as unit_id.
-/// If so, teleports the unit to a random empty cell and re-positions the tile.
+/// Hollows are immune — they are already Limbo, tiles have nothing to take.
+/// Teleports the unit to a random empty non-Limbo cell; chains up to 2 deep.
+/// Benedetto loses Limbo corruption instead of sanity.
 /// @param {id} unit_id   A unit instance (obj_unit_base or child)
 function scr_battle_check_limbo_tile(unit_id) {
+    // Hollows phase through — they ARE the fold
+    if (unit_id.is_hollow) exit;
+
+    // Find a Limbo tile at this unit's position that hasn't triggered yet
+    var _tile = noone;
     with (obj_limbo_tile) {
         if (grid_x == unit_id.grid_x && grid_y == unit_id.grid_y && !triggered) {
-            triggered = true;
-            alarm[0] = 60;   // reset trigger after 1 second
-
-            // Teleport the unit
-            var _dest = scr_battle_random_empty_cell();
-            if (_dest.gx != -1) {
-                unit_id.grid_x = _dest.gx;
-                unit_id.grid_y = _dest.gy;
-            }
-
-            // Move the tile to a new position
-            var _new_pos = scr_battle_random_empty_cell();
-            if (_new_pos.gx != -1) {
-                grid_x = _new_pos.gx;
-                grid_y = _new_pos.gy;
-            }
-
-            // Sanity cost for stepping into a Limbo fold
-            global.sanity = max(1, global.sanity - 3);
-            scr_battle_add_log(unit_id.unit_name + " stepped through the fold. Sanity -3.");
-
-            scr_world_event_log(
-                "The floor forgot where it was. So did " + unit_id.unit_name + "."
-            );
-            break;   // only one tile triggers per move
+            _tile = id;
+            break;
         }
+    }
+    if (_tile == noone) exit;
+
+    _tile.triggered = true;
+    _tile.alarm[0] = 60;   // reset after 1 second so tile can fire again
+
+    // Chronicle — rotate 5 atmospheric variants
+    var _lines = [
+        "The ground forgot where it was going.",
+        "Something shifted. He is elsewhere now.",
+        "The tile remembered nothing.",
+        "Florence rearranged itself briefly.",
+        "He stepped. The world disagreed."
+    ];
+    scr_battle_add_log(_lines[irandom(4)]);
+
+    // Find destination — empty and not sitting on another Limbo tile
+    var _dest_gx = -1;
+    var _dest_gy = -1;
+    repeat (10) {
+        var _cx = irandom(BATTLE_GRID_W - 1);
+        var _cy = irandom(BATTLE_GRID_H - 1);
+        var _on_limbo = false;
+        with (obj_limbo_tile) {
+            if (grid_x == _cx && grid_y == _cy) { _on_limbo = true; break; }
+        }
+        if (!scr_battle_cell_occupied(_cx, _cy, unit_id) && !_on_limbo) {
+            _dest_gx = _cx;
+            _dest_gy = _cy;
+            break;
+        }
+    }
+    if (_dest_gx != -1) {
+        unit_id.grid_x = _dest_gx;
+        unit_id.grid_y = _dest_gy;
+    }
+
+    // Relocate the tile so it can threaten again
+    var _npos = scr_battle_random_empty_cell();
+    if (_npos.gx != -1) {
+        _tile.grid_x = _npos.gx;
+        _tile.grid_y = _npos.gy;
+    }
+
+    // Benedetto loses Limbo corruption; other units lose sanity
+    if (unit_id.object_index == obj_unit_benedetto) {
+        var _drain = (unit_id.teleport_chain_count > 0) ? 4 : 2;
+        global.circle_corruption[CIRCLE_LIMBO] = clamp(
+            global.circle_corruption[CIRCLE_LIMBO] + _drain, 0, 100
+        );
+        global.battle_corruption = clamp(global.battle_corruption + _drain, 0, 100);
+    } else {
+        global.sanity = max(1, global.sanity - 3);
+        scr_battle_add_log(unit_id.unit_name + " stepped through the fold. Sanity -3.");
+    }
+
+    scr_world_event_log("The floor forgot where it was. So did " + unit_id.unit_name + ".");
+
+    // Chain teleport — max 2 chains deep
+    if (unit_id.teleport_chain_count < 2) {
+        unit_id.teleport_chain_count++;
+        scr_battle_check_limbo_tile(unit_id);   // recursive — checks the new position
+    }
+    unit_id.teleport_chain_count = 0;   // reset after full chain resolution
+}
+
+
+// =============================================================================
+// ROUND START EFFECTS  (corruption escalation + tile movement)
+// =============================================================================
+
+/// Called at the start of each round from scr_battle_start_round().
+/// Escalates battle_corruption and moves 1-2 Limbo tiles at high corruption.
+function scr_battle_turn_start_effects() {
+    // ── Corruption escalation ─────────────────────────────────────────────────
+    var _escalation = 0.5;   // base per round
+    with (obj_unit_shambler) { if (hp > 0) _escalation += 1.0; }
+    with (obj_unit_hollow)   { if (hp > 0) _escalation += 0.5; }
+    global.battle_corruption = clamp(global.battle_corruption + _escalation, 0, 100);
+
+    // ── Per-round tile movement at 75%+ corruption ────────────────────────────
+    if (global.battle_corruption < 75) exit;
+
+    var _moves = (global.battle_corruption >= 90) ? 2 : 1;
+    var _logged = false;
+    var _dirs   = [[0,1],[0,-1],[1,0],[-1,0]];
+
+    repeat (_moves) {
+        // Build candidate list of all live Limbo tiles
+        var _candidates = [];
+        with (obj_limbo_tile) array_push(_candidates, id);
+        if (array_length(_candidates) == 0) break;
+
+        var _tile = _candidates[irandom(array_length(_candidates) - 1)];
+
+        // Try all 4 directions from a random start point
+        var _start = irandom(3);
+        var _moved = false;
+        for (var _di = 0; _di < 4; _di++) {
+            var _d  = _dirs[(_start + _di) mod 4];
+            var _nx = _tile.grid_x + _d[0];
+            var _ny = _tile.grid_y + _d[1];
+            if (!scr_battle_is_valid_cell(_nx, _ny)) continue;
+
+            var _on_limbo = false;
+            with (obj_limbo_tile) {
+                if (id != _tile && grid_x == _nx && grid_y == _ny) { _on_limbo = true; break; }
+            }
+            if (_on_limbo || scr_battle_cell_occupied(_nx, _ny, noone)) continue;
+
+            // Move tile to adjacent cell
+            _tile.grid_x = _nx;
+            _tile.grid_y = _ny;
+            _tile.triggered = false;   // can fire again at new position
+            _moved = true;
+
+            // Any unit now sitting on the new cell gets teleported immediately
+            var _unit_there = scr_battle_unit_at_cell(_nx, _ny);
+            if (_unit_there != noone) scr_battle_check_limbo_tile(_unit_there);
+            break;
+        }
+
+        if (_moved && !_logged) {
+            _logged = true;
+            if (global.battle_corruption >= 90) {
+                scr_battle_add_log("Nothing is where it was. He is not certain he is either.");
+            } else {
+                scr_battle_add_log("The ground is forgetting where it put things.");
+            }
+        }
+    }
+}
+
+
+// =============================================================================
+// SHAMBLER PHASE STEP AI
+// =============================================================================
+
+/// Executes the Shambler's Phase Step: teleports to the Limbo tile closest to
+/// the nearest player, then the tile fires and hunts for adjacency (max 5 rerolls).
+/// If adjacent after Phase Step, attacks immediately and pushes the target.
+/// @param {id} shambler_id   The Shambler unit instance
+function scr_battle_shambler_phase_step(shambler_id) {
+    // Collect all Limbo tiles
+    var _tiles = [];
+    with (obj_limbo_tile) array_push(_tiles, id);
+
+    if (array_length(_tiles) == 0) {
+        scr_battle_add_log("The Shambler waits. The grey holds still.");
+        exit;
+    }
+
+    // Find nearest player unit to the Shambler
+    var _nearest_player = noone;
+    var _nearest_dist   = 999999;
+    with (obj_unit_base) {
+        if (team == 0 && hp > 0) {
+            var _d = abs(grid_x - shambler_id.grid_x) + abs(grid_y - shambler_id.grid_y);
+            if (_d < _nearest_dist) { _nearest_dist = _d; _nearest_player = id; }
+        }
+    }
+    if (_nearest_player == noone) {
+        scr_battle_add_log("The Shambler waits. There is nothing left to hunt.");
+        exit;
+    }
+
+    // Find the Limbo tile closest to that player
+    var _best_tile = noone;
+    var _best_dist = 999999;
+    for (var _ti = 0; _ti < array_length(_tiles); _ti++) {
+        var _t = _tiles[_ti];
+        if (scr_battle_cell_occupied(_t.grid_x, _t.grid_y, shambler_id)) continue;
+        var _d = abs(_t.grid_x - _nearest_player.grid_x)
+               + abs(_t.grid_y - _nearest_player.grid_y);
+        if (_d < _best_dist) { _best_dist = _d; _best_tile = _t; }
+    }
+    if (_best_tile == noone) {
+        scr_battle_add_log("The Shambler stirs. The path is closed.");
+        exit;
+    }
+
+    // Phase Step: Shambler crosses the fold intentionally — no teleport confusion
+    scr_battle_add_log("The Shambler did not walk. It simply arrived.");
+    shambler_id.grid_x = _best_tile.grid_x;
+    shambler_id.grid_y = _best_tile.grid_y;
+
+    // Tile fires: hunt for a position adjacent to a player (max 5 rerolls)
+    var _dest_gx = -1;
+    var _dest_gy = -1;
+    repeat (5) {
+        var _cx = irandom(BATTLE_GRID_W - 1);
+        var _cy = irandom(BATTLE_GRID_H - 1);
+        if (scr_battle_cell_occupied(_cx, _cy, shambler_id)) continue;
+        with (obj_unit_base) {
+            if (team == 0 && hp > 0) {
+                if (abs(grid_x - _cx) + abs(grid_y - _cy) <= 1) {
+                    _dest_gx = _cx;
+                    _dest_gy = _cy;
+                    break;
+                }
+            }
+        }
+        if (_dest_gx != -1) break;
+    }
+    // Fallback: any empty cell
+    if (_dest_gx == -1) {
+        var _fb = scr_battle_random_empty_cell();
+        _dest_gx = _fb.gx;
+        _dest_gy = _fb.gy;
+    }
+
+    if (_dest_gx != -1) {
+        shambler_id.grid_x = _dest_gx;
+        shambler_id.grid_y = _dest_gy;
+        // Move the tile — Shambler passed through without being confused
+        var _npos = scr_battle_random_empty_cell();
+        if (_npos.gx != -1) {
+            _best_tile.grid_x = _npos.gx;
+            _best_tile.grid_y = _npos.gy;
+            _best_tile.triggered = false;
+        }
+    }
+
+    // Check adjacency and attack if adjacent
+    var _target = noone;
+    with (obj_unit_base) {
+        if (team == 0 && hp > 0) {
+            if (abs(grid_x - shambler_id.grid_x) + abs(grid_y - shambler_id.grid_y) <= 1) {
+                _target = id;
+                break;
+            }
+        }
+    }
+
+    if (_target == noone) exit;
+
+    // Attack
+    var _dmg = 20;
+    _target.hp = max(0, _target.hp - _dmg);
+    scr_battle_add_log("The Shambler strikes " + _target.unit_name
+        + ". " + string(_dmg) + " damage.");
+
+    // Push: shove target 1 tile in the direction away from Shambler
+    var _push_dx = _target.grid_x - shambler_id.grid_x;
+    var _push_dy = _target.grid_y - shambler_id.grid_y;
+    // Normalise to a cardinal step (prefer non-zero axis)
+    if (abs(_push_dx) >= abs(_push_dy)) {
+        _push_dx = sign(_push_dx);
+        _push_dy = 0;
+    } else {
+        _push_dx = 0;
+        _push_dy = sign(_push_dy);
+    }
+    if (_push_dx == 0 && _push_dy == 0) _push_dx = 1;   // identical cell fallback
+
+    var _push_x = _target.grid_x + _push_dx;
+    var _push_y = _target.grid_y + _push_dy;
+
+    if (scr_battle_is_valid_cell(_push_x, _push_y)
+     && !scr_battle_cell_occupied(_push_x, _push_y, _target)) {
+        _target.grid_x = _push_x;
+        _target.grid_y = _push_y;
+        scr_battle_add_log("It struck with intention. He was somewhere else now.");
+
+        // Benedetto pushed onto a Limbo tile: extra corruption drain
+        if (_target.object_index == obj_unit_benedetto) {
+            var _on_limbo = false;
+            with (obj_limbo_tile) {
+                if (grid_x == _target.grid_x && grid_y == _target.grid_y) {
+                    _on_limbo = true; break;
+                }
+            }
+            if (_on_limbo) {
+                global.circle_corruption[CIRCLE_LIMBO] = clamp(
+                    global.circle_corruption[CIRCLE_LIMBO] + 3, 0, 100
+                );
+                global.battle_corruption = clamp(global.battle_corruption + 3, 0, 100);
+                scr_battle_add_log("The contact left something behind in him.");
+            }
+        }
+        scr_battle_check_limbo_tile(_target);
+    }
+
+    // Death check
+    if (_target.hp <= 0) {
+        _target.fsm.change("dead");
+        scr_battle_add_log(_target.unit_name + " has fallen.");
     }
 }
 
@@ -520,6 +793,9 @@ function scr_battle_start_round() {
         global.battle_round++;
         scr_battle_add_log("--- Round " + string(global.battle_round) + " ---");
 
+        // Corruption escalation + tile movement — skip Round 1 so entry state carries over
+        if (global.battle_round > 1) scr_battle_turn_start_effects();
+
         // Passive sanity drain — skip Round 1 so entry sanity carries over cleanly
         if (global.battle_round > 1 && instance_exists(obj_unit_benedetto)) {
             global.sanity = max(1, global.sanity - 1);
@@ -615,16 +891,22 @@ function scr_battle_advance_turn() {
     }
 }
 
-/// Processes a single enemy turn (stub — enemy stands still for now).
-/// Immediately ends the enemy's turn and advances.
+/// Processes a single enemy turn.
+/// Shamblers execute Phase Step; Hollows stir and stand still (stub).
 function scr_battle_process_enemy_turn() {
     with (obj_battle_manager) {
         if (array_length(turn_order) == 0) exit;
         var _uid = turn_order[active_unit_idx];
         if (!instance_exists(_uid)) { scr_battle_advance_turn(); exit; }
 
-        // Hollow forget roll was done at start of round.
-        // Stub AI: enemy does nothing, turn passes.
+        // Shambler: Phase Step — crosses folds intentionally and hunts
+        if (_uid.object_index == obj_unit_shambler) {
+            scr_battle_shambler_phase_step(_uid);
+            scr_battle_advance_turn();
+            exit;
+        }
+
+        // Hollow: forgot what it was doing — stub AI
         scr_battle_add_log(_uid.unit_name + " stirs. Then is still.");
         scr_battle_advance_turn();
     }
