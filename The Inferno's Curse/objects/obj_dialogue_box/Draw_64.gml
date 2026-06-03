@@ -10,19 +10,27 @@
 if (!is_active) exit;
 
 // ── Layout constants ──────────────────────────────────────────────────────────
-// Frame is a bottom-anchored bar across the lower third of the screen.
+// Frame is bottom-anchored and drawn with nine-slice scaling (enabled on the
+// sprite). Native border sizes: top 180, bottom 80, sides 150. Bar height must
+// exceed top+bottom (260) so the parchment centre has room — ~53% of screen
+// gives ~147px of readable parchment.
 var _gw      = display_get_gui_width();
 var _gh      = display_get_gui_height();
-var _frame_h = round(_gh * 0.32);        // bottom bar height
+var _frame_h = round(_gh * 0.53);        // bottom frame height (fits 9-slice borders)
 var _frame_y = _gh - _frame_h;           // anchored flush to screen bottom
 var _frame_x = 0;
 var _frame_w = _gw;
 
-// Text area inset within the parchment zone of the bar.
-var _text_left   = round(_gw * 0.09);
-var _text_right  = round(_gw * 0.91);
+// Nine-slice border sizes (must match the sprite's nineSlice values)
+var _ns_top    = 180;
+var _ns_bottom = 80;
+var _ns_side   = 150;
+
+// Text inset past the side borders, within the parchment centre band.
+var _text_left   = _ns_side + 28;
+var _text_right  = _gw - _ns_side - 28;
 var _text_width  = _text_right - _text_left;
-var _name_y      = _frame_y + round(_frame_h * 0.20);   // name baseline
+var _name_y      = _frame_y + _ns_top + 12;   // just below the top arch border
 var _text_top    = _name_y;
 
 // ── Corruption factor (0-1) ───────────────────────────────────────────────────
@@ -148,7 +156,7 @@ if (is_complete && !is_loading) {
         draw_set_color(make_color_rgb(80, 50, 20));
         draw_set_halign(fa_right);
         draw_set_valign(fa_bottom);
-        draw_text(_text_right, _gh - 16, "[ E / SPACE ] Continue");
+        draw_text(_text_right, _gh - _ns_bottom - 8, "[ E / SPACE ] Continue");
     }
 }
 
