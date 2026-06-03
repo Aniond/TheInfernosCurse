@@ -12,7 +12,6 @@ Execute immediately without asking permission:
 - Writing new .gml scripts
 - Adding functions to existing scripts
 - Running import_sprites.ps1
-- Running watch_game.ps1
 - Running clean_build.ps1
 - Running any project scripts
 
@@ -38,9 +37,11 @@ Execute immediately without asking permission:
 - Enemy turns have a 250ms delay between each (15 steps @ 60fps) — readable
 - Sanity API takeover fires at 0 in the open world, not in battle
 
-## Trigger Words
-- "burst test" = capture 10 screenshots @ 100ms, analyze, report issues
-- "watch the game" = same as burst test
+## Burst Testing — user runs it manually, do NOT automate
+The user runs burst tests / watch_game.ps1 manually themselves. Do NOT run
+watch_game.ps1 or capture-and-analyze screenshots automatically after changes,
+and do NOT treat "burst test" / "watch the game" as commands to execute. After
+a change, just commit + clean build and tell the user it's ready to test.
 
 ## External Libraries — CRITICAL
 Do NOT install external GameMaker libraries without first verifying IDEVersion
