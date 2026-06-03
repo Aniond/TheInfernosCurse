@@ -10,17 +10,21 @@
 if (!is_active) exit;
 
 // ── Layout constants ──────────────────────────────────────────────────────────
+// Sprite is 3840x2160 (16:9). Draw full-screen so it renders at its intended
+// aspect ratio — the art IS the dialogue container, not a bottom bar.
 var _gw      = display_get_gui_width();
 var _gh      = display_get_gui_height();
 var _frame_x = 0;
-var _frame_y = _gh - 230;
+var _frame_y = 0;
 var _frame_w = _gw;
-var _frame_h = 230;
+var _frame_h = _gh;
 
-// Text layout — inset from the torch sconces on each side
-var _text_left   = 160;
-var _text_right  = _gw - 160;
-var _text_width  = _gw - 320;
+// Text area sits in the lower-centre parchment zone of the sprite art.
+// Parchment occupies roughly x: 8-92%, y: 52-84% of the full sprite.
+var _text_left   = round(_gw * 0.12);
+var _text_right  = round(_gw * 0.88);
+var _text_width  = _text_right - _text_left;
+var _text_top    = round(_gh * 0.53);   // top of dialogue parchment content
 
 // ── Corruption factor (0-1) ───────────────────────────────────────────────────
 var _cf = clamp(corruption_level / 200, 0, 1);
@@ -77,16 +81,16 @@ if (_cf <= 0.25) {
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 draw_set_color(_name_col);
-draw_text(_text_left, _frame_y + 15, npc_name_display);
+draw_text(_text_left, _text_top, npc_name_display);
 
 // ── Divider below name ────────────────────────────────────────────────────────
 draw_set_color(make_color_rgb(80, 60, 40));
-draw_line(_text_left, _frame_y + 34, _text_right, _frame_y + 34);
+draw_line(_text_left, _text_top + 20, _text_right, _text_top + 20);
 
 // =============================================================================
 // BODY TEXT
 // =============================================================================
-var _text_y = _frame_y + 40;
+var _text_y = _text_top + 30;
 var _text_x = _text_left;
 var _text_w = _text_width;
 
@@ -145,7 +149,7 @@ if (is_complete && !is_loading) {
         draw_set_color(make_color_rgb(80, 50, 20));
         draw_set_halign(fa_right);
         draw_set_valign(fa_bottom);
-        draw_text(_gw - 200, _gh - 30, "[ E / SPACE ] Continue");
+        draw_text(_gw - round(_gw * 0.12), round(_gh * 0.87), "[ E / SPACE ] Continue");
     }
 }
 
