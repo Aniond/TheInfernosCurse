@@ -13,6 +13,7 @@ Execute immediately without asking permission:
 - Adding functions to existing scripts
 - Running import_sprites.ps1
 - Running watch_game.ps1
+- Running clean_build.ps1
 - Running any project scripts
 
 ## Always Ask First
@@ -61,6 +62,15 @@ Rules:
 CRITICAL — always read existing .yy files first and match exact verified format
 from yy_templates.md before creating any new ones. Never deviate from verified
 format. Close GameMaker before editing .yy files.
+
+## Clean Build — after .yy event edits or missing sprites
+GameMaker caches "unused asset" stripping. After hand-editing a .yy event list
+(e.g. registering a Draw event, eventType 8) or whenever an imported sprite
+isn't appearing in-game, the running build can keep the asset stripped.
+ALWAYS run clean_build.ps1 (GameMaker fully closed) so the next Run is a full
+clean compile, then have the user reopen + Run. Signs you need it: the compile
+log lists "Unused Assets found (and will be removed)" naming your sprites, or a
+unit draws nothing (no sprite AND no placeholder rectangle).
 
 ## Reporting Style
 Report AFTER doing, not before.
