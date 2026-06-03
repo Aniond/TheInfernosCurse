@@ -25,11 +25,18 @@ scr_check_trigger_vision();
 if (keyboard_check_pressed(vk_f5)) scr_save_world_state();
 if (keyboard_check_pressed(vk_f9)) scr_load_world_state();
 
-// ── DEBUG: battle trigger — remove when proper battle triggers are wired ──────
-if (global.debug_mode) {
-    if (room == Room1 && keyboard_check_pressed(ord("B"))) {
-        scr_battle_trigger(3);   // 3 Hollows, Florence corruption level
-    }
+// ── DEBUG: toggle debug mode (F1) — controls placeholder visuals ──────────────
+if (keyboard_check_pressed(vk_f1)) {
+    global.debug_mode = !global.debug_mode;
+    global.save_indicator_text  = global.debug_mode ? "DEBUG ON" : "DEBUG OFF";
+    global.save_indicator_timer = 120;
+}
+
+// ── DEBUG: battle trigger (B) — remove when proper battle triggers are wired ──
+// Unconditional in Room1 so it always works during development, regardless of
+// debug_mode / save state. Pressing B drops Benedetto into room_battle vs 3 Hollows.
+if (room == Room1 && keyboard_check_pressed(ord("B"))) {
+    scr_battle_trigger(3);   // 3 Hollows, Florence corruption level
 }
 
 // ── Save indicator countdown ──────────────────────────────────────────────────
