@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(*)",
+      "PowerShell(*)",
       "Read(*)",
+      "Write(*)",
       "Glob(*)",
       "Grep(*)",
       "Bash(Remove-Item*screenshots*)"
