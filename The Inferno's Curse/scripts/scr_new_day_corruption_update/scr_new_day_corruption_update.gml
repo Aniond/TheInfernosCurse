@@ -18,23 +18,23 @@
 // Each circle only bleeds when its upstream trigger threshold is met.
 function scr_new_day_corruption_update() {
 
-    // ── Primary corruption advance ────────────────────────────────────────────
-    // Limbo's corruption deepens by 8 each day regardless of player actions.
-    // This is the ticking clock of the game's world state.
-    global.circle_corruption[CIRCLE_LIMBO] += 8;
-
-    // ── Cascade: Gluttony (index 2) ───────────────────────────────────────────
-    // When Limbo's grief fully consumes its inhabitants (>= 100), the emptiness
-    // creates a vacuum that Gluttony fills. The void demands to be fed.
-    if (global.circle_corruption[CIRCLE_LIMBO] >= 100) {
-        global.circle_corruption[CIRCLE_GLUTTONY] += 5;
+    // ── Primary corruption advance (enabled circles only) ─────────────────────
+    // Limbo's corruption deepens by 8 each day — the ticking clock of the world.
+    if (global.circle_enabled[CIRCLE_LIMBO]) {
+        global.circle_corruption[CIRCLE_LIMBO] += 8;
     }
 
-    // ── Cascade: Lust (index 1) ───────────────────────────────────────────────
-    // At 110 — beyond full corruption — the hyper-grief of Limbo overflows
-    // into desperate seeking. Lost souls grasp at pleasure as the last sensation.
-    if (global.circle_corruption[CIRCLE_LIMBO] >= 110) {
-        global.circle_corruption[CIRCLE_LUST] += 3;
+    // ── Cascade bleed: only lands on ENABLED circles ──────────────────────────
+    // While a target circle is disabled (locked until its city), no bleed reaches
+    // it, so its sin effects never fire. Re-enables automatically via circle_enabled
+    // once the player reaches that city (scr_solve_circle unlocks the next).
+    // During Circle 1 development only Limbo is enabled, so these are inert.
+    // TODO: tune thresholds when those circles are sealed and tested.
+    if (global.circle_enabled[CIRCLE_GLUTTONY] && global.circle_corruption[CIRCLE_LIMBO] >= 100) {
+        global.circle_corruption[CIRCLE_GLUTTONY] += 5;   // Gluttony cascade
+    }
+    if (global.circle_enabled[CIRCLE_LUST] && global.circle_corruption[CIRCLE_LIMBO] >= 110) {
+        global.circle_corruption[CIRCLE_LUST] += 3;       // Lust cascade
     }
 
     // ── Clamp all circles 0-200 ───────────────────────────────────────────────

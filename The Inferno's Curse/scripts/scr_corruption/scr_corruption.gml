@@ -183,11 +183,15 @@ function scr_sin_profile_to_string() {
 /// effects read the same array so values above 100 still trigger fine).
 function scr_corruption_update() {
     for (var _i = 0; _i < CIRCLE_COUNT; _i++) {
+        // Only ENABLED circles apply their per-frame sin effect. Disabled circles
+        // stay dormant even if corruption bled past the threshold.
+        // TODO: circles enable as the player reaches their cities (scr_solve_circle).
+        if (!global.circle_enabled[_i]) continue;
         if (global.circle_corruption[_i] > 30) {
             scr_apply_sin_effect(_i);
         }
     }
-    // Apply continuous scaled effects for all active circles in one pass.
+    // Apply continuous scaled effects for the current circle.
     scr_apply_active_sin_effects();
 }
 
@@ -201,6 +205,10 @@ function scr_corruption_update() {
 /// Called at the end of scr_corruption_update() every step.
 function scr_apply_active_sin_effects() {
     for (var _i = 0; _i < CIRCLE_COUNT; _i++) {
+        // Only ENABLED circles apply continuous effects (HP drain, price mods, etc.).
+        // This is what stopped Lust draining HP while the player is still in Limbo.
+        // TODO: circles enable as the player reaches their cities (scr_solve_circle).
+        if (!global.circle_enabled[_i]) continue;
         var _c = global.circle_corruption[_i];
         if (_c <= 30) continue;
 
@@ -473,9 +481,10 @@ function scr_solve_circle(circle_index) {
     // TODO: replace room_goto with a proper transition manager once rooms exist.
     var _next = circle_index + 1;
     if (_next < CIRCLE_COUNT) {
-        global.current_circle = _next;
+        global.current_circle      = _next;
+        global.circle_enabled[_next] = true;   // unlock the next circle's effects + bleed
         // room_goto(asset_get_index("rm_circle_" + string(_next)));
-        show_debug_message("[transition] → Circle " + string(_next) + " (" + global.circle_names[_next] + ")");
+        show_debug_message("[transition] → Circle " + string(_next) + " (" + global.circle_names[_next] + ") — enabled");
     } else {
         // Player has solved all seven circles — game ending branch.
         scr_world_event_log("All circles cleansed. The Inferno's Curse is broken.");

@@ -38,6 +38,19 @@ global.day_count = 1;
 // 0 = Limbo (starting circle). Increases as the player descends.
 global.current_circle = 0;
 
+// ── Circle enabled flags ──────────────────────────────────────────────────────
+// Only ENABLED circles apply sin effects, advance corruption, or receive bleed.
+// A circle enables when the player reaches its city (scr_solve_circle unlocks
+// the next one). During Circle 1 development only Limbo is live.
+// TODO: Re-enable the others as each circle is sealed and tested completely.
+global.circle_enabled[0] = true;   // Limbo    — always starts enabled (Florence)
+global.circle_enabled[1] = false;  // Lust     — locked until Siena
+global.circle_enabled[2] = false;  // Gluttony — locked until Genoa
+global.circle_enabled[3] = false;  // Greed    — locked until Venice
+global.circle_enabled[4] = false;  // Wrath    — locked until Naples
+global.circle_enabled[5] = false;  // Heresy   — locked until Rome
+global.circle_enabled[6] = false;  // Violence — locked until Ravenna
+
 
 // ── Circle name tables (0-indexed, parallel to all circle arrays) ─────────────
 // Used by scr_build_npc_system_prompt() and UI elements.
