@@ -29,15 +29,6 @@ switch (unit_facing) {
 draw_set_alpha(is_active_turn ? 1.0 : 0.8);
 draw_sprite(_spr, 0, _cx, _cy);
 
-// ── Active turn glow ring ─────────────────────────────────────────────────────
-if (is_active_turn) {
-    draw_set_alpha(0.5);
-    draw_set_color(make_color_rgb(220, 200, 80));
-    draw_circle(_cx, _cy, 36, true);
-    draw_set_alpha(0.25);
-    draw_circle(_cx, _cy, 38, true);
-}
-
 // ── HP bar ────────────────────────────────────────────────────────────────────
 draw_set_alpha(1);
 var _pad     = 4;

@@ -354,7 +354,7 @@ function scr_battle_globals_init(corruption_override) {
                                  ? clamp(corruption_override, 0, 100)
                                  : global.circle_corruption[CIRCLE_LIMBO];
     global.battle_turn        = 0;
-    global.battle_round       = 1;
+    global.battle_round       = 0;   // incremented to 1 by first scr_battle_start_round call
     global.battle_result      = "";   // "victory" | "defeat" | ""
     global.input_locked       = false;
 }
@@ -422,8 +422,8 @@ function scr_battle_start_round() {
         global.battle_round++;
         scr_battle_add_log("--- Round " + string(global.battle_round) + " ---");
 
-        // Passive sanity drain each round — Limbo wears on the mind
-        if (instance_exists(obj_unit_benedetto)) {
+        // Passive sanity drain — skip Round 1 so entry sanity carries over cleanly
+        if (global.battle_round > 1 && instance_exists(obj_unit_benedetto)) {
             global.sanity = max(1, global.sanity - 1);
             scr_battle_add_log("The grey presses closer. Sanity -1.");
         }

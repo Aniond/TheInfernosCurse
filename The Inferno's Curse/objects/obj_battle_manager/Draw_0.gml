@@ -37,6 +37,34 @@ draw_rectangle(0, _gy1 + 1, display_get_width(), display_get_height(), false);
 // Top bar
 draw_rectangle(0, 0, display_get_width(), _gy0 - 1, false);
 
+// ── Move range highlights (player turn, AP > 0) ───────────────────────────────
+if (battle_phase == "player_turn" && instance_exists(obj_unit_benedetto)) {
+    var _b  = obj_unit_benedetto;
+    var _ap = _b.ap;
+    if (_ap > 0) {
+        var _bx = _b.grid_x;
+        var _by = _b.grid_y;
+        for (var _gx = 0; _gx < BATTLE_GRID_W; _gx++) {
+            for (var _gy = 0; _gy < BATTLE_GRID_H; _gy++) {
+                var _dist = abs(_gx - _bx) + abs(_gy - _by);
+                if (_dist > 0 && _dist <= _ap
+                 && scr_battle_is_valid_cell(_gx, _gy)
+                 && !scr_battle_cell_occupied(_gx, _gy, _b)) {
+                    var _htx = _gx0 + _gx * BATTLE_TILE_SIZE;
+                    var _hty = _gy0 + _gy * BATTLE_TILE_SIZE;
+                    draw_set_color(make_color_rgb(30, 70, 140));
+                    draw_set_alpha(0.3);
+                    draw_rectangle(_htx, _hty, _htx + BATTLE_TILE_SIZE - 1, _hty + BATTLE_TILE_SIZE - 1, false);
+                    draw_set_color(make_color_rgb(80, 140, 220));
+                    draw_set_alpha(0.6);
+                    draw_rectangle(_htx, _hty, _htx + BATTLE_TILE_SIZE - 1, _hty + BATTLE_TILE_SIZE - 1, true);
+                }
+            }
+        }
+        draw_set_alpha(1);
+    }
+}
+
 // ── Active-unit tile highlight ────────────────────────────────────────────────
 if (battle_phase == "player_turn" || battle_phase == "enemy_turn") {
     if (array_length(turn_order) > 0) {
