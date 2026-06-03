@@ -20,13 +20,6 @@ for (var _i = 0; _i < _count; _i++) {
 }
 show_debug_message("[Battle] Hollow count: " + string(instance_number(obj_unit_hollow))
     + "  |  battle_enemy_count: " + string(global.battle_enemy_count));
-with (obj_unit_hollow) {
-    show_debug_message("[Hollow] id=" + string(id)
-        + " grid=(" + string(grid_x) + "," + string(grid_y) + ")"
-        + " visible=" + string(visible)
-        + " sprite=" + (sprite_exists(sprite_index) ? sprite_get_name(sprite_index) : "NONE/STRIPPED")
-        + " depth=" + string(depth));
-}
 
 // ── Build turn order: player units first, then enemies ────────────────────────
 turn_order = [];
