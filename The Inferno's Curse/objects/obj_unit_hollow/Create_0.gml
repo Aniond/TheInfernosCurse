@@ -19,6 +19,9 @@ team       = 1;        // enemy side
 is_hollow  = true;     // enables Forgotten roll each round
 unit_color = make_color_rgb(200, 180, 220);  // pale ghost-violet — visible on near-black grid
 
+// Facing direction — updated when the unit moves. Controls sprite selection.
+unit_facing = "south";
+
 // Starting positions are set per-instance in room_battle.
 // Defaults here in case a Hollow is spawned programmatically.
 grid_x = 8;
