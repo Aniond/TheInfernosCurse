@@ -138,6 +138,10 @@ global.sanity = 100;
 //   "default" = standard scaled reveal at -LIMBO_SHIMMER_COST sanity
 global.player_class = "default";
 
+// Focus charges — refreshed each player turn from the sanity class (min 1).
+// Debug mode grants unlimited. See scr_focus_class / scr_battle_focus.
+global.focus_charges = 1;
+
 // Controls hallucination / corruption overlay intensity (0 = none, 100 = max).
 // Driven by low sanity and high local corruption.
 global.vision_intensity = 0;

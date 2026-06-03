@@ -144,23 +144,40 @@ if (battle_phase == "player_turn") {
     var _bene_ap = instance_exists(obj_unit_benedetto) ? obj_unit_benedetto.ap : 0;
     var _bene_max = instance_exists(obj_unit_benedetto) ? obj_unit_benedetto.max_ap : 3;
 
+    // Movement / turn / flee hints
+    draw_set_color(make_color_rgb(100, 85, 130));
     if (_bene_ap <= 0) {
         draw_set_color(make_color_rgb(220, 200, 80));
-        draw_text(_gw / 2, 616, "No moves remaining  --  [Z / ENTER] to end turn");
-        draw_set_color(make_color_rgb(120, 60, 60));
-        draw_text(_gw / 2, 644, "[ESC] Flee  (+corruption)");
+        draw_text(_gw / 2, 600, "No moves remaining  --  [Z / ENTER] to end turn   [ESC] Flee  (+corruption)");
     } else {
-        draw_set_color(make_color_rgb(100, 85, 130));
-        draw_text(_gw / 2, 608, "[WASD / ↑↓←→] Move   [F] Focus");
-        draw_set_color(make_color_rgb(100, 85, 130));
-        draw_text(_gw / 2, 636, "[Z / ENTER] End turn   [ESC] Flee  (+corruption)");
+        draw_text(_gw / 2, 600, "[WASD / ↑↓←→] Move      [Z / ENTER] End turn      [ESC] Flee  (+corruption)");
     }
+
+    // Focus hint — ALWAYS visible. Label + colour reflect remaining charges.
+    var _fc = variable_global_exists("focus_charges") ? global.focus_charges : 1;
+    var _focus_label;
+    var _focus_col;
+    if (global.debug_mode) {
+        _focus_label = "[F] Focus  (debug: unlimited)";
+        _focus_col   = make_color_rgb(160, 220, 160);
+    } else if (_fc <= 0) {
+        _focus_label = "[F] Focus  (spent)";
+        _focus_col   = make_color_rgb(70, 62, 80);     // greyed out — gone, but still shown
+    } else if (_fc == 1) {
+        _focus_label = "[F] Focus  (last chance)";
+        _focus_col   = make_color_rgb(210, 130, 90);   // warm amber — urgent
+    } else {
+        _focus_label = "[F] Focus  (" + string(_fc) + " charges)";
+        _focus_col   = make_color_rgb(150, 130, 190);
+    }
+    draw_set_color(_focus_col);
+    draw_text(_gw / 2, 632, _focus_label);
 
     if (global.debug_mode) {
         draw_set_color(make_color_rgb(160, 220, 160));
         draw_set_halign(fa_right);
         draw_text(_gw - 16, 32,
-            "AP:" + string(_bene_ap) + "/" + string(_bene_max));
+            "AP:" + string(_bene_ap) + "/" + string(_bene_max) + "  FC:inf");
     }
 }
 
