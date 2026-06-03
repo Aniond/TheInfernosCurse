@@ -65,12 +65,8 @@ if (keyboard_check_pressed(ord("F"))) {
     }
 }
 
-// ── End turn — Z or Enter ─────────────────────────────────────────────────────
+// ── End turn — Z or Enter only — AP exhaustion NEVER auto-advances ───────────
+// Player must explicitly end their turn. This keeps them in control.
 if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
-    turn_done = true;
-}
-
-// ── AP exhausted — auto end turn ─────────────────────────────────────────────
-if (ap <= 0) {
     turn_done = true;
 }

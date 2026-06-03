@@ -16,21 +16,35 @@ if (global.battle_corruption >= LIMBO_MOVE_THRESHOLD) {
     }
 }
 
-// ── Sanity zero check — Benedetto branch ─────────────────────────────────────
+// ── Sanity zero check — clamp to 1 in battle (floor already in scr_corruption)
 if (instance_exists(obj_unit_benedetto)) {
-    if (global.sanity <= 0 && !scr_battle_has_status(obj_unit_benedetto, "frozen")) {
-        scr_battle_sanity_zero(obj_unit_benedetto);
-        show_sanity_zero_text = true;
+    if (global.sanity <= 0) global.sanity = 1;   // hard floor — 0 is open-world only
+}
+
+// ── Flee confirmation input ───────────────────────────────────────────────────
+if (flee_confirm) {
+    // Y = confirm flee
+    if (keyboard_check_pressed(ord("Y"))) {
+        flee_confirm = false;
+        scr_battle_flee();
     }
+    // N or ESC = cancel
+    if (keyboard_check_pressed(ord("N")) || keyboard_check_pressed(vk_escape)) {
+        flee_confirm = false;
+        scr_battle_add_log("Benedetto steadied himself. He would not run.");
+    }
+    exit;   // block all other input while confirming
 }
 
-// ── Sanity zero text fade ─────────────────────────────────────────────────────
-if (show_sanity_zero_text) {
-    sanity_zero_alpha = min(sanity_zero_alpha + 0.02, 1);
+// ── ESC to flee (player turn only) ───────────────────────────────────────────
+if (battle_phase == "player_turn" && keyboard_check_pressed(vk_escape)) {
+    flee_confirm = true;
+    exit;
 }
 
-// ── Player-turn end detection: active unit signals turn complete ───────────────
-// Units set .turn_done = true when they finish acting; manager advances.
+// ── Player-turn end detection ─────────────────────────────────────────────────
+// Only advances when unit explicitly sets turn_done = true (Z/ENTER).
+// AP exhaustion no longer auto-advances — player must confirm.
 if (battle_phase == "player_turn" && array_length(turn_order) > 0) {
     var _active = turn_order[active_unit_idx];
     if (instance_exists(_active) && _active.turn_done) {
@@ -39,7 +53,11 @@ if (battle_phase == "player_turn" && array_length(turn_order) > 0) {
     }
 }
 
-// ── Enemy turn: auto-process immediately (no AI yet — just skips) ────────────
+// ── Enemy turn: 250ms delay between enemies so player can read what happened ──
 if (battle_phase == "enemy_turn") {
-    scr_battle_process_enemy_turn();
+    enemy_turn_timer++;
+    if (enemy_turn_timer >= ENEMY_TURN_DELAY) {
+        enemy_turn_timer = 0;
+        scr_battle_process_enemy_turn();
+    }
 }

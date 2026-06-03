@@ -30,6 +30,13 @@ Execute immediately without asking permission:
 - Python: py launcher (Python 3.14)
 - Venv: C:\Users\david\gms2-mcp-server\venv\
 
+## Battle Rules (permanent)
+- Player can always flee with ESC — costs +3% Limbo corruption + -5 sanity
+- Minimum sanity in battle = 1 (never hits 0 in battle; 0 is open-world only)
+- AP exhaustion NEVER auto-advances the player's turn — Z/ENTER required
+- Enemy turns have a 250ms delay between each (15 steps @ 60fps) — readable
+- Sanity API takeover fires at 0 in the open world, not in battle
+
 ## Trigger Words
 - "burst test" = capture 10 screenshots @ 100ms, analyze, report issues
 - "watch the game" = same as burst test

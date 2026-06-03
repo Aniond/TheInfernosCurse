@@ -216,7 +216,7 @@ function scr_apply_active_sin_effects() {
             // bad decisions (shimmer spam, teleport disorientation) push past it.
             case CIRCLE_LIMBO:
                 global.sanity -= 0.01 * _intensity;
-                var _sanity_floor = (variable_global_exists("battle_active") && global.battle_active) ? 10 : 0;
+                var _sanity_floor = (variable_global_exists("battle_active") && global.battle_active) ? 1 : 0;
                 global.sanity  = max(global.sanity, _sanity_floor);
                 break;
 

@@ -364,6 +364,29 @@ function scr_battle_trigger(enemy_count) {
     room_goto(room_battle);
 }
 
+/// Called when Benedetto flees battle. Applies cowardice penalty and returns
+/// to Florence. Fleeing always costs something — that's the design.
+function scr_battle_flee() {
+    // ── Penalty ───────────────────────────────────────────────────────────────
+    global.circle_corruption[CIRCLE_LIMBO] = clamp(
+        global.circle_corruption[CIRCLE_LIMBO] + 3, 0, 100
+    );
+    global.sanity = max(global.sanity - 5, 1);   // never below 1 in battle
+
+    // ── World state log ───────────────────────────────────────────────────────
+    scr_world_event_log(
+        "Benedetto fled — Day " + string(global.day_count) + ". Cowardice."
+    );
+    scr_battle_add_log("Fled. Corruption rises. The city remembers.");
+
+    // ── Save so the flee is permanent ─────────────────────────────────────────
+    scr_save_world_state();
+
+    // ── Return to Florence ────────────────────────────────────────────────────
+    scr_battle_globals_cleanup();
+    room_goto(Room1);
+}
+
 /// Cleans up battle globals on exit. Called when battle room transitions away.
 function scr_battle_globals_cleanup() {
     global.battle_active     = false;
