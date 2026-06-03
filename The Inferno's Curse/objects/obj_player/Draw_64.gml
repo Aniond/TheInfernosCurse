@@ -12,7 +12,7 @@ var _bar_y  = display_get_gui_height() - 40;
 draw_set_halign(fa_left);
 draw_set_valign(fa_bottom);
 draw_set_color(c_white);
-draw_text(_bar_x, _bar_y - 22, "HP  " + string(hp) + " / " + string(max_hp));
+draw_text(_bar_x, _bar_y - 22, "HP  " + string(round(hp)) + " / " + string(round(max_hp)));
 
 // Debug overlay — everything visible, nothing hidden
 if (global.debug_mode) {
