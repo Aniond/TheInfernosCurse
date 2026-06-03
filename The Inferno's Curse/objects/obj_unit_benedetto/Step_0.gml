@@ -39,6 +39,18 @@ var _dy    = (keyboard_check_pressed(ord("S")) || keyboard_check_pressed(vk_down
 // Diagonal not allowed — prefer horizontal
 if (_dx != 0 && _dy != 0) _dy = 0;
 
+// Update facing from movement direction (persists after move so idle shows last direction)
+if (_dx != 0 || _dy != 0) {
+    if      (_dx > 0 && _dy == 0) unit_facing = "east";
+    else if (_dx < 0 && _dy == 0) unit_facing = "west";
+    else if (_dx == 0 && _dy < 0) unit_facing = "north";
+    else if (_dx == 0 && _dy > 0) unit_facing = "south";
+    else if (_dx > 0 && _dy < 0)  unit_facing = "north_east";
+    else if (_dx < 0 && _dy < 0)  unit_facing = "north_west";
+    else if (_dx > 0 && _dy > 0)  unit_facing = "south_east";
+    else                           unit_facing = "south_west";
+}
+
 if ((_dx != 0 || _dy != 0) && ap > 0) {
     var _nx = grid_x + _dx;
     var _ny = grid_y + _dy;
