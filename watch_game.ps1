@@ -21,21 +21,16 @@ function Get-TargetWindowHandle {
 }
 
 Add-Type -AssemblyName System.Drawing
-Add-Type -Namespace Native -Name User32 -MemberDefinition @"
+Add-Type -TypeDefinition @"
 using System;
 using System.Runtime.InteropServices;
-
-[StructLayout(LayoutKind.Sequential)]
-public struct RECT {
-    public int Left;
-    public int Top;
-    public int Right;
-    public int Bottom;
-}
-
-public static class User32 {
-    [DllImport("user32.dll")]
-    public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+namespace Native {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT { public int Left, Top, Right, Bottom; }
+    public class Win32 {
+        [DllImport("user32.dll")]
+        public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+    }
 }
 "@
 
@@ -50,7 +45,7 @@ if (-not (Test-Path -Path $OutputDir)) {
 $OutputDir = (Resolve-Path -Path $OutputDir).Path
 
 $rect = New-Object Native.RECT
-if (-not [Native.User32]::GetWindowRect($hwnd, [ref]$rect)) {
+if (-not [Native.Win32]::GetWindowRect($hwnd, [ref]$rect)) {
     Throw "Unable to read window bounds for handle $hwnd."
 }
 
