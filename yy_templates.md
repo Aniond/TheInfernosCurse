@@ -2,26 +2,35 @@
 
 ## ⚠️ CRITICAL WARNINGS — READ BEFORE EDITING
 
-1. **External library installation can trigger a "project newer than IDE" warning.**
-   When `.yymps` packages are extracted and registered in the `.yyp` manually (outside
-   the IDE), GM may cache a partially-written file and warn on next open. This is a
-   false positive — do NOT let GM downgrade the project. Check `IDEVersion` in the
-   `.yyp` against the installed IDE exe (`Get-Item "C:\Program Files\GameMaker-LTS2026\
-   GameMaker-LTS2026.exe").VersionInfo.FileVersion`). If they match, click NO and
-   fully quit + reopen GM. *Observed 2026-06-02* during Scribble/Input installation.
+1. **External library `.yymps` packages can be FORMAT-INCOMPATIBLE with LTS 2026 —
+   this is REAL, not a caching false positive.** LTS 2026 is a separate branch from
+   Monthly. Two distinct failure modes, both block opening the project:
+   - **Too new:** libraries from Monthly 2024.11+ (Scribble 9.7.3, Input 10.3.2) use
+     resource formats newer than the LTS 2026 fork → *"Project is later than this
+     GameMaker release. Do you want to downgrade…"*. Clicking No will not open it.
+   - **Too old:** 2022-era libraries (Bulb 22.0.7, SnowState 3.1.4) ship `.yy` files in
+     the pre-`$GM`-tag format (start with `"resourceType"`, no `"$GMScript"`) →
+     *"A type tag field is required at the start of the JSON record"* parse error.
+   Diagnosis that worked (2026-06-02): bisect on a throwaway branch — strip ALL module
+   registrations from the `.yyp` (GM ignores unregistered folders), confirm clean load,
+   then re-add one module at a time. "Too old" fix = rewrite each `.yy` to the verified
+   format below (add `"$GMScript":"v1"` + `"%Name"`, bump `resourceVersion` to `2.0`).
+   "Too new" libraries generally cannot be fixed — remove them. Outcome: Scribble, Bulb,
+   Input removed; only SnowState kept (after fixing its 2 `.yy` files). **Always test a
+   library install on a throwaway branch and confirm a clean GM load before merging.**
 2. **Always close GameMaker before Claude Code edits any `.yy` or `.yyp` file.**
    GM caches the project and can overwrite external edits (and it caches *failed*
    loads — a bad edit sticks until a full quit).
-2. **VS Code can silently revert `.yyp` changes.** If the `.yyp` (or a `.yy`) is open
+3. **VS Code can silently revert `.yyp` changes.** If the `.yyp` (or a `.yy`) is open
    in a VS Code buffer while Claude Code edits it on disk, a later (auto)save of the
    stale buffer clobbers the on-disk edit. *Observed 2026-06-01:* 8 freshly-registered
    sprite entries vanished this way. Close the file in VS Code before external edits.
-3. **Always fully reload GameMaker after Claude Code makes changes** (quit + reopen,
+4. **Always fully reload GameMaker after Claude Code makes changes** (quit + reopen,
    then File → Save) so GM re-reads from disk and rewrites the files canonically.
-4. **Never hand-edit `.yy` files free-form — use the verified templates in this file
+5. **Never hand-edit `.yy` files free-form — use the verified templates in this file
    only.** Field order is a fixed per-record schema; reordering or "tidying" causes
    load failures.
-5. **Run `import_sprites.ps1` from the project root (`C:\TheInfernoCurse\`), not from a
+6. **Run `import_sprites.ps1` from the project root (`C:\TheInfernoCurse\`), not from a
    subfolder** — its default `-SourceFolder`/`-ProjectRoot` paths are resolved relative
    to the script's own location.
 
