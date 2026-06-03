@@ -5,16 +5,27 @@
 // HP bar, status icons, and active-turn ring drawn on top.
 // =============================================================================
 
-if (fsm.state_is("dead")) exit;
-
 var _tx = BATTLE_GRID_X + grid_x * BATTLE_TILE_SIZE;
 var _ty = BATTLE_GRID_Y + grid_y * BATTLE_TILE_SIZE;
 var _ts = BATTLE_TILE_SIZE;
 var _cx = _tx + _ts / 2;
 var _cy = _ty + _ts / 2;
 
+// ── DIAGNOSTIC (temporary) ────────────────────────────────────────────────────
+// Unmistakable markers drawn BEFORE any early-exit, so we can tell:
+//   - magenta box + lime dot visible, no creature  -> sprite asset problem
+//   - nothing at all visible                        -> Draw not running / off-grid
+draw_set_alpha(1);
+draw_set_color(c_fuchsia);
+draw_rectangle(_tx, _ty, _tx + _ts - 1, _ty + _ts - 1, true);
+draw_set_color(c_lime);
+draw_circle(_cx, _cy, 10, false);
+
+if (fsm.state_is("dead")) exit;
+
 // ── Sprite (single south-facing sprite for now) ───────────────────────────────
 draw_set_alpha(is_active_turn ? 1.0 : 0.8);
+draw_set_color(c_white);
 draw_sprite(sprite_index, 0, _cx, _cy);
 
 // ── Active turn ring ──────────────────────────────────────────────────────────
