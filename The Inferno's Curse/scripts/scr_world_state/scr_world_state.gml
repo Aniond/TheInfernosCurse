@@ -150,7 +150,15 @@ function scr_load_world_state() {
     global.debug_mode        = _d[$ "debug_mode"]        ?? false;
 
     // ── Restore journal entries into obj_journal ds_list ──────────────────────
-    if (instance_exists(obj_journal) && array_length(global.codex_entries) > 0) {
+    // instance_exists() is true even before obj_journal's Create has run (instances
+    // exist in creation order before their Create events fire), so its journal_entries
+    // ds_list may not be created yet. On initial room load obj_game_manager (first in
+    // creation order) runs this before obj_journal's Create — in that case we skip here
+    // and obj_journal's Create populates itself from global.codex_entries instead.
+    // This block only fires for a runtime reload (F9) when the journal is fully ready.
+    if (instance_exists(obj_journal)
+        && variable_instance_exists(obj_journal, "journal_entries")
+        && array_length(global.codex_entries) > 0) {
         ds_list_clear(obj_journal.journal_entries);
         for (var _i = 0; _i < array_length(global.codex_entries); _i++) {
             ds_list_add(obj_journal.journal_entries, global.codex_entries[_i]);
