@@ -9,6 +9,12 @@
     "name":"Default",
   },
   "defaultScriptType":0,
+  "Options":[
+    {"name":"Main","path":"options/main/options_main.yy",},
+    {"name":"Windows","path":"options/windows/options_windows.yy",},
+    {"name":"Opera GX","path":"options/operagx/options_operagx.yy",},
+    {"name":"Reddit","path":"options/reddit/options_reddit.yy",},
+  ],
   "Folders":[
     {"$GMFolder":"","%Name":"Input Plug-Ins","folderPath":"folders/Input Plug-Ins.yy","name":"Input Plug-Ins","resourceType":"GMFolder","resourceVersion":"2.0",},
     {"$GMFolder":"","%Name":"Binding Icons","folderPath":"folders/Input Plug-Ins/Binding Icons.yy","name":"Binding Icons","resourceType":"GMFolder","resourceVersion":"2.0",},
