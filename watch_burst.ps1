@@ -9,8 +9,12 @@ if (-not (Test-Path $screenshotsDir)) {
     New-Item -ItemType Directory -Path $screenshotsDir | Out-Null
 }
 
-Write-Output "=== Switch to the game window NOW — capturing in 5 seconds ==="
-Start-Sleep -Seconds 5
+Write-Output "=== Switch to the game window NOW - capturing in 5 seconds ==="
+for ($c = 5; $c -ge 1; $c--) {
+    Write-Output "  $c..."
+    Start-Sleep -Seconds 1
+}
+Write-Output "CAPTURING NOW"
 
 $screen   = [System.Windows.Forms.Screen]::PrimaryScreen
 $bounds   = $screen.Bounds
@@ -28,10 +32,10 @@ for ($i = 1; $i -le 10; $i++) {
     $bitmap.Dispose()
 
     $captured += $filepath
-    Write-Output "Captured frame ${i}: $filepath"
+    Write-Output "Frame $i captured"
 
     if ($i -lt 10) { Start-Sleep -Milliseconds 100 }
 }
 
 Write-Output "---"
-Write-Output "Burst complete. $($captured.Count) frames saved to $screenshotsDir"
+Write-Output "Done. $($captured.Count) frames in $screenshotsDir"
