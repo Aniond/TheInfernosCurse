@@ -4,11 +4,22 @@
 // that marks the tile for Benedetto's eyes only.
 // =============================================================================
 
-if (!is_shimmer_visible || shimmer_alpha <= 0) exit;
-
 var _tx = BATTLE_GRID_X + grid_x * BATTLE_TILE_SIZE;
 var _ty = BATTLE_GRID_Y + grid_y * BATTLE_TILE_SIZE;
 var _ts = BATTLE_TILE_SIZE;
+
+// ── DEBUG (F1): show EVERY Limbo tile as a red box, revealed or not ───────────
+// Lets you verify tile placement and that Focus reveals the right ones.
+if (global.debug_mode) {
+    draw_set_alpha(1);
+    draw_set_color(make_color_rgb(230, 40, 40));
+    draw_rectangle(_tx + 1, _ty + 1, _tx + _ts - 2, _ty + _ts - 2, true);
+    draw_rectangle(_tx + 2, _ty + 2, _tx + _ts - 3, _ty + _ts - 3, true);
+    draw_set_color(c_white);
+}
+
+// Normal play: only the violet shimmer when Focus has revealed this tile
+if (!is_shimmer_visible || shimmer_alpha <= 0) exit;
 
 // Shimmer fill — faint violet wash
 var _pulse = 0.5 + sin(shimmer_timer * 0.20) * 0.5;   // 0.0 to 1.0

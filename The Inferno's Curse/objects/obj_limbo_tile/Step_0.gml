@@ -10,6 +10,10 @@
 x = BATTLE_GRID_X + grid_x * BATTLE_TILE_SIZE + BATTLE_TILE_SIZE / 2;
 y = BATTLE_GRID_Y + grid_y * BATTLE_TILE_SIZE + BATTLE_TILE_SIZE / 2;
 
+// Draw above the grid background (manager is depth 0), below units (depth < -100)
+// so the Focus shimmer / debug boxes are actually visible.
+depth = -50;
+
 // ── Shimmer timer + alpha ─────────────────────────────────────────────────────
 if (is_shimmer_visible) {
     shimmer_timer++;
