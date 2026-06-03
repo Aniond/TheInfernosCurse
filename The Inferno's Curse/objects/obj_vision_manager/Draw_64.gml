@@ -8,6 +8,9 @@
 
 if (vision_overlay_alpha <= 0.01) exit;
 
+// Suppress overlay during dialogue — parchment frame handles the atmosphere
+if (instance_exists(obj_dialogue_box) && obj_dialogue_box.is_active) exit;
+
 var _w = display_get_gui_width();
 var _h = display_get_gui_height();
 var _a = vision_overlay_alpha;

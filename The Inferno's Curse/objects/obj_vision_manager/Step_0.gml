@@ -2,6 +2,9 @@
 // obj_vision_manager — Step Event
 // =============================================================================
 
+// ── Pause entirely during dialogue — no stutter behind parchment frame ────────
+if (instance_exists(obj_dialogue_box) && obj_dialogue_box.is_active) exit;
+
 // ── Vision timer countdown ────────────────────────────────────────────────────
 if (vision_timer > 0) {
     vision_timer--;

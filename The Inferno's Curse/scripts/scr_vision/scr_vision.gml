@@ -59,8 +59,9 @@ function scr_update_vision_intensity() {
 /// perfectly predictable even at high intensity.
 /// Called every step from obj_game_manager Step event.
 function scr_check_trigger_vision() {
-    // Never fire during battle — battle visions are event-driven only
+    // Never fire during battle or dialogue — no interrupting NPC conversations
     if (global.battle_active) exit;
+    if (instance_exists(obj_dialogue_box) && obj_dialogue_box.is_active) exit;
 
     var _intensity = global.vision_intensity;
     var _now       = get_timer();   // microseconds since app start
