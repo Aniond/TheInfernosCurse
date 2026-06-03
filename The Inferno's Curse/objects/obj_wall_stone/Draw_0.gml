@@ -9,8 +9,9 @@
 var _corrupt = clamp(wall_corruption, 0, 100);
 
 // ── Breathing offset (past 50% corruption) ────────────────────────────────────
+// Debug mode (F1) holds buildings still so the true static scene is visible.
 var _breathe = 0;
-if (_corrupt > 50) {
+if (_corrupt > 50 && !global.debug_mode) {
     _breathe = sin(breathe_offset) * (_corrupt / 100) * 2;
 }
 
