@@ -40,10 +40,13 @@ draw_rectangle(_bar_x, _bar_y, _bar_x + floor(_bar_w * _cf), _bar_y + _bar_h, fa
 draw_set_color(make_color_rgb(100, 80, 160));
 draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, true);
 
-draw_set_color(make_color_rgb(200, 180, 230));
-draw_set_halign(fa_center);
-draw_text(_bar_x + _bar_w / 2, _bar_y + _bar_h / 2 + 1,
-    "Limbo Corruption: " + string(round(global.battle_corruption)) + "%");
+// Debug only — corruption number hidden from player
+if (global.debug_mode) {
+    draw_set_color(make_color_rgb(160, 220, 160));
+    draw_set_halign(fa_center);
+    draw_text(_bar_x + _bar_w / 2, _bar_y + _bar_h / 2 + 1,
+        "S:" + string(round(global.sanity)) + "  C:" + string(round(global.battle_corruption)) + "%");
+}
 
 // Phase label (right side)
 var _phase_str = "";
@@ -145,25 +148,24 @@ if (battle_phase == "player_turn") {
     var _bene_ap = instance_exists(obj_unit_benedetto) ? obj_unit_benedetto.ap : 0;
     var _bene_max = instance_exists(obj_unit_benedetto) ? obj_unit_benedetto.max_ap : 3;
 
-    // No-moves indicator
+    // Control hints — no numbers, no sanity references
     if (_bene_ap <= 0) {
         draw_set_color(make_color_rgb(220, 200, 80));
-        draw_text(_gw / 2, 608, "No moves remaining  --  [Z / ENTER] to end turn");
+        draw_text(_gw / 2, 620, "No moves remaining  --  [Z / ENTER] to end turn");
     } else {
         draw_set_color(make_color_rgb(100, 85, 130));
-        draw_text(_gw / 2, 608,
-            "[WASD / ↑↓←→] Move   [F] Focus (see shimmer, -" + string(LIMBO_SHIMMER_COST) + " sanity)   [Z / ENTER] End turn");
+        draw_text(_gw / 2, 612,
+            "[WASD / ↑↓←→] Move   [F] Focus   [Z / ENTER] End turn");
+        draw_set_color(make_color_rgb(160, 80, 80));
+        draw_text(_gw / 2, 640, "[ESC] Flee");
     }
 
-    // Stats row
-    draw_set_color(make_color_rgb(100, 85, 130));
-    draw_text(_gw / 2, 634,
-        "Sanity: " + string(round(global.sanity)) + "%   "
-        + "AP: " + string(_bene_ap) + "/" + string(_bene_max));
-
-    // Flee hint
-    draw_set_color(make_color_rgb(160, 80, 80));
-    draw_text(_gw / 2, 658, "[ESC] Flee  (+3% corruption)");
+    // Debug overlay
+    if (global.debug_mode) {
+        draw_set_color(make_color_rgb(160, 220, 160));
+        draw_text(_gw / 2, 660,
+            "S:" + string(round(global.sanity)) + "  AP:" + string(_bene_ap) + "/" + string(_bene_max));
+    }
 }
 
 // ── Flee confirmation overlay ─────────────────────────────────────────────────
@@ -180,7 +182,7 @@ if (flee_confirm) {
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
     draw_text(_gw / 2, _gh / 2 - 28, "Flee from battle?");
-    draw_text(_gw / 2, _gh / 2,      "Corruption +3%  --  Cowardice has a cost.");
+    draw_text(_gw / 2, _gh / 2,      "Cowardice has a cost.");
     draw_set_color(make_color_rgb(200, 160, 80));
     draw_text(_gw / 2, _gh / 2 + 32, "[Y] Flee          [N / ESC] Stay and fight");
 }

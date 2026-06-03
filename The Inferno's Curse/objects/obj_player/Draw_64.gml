@@ -23,13 +23,17 @@ if (_fill > 0) {
 draw_set_color(c_white);
 draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, true);
 
-// Label
 draw_set_halign(fa_left);
 draw_set_valign(fa_bottom);
-draw_set_color(c_white);
-draw_text(_bar_x, _bar_y, "CORRUPTION  " + string(corruption) + " / 100");
 
-// HP — simple text above corruption bar for now
+// HP bar label
+draw_set_color(c_white);
 draw_text(_bar_x, _bar_y - 22, "HP  " + string(hp) + " / " + string(max_hp));
+
+// Debug overlay: sanity + corruption numbers
+if (global.debug_mode) {
+    draw_set_color(make_color_rgb(160, 220, 160));
+    draw_text(_bar_x, _bar_y, "S:" + string(round(global.sanity)) + "  C:" + string(round(corruption)));
+}
 
 draw_set_color(c_white); // reset
