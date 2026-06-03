@@ -1,8 +1,8 @@
 {
-  "$GMProject":"",
+  "$GMProject":"v1",
   "%Name":"The Inferno's Curse",
   "AudioGroups":[
-    {"$GMAudioGroup":"","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
   "configs":{
     "children":[],
@@ -96,15 +96,9 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2026.0.0.0",
+    "IDEVersion":"2026.0.0.16",
   },
   "name":"The Inferno's Curse",
-  "Options":[
-    {"name":"Main","path":"options/main/options_main.yy",},
-    {"name":"Windows","path":"options/windows/options_windows.yy",},
-    {"name":"Opera GX","path":"options/operagx/options_operagx.yy",},
-    {"name":"Reddit","path":"options/reddit/options_reddit.yy",},
-  ],
   "resources":[
     {"id":{"name":"obj_unit_hollow","path":"objects/obj_unit_hollow/obj_unit_hollow.yy",},},
     {"id":{"name":"scr_battle","path":"scripts/scr_battle/scr_battle.yy",},},
@@ -676,6 +670,7 @@
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
     {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"roomId":{"name":"room_battle","path":"rooms/room_battle/room_battle.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
