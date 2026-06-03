@@ -8,6 +8,9 @@
 
 if (vision_overlay_alpha <= 0.01) exit;
 
+// Debug mode (F1) hides the vision overlays so the true scene is visible
+if (global.debug_mode) exit;
+
 // Suppress overlay during dialogue — parchment frame handles the atmosphere
 if (instance_exists(obj_dialogue_box) && obj_dialogue_box.is_active) exit;
 

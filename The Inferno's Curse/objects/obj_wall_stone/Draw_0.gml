@@ -24,8 +24,9 @@ if (wall_sprite >= 0 && sprite_exists(wall_sprite)) {
     // ── Sprite path ───────────────────────────────────────────────────────────
     // Scale sprite to fill the wall footprint exactly.
     // Corruption tints the sprite toward void-black above 50%.
+    // Debug mode shows buildings at full brightness (no corruption darkening)
     var _tint = c_white;
-    if (_corrupt > 50) {
+    if (_corrupt > 50 && !global.debug_mode) {
         var _dark = (_corrupt - 50) / 50;
         _tint = merge_color(c_white, make_color_rgb(20, 20, 30), _dark);
     }
@@ -38,7 +39,7 @@ if (wall_sprite >= 0 && sprite_exists(wall_sprite)) {
     draw_sprite_ext(wall_sprite, 0, _dx, _dy, 3, 3, 0, _tint, 1);
 
     // Dark corruption veins drawn over the sprite at high corruption
-    if (_corrupt > 75) {
+    if (_corrupt > 75 && !global.debug_mode) {
         draw_set_color(make_color_rgb(10, 0, 20));
         draw_set_alpha(0.4);
         var _step = 48;
