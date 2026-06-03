@@ -16,7 +16,7 @@
 // ── Limbo tile tuning ─────────────────────────────────────────────────────────
 #macro LIMBO_TILE_MIN      2     // fewest tiles at 0% corruption
 #macro LIMBO_TILE_MAX     10     // most tiles at 100% corruption
-#macro LIMBO_SHIMMER_COST  5     // sanity lost when Benedetto focuses to see a tile
+#macro LIMBO_SHIMMER_COST  3     // sanity lost when Benedetto focuses to see a tile
 #macro LIMBO_SHIMMER_STEPS 120   // how long the shimmer stays visible (2 s @ 60 fps)
 #macro LIMBO_TILE_MOVE_INTERVAL 90  // steps between tile moves at high corruption
 

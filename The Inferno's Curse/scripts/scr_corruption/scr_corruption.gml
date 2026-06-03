@@ -212,9 +212,12 @@ function scr_apply_active_sin_effects() {
 
             // ── Limbo: sanity erosion ─────────────────────────────────────────
             // Persistent grief slowly chips away at the player's grip on reality.
+            // In battle the floor is 10 — Benedetto clings on; only repeated
+            // bad decisions (shimmer spam, teleport disorientation) push past it.
             case CIRCLE_LIMBO:
                 global.sanity -= 0.01 * _intensity;
-                global.sanity  = max(global.sanity, 0);
+                var _sanity_floor = (variable_global_exists("battle_active") && global.battle_active) ? 10 : 0;
+                global.sanity  = max(global.sanity, _sanity_floor);
                 break;
 
             // ── Lust: HP drain via desire ─────────────────────────────────────

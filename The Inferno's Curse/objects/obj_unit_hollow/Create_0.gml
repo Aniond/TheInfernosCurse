@@ -17,7 +17,7 @@ hp         = max_hp;
 max_ap     = 2;
 team       = 1;        // enemy side
 is_hollow  = true;     // enables Forgotten roll each round
-unit_color = make_color_rgb(80, 70, 110);   // muted grey-violet
+unit_color = make_color_rgb(200, 180, 220);  // pale ghost-violet — visible on near-black grid
 
 // Starting positions are set per-instance in room_battle.
 // Defaults here in case a Hollow is spawned programmatically.

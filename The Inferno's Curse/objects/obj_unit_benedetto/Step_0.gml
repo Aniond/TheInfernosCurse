@@ -9,12 +9,23 @@ event_inherited();   // updates world pos, checks death
 // ── Only act on our turn ──────────────────────────────────────────────────────
 if (!fsm.state_is("acting")) exit;
 
-// ── Sanity 0 — stub: freeze and display message ───────────────────────────────
-if (global.sanity <= 0) {
-    if (!scr_battle_has_status(id, "frozen")) {
-        scr_battle_sanity_zero(id);
-        turn_done = true;   // surrender turn
+// ── Sanity warning at 10 ─────────────────────────────────────────────────────
+if (global.sanity <= 10 && global.sanity > 0) {
+    // Log once per turn (battle manager resets this flag each turn activation)
+    if (!variable_instance_exists(id, "sanity_warned_this_turn") || !sanity_warned_this_turn) {
+        scr_battle_add_log("Benedetto is losing himself...");
+        sanity_warned_this_turn = true;
     }
+}
+
+// ── Sanity 0 — stub: force end turn only (no permanent freeze) ───────────────
+// TODO: API-controlled Benedetto — wire when Anthropic key available Thursday
+// Real behaviour: Claude receives battle state and acts against Benedetto's party.
+// Temp: surrender the turn and reset sanity to 10 next round so combat continues.
+if (global.sanity <= 0) {
+    scr_battle_add_log("He could no longer find his way back.");
+    global.sanity = 10;   // clings on — proper API takeover wires Thursday
+    turn_done = true;
     exit;
 }
 

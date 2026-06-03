@@ -42,6 +42,7 @@ fsm.add("waiting", {
 fsm.add("acting", {
     enter: function() {
         is_active_turn = true;
+        sanity_warned_this_turn = false;   // reset warning flag each new turn
     },
 });
 

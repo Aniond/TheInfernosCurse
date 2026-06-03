@@ -17,7 +17,14 @@ draw_set_alpha(_body_alpha);
 draw_set_color(unit_color);
 draw_rectangle(_tx + _pad, _ty + _pad, _tx + _ts - _pad - 1, _ty + _ts - _pad - 1, false);
 
-// Active outline
+// Always-on thin border for enemy units so they're visible against the dark grid
+if (team == 1) {
+    draw_set_alpha(0.9);
+    draw_set_color(c_white);
+    draw_rectangle(_tx + _pad, _ty + _pad, _tx + _ts - _pad - 1, _ty + _ts - _pad - 1, true);
+}
+
+// Active outline (yellow for active turn, overrides the enemy border)
 if (is_active_turn) {
     draw_set_alpha(1);
     draw_set_color(c_yellow);
