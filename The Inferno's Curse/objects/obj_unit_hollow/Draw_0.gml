@@ -17,6 +17,14 @@ draw_set_alpha(is_active_turn ? 1.0 : 0.8);
 draw_set_color(c_white);
 draw_sprite(sprite_index, 0, _cx, _cy);
 
+// ── Enemy marker box — bright crimson so the Hollow stands out on the dark grid
+// 2px outline for visibility. Distinct from Benedetto's gold turn-ring and the
+// blue move-range tiles.
+draw_set_alpha(1);
+draw_set_color(make_color_rgb(230, 40, 40));
+draw_rectangle(_tx + 1, _ty + 1, _tx + _ts - 2, _ty + _ts - 2, true);
+draw_rectangle(_tx + 2, _ty + 2, _tx + _ts - 3, _ty + _ts - 3, true);
+
 // ── Active turn ring ──────────────────────────────────────────────────────────
 if (is_active_turn) {
     draw_set_alpha(0.9);
