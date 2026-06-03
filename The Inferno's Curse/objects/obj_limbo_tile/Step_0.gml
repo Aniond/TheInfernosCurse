@@ -38,9 +38,13 @@ if (is_shimmer_visible) {
 var _corr = global.battle_corruption;
 var _san  = global.sanity;
 var _cap  = 0;
-if      (_corr >= 90)                            _cap = 0.20;
-else if (_corr >= 75)                            _cap = 0.15;
-else if (_san >= 50 && _san < 75 && _corr >= 50) _cap = 0.12;
+// Only the Witness tier (50-74) gets passive shimmer — Priest relies on Focus quality,
+// Tainted/Cursed/Hollow are too far gone to benefit.
+if (_san >= 50 && _san < 75) {
+    if      (_corr >= 90) _cap = 0.20;
+    else if (_corr >= 75) _cap = 0.15;
+    else if (_corr >= 50) _cap = 0.12;
+}
 
 if (_cap > 0 && !is_shimmer_visible) {
     if (passive_active) {

@@ -442,9 +442,12 @@ function scr_battle_marco_name_snap(marco_id) {
 /// @param {real} corruption_override   Pass -1 to derive from global Limbo corruption.
 function scr_battle_globals_init(corruption_override) {
     global.battle_active      = true;
-    global.battle_corruption  = (corruption_override >= 0)
-                                 ? clamp(corruption_override, 0, 100)
-                                 : global.circle_corruption[CIRCLE_LIMBO];
+    global.battle_corruption  = clamp(
+                                 (corruption_override >= 0)
+                                     ? corruption_override
+                                     : global.circle_corruption[CIRCLE_LIMBO],
+                                 0, 100
+                                 );
     global.battle_turn        = 0;
     global.battle_round       = 0;   // incremented to 1 by first scr_battle_start_round call
     global.battle_result      = "";   // "victory" | "defeat" | ""
@@ -459,7 +462,7 @@ function scr_battle_globals_init(corruption_override) {
 /// @param {real} enemy_count   Number of Hollow enemies to spawn (clamped 1-5)
 function scr_battle_trigger(enemy_count) {
     global.battle_enemy_count = clamp(enemy_count, 1, 5);
-    global.battle_corruption  = global.circle_corruption[CIRCLE_LIMBO];
+    global.battle_corruption  = clamp(global.circle_corruption[CIRCLE_LIMBO], 0, 100);
     room_goto(room_battle);
 }
 
