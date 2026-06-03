@@ -195,9 +195,10 @@ function scr_battle_check_limbo_tile(unit_id) {
 // FOCUS ABILITY  (Benedetto's sight — reveals hidden Limbo tiles)
 // =============================================================================
 
-/// Returns the Focus class label + per-turn charge count for a sanity value.
-/// Charges = how many times Focus can be used this turn. MINIMUM 1 — even the
-/// Hollow always has one last charge, and that last charge matters most.
+/// Returns the Focus class label + charge data for a sanity value.
+/// charges = (a) total battle presses (set once at battle start, never refreshed)
+///           (b) tiles revealed per press — same number, class-determined.
+/// MINIMUM 1 — the Hollow always has one last charge.
 function scr_focus_class(sanity) {
     if (sanity >= 75) return { name: "The Priest",  charges: 4 };  // 75-100%
     if (sanity >= 50) return { name: "The Witness", charges: 3 };  // 50-74%
@@ -206,42 +207,52 @@ function scr_focus_class(sanity) {
     return { name: "The Hollow", charges: 1 };                     // 1-9% — never 0
 }
 
-/// Focus (F). Each press reveals one hidden Limbo tile and spends one charge.
-/// Charges per turn come from the sanity class (scr_focus_class). Debug mode
-/// grants unlimited charges for testing. Cursed/Hollow sight may lie (perception
-/// check). Focusing also resets the tile-move timer so the reveal stays actionable.
+/// Focus (F). Each press costs -3 sanity, spends 1 battle charge, and reveals
+/// class-based tile count (Priest=4, Witness=3, Tainted=2, Cursed/Hollow=1).
+/// Charges are per BATTLE — set at battle start, never refreshed between turns.
+/// Cursed/Hollow sight may lie (perception check). Tile-move timer resets on use.
 function scr_battle_focus() {
-    // Spent — no charges left this turn. Debug mode is never spent.
+    // Spent — no charges left this battle. Debug mode is never spent.
     if (!global.debug_mode && global.focus_charges <= 0) return;
 
     var _info    = scr_focus_class(global.sanity);
     var _is_last = (global.focus_charges <= 1);   // this press is the last charge
 
+    // Sanity cost — always, regardless of charges remaining or tiles found
+    global.sanity = max(1, global.sanity - LIMBO_SHIMMER_COST);
+
     // Focusing buys time: revealed tiles hold position for a full move interval.
     with (obj_battle_manager) tile_move_timer = 0;
 
     // Low-sanity sight can deceive: Cursed/Hollow may reveal a FALSE tile.
+    var _revealed = 0;
     if ((_info.name == "The Cursed" || _info.name == "The Hollow")
         && irandom_range(1, 100) > global.sanity) {
         scr_battle_false_reveal();   // a normal cell, highlighted as Limbo
+        _revealed = 1;
     } else {
-        // Reveal one random hidden Limbo tile
+        // Reveal up to _info.charges hidden Limbo tiles (class-based count)
         var _hidden = [];
         with (obj_limbo_tile) {
             if (!is_shimmer_visible) array_push(_hidden, id);
         }
-        if (array_length(_hidden) > 0) {
-            var _pick = _hidden[irandom(array_length(_hidden) - 1)];
-            with (_pick) { is_shimmer_visible = true; shimmer_timer = 0; }
+        var _to_reveal = min(_info.charges, array_length(_hidden));
+        for (var _i = 0; _i < _to_reveal; _i++) {
+            var _pick_idx = irandom(array_length(_hidden) - 1);
+            with (_hidden[_pick_idx]) { is_shimmer_visible = true; shimmer_timer = 0; }
+            array_delete(_hidden, _pick_idx, 1);
         }
+        _revealed = _to_reveal;
     }
 
     // Spend a charge (debug mode never depletes)
     if (!global.debug_mode) global.focus_charges = max(0, global.focus_charges - 1);
 
-    // Chronicle — the Hollow's final charge gets its own line.
+    // Chronicle — the Hollow's final charge gets its own line
     if (_info.name == "The Hollow" && _is_last) {
         scr_battle_add_log("He strains with everything he has left. One moment. Just one. It has to be enough.");
+    } else if (_revealed > 1) {
+        scr_battle_add_log("He focuses. " + string(_revealed) + " places reveal themselves.");
     } else {
         scr_battle_add_log("He focuses. One place reveals itself.");
     }
@@ -439,6 +450,8 @@ function scr_battle_globals_init(corruption_override) {
     global.battle_result      = "";   // "victory" | "defeat" | ""
     global.input_locked       = false;
     global.false_shimmer_active = false;   // clear any leftover Focus false-reveal
+    // Focus charges: set once per battle from the sanity class, never refreshed between turns.
+    global.focus_charges = scr_focus_class(global.sanity).charges;
 }
 
 /// Triggers a battle transition from the exploration room.
@@ -572,8 +585,6 @@ function scr_battle_activate_unit(turn_order, idx) {
 
         if (_uid.team == 0) {
             other.battle_phase = "player_turn";
-            // Refresh Focus charges from the current sanity class (min 1).
-            global.focus_charges = scr_focus_class(global.sanity).charges;
             scr_battle_add_log(_uid.unit_name + " — your move.");
         } else {
             other.battle_phase = "enemy_turn";

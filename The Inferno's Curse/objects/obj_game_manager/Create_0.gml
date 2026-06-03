@@ -138,7 +138,8 @@ global.sanity = 100;
 //   "default" = standard scaled reveal at -LIMBO_SHIMMER_COST sanity
 global.player_class = "default";
 
-// Focus charges — refreshed each player turn from the sanity class (min 1).
+// Focus charges — set once at battle start from the sanity class (min 1), never refreshed.
+// Spent for the whole battle; resets at the next battle start via scr_battle_globals_init.
 // Debug mode grants unlimited. See scr_focus_class / scr_battle_focus.
 global.focus_charges = 1;
 
