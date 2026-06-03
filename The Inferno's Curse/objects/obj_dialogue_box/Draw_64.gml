@@ -10,21 +10,20 @@
 if (!is_active) exit;
 
 // ── Layout constants ──────────────────────────────────────────────────────────
-// Sprite is 3840x2160 (16:9). Draw full-screen so it renders at its intended
-// aspect ratio — the art IS the dialogue container, not a bottom bar.
+// Frame is a bottom-anchored bar across the lower third of the screen.
 var _gw      = display_get_gui_width();
 var _gh      = display_get_gui_height();
+var _frame_h = round(_gh * 0.32);        // bottom bar height
+var _frame_y = _gh - _frame_h;           // anchored flush to screen bottom
 var _frame_x = 0;
-var _frame_y = 0;
 var _frame_w = _gw;
-var _frame_h = _gh;
 
-// Text area sits in the lower-centre parchment zone of the sprite art.
-// Parchment occupies roughly x: 8-92%, y: 52-84% of the full sprite.
-var _text_left   = round(_gw * 0.12);
-var _text_right  = round(_gw * 0.88);
+// Text area inset within the parchment zone of the bar.
+var _text_left   = round(_gw * 0.09);
+var _text_right  = round(_gw * 0.91);
 var _text_width  = _text_right - _text_left;
-var _text_top    = round(_gh * 0.53);   // top of dialogue parchment content
+var _name_y      = _frame_y + round(_frame_h * 0.20);   // name baseline
+var _text_top    = _name_y;
 
 // ── Corruption factor (0-1) ───────────────────────────────────────────────────
 var _cf = clamp(corruption_level / 200, 0, 1);
@@ -90,7 +89,7 @@ draw_line(_text_left, _text_top + 20, _text_right, _text_top + 20);
 // =============================================================================
 // BODY TEXT
 // =============================================================================
-var _text_y = _text_top + 30;
+var _text_y = _text_top + 42;
 var _text_x = _text_left;
 var _text_w = _text_width;
 
@@ -149,7 +148,7 @@ if (is_complete && !is_loading) {
         draw_set_color(make_color_rgb(80, 50, 20));
         draw_set_halign(fa_right);
         draw_set_valign(fa_bottom);
-        draw_text(_gw - round(_gw * 0.12), round(_gh * 0.87), "[ E / SPACE ] Continue");
+        draw_text(_text_right, _gh - 16, "[ E / SPACE ] Continue");
     }
 }
 
