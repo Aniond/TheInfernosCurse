@@ -21,31 +21,27 @@ draw_set_halign(fa_left);
 draw_set_valign(fa_middle);
 draw_text(12, 32, "Round " + string(global.battle_round));
 
-// Corruption meter (centred in header)
-var _bar_x   = 300;
-var _bar_y   = 20;
-var _bar_w   = _gw - 600;
-var _bar_h   = 22;
-var _cf      = clamp(global.battle_corruption / 100, 0, 1);
+// Atmospheric header text — no numbers, no meter
+var _atm_str;
+if (global.battle_corruption < 25)       _atm_str = "The air feels wrong.";
+else if (global.battle_corruption < 50)  _atm_str = "Something stirs beneath Florence.";
+else if (global.battle_corruption < 75)  _atm_str = "Florence is forgetting itself.";
+else if (global.battle_corruption < 100) _atm_str = "The city is almost lost.";
+else                                      _atm_str = "He could no longer find his way back.";
 
-draw_set_color(make_color_rgb(30, 20, 45));
-draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, false);
-var _fill_col = merge_color(
-    make_color_rgb(80, 40, 160),
-    make_color_rgb(180, 20, 20),
-    _cf
-);
-draw_set_color(_fill_col);
-draw_rectangle(_bar_x, _bar_y, _bar_x + floor(_bar_w * _cf), _bar_y + _bar_h, false);
-draw_set_color(make_color_rgb(100, 80, 160));
-draw_rectangle(_bar_x, _bar_y, _bar_x + _bar_w, _bar_y + _bar_h, true);
+draw_set_color(make_color_rgb(140, 120, 170));
+draw_set_halign(fa_center);
+draw_set_valign(fa_middle);
+draw_text(_gw / 2, 32, _atm_str);
 
-// Debug only — corruption number hidden from player
+// Debug overlay
 if (global.debug_mode) {
     draw_set_color(make_color_rgb(160, 220, 160));
-    draw_set_halign(fa_center);
-    draw_text(_bar_x + _bar_w / 2, _bar_y + _bar_h / 2 + 1,
-        "S:" + string(round(global.sanity)) + "  C:" + string(round(global.battle_corruption)) + "%");
+    draw_set_halign(fa_left);
+    draw_text(32, 32,
+        "S:" + string(round(global.sanity)) +
+        " | C:" + string(round(global.battle_corruption)) +
+        " | R:" + string(global.battle_round));
 }
 
 // Phase label (right side)
@@ -148,23 +144,23 @@ if (battle_phase == "player_turn") {
     var _bene_ap = instance_exists(obj_unit_benedetto) ? obj_unit_benedetto.ap : 0;
     var _bene_max = instance_exists(obj_unit_benedetto) ? obj_unit_benedetto.max_ap : 3;
 
-    // Control hints — no numbers, no sanity references
     if (_bene_ap <= 0) {
         draw_set_color(make_color_rgb(220, 200, 80));
-        draw_text(_gw / 2, 620, "No moves remaining  --  [Z / ENTER] to end turn");
+        draw_text(_gw / 2, 616, "No moves remaining  --  [Z / ENTER] to end turn");
+        draw_set_color(make_color_rgb(120, 60, 60));
+        draw_text(_gw / 2, 644, "[ESC] Flee  (+corruption)");
     } else {
         draw_set_color(make_color_rgb(100, 85, 130));
-        draw_text(_gw / 2, 612,
-            "[WASD / ↑↓←→] Move   [F] Focus   [Z / ENTER] End turn");
-        draw_set_color(make_color_rgb(160, 80, 80));
-        draw_text(_gw / 2, 640, "[ESC] Flee");
+        draw_text(_gw / 2, 608, "[WASD / ↑↓←→] Move   [F] Focus");
+        draw_set_color(make_color_rgb(100, 85, 130));
+        draw_text(_gw / 2, 636, "[Z / ENTER] End turn   [ESC] Flee  (+corruption)");
     }
 
-    // Debug overlay
     if (global.debug_mode) {
         draw_set_color(make_color_rgb(160, 220, 160));
-        draw_text(_gw / 2, 660,
-            "S:" + string(round(global.sanity)) + "  AP:" + string(_bene_ap) + "/" + string(_bene_max));
+        draw_set_halign(fa_right);
+        draw_text(_gw - 16, 32,
+            "AP:" + string(_bene_ap) + "/" + string(_bene_max));
     }
 }
 
