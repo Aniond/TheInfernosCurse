@@ -9,6 +9,9 @@ if (-not (Test-Path $screenshotsDir)) {
     New-Item -ItemType Directory -Path $screenshotsDir | Out-Null
 }
 
+Write-Output "=== Switch to the game window NOW — capturing in 5 seconds ==="
+Start-Sleep -Seconds 5
+
 $screen   = [System.Windows.Forms.Screen]::PrimaryScreen
 $bounds   = $screen.Bounds
 $captured = @()
