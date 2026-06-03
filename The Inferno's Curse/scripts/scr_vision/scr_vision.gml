@@ -161,6 +161,8 @@ function scr_trigger_vision() {
     }
 
     // ── Drain sanity ──────────────────────────────────────────────────────────
+    // Cap vision drain during battle — combat pressure is tracked separately
+    if (global.battle_active) _chosen_drain = min(_chosen_drain, 2);
     scr_drain_sanity(_chosen_drain);
 
     // ── Log to global state ───────────────────────────────────────────────────

@@ -18,6 +18,8 @@ for (var _i = 0; _i < _count; _i++) {
     _h.grid_y    = _hollow_slots[_i][1];
     _h.unit_name = "The Hollow";   // identical names — they've forgotten themselves
 }
+show_debug_message("[Battle] Hollow count: " + string(instance_count(obj_unit_hollow))
+    + "  |  battle_enemy_count: " + string(global.battle_enemy_count));
 
 // ── Build turn order: player units first, then enemies ────────────────────────
 turn_order = [];

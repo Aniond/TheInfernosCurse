@@ -174,6 +174,10 @@ function scr_battle_check_limbo_tile(unit_id) {
                 grid_y = _new_pos.gy;
             }
 
+            // Sanity cost for stepping into a Limbo fold
+            global.sanity = max(1, global.sanity - 3);
+            scr_battle_add_log(unit_id.unit_name + " stepped through the fold. Sanity -3.");
+
             scr_world_event_log(
                 "The floor forgot where it was. So did " + unit_id.unit_name + "."
             );
@@ -417,6 +421,12 @@ function scr_battle_start_round() {
     with (obj_battle_manager) {
         global.battle_round++;
         scr_battle_add_log("--- Round " + string(global.battle_round) + " ---");
+
+        // Passive sanity drain each round — Limbo wears on the mind
+        if (instance_exists(obj_unit_benedetto)) {
+            global.sanity = max(1, global.sanity - 1);
+            scr_battle_add_log("The grey presses closer. Sanity -1.");
+        }
 
         // Reset AP and clear round-scoped flags on all units
         with (obj_unit_base) {

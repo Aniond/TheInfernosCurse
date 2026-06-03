@@ -19,8 +19,8 @@ draw_rectangle(_tx + _pad, _ty + _pad, _tx + _ts - _pad - 1, _ty + _ts - _pad - 
 
 // Always-on thin border for enemy units so they're visible against the dark grid
 if (team == 1) {
-    draw_set_alpha(0.9);
-    draw_set_color(c_white);
+    draw_set_alpha(0.6);
+    draw_set_color(make_color_rgb(255, 255, 255));
     draw_rectangle(_tx + _pad, _ty + _pad, _tx + _ts - _pad - 1, _ty + _ts - _pad - 1, true);
 }
 
