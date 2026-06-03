@@ -18,10 +18,14 @@
 #macro LIMBO_TILE_MAX     10     // most tiles at 100% corruption
 #macro LIMBO_SHIMMER_COST  3     // sanity lost when Benedetto focuses to see a tile
 #macro LIMBO_SHIMMER_STEPS 120   // how long the shimmer stays visible (2 s @ 60 fps)
-#macro LIMBO_TILE_MOVE_INTERVAL 90  // steps between tile moves at high corruption
+#macro LIMBO_TILE_MOVE_INTERVAL 360  // steps between tile moves (6 s @ 60 fps).
+                                     // Was 90 (1.5 s) — too fast; tiles scattered
+                                     // right after a Focus reveal, killing its value.
 
 // ── Corruption threshold for tile movement ────────────────────────────────────
-#macro LIMBO_MOVE_THRESHOLD 75
+// Tiles only relocate at VERY high corruption now (was 75). Below this they
+// hold position, so a Focus reveal stays actionable.
+#macro LIMBO_MOVE_THRESHOLD 90
 
 // ── Forgotten status tuning ───────────────────────────────────────────────────
 #macro HOLLOW_BASE_FORGET_CHANCE  0.15  // 15% at 0% corruption

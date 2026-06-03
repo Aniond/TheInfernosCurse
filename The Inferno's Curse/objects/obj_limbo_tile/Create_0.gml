@@ -9,9 +9,17 @@ grid_x = 0;
 grid_y = 0;
 
 // ── Shimmer state ─────────────────────────────────────────────────────────────
-is_shimmer_visible = false;   // true while the shimmer is drawn
+is_shimmer_visible = false;   // true while the FOCUS shimmer is drawn
 shimmer_timer      = 0;       // counts up while visible; resets on hide
 shimmer_alpha      = 0;       // current alpha for draw event
+
+// ── Passive shimmer (rare faint hint, high corruption only) ───────────────────
+// Focus [F] is the PRIMARY reveal. Passive shimmer is barely-there and
+// infrequent, and never appears below the corruption/sanity gates (see Step).
+passive_active   = false;
+passive_timer    = 0;
+passive_alpha    = 0;
+passive_cooldown = irandom_range(300, 600);   // staggered so tiles don't pulse in sync
 
 // ── Trigger flag ─────────────────────────────────────────────────────────────
 // true while the tile has just fired (prevents double-teleport this step).

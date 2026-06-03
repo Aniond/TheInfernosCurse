@@ -18,6 +18,16 @@ if (global.debug_mode) {
     draw_set_color(c_white);
 }
 
+// ── Passive faint shimmer (separate from Focus's full-strength shimmer) ───────
+// A barely-there hint at high corruption. Capped low in Step so it's easy to miss.
+if (passive_active && passive_alpha > 0 && !is_shimmer_visible) {
+    draw_set_color(make_color_rgb(130, 90, 220));
+    draw_set_alpha(passive_alpha);
+    draw_rectangle(_tx + 1, _ty + 1, _tx + _ts - 2, _ty + _ts - 2, false);
+    draw_set_alpha(1);
+    draw_set_color(c_white);
+}
+
 // Normal play: only the violet shimmer when Focus has revealed this tile
 if (!is_shimmer_visible || shimmer_alpha <= 0) exit;
 
