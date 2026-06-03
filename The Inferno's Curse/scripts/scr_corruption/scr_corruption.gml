@@ -303,21 +303,12 @@ function scr_apply_sin_effect(circle_index) {
         // ── CIRCLE 1: LUST — gravitational pull toward enemies ────────────────
         // Desire is a force. The player is drawn toward what they shouldn't want.
         case CIRCLE_LUST:
-            if (instance_exists(obj_player)) {
-                // Find nearest enemy.
-                var _nearest = instance_nearest(obj_player.x, obj_player.y, obj_enemy);
-                if (_nearest != noone) {
-                    // Pull magnitude scales with corruption; maximum 0.5 px/step.
-                    var _pull = 0.5 * (_c / 100);
-                    var _dx   = _nearest.x - obj_player.x;
-                    var _dy   = _nearest.y - obj_player.y;
-                    var _dist = point_distance(obj_player.x, obj_player.y, _nearest.x, _nearest.y);
-                    if (_dist > 1) {
-                        obj_player.x += (_dx / _dist) * _pull;
-                        obj_player.y += (_dy / _dist) * _pull;
-                    }
-                }
-            }
+            // TODO: pull the player toward the nearest overworld enemy once an
+            // enemy object exists. Stubbed — there is no overworld enemy object
+            // yet, and the old obj_enemy reference was undefined (runtime crash).
+            // When overworld enemies ship, restore the instance_nearest pull and
+            // gate it with object_exists() on the real enemy object.
+            //
             // Crimson pulse intensity is read by the Draw GUI event.
             // vision_intensity doubles as the screen-edge tint driver.
             global.vision_intensity = min(global.vision_intensity + (0.1 * (_c / 100)), 100);
