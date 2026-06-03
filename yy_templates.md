@@ -2,7 +2,14 @@
 
 ## ⚠️ CRITICAL WARNINGS — READ BEFORE EDITING
 
-1. **Always close GameMaker before Claude Code edits any `.yy` or `.yyp` file.**
+1. **External library installation can trigger a "project newer than IDE" warning.**
+   When `.yymps` packages are extracted and registered in the `.yyp` manually (outside
+   the IDE), GM may cache a partially-written file and warn on next open. This is a
+   false positive — do NOT let GM downgrade the project. Check `IDEVersion` in the
+   `.yyp` against the installed IDE exe (`Get-Item "C:\Program Files\GameMaker-LTS2026\
+   GameMaker-LTS2026.exe").VersionInfo.FileVersion`). If they match, click NO and
+   fully quit + reopen GM. *Observed 2026-06-02* during Scribble/Input installation.
+2. **Always close GameMaker before Claude Code edits any `.yy` or `.yyp` file.**
    GM caches the project and can overwrite external edits (and it caches *failed*
    loads — a bad edit sticks until a full quit).
 2. **VS Code can silently revert `.yyp` changes.** If the `.yyp` (or a `.yy`) is open
