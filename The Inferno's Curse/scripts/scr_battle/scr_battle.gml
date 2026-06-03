@@ -23,9 +23,9 @@
                                      // right after a Focus reveal, killing its value.
 
 // ── Corruption threshold for tile movement ────────────────────────────────────
-// Tiles only relocate at VERY high corruption now (was 75). Below this they
-// hold position, so a Focus reveal stays actionable.
-#macro LIMBO_MOVE_THRESHOLD 90
+// Tiles relocate once corruption passes this. Movement is intentional — it just
+// happens on a slow interval (above) so a Focus reveal stays actionable.
+#macro LIMBO_MOVE_THRESHOLD 75
 
 // ── Forgotten status tuning ───────────────────────────────────────────────────
 #macro HOLLOW_BASE_FORGET_CHANCE  0.15  // 15% at 0% corruption
@@ -204,6 +204,11 @@ function scr_battle_check_limbo_tile(unit_id) {
 /// Min sanity in battle = 1.
 function scr_battle_focus() {
     var _class = variable_global_exists("player_class") ? global.player_class : "default";
+
+    // Focusing buys time: reset the tile-move timer so revealed tiles hold their
+    // position for a full LIMBO_TILE_MOVE_INTERVAL — the player gets a guaranteed
+    // window to read the reveal and move away before anything relocates.
+    with (obj_battle_manager) tile_move_timer = 0;
 
     // Reveal count scales with sanity (clearer sight at higher sanity)
     var _count;
