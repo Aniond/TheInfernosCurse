@@ -21,6 +21,14 @@ for (var _i = 0; _i < _count; _i++) {
 show_debug_message("[Battle] Hollow count: " + string(instance_number(obj_unit_hollow))
     + "  |  battle_enemy_count: " + string(global.battle_enemy_count));
 
+// ── TEMP DEBUG — force one Shambler for Prompt 12 testing ─────────────────────
+// Remove once encounter table handles Legendary spawns correctly.
+var _s = instance_create_layer(0, 0, "Instances", obj_unit_shambler);
+_s.grid_x    = 8;
+_s.grid_y    = 3;
+_s.unit_name = "The Shambler";
+show_debug_message("[Battle] Shambler count: " + string(instance_number(obj_unit_shambler)));
+
 // ── Build turn order: player units first, then enemies ────────────────────────
 turn_order = [];
 with (obj_unit_base) {
