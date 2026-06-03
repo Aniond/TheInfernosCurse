@@ -83,5 +83,21 @@ if (battle_phase == "player_turn" || battle_phase == "enemy_turn") {
     }
 }
 
+// ── Focus false-reveal shimmer (Cursed perception failure) ────────────────────
+// A normal cell highlighted as if it were a Limbo tile — matches the real
+// shimmer's violet style so the player cannot tell it is a lie.
+if (global.false_shimmer_active) {
+    var _fx = _gx0 + global.false_shimmer_gx * BATTLE_TILE_SIZE;
+    var _fy = _gy0 + global.false_shimmer_gy * BATTLE_TILE_SIZE;
+    var _fp = 0.5 + sin(global.false_shimmer_timer * 0.20) * 0.5;
+    draw_set_color(make_color_rgb(130, 90, 220));
+    draw_set_alpha(0.30 * _fp);
+    draw_rectangle(_fx + 1, _fy + 1, _fx + BATTLE_TILE_SIZE - 2, _fy + BATTLE_TILE_SIZE - 2, false);
+    draw_set_color(make_color_rgb(190, 150, 255));
+    draw_set_alpha(0.80);
+    draw_rectangle(_fx + 1, _fy + 1, _fx + BATTLE_TILE_SIZE - 2, _fy + BATTLE_TILE_SIZE - 2, true);
+    draw_set_alpha(1);
+}
+
 draw_set_color(c_white);
 draw_set_alpha(1);

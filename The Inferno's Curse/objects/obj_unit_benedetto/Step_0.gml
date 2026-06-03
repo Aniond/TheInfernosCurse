@@ -65,18 +65,10 @@ if ((_dx != 0 || _dy != 0) && ap > 0) {
     }
 }
 
-// ── Focus — F key: reveal nearby Limbo shimmer at sanity cost ─────────────────
+// ── Focus — F key: reveal hidden Limbo tiles, count scaled by sanity ──────────
+// Full logic (class handling, perception check, chronicle) in scr_battle_focus.
 if (keyboard_check_pressed(ord("F"))) {
-    // Signal all Limbo tiles within 2 Manhattan steps to show shimmer
-    with (obj_limbo_tile) {
-        var _dist = abs(grid_x - other.grid_x) + abs(grid_y - other.grid_y);
-        if (_dist <= 2 && global.sanity > 0) {
-            is_shimmer_visible = true;
-            shimmer_timer      = 0;
-            global.sanity      = max(0, global.sanity - LIMBO_SHIMMER_COST);
-            scr_battle_add_log("Benedetto focused his sight. Sanity -" + string(LIMBO_SHIMMER_COST) + ".");
-        }
-    }
+    scr_battle_focus();
 }
 
 // ── End turn — Z or Enter only — AP exhaustion NEVER auto-advances ───────────

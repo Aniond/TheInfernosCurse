@@ -32,6 +32,27 @@ if (keyboard_check_pressed(vk_f1)) {
     global.save_indicator_timer = 120;
 }
 
+// ── DEBUG: cycle Focus class (F2) — default -> witness -> cursed ──────────────
+if (keyboard_check_pressed(vk_f2)) {
+    if      (global.player_class == "default") global.player_class = "witness";
+    else if (global.player_class == "witness") global.player_class = "cursed";
+    else                                       global.player_class = "default";
+    global.save_indicator_text  = "CLASS: " + global.player_class;
+    global.save_indicator_timer = 120;
+}
+
+// ── DEBUG: sanity tiers (F3 -20, F4 +20) — test Focus reveal scaling ─────────
+if (keyboard_check_pressed(vk_f3)) {
+    global.sanity = max(1, global.sanity - 20);
+    global.save_indicator_text  = "SANITY: " + string(round(global.sanity));
+    global.save_indicator_timer = 120;
+}
+if (keyboard_check_pressed(vk_f4)) {
+    global.sanity = min(100, global.sanity + 20);
+    global.save_indicator_text  = "SANITY: " + string(round(global.sanity));
+    global.save_indicator_timer = 120;
+}
+
 // ── DEBUG: battle trigger (B) — remove when proper battle triggers are wired ──
 // Unconditional in Room1 so it always works during development, regardless of
 // debug_mode / save state. Pressing B drops Benedetto into room_battle vs 3 Hollows.

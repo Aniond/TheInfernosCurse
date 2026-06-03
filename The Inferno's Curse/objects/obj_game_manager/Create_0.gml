@@ -119,6 +119,12 @@ global.world_event_log = [];
 // At 0, hallucinations and gameplay distortions activate.
 global.sanity = 100;
 
+// Player class — affects the Focus ability:
+//   "witness" = Focus is free (no sanity cost)
+//   "cursed"  = Focus reveals only 1 tile, perception check can reveal a false one
+//   "default" = standard scaled reveal at -LIMBO_SHIMMER_COST sanity
+global.player_class = "default";
+
 // Controls hallucination / corruption overlay intensity (0 = none, 100 = max).
 // Driven by low sanity and high local corruption.
 global.vision_intensity = 0;
@@ -204,6 +210,12 @@ global.battle_enemy_count  = 2;    // default; overwritten by scr_battle_trigger
 global.battle_turn         = 0;
 global.battle_round        = 1;
 global.battle_result       = "";
+
+// Focus false-reveal (Cursed perception failure) — drawn by obj_battle_manager.
+global.false_shimmer_active = false;
+global.false_shimmer_gx     = 0;
+global.false_shimmer_gy     = 0;
+global.false_shimmer_timer  = 0;
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
 // Order matters: config (API key) must load before world state, so mock-mode

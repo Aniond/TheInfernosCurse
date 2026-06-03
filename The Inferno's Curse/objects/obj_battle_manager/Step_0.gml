@@ -21,6 +21,12 @@ if (instance_exists(obj_unit_benedetto)) {
     if (global.sanity <= 0) global.sanity = 1;   // hard floor — 0 is open-world only
 }
 
+// ── Focus false-reveal timer (Cursed perception failure) ─────────────────────
+if (global.false_shimmer_active) {
+    global.false_shimmer_timer--;
+    if (global.false_shimmer_timer <= 0) global.false_shimmer_active = false;
+}
+
 // ── Flee confirmation input ───────────────────────────────────────────────────
 if (flee_confirm) {
     // Y = confirm flee
