@@ -198,19 +198,19 @@ function scr_battle_check_limbo_tile(unit_id) {
 /// Returns the Focus class label + charge data for a sanity value.
 /// charges = (a) total battle presses (set once at battle start, never refreshed)
 ///           (b) tiles revealed per press — same number, class-determined.
-/// MINIMUM 1 — the Hollow always has one last charge.
+/// MINIMUM 1 — the Forgotten always has one last charge.
 function scr_focus_class(sanity) {
-    if (sanity >= 75) return { name: "The Priest",  charges: 4 };  // 75-100%
-    if (sanity >= 50) return { name: "The Witness", charges: 3 };  // 50-74%
-    if (sanity >= 25) return { name: "The Tainted", charges: 2 };  // 25-49%
-    if (sanity >= 10) return { name: "The Cursed",  charges: 1 };  // 10-24%
-    return { name: "The Hollow", charges: 1 };                     // 1-9% — never 0
+    if (sanity >= 75) return { name: "The Priest",    charges: 4 };  // 75-100%
+    if (sanity >= 50) return { name: "The Witness",   charges: 3 };  // 50-74%
+    if (sanity >= 25) return { name: "The Tainted",   charges: 2 };  // 25-49%
+    if (sanity >= 10) return { name: "The Cursed",    charges: 1 };  // 10-24%
+    return { name: "The Forgotten", charges: 1 };                    // 1-9% — never 0
 }
 
 /// Focus (F). Each press costs -3 sanity, spends 1 battle charge, and reveals
-/// class-based tile count (Priest=4, Witness=3, Tainted=2, Cursed/Hollow=1).
+/// class-based tile count (Priest=4, Witness=3, Tainted=2, Cursed/Forgotten=1).
 /// Charges are per BATTLE — set at battle start, never refreshed between turns.
-/// Cursed/Hollow sight may lie (perception check). Tile-move timer resets on use.
+/// Cursed/Forgotten sight may lie (perception check). Tile-move timer resets on use.
 function scr_battle_focus() {
     // Spent — no charges left this battle. Debug mode is never spent.
     if (!global.debug_mode && global.focus_charges <= 0) return;
@@ -224,9 +224,9 @@ function scr_battle_focus() {
     // Focusing buys time: revealed tiles hold position for a full move interval.
     with (obj_battle_manager) tile_move_timer = 0;
 
-    // Low-sanity sight can deceive: Cursed/Hollow may reveal a FALSE tile.
+    // Low-sanity sight can deceive: Cursed/Forgotten may reveal a FALSE tile.
     var _revealed = 0;
-    if ((_info.name == "The Cursed" || _info.name == "The Hollow")
+    if ((_info.name == "The Cursed" || _info.name == "The Forgotten")
         && irandom_range(1, 100) > global.sanity) {
         scr_battle_false_reveal();   // a normal cell, highlighted as Limbo
         _revealed = 1;
@@ -248,8 +248,8 @@ function scr_battle_focus() {
     // Spend a charge (debug mode never depletes)
     if (!global.debug_mode) global.focus_charges = max(0, global.focus_charges - 1);
 
-    // Chronicle — the Hollow's final charge gets its own line
-    if (_info.name == "The Hollow" && _is_last) {
+    // Chronicle — the Forgotten's final charge gets its own line
+    if (_info.name == "The Forgotten" && _is_last) {
         scr_battle_add_log("He strains with everything he has left. One moment. Just one. It has to be enough.");
     } else if (_revealed > 1) {
         scr_battle_add_log("He focuses. " + string(_revealed) + " places reveal themselves.");
