@@ -20,11 +20,13 @@ if (_dx != 0 && _dy != 0) {
 var _mx = _dx * move_spd;
 var _my = _dy * move_spd;
 
-// ── Facing direction ──────────────────────────────────────────────────────────
-// Only update when the player is actually moving so idle facing is preserved.
-// obj_manifestation reads this to decide whether it's in the player's arc.
+// ── Facing direction + vision movement gate ───────────────────────────────────
 if (_dx != 0 || _dy != 0) {
     facing_dir = point_direction(0, 0, _dx, _dy);
+    global.player_is_moving      = true;
+    global.last_player_move_time = get_timer();
+} else {
+    global.player_is_moving = false;
 }
 
 // ── Directional sprite ────────────────────────────────────────────────────────

@@ -59,33 +59,34 @@ function scr_update_vision_intensity() {
 /// perfectly predictable even at high intensity.
 /// Called every step from obj_game_manager Step event.
 function scr_check_trigger_vision() {
+    // Never fire during battle — battle visions are event-driven only
+    if (global.battle_active) exit;
+
     var _intensity = global.vision_intensity;
+    var _now       = get_timer();   // microseconds since app start
 
-    // ── Dynamic cooldown ──────────────────────────────────────────────────────
-    // At intensity=0: cooldown=300 steps (~5 s at 60 fps)
-    // At intensity=100: cooldown=100 steps (~1.7 s), minimum floor=30
-    // Base cooldown is read from global.vision_cooldown so safe zones can slow
-    // visions: obj_safe_house raises it to 600 while the player is resting,
-    // and resets it to 300 once they leave.
-    var _base = global.vision_cooldown;
-    if (_base <= 0) _base = 300; // fallback if never initialised
-    var _cooldown = max(_base - (_intensity * 2), 30);
-
-    // Halve cooldown below sanity 25 (threshold: mind is shattering)
-    if (global.sanity <= 25) {
-        _cooldown = max(_cooldown / 2, 30);
+    // ── Real-time cooldown ────────────────────────────────────────────────────
+    // 10s base; drops to 5s at intensity >= 60; hard floor 3s.
+    var _min_gap;
+    if (_intensity >= 60) {
+        _min_gap = 5000000;    // 5 seconds
+    } else {
+        _min_gap = 10000000;   // 10 seconds
     }
+    _min_gap = max(_min_gap, 3000000);   // 3s hard floor
 
-    // ── Cooldown check ────────────────────────────────────────────────────────
-    if (current_time - global.last_vision_time < _cooldown * (1000 / game_get_speed(gamespeed_fps))) exit;
+    if (_now - global.last_vision_time < _min_gap) exit;
+
+    // ── Idle gate — no visions when player is standing still ─────────────────
+    // Fires if player has moved in the last 5s, or day just advanced.
+    if (!global.player_is_moving &&
+        _now - global.last_player_move_time > 5000000) exit;
 
     // ── Probability roll ──────────────────────────────────────────────────────
-    // At intensity=0: 0% chance. At intensity=100: 100% chance.
     if (random(1) >= _intensity / 100) exit;
 
-    // ── Fire the vision ───────────────────────────────────────────────────────
     scr_trigger_vision();
-    global.last_vision_time = current_time;
+    global.last_vision_time = _now;
 }
 
 

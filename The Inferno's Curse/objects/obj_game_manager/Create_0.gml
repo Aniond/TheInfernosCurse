@@ -127,9 +127,13 @@ global.vision_intensity = 0;
 // Prevents multiple manifestations stacking simultaneously.
 global.manifestation_active = false;
 
-// Step index of the last triggered vision (used to enforce cooldown).
-// Compared against current_time each step in scr_check_trigger_vision().
-global.last_vision_time = 0;
+// Timestamp of last triggered vision (microseconds via get_timer()).
+// Initialised to get_timer() so the first vision waits the full cooldown.
+global.last_vision_time = get_timer();
+
+// Player movement state — read by scr_check_trigger_vision to block idle visions.
+global.player_is_moving      = false;
+global.last_player_move_time = get_timer();
 
 // Minimum steps between visions (dynamically shortened at low sanity).
 // Base value; scr_check_trigger_vision() computes the live cooldown.
