@@ -152,7 +152,7 @@ if (battle_phase == "player_turn") {
     } else {
         draw_set_color(make_color_rgb(100, 85, 130));
         draw_text(_gw / 2, 608,
-            "[WASD] Move   [F] Focus (see shimmer, -" + string(LIMBO_SHIMMER_COST) + " sanity)   [Z / ENTER] End turn");
+            "[WASD / ↑↓←→] Move   [F] Focus (see shimmer, -" + string(LIMBO_SHIMMER_COST) + " sanity)   [Z / ENTER] End turn");
     }
 
     // Stats row

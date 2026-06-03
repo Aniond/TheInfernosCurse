@@ -31,8 +31,10 @@ if (global.sanity <= 0) {
 
 // ── Grid movement — WASD, one cell per keypress, costs 1 AP ──────────────────
 var _moved = false;
-var _dx    = keyboard_check_pressed(ord("D")) - keyboard_check_pressed(ord("A"));
-var _dy    = keyboard_check_pressed(ord("S")) - keyboard_check_pressed(ord("W"));
+var _dx    = (keyboard_check_pressed(ord("D")) || keyboard_check_pressed(vk_right))
+           - (keyboard_check_pressed(ord("A")) || keyboard_check_pressed(vk_left));
+var _dy    = (keyboard_check_pressed(ord("S")) || keyboard_check_pressed(vk_down))
+           - (keyboard_check_pressed(ord("W")) || keyboard_check_pressed(vk_up));
 
 // Diagonal not allowed — prefer horizontal
 if (_dx != 0 && _dy != 0) _dy = 0;
