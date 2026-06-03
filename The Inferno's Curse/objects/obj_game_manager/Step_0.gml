@@ -36,7 +36,7 @@ if (keyboard_check_pressed(vk_f1)) {
 // Unconditional in Room1 so it always works during development, regardless of
 // debug_mode / save state. Pressing B drops Benedetto into room_battle vs 3 Hollows.
 if (room == Room1 && keyboard_check_pressed(ord("B"))) {
-    scr_battle_trigger(3);   // 3 Hollows, Florence corruption level
+    scr_battle_trigger(1);   // 1 Hollow, Florence corruption level
 }
 
 // ── Save indicator countdown ──────────────────────────────────────────────────

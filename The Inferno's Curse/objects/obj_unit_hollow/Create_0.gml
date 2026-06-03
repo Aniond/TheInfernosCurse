@@ -22,6 +22,11 @@ unit_color = make_color_rgb(200, 180, 220);  // pale ghost-violet — visible on
 // Facing direction — updated when the unit moves. Controls sprite selection.
 unit_facing = "south";
 
+// Assign the sprite directly. This guarantees the asset is referenced in
+// compiled code (so it is never stripped as "unused") and gives a fallback
+// even if the custom Draw event fails to register. One sprite for now.
+sprite_index = spr_enemy_hollow_south;
+
 // Starting positions are set per-instance in room_battle.
 // Defaults here in case a Hollow is spawned programmatically.
 grid_x = 8;

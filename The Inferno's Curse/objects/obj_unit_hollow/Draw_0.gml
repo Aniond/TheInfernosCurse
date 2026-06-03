@@ -13,21 +13,9 @@ var _ts = BATTLE_TILE_SIZE;
 var _cx = _tx + _ts / 2;
 var _cy = _ty + _ts / 2;
 
-// ── Directional sprite ────────────────────────────────────────────────────────
-var _spr;
-switch (unit_facing) {
-    case "north":      _spr = spr_enemy_hollow_north;      break;
-    case "north_east": _spr = spr_enemy_hollow_north_east; break;
-    case "east":       _spr = spr_enemy_hollow_east;       break;
-    case "south_east": _spr = spr_enemy_hollow_south_east; break;
-    case "south_west": _spr = spr_enemy_hollow_south_west; break;
-    case "west":       _spr = spr_enemy_hollow_west;       break;
-    case "north_west": _spr = spr_enemy_hollow_north_west; break;
-    default:           _spr = spr_enemy_hollow_south;      break;
-}
-
+// ── Sprite (single south-facing sprite for now) ───────────────────────────────
 draw_set_alpha(is_active_turn ? 1.0 : 0.8);
-draw_sprite(_spr, 0, _cx, _cy);
+draw_sprite(sprite_index, 0, _cx, _cy);
 
 // ── Active turn ring ──────────────────────────────────────────────────────────
 if (is_active_turn) {

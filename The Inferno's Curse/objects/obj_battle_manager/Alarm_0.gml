@@ -5,7 +5,7 @@
 // Spread positions on the right side of the grid — up to 5 slots.
 // Positions are set directly so there's no per-instance creation-code risk.
 var _hollow_slots = [
-    [8, 1],
+    [6, 3],
     [8, 4],
     [8, 6],
     [7, 2],
