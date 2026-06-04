@@ -194,6 +194,10 @@ function scr_show_loading(npc_name) {
         dialogue_text    = "";
         dot_string       = ".";
         dot_timer        = 0;
+        loading_timer    = 0;
+        // Remember the source NPC during loading so ESC-cancel / timeout can
+        // release it cleanly (global.dialogue_npc was set by scr_npc_interact).
+        source_npc_id    = global.dialogue_npc;
     }
 
     global.input_locked = true;

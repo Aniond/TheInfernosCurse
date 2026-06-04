@@ -28,6 +28,7 @@ corruption_level = 0;    // copy of source NPC's npc_memory_corruption (0-200)
 // ── Loading animation ─────────────────────────────────────────────────────────
 dot_string = ".";       // animated "..." string shown while waiting
 dot_timer  = 0;         // steps since last dot cycle update
+loading_timer = 0;      // steps spent in the loading state (safety timeout)
 
 // ── Legacy aliases (kept so existing internal code doesn't break) ─────────────
 // These shadow the old variable names in case any call site we missed
