@@ -44,6 +44,12 @@ function scr_ai_call(prompt, system_prompt) {
     ds_map_add(_headers, "x-api-key",         global.claude_api_key);
     ds_map_add(_headers, "anthropic-version", "2023-06-01");
 
+    // The Anthropic API rejects an empty user message ("messages.0: user
+    // messages must have non-empty content"). For a greeting (no player input
+    // yet) send a neutral stage-direction so the NPC opens in character — all
+    // the personality/context lives in the system prompt.
+    var _user = (string_trim(prompt) == "") ? "*Benedetto approaches you.*" : prompt;
+
     // Build the body manually so max_tokens is a true JSON integer. GML has no
     // integer type — json_stringify() would emit 150.0, which the Anthropic API
     // rejects ("max_tokens: Input should be a valid integer"). json_stringify()
@@ -52,7 +58,7 @@ function scr_ai_call(prompt, system_prompt) {
         + "\"model\":\"claude-haiku-4-5-20251001\","
         + "\"max_tokens\":150,"
         + "\"system\":"   + json_stringify(system_prompt) + ","
-        + "\"messages\":[{\"role\":\"user\",\"content\":" + json_stringify(prompt) + "}]"
+        + "\"messages\":[{\"role\":\"user\",\"content\":" + json_stringify(_user) + "}]"
         + "}";
 
     var _req_id = http_request(
