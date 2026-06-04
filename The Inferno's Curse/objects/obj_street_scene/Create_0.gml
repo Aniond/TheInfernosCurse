@@ -49,7 +49,6 @@ scenery = [
     [spr_florence_bush,          430, 1460],
     [spr_florence_cypress,       260, 1880],   // below the west road exit
     [spr_florence_shrub_flower,  400, 2160],
-    [spr_florence_tree,          150, 2520],
     [spr_florence_bush,          440, 2860],
     // North verge — cypress row flanking the church approach
     [spr_florence_cypress,       720,  300],
@@ -66,10 +65,19 @@ scenery = [
     [spr_florence_tree,         2820, 1900],   // below the east road exit
     [spr_florence_cypress,      2640, 2320],
     [spr_florence_bush,         2940, 2680],
-    // South verge
-    [spr_florence_tree,          820, 2520],
-    [spr_florence_shrub_flower, 1220, 2780],
-    [spr_florence_cypress,      1620, 2500],
-    [spr_florence_bush,         2060, 2820],
-    [spr_florence_tree,         2420, 2620],
+    // South bank (Oltrarno) — kept below the river band (river y 2368–2560)
+    [spr_florence_cypress,       360, 2740],
+    [spr_florence_tree,          820, 2740],
+    [spr_florence_shrub_flower, 1240, 2820],
+    [spr_florence_cypress,      1640, 2760],
+    [spr_florence_bush,         2060, 2860],
+    [spr_florence_tree,         2440, 2780],
+    // Reeds at the waterline — north bank (base ~2380) and south bank (~2600),
+    // clear of the two bridge gaps (1040–1240, 1980–2180).
+    [spr_florence_reeds,         700, 2392],
+    [spr_florence_reeds,        1520, 2392],
+    [spr_florence_reeds,        2400, 2392],
+    [spr_florence_reeds,         640, 2604],
+    [spr_florence_reeds,        1640, 2604],
+    [spr_florence_reeds,        2480, 2604],
 ];

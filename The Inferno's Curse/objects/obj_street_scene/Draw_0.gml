@@ -36,6 +36,44 @@ for (var _gy = 0; _gy < room_height; _gy += _gs) {
     }
 }
 
+// ── The Arno ──────────────────────────────────────────────────────────────────
+// Full-width animated river quartering the city. The seamless water tile is
+// scrolled horizontally (driven by current_time, so no Step event is needed) to
+// give the current a downstream flow. Drawn over the grass; bridges below repaint
+// the paved road across each walkable gap.
+var _wy1 = global.river_y1, _wy2 = global.river_y2;
+var _wts = sprite_get_width(spr_florence_water);          // 64
+var _flow = (current_time / 1000 * 28) mod _wts;          // ~28 px/s downstream
+for (var _wy = _wy1; _wy < _wy2; _wy += _wts) {
+    for (var _wx = -_wts; _wx < room_width + _wts; _wx += _wts) {
+        draw_sprite(spr_florence_water, 0, _wx - _flow, _wy);
+    }
+}
+
+// Grassy waterline along both banks for definition.
+draw_set_color(make_color_rgb(52, 84, 40));
+draw_rectangle(0, _wy1 - 4, room_width, _wy1 + 2, false);
+draw_rectangle(0, _wy2 - 2, room_width, _wy2 + 4, false);
+draw_set_color(c_white);
+
+// Bridges — paved deck + stone parapets over each walkable gap. The deck runs a
+// tile past each bank so it meets the grass approach on either side.
+var _rts = sprite_get_width(spr_florence_road);           // 64
+for (var _b = 0; _b < array_length(global.river_bridges); _b++) {
+    var _bx1 = global.river_bridges[_b][0];
+    var _bx2 = global.river_bridges[_b][1];
+    for (var _by = _wy1 - _rts; _by < _wy2 + _rts; _by += _rts) {
+        for (var _bx = _bx1; _bx < _bx2; _bx += _rts) {
+            draw_sprite(spr_florence_road, 0, _bx, _by);
+        }
+    }
+    // Stone parapets along the up/downstream edges.
+    draw_set_color(make_color_rgb(120, 110, 95));
+    draw_rectangle(_bx1, _wy1 - _rts,     _bx2, _wy1 - _rts + 8, false);
+    draw_rectangle(_bx1, _wy2 + _rts - 8, _bx2, _wy2 + _rts,     false);
+    draw_set_color(c_white);
+}
+
 // ── Paved road ────────────────────────────────────────────────────────────────
 // Tile spr_florence_road within each road rectangle, over the cobblestone floor.
 var _ts = sprite_get_width(spr_florence_road);   // 64

@@ -57,6 +57,19 @@ var _wall_at = function(_px, _py, _hw, _hh) {
              && _py + _hh > y && _py - _hh < y + wall_h) { _hit = true; }
         }
     }
+    // River (the Arno): solid water across its full-width band EXCEPT where a
+    // bridge gap lets the player cross. Room1-only; geometry from globals set in
+    // obj_game_manager. Bridge test is on the player's centre x.
+    if (!_hit && room == Room1 && variable_global_exists("river_y1")) {
+        if (_py + _hh > global.river_y1 && _py - _hh < global.river_y2) {
+            var _on_bridge = false;
+            for (var _b = 0; _b < array_length(global.river_bridges); _b++) {
+                var _br = global.river_bridges[_b];
+                if (_px > _br[0] && _px < _br[1]) { _on_bridge = true; break; }
+            }
+            if (!_on_bridge) _hit = true;
+        }
+    }
     return _hit;
 };
 
