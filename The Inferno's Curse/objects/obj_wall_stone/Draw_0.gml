@@ -31,13 +31,19 @@ if (wall_sprite >= 0 && sprite_exists(wall_sprite)) {
         var _dark = (_corrupt - 50) / 50;
         _tint = merge_color(c_white, make_color_rgb(20, 20, 30), _dark);
     }
-    // Fixed 3x scale (144x144) — bottom-centre of wall footprint.
-    // wall_w/wall_h define collision only; visual is not stretched to fill them.
-    var _sw = sprite_get_width(wall_sprite) * 3;
-    var _sh = sprite_get_height(wall_sprite) * 3;
-    var _dx = _x1 + (wall_w * 0.5) - (_sw * 0.5);
-    var _dy = _y1 + wall_h - _sh;
-    draw_sprite_ext(wall_sprite, 0, _dx, _dy, 3, 3, 0, _tint, 1);
+    if (wall_fill) {
+        // Big structures (cathedral, bell towers, building rows): the footprint
+        // IS the building size, so stretch the sprite to fill it exactly.
+        draw_sprite_stretched_ext(wall_sprite, 0, _x1, _y1, wall_w, wall_h, _tint, 1);
+    } else {
+        // Houses: fixed 3x scale, bottom-centre (footprint defines collision only,
+        // the visual is not stretched to fill it).
+        var _sw = sprite_get_width(wall_sprite) * 3;
+        var _sh = sprite_get_height(wall_sprite) * 3;
+        var _dx = _x1 + (wall_w * 0.5) - (_sw * 0.5);
+        var _dy = _y1 + wall_h - _sh;
+        draw_sprite_ext(wall_sprite, 0, _dx, _dy, 3, 3, 0, _tint, 1);
+    }
 
     // Dark corruption veins drawn over the sprite at high corruption
     if (_corrupt > 75 && !global.debug_mode) {

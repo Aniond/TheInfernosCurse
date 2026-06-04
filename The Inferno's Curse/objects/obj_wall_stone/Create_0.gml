@@ -20,12 +20,24 @@ wall_w = 32 * image_xscale;
 wall_h = 32 * image_yscale;
 
 // ── Sprite auto-detection ─────────────────────────────────────────────────────
-// Square footprint (wall_w ≈ wall_h within 16px) = residential house → use the
-// Florence house sprite. Asymmetric = church / market / structural → keep the
-// grey rectangle placeholder until dedicated art ships for those buildings.
-wall_sprite = (abs(wall_w - wall_h) < 16) ? spr_florence_house_south : -1;
-
-// Directional override removed — all street houses use south-facing sprite.
+// Pick a building sprite by footprint shape:
+//   square   → townhouse        (fixed 3x scale; footprint is collision only)
+//   tall     → cathedral        (stretched to fill the footprint)
+//   thin     → bell tower / wall (stretched)
+//   wide     → townhouse row     (stretched)
+if (abs(wall_w - wall_h) < 16) {
+    wall_sprite = spr_florence_house_south;
+    wall_fill   = false;
+} else if (wall_w < 80 || wall_h < 80) {
+    wall_sprite = spr_florence_tower;
+    wall_fill   = true;
+} else if (wall_h > wall_w) {
+    wall_sprite = spr_florence_cathedral;
+    wall_fill   = true;
+} else {
+    wall_sprite = spr_florence_building_row;
+    wall_fill   = true;
+}
 
 // ── Corruption / breathing state ──────────────────────────────────────────────
 wall_corruption = 0;             // mirrors global.circle_corruption[0] each step

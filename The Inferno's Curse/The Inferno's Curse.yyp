@@ -23,6 +23,9 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_florence_building_row","path":"sprites/spr_florence_building_row/spr_florence_building_row.yy",},},
+    {"id":{"name":"spr_florence_cathedral","path":"sprites/spr_florence_cathedral/spr_florence_cathedral.yy",},},
+    {"id":{"name":"spr_florence_tower","path":"sprites/spr_florence_tower/spr_florence_tower.yy",},},
     {"id":{"name":"spr_florence_barrels","path":"sprites/spr_florence_barrels/spr_florence_barrels.yy",},},
     {"id":{"name":"spr_florence_cart","path":"sprites/spr_florence_cart/spr_florence_cart.yy",},},
     {"id":{"name":"spr_florence_market_stall","path":"sprites/spr_florence_market_stall/spr_florence_market_stall.yy",},},
