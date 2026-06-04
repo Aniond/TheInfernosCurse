@@ -36,13 +36,15 @@ if (wall_sprite >= 0 && sprite_exists(wall_sprite)) {
         // IS the building size, so stretch the sprite to fill it exactly.
         draw_sprite_stretched_ext(wall_sprite, 0, _x1, _y1, wall_w, wall_h, _tint, 1);
     } else {
-        // Houses: fixed 3x scale, bottom-centre (footprint defines collision only,
-        // the visual is not stretched to fill it).
-        var _sw = sprite_get_width(wall_sprite) * 3;
-        var _sh = sprite_get_height(wall_sprite) * 3;
+        // Houses: fixed scale, bottom-centre (footprint defines collision only,
+        // the visual is not stretched to fill it). Bumped past 3x so houses still
+        // tower over the (now larger 1.25x) player.
+        var _hscale = 3.75;
+        var _sw = sprite_get_width(wall_sprite)  * _hscale;
+        var _sh = sprite_get_height(wall_sprite) * _hscale;
         var _dx = _x1 + (wall_w * 0.5) - (_sw * 0.5);
         var _dy = _y1 + wall_h - _sh;
-        draw_sprite_ext(wall_sprite, 0, _dx, _dy, 3, 3, 0, _tint, 1);
+        draw_sprite_ext(wall_sprite, 0, _dx, _dy, _hscale, _hscale, 0, _tint, 1);
     }
 
     // Dark corruption veins drawn over the sprite at high corruption
