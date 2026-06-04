@@ -36,37 +36,40 @@ props = [
 // trees & bushes. Box generously covers every building, prop, shrine and NPC.
 core_rect = [560, 480, 2480, 2300];   // [x1, y1, x2, y2] — stays cobblestone
 
-// Scenery: [sprite, x, y] — trees & bushes, bottom-centered like props. Hand-
-// placed around the ring for a natural scatter, kept clear of the E/W road exits.
+// Scenery: [sprite, x, y] — trees, cypress, bushes & flowering shrubs, bottom-
+// centered like props. Hand-placed around the ring for a natural Tuscan scatter,
+// kept clear of the E/W road exits. Cypress cluster as accents/rows (iconic
+// lining the approaches); flowering shrubs add colour near the verge edges.
 scenery = [
     // West verge
-    [spr_florence_tree,   280,  420],
-    [spr_florence_bush,   170,  720],
-    [spr_florence_tree,   380,  980],
-    [spr_florence_tree,   210, 1300],
-    [spr_florence_bush,   430, 1460],
-    [spr_florence_tree,   260, 1880],   // below the west road exit
-    [spr_florence_bush,   400, 2160],
-    [spr_florence_tree,   150, 2520],
-    [spr_florence_tree,   440, 2860],
-    // North verge
-    [spr_florence_tree,   720,  300],
-    [spr_florence_bush,  1060,  210],
-    [spr_florence_tree,  1500,  260],
-    [spr_florence_bush,  1960,  220],
-    [spr_florence_tree,  2300,  340],
+    [spr_florence_tree,          280,  420],
+    [spr_florence_shrub_flower,  170,  720],
+    [spr_florence_cypress,       380,  980],
+    [spr_florence_tree,          210, 1300],
+    [spr_florence_bush,          430, 1460],
+    [spr_florence_cypress,       260, 1880],   // below the west road exit
+    [spr_florence_shrub_flower,  400, 2160],
+    [spr_florence_tree,          150, 2520],
+    [spr_florence_bush,          440, 2860],
+    // North verge — cypress row flanking the church approach
+    [spr_florence_cypress,       720,  300],
+    [spr_florence_bush,         1060,  210],
+    [spr_florence_cypress,      1380,  240],
+    [spr_florence_cypress,      1620,  240],
+    [spr_florence_shrub_flower, 1960,  220],
+    [spr_florence_cypress,      2300,  340],
     // East verge
-    [spr_florence_tree,  2760,  520],
-    [spr_florence_bush,  2920,  860],
-    [spr_florence_tree,  2660, 1260],
-    [spr_florence_bush,  2980, 1480],
-    [spr_florence_tree,  2820, 1900],   // below the east road exit
-    [spr_florence_tree,  2640, 2320],
-    [spr_florence_bush,  2940, 2680],
+    [spr_florence_tree,         2760,  520],
+    [spr_florence_bush,         2920,  860],
+    [spr_florence_cypress,      2660, 1260],
+    [spr_florence_shrub_flower, 2980, 1480],
+    [spr_florence_tree,         2820, 1900],   // below the east road exit
+    [spr_florence_cypress,      2640, 2320],
+    [spr_florence_bush,         2940, 2680],
     // South verge
-    [spr_florence_tree,   820, 2520],
-    [spr_florence_bush,  1220, 2780],
-    [spr_florence_tree,  1620, 2500],
-    [spr_florence_bush,  2060, 2820],
-    [spr_florence_tree,  2420, 2620],
+    [spr_florence_tree,          820, 2520],
+    [spr_florence_shrub_flower, 1220, 2780],
+    [spr_florence_cypress,      1620, 2500],
+    [spr_florence_bush,         2060, 2820],
+    [spr_florence_tree,         2420, 2620],
 ];

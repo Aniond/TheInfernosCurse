@@ -23,6 +23,11 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_florence_rooftop","path":"sprites/spr_florence_rooftop/spr_florence_rooftop.yy",},},
+    {"id":{"name":"spr_florence_cypress","path":"sprites/spr_florence_cypress/spr_florence_cypress.yy",},},
+    {"id":{"name":"spr_florence_reeds","path":"sprites/spr_florence_reeds/spr_florence_reeds.yy",},},
+    {"id":{"name":"spr_florence_shrub_flower","path":"sprites/spr_florence_shrub_flower/spr_florence_shrub_flower.yy",},},
+    {"id":{"name":"spr_florence_water","path":"sprites/spr_florence_water/spr_florence_water.yy",},},
     {"id":{"name":"spr_florence_bush","path":"sprites/spr_florence_bush/spr_florence_bush.yy",},},
     {"id":{"name":"spr_florence_grass","path":"sprites/spr_florence_grass/spr_florence_grass.yy",},},
     {"id":{"name":"spr_florence_tree","path":"sprites/spr_florence_tree/spr_florence_tree.yy",},},
