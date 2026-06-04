@@ -39,6 +39,13 @@ scr_npc_add_memory(
 // Inherit shared NPC state from obj_npc_base
 event_inherited();
 
+// ── Sprites ───────────────────────────────────────────────────────────────────
+// Marco stands at his stall facing the street (south). The stall draws behind
+// him; a loaf sits on the counter in front.
+npc_sprite  = spr_npc_marco_south;
+bg_sprite   = spr_marco_stall;
+prop_sprite = spr_item_bread;
+
 // ── Restore from saved world state ───────────────────────────────────────────
 // scr_load_world_state() runs before room instances are created, so globals
 // already hold the correct saved values by the time Marco's Create fires.

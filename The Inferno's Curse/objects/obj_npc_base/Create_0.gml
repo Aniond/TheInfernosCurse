@@ -23,6 +23,14 @@ npc_role        = npc_data.role;
 npc_location    = npc_data.location;
 npc_personality = npc_data.personality;
 
+// ── Sprites (optional — children assign; noone = grey placeholder) ────────────
+// npc_sprite:  the character's facing sprite (drawn centered on x,y).
+// bg_sprite:   a static prop drawn BEHIND the NPC (e.g. Marco's stall).
+// prop_sprite: a static prop drawn IN FRONT (e.g. bread on the counter).
+npc_sprite  = noone;
+bg_sprite   = noone;
+prop_sprite = noone;
+
 // ── API state ─────────────────────────────────────────────────────────────────
 // api_response: last text received from Claude. Mirrors npc_data.last_response.
 // api_pending:  true while an async request is in flight.

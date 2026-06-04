@@ -19,13 +19,46 @@ var _head_col = merge_color(
     _fade
 );
 
-// Body — 32x48 rectangle centered on (x, y)
-draw_set_color(_body_col);
-draw_rectangle(x - 16, y - 24, x + 16, y + 24, false);
+// ── Background prop (e.g. Marco's stall) — drawn first, behind the NPC ────────
+if (bg_sprite != noone) {
+    var _bw = sprite_get_width(bg_sprite);
+    var _bh = sprite_get_height(bg_sprite);
+    // Centered on x, sitting just behind the NPC's feet.
+    draw_sprite(bg_sprite, 0, x - _bw * 0.5, y - _bh + 30);
+}
 
-// Head
-draw_set_color(_head_col);
-draw_circle(x, y - 32, 8, false);
+if (npc_sprite != noone) {
+    // ── Real character sprite (centered, feet near y) ─────────────────────────
+    // Subtle desaturation toward grey as corruption rises — the NPC ghosts out.
+    var _sw   = sprite_get_width(npc_sprite);
+    var _sh   = sprite_get_height(npc_sprite);
+    var _tint = merge_color(c_white, make_color_rgb(120, 120, 120), _fade * 0.4);
+    draw_sprite_ext(
+        npc_sprite, 0,
+        x - _sw * 0.5, y - _sh + 28,
+        1, 1, 0, _tint, 1
+    );
+} else {
+    // ── Placeholder silhouette (no sprite assigned) ──────────────────────────
+    // Body — 32x48 rectangle centered on (x, y)
+    draw_set_color(_body_col);
+    draw_rectangle(x - 16, y - 24, x + 16, y + 24, false);
+
+    // Head
+    draw_set_color(_head_col);
+    draw_circle(x, y - 32, 8, false);
+}
+
+// ── Front prop (e.g. a loaf on the counter) — drawn over the NPC ─────────────
+if (prop_sprite != noone) {
+    var _pw = sprite_get_width(prop_sprite);
+    draw_sprite(prop_sprite, 0, x - _pw * 0.5, y + 6);
+}
+
+// Labels sit higher when a full-size character sprite is present so they
+// clear the head; placeholders keep the original tight offsets.
+var _name_label_y   = (npc_sprite != noone) ? (y - 96) : (y - 58);
+var _prompt_label_y = (npc_sprite != noone) ? (y - 80) : (y - 48);
 
 // Pulsing interact prompt above the NPC when the player is close
 if (near_player && !is_talking) {
@@ -33,14 +66,14 @@ if (near_player && !is_talking) {
     draw_set_color(merge_color(c_yellow, c_white, _pulse));
     draw_set_halign(fa_center);
     draw_set_valign(fa_bottom);
-    draw_text(x, y - 48, "[E / SPACE] Talk");
+    draw_text(x, _prompt_label_y, "[E / SPACE] Talk");
 }
 
 // Name tag — always visible
 draw_set_halign(fa_center);
 draw_set_valign(fa_bottom);
 draw_set_color(c_white);
-draw_text(x, y - 58, npc_data.name);
+draw_text(x, _name_label_y, npc_data.name);
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
