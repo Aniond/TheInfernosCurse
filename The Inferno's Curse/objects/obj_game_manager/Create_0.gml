@@ -244,6 +244,14 @@ scr_load_world_state();
 // Disable texture filtering globally — keeps pixel art sharp at any zoom level.
 gpu_set_tex_filter(false);
 
+// ── Street dressing ───────────────────────────────────────────────────────────
+// Spawn the persistent Florence street scene (paved road + market props) at a
+// low depth so it sits over the cobble floor but under characters/buildings.
+// It draws only in Room1 (room guard in its Draw event).
+if (!instance_exists(obj_street_scene)) {
+    instance_create_depth(0, 0, 160, obj_street_scene);
+}
+
 // NOTE: obj_journal and obj_vision_manager are placed directly in Room1 (see the
 // room's instance list), so they are NOT spawned here — doing both would create
 // duplicate instances because this Create runs before the room instances exist.
