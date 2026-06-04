@@ -24,7 +24,7 @@ npc_location    = npc_data.location;
 npc_personality = npc_data.personality;
 
 // ── API state ─────────────────────────────────────────────────────────────────
-// api_response: last text received from Claude (or mock). Mirrors npc_data.last_response.
+// api_response: last text received from Claude. Mirrors npc_data.last_response.
 // api_pending:  true while an async request is in flight.
 // request_id:   async HTTP request ID returned by http_request(). -1 = none in flight.
 api_response = "";

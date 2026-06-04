@@ -50,11 +50,11 @@ function scr_generate_journal_entry() {
         scr_ai_call("Write today's journal entry.", _system);
         // Response is routed through Async_62.gml — caller sets obj_journal.generating = true
     } else {
-        // Mock entry for development
-        _entry.text =
-            "The wall moved today. I told myself it was exhaustion. " +
-            "I am not exhausted. Brother Anselmo did not remember my name at Vespers. " +
-            "He has known me for eleven years.";
+        // No key — cannot generate. Surface a clear error rather than fake text.
+        show_debug_message(
+            "[Journal] No API key — cannot generate entry. Check config.ini ([API] key=...)."
+        );
+        _entry.text = "[ The page stays blank — Claude is unreachable. ]";
     }
 
     // Auto-save after codex entry so journal progress survives a crash

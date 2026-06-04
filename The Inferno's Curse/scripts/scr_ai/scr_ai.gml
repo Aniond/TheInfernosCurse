@@ -1,70 +1,15 @@
-/// @description AI integration layer
+/// @description AI integration layer (real Claude API only — no mock fallback)
 ///
-/// MOCK MODE (default — no API key needed):
-///   global.claude_api_key == "" → scr_mock_api_response() returns instant hardcoded dialogue.
-///   All NPC dialogue runs locally with no network calls.
+/// All NPC dialogue and journal text comes from live Claude calls.
+///   global.claude_api_key is loaded by scr_config_load() from config.ini ([API] key=...).
+///   scr_ai_call() fires an async http_request; the response is parsed in
+///   obj_npc_base's Async-HTTP event (Async_62.gml) and written to
+///   npc_data.last_response, then handed to scr_open_dialogue().
 ///
-/// REAL MODE (once Console is back and key is set):
-///   Populate claude_config.ini with your key (see obj_game_manager Create).
-///   scr_ai_call() fires an async http_request; parse the response in
-///   obj_game_manager's "Async - HTTP" event (add it in the IDE when ready)
-///   and write the text to npc_data.last_response.
-///
-/// SWAP POINT: In scr_npc_get_dialogue() in scr_npc_framework.gml,
-///   the mock/real branch is clearly marked. Only that one function changes.
-
-// ── Mock ─────────────────────────────────────────────────────────────────────
-
-/// Returns hardcoded dialogue appropriate to the current corruption level.
-/// Designed to exercise all UI paths without needing a live API key.
-///
-/// @param {string} npc_name      NPC's name (reserved for future personalisation)
-/// @param {real}   corruption    Circle corruption level 0-100
-/// @param {string} player_input  What the player said (unused in mock)
-/// @returns {string}             One line of NPC dialogue
-function scr_mock_api_response(npc_name, corruption, player_input) {
-    var _pool;
-
-    if (corruption < 25) {
-        // Tier 1 — world still remembers normality, just barely
-        _pool = [
-            "The shadows grow longer each day. Something stirs beneath the world.",
-            "I remember when the sky was still blue. That was before... before all this.",
-            "Tread carefully. The corruption takes those who linger too long.",
-            "You have the look of someone still searching for something. Most stop searching.",
-            "The Wardens haven't reached here yet. Hasn't stopped the dread, though."
-        ];
-    } else if (corruption < 50) {
-        // Tier 2 — cracks showing, people fraying at the edges
-        _pool = [
-            "You feel it too, don't you? The pull. It whispers when it's quiet.",
-            "Half my neighbours are... changed. I don't sleep anymore.",
-            "If you're hunting the Wardens — pray you're faster than the last one.",
-            "The dreams are getting worse. They're not my dreams.",
-            "Every morning I check the mirror. Still me. For now."
-        ];
-    } else if (corruption < 75) {
-        // Tier 3 — the corruption is winning, people are breaking
-        _pool = [
-            "Why do you still resist? It would be so much easier to let go.",
-            "The Warden's voice is in my head. I can't — I can't make it stop.",
-            "Run. Before the corruption decides it wants you too.",
-            "I used to have a name. I think. Did you need something?",
-            "There are things behind my eyes that are not mine."
-        ];
-    } else {
-        // Tier 4 — full corruption, barely coherent
-        _pool = [
-            "...",
-            "It sees you.",
-            "There is no after. Only the Curse.",
-            "Yesss. You are here at last.",
-            "Join usss."
-        ];
-    }
-
-    return _pool[irandom(array_length(_pool) - 1)];
-}
+/// REQUIREMENT: a valid API key MUST be present at runtime, which means
+///   config.ini must be delivered to the runtime working directory (Included Files).
+///   With no key, scr_ai_call() returns -1 and callers surface a visible error
+///   rather than inventing dialogue.
 
 // ── Real API ─────────────────────────────────────────────────────────────────
 //
@@ -78,14 +23,21 @@ function scr_mock_api_response(npc_name, corruption, player_input) {
 // async generation tasks outside the play loop.
 
 /// Fires an async POST to the Claude API.
-/// Returns the request ID so obj_game_manager can match responses.
-/// Returns -1 if no API key is set (caller should fall back to mock).
+/// Returns the request ID so the Async-HTTP event can match responses.
+/// Returns -1 if no API key is set (caller surfaces a visible error).
 ///
 /// @param {string} prompt          User-turn text
 /// @param {string} system_prompt   NPC system prompt
 /// @returns {real}                 Async request ID, or -1 if no key set
 function scr_ai_call(prompt, system_prompt) {
-    if (global.claude_api_key == "") return -1;
+    if (global.claude_api_key == "") {
+        show_debug_message(
+            "[scr_ai_call] No API key — cannot reach Claude. " +
+            "Ensure config.ini ([API] key=...) is an Included File so it reaches " +
+            "the runtime working directory."
+        );
+        return -1;
+    }
 
     var _headers = ds_map_create();
     ds_map_add(_headers, "Content-Type",      "application/json");
@@ -234,7 +186,7 @@ function scr_get_historical_context() {
 
 /// Fires an async Claude API call attributed to a specific NPC instance.
 /// Stores the request ID on the instance so Async_62.gml can route the response.
-/// Falls back to mock if no API key is set.
+/// If no API key is set, scr_ai_call returns -1 and the caller shows an error.
 ///
 /// @param {Id.Instance} npc_id        Instance of any obj_npc_base child
 /// @param {string}      player_input  What the player said (empty string for greeting)
@@ -245,6 +197,11 @@ function scr_npc_call_api(npc_id, player_input) {
     var _req_id = scr_ai_call(player_input, _system);
 
     npc_id.request_id               = _req_id;
-    npc_id.api_pending              = true;
+    npc_id.api_pending              = (_req_id != -1);
     npc_id.npc_data.pending_request = _req_id;
+
+    // No key / call failed — surface a clear error instead of hanging in "loading".
+    if (_req_id == -1) {
+        scr_open_dialogue(npc_id, "[ No connection to Claude — check config.ini API key. ]");
+    }
 }

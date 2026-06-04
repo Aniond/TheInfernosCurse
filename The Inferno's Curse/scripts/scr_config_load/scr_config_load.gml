@@ -32,10 +32,13 @@ function scr_config_load() {
     ini_close();
 
     if (global.claude_api_key == "") {
-        global.api_mock_mode = true;
-        show_debug_message("[Config] No API key found — running in mock mode.");
+        show_debug_message(
+            "[Config] ERROR: No API key found in config.ini ([API] key=...). " +
+            "NPC dialogue and journals require a live Claude key. " +
+            "Confirm config.ini is delivered as an Included File to the runtime " +
+            "working directory."
+        );
     } else {
-        global.api_mock_mode = false;
         show_debug_message(
             "[Config] API key loaded: " +
             string_copy(global.claude_api_key, 1, 12) + "..."

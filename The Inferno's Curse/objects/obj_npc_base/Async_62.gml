@@ -18,9 +18,8 @@ if (async_load[? "status"] != 0) {
     api_pending              = false;
     request_id               = -1;
     npc_data.pending_request = -1;
-    // Fall back to mock response so the player isn't left hanging.
-    api_response            = scr_mock_api_response(npc_data.name,
-        scr_corruption_get(npc_data.circle), "");
+    // Surface a clear error instead of leaving the player hanging — no mock.
+    api_response            = "[ Claude is unreachable — the connection faltered. ]";
     npc_data.last_response  = api_response;
     scr_open_dialogue(id, api_response);
     exit;

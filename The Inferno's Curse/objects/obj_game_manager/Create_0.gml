@@ -236,7 +236,7 @@ global.false_shimmer_gy     = 0;
 global.false_shimmer_timer  = 0;
 
 // ── Boot sequence ─────────────────────────────────────────────────────────────
-// Order matters: config (API key) must load before world state, so mock-mode
+// Order matters: config (API key) must load before world state, so the key
 // is known before any NPC or corruption data is restored.
 scr_config_load();
 scr_load_world_state();

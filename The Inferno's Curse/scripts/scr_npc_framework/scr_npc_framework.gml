@@ -20,7 +20,7 @@ function scr_npc_create(id, name, role, location, circle, personality) {
         disposition:     "neutral", // neutral | friendly | fearful | hostile
         knows_about:     [],        // array of rumour strings
         pending_request: -1,        // async HTTP request ID (-1 = none in flight)
-        last_response:   ""         // most recent dialogue line (mock or live)
+        last_response:   ""         // most recent dialogue line from Claude
     };
 }
 
@@ -100,7 +100,7 @@ function scr_npc_update_memory(npc_id, event, text) {
 }
 
 /// Handles the full flow of starting an NPC conversation:
-/// locks the NPC, fetches dialogue (mock or API), and opens the box.
+/// locks the NPC, fires the Claude API call, and opens the box.
 /// Called from obj_npc_base Step event and child objects.
 /// @param {Id.Instance} npc_id   Instance of any obj_npc_base child
 function scr_npc_interact(npc_id) {
@@ -111,22 +111,11 @@ function scr_npc_interact(npc_id) {
         api_pending         = true;
         global.dialogue_npc = id;
 
-        if (global.claude_api_key == "") {
-            // Mock path — instant response, no network call.
-            api_response           = scr_mock_api_response(
-                npc_data.name,
-                scr_corruption_get(npc_data.circle),
-                ""
-            );
-            npc_data.last_response = api_response;
-            api_pending            = false;
-            scr_open_dialogue(id, api_response);
-        } else {
-            // Real API path — show loading state immediately, response arrives
-            // in Async_62.gml which then calls scr_open_dialogue(id, text).
-            scr_show_loading(npc_name);
-            scr_npc_call_api(id, "");
-        }
+        // Real API path — show loading state immediately; the response arrives
+        // in Async_62.gml which then calls scr_open_dialogue(id, text).
+        // If no key is set, scr_npc_call_api surfaces a visible error instead.
+        scr_show_loading(npc_name);
+        scr_npc_call_api(id, "");
     }
 }
 
@@ -359,29 +348,15 @@ function scr_get_player_sin_profile() {
     return scr_sin_profile_to_string();
 }
 
-/// Triggers NPC dialogue — uses mock responses if no API key is set,
-/// otherwise fires a real async Claude API call.
-///
-/// MOCK PATH:  sets npc_data.last_response immediately (no HTTP, no waiting).
-/// REAL PATH:  sets npc_data.pending_request; the Async-HTTP event on
-///             obj_game_manager must write the parsed text to npc_data.last_response.
-///
-/// SWAP POINT: Change the condition below when the API key is available.
-///   Current:   if (global.claude_api_key == "") → always mock
-///   Live mode: key is loaded from claude_config.ini, branch switches automatically.
+/// Triggers NPC dialogue via a real async Claude API call.
+/// Sets npc_data.pending_request; the Async-HTTP event (Async_62.gml) writes
+/// the parsed text to npc_data.last_response and opens the dialogue box.
+/// pending_request is -1 when no key is set (caller should surface an error).
 ///
 /// @param {struct} npc_data
 /// @param {string} player_input   What the player said or contextual prompt
 function scr_npc_get_dialogue(npc_data, player_input) {
-    if (global.claude_api_key == "") {
-        // ── MOCK PATH — instant, no network ──────────────────────────────────
-        var _corrupt = scr_corruption_get(npc_data.circle);
-        npc_data.last_response   = scr_mock_api_response(npc_data.name, _corrupt, player_input);
-        npc_data.pending_request = -1;
-    } else {
-        // ── REAL PATH — async HTTP, response handled in obj_game_manager ─────
-        var _system = scr_build_npc_system_prompt(npc_data);
-        npc_data.last_response   = ""; // cleared until response arrives
-        npc_data.pending_request = scr_ai_call(player_input, _system);
-    }
+    var _system = scr_build_npc_system_prompt(npc_data);
+    npc_data.last_response   = ""; // cleared until response arrives
+    npc_data.pending_request = scr_ai_call(player_input, _system);
 }
