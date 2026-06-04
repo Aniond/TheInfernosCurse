@@ -68,3 +68,19 @@ ComfyUI/
 # ── Secrets / local credentials (never commit) ───────────────────────────────
 config.ini
 .mcp.json
+
+# ── Local-only staging & reference material (not version controlled) ─────────
+# Library install staging scratch (zips + extracted GM libs)
+_lib_staging/
+# Reference PDFs (large rulebooks / grimoires, local reference only)
+refrences/
+# Burst-test / debug screenshots (regenerated, large)
+screenshots/
+# Source image staging before GameMaker import
+sprite_import/
+# PixelLab API reference (local reference doc)
+instructions/pixellab_api_reference.md
+# Raw AI-generation concept dumps (kept on disk, not version controlled)
+The Inferno's Curse/assets/concepts/characters/image.png
+The Inferno's Curse/assets/concepts/characters/image (1).png
+The Inferno's Curse/assets/concepts/characters/00008-2772151680.png
