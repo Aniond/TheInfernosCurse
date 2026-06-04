@@ -44,12 +44,16 @@ function scr_ai_call(prompt, system_prompt) {
     ds_map_add(_headers, "x-api-key",         global.claude_api_key);
     ds_map_add(_headers, "anthropic-version", "2023-06-01");
 
-    var _body = json_stringify({
-        model:      "claude-haiku-4-5-20251001",
-        max_tokens: 150,
-        system:     system_prompt,
-        messages:   [{ role: "user", content: prompt }]
-    });
+    // Build the body manually so max_tokens is a true JSON integer. GML has no
+    // integer type — json_stringify() would emit 150.0, which the Anthropic API
+    // rejects ("max_tokens: Input should be a valid integer"). json_stringify()
+    // is still used on the string fields to get correct JSON escaping.
+    var _body = "{"
+        + "\"model\":\"claude-haiku-4-5-20251001\","
+        + "\"max_tokens\":150,"
+        + "\"system\":"   + json_stringify(system_prompt) + ","
+        + "\"messages\":[{\"role\":\"user\",\"content\":" + json_stringify(prompt) + "}]"
+        + "}";
 
     var _req_id = http_request(
         "https://api.anthropic.com/v1/messages", "POST", _headers, _body
