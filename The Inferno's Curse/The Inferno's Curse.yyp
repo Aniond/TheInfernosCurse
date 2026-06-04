@@ -23,6 +23,7 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_florence_street","path":"sprites/spr_florence_street/spr_florence_street.yy",},},
     {"id":{"name":"spr_item_bread","path":"sprites/spr_item_bread/spr_item_bread.yy",},},
     {"id":{"name":"spr_marco_stall","path":"sprites/spr_marco_stall/spr_marco_stall.yy",},},
     {"id":{"name":"spr_npc_marco_east","path":"sprites/spr_npc_marco_east/spr_npc_marco_east.yy",},},
