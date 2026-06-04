@@ -23,8 +23,8 @@ road_rects = [
 // easy to nudge here.
 props = [
     [spr_florence_well,          1520, 1660],  // piazza centerpiece at the road junction
-    [spr_florence_cart,           980, 1672],  // just west of Marco
-    [spr_florence_market_stall,  1720, 1648],  // market row, east of Marco
-    [spr_florence_barrels,       1808, 1544],  // goods by the eastern buildings
-    [spr_florence_barrels,        856, 1544],  // goods by the western houses
+    [spr_florence_cart,           980, 1672],  // on the street, west side
+    [spr_florence_barrels,       1808, 1544],  // goods beside Marco's bakery
+    [spr_florence_barrels,       1130, 1545],  // logs to the RIGHT of the safe-house door
 ];
+// (Empty market stall removed — Marco's bakery now occupies that spot at 1720.)

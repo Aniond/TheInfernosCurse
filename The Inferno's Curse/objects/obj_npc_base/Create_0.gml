@@ -30,6 +30,7 @@ npc_personality = npc_data.personality;
 npc_sprite  = noone;
 bg_sprite   = noone;
 prop_sprite = noone;
+npc_scale   = 1;       // overall display scale for sprite + bg/prop (children may shrink)
 
 // ── API state ─────────────────────────────────────────────────────────────────
 // api_response: last text received from Claude. Mirrors npc_data.last_response.
