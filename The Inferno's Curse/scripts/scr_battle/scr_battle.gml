@@ -251,9 +251,10 @@ function scr_battle_check_limbo_tile(unit_id) {
 /// Escalates battle_corruption and moves 1-2 Limbo tiles at high corruption.
 function scr_battle_turn_start_effects() {
     // ── Corruption escalation ─────────────────────────────────────────────────
-    var _escalation = 0.5;   // base per round
-    with (obj_unit_shambler) { if (hp > 0) _escalation += 1.0; }
-    with (obj_unit_hollow)   { if (hp > 0) _escalation += 0.5; }
+    var _escalation = 0.1;   // base per round
+    with (obj_unit_shambler) { if (hp > 0) _escalation += 0.3; }
+    with (obj_unit_hollow)   { if (hp > 0) _escalation += 0.1; }
+    _escalation = min(_escalation, 0.5);   // hard cap — never more than 0.5/round
     global.battle_corruption = clamp(global.battle_corruption + _escalation, 0, 100);
 
     // ── Per-round tile movement at 75%+ corruption ────────────────────────────
@@ -730,12 +731,12 @@ function scr_battle_marco_name_snap(marco_id) {
 /// @param {real} corruption_override   Pass -1 to derive from global Limbo corruption.
 function scr_battle_globals_init(corruption_override) {
     global.battle_active      = true;
-    global.battle_corruption  = clamp(
-                                 (corruption_override >= 0)
-                                     ? corruption_override
-                                     : global.circle_corruption[CIRCLE_LIMBO],
-                                 0, 100
-                                 );
+    // Scale world corruption down so a high open-world state doesn't start battle at 80%.
+    // battle escalates naturally from this lower baseline.
+    var _world_corr = (corruption_override >= 0)
+                          ? corruption_override
+                          : global.circle_corruption[CIRCLE_LIMBO];
+    global.battle_corruption = clamp(_world_corr * 0.3, 0, 100);
     global.battle_turn        = 0;
     global.battle_round       = 0;   // incremented to 1 by first scr_battle_start_round call
     global.battle_result      = "";   // "victory" | "defeat" | ""
@@ -750,7 +751,7 @@ function scr_battle_globals_init(corruption_override) {
 /// @param {real} enemy_count   Number of Hollow enemies to spawn (clamped 1-5)
 function scr_battle_trigger(enemy_count) {
     global.battle_enemy_count = clamp(enemy_count, 1, 5);
-    global.battle_corruption  = clamp(global.circle_corruption[CIRCLE_LIMBO], 0, 100);
+    global.battle_corruption  = clamp(global.circle_corruption[CIRCLE_LIMBO] * 0.3, 0, 100);
     room_goto(room_battle);
 }
 

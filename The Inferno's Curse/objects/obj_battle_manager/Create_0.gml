@@ -34,6 +34,9 @@ flee_confirm = false;   // true while awaiting Y/N confirmation
 enemy_turn_timer = 0;              // counts up; enemy acts at 15 steps (~250ms)
 #macro ENEMY_TURN_DELAY 15
 
+// ── Turn order build guard ────────────────────────────────────────────────────
+turn_order_built = false;   // Alarm_0 checks this — prevents double-build
+
 // ── Build initial turn order (populated when units are created) ───────────────
 // Units call scr_battle_register_unit(id) from their Create events.
 // We defer building the order until the "setup" phase resolves in Step.

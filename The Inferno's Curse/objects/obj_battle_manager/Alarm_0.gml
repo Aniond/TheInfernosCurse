@@ -30,12 +30,29 @@ _s.unit_name = "The Shambler";
 show_debug_message("[Battle] Shambler count: " + string(instance_number(obj_unit_shambler)));
 
 // ── Build turn order: player units first, then enemies ────────────────────────
+// Guard: never build twice (e.g. if alarm fires more than once somehow)
+if (turn_order_built) exit;
+turn_order_built = true;
+
 turn_order = [];
 with (obj_unit_base) {
-    if (team == 0) array_push(other.turn_order, id);
+    if (team == 0) {
+        // Dedup: only add if not already in the array
+        var _already = false;
+        for (var _di = 0; _di < array_length(other.turn_order); _di++) {
+            if (other.turn_order[_di] == id) { _already = true; break; }
+        }
+        if (!_already) array_push(other.turn_order, id);
+    }
 }
 with (obj_unit_base) {
-    if (team == 1) array_push(other.turn_order, id);
+    if (team == 1) {
+        var _already = false;
+        for (var _di = 0; _di < array_length(other.turn_order); _di++) {
+            if (other.turn_order[_di] == id) { _already = true; break; }
+        }
+        if (!_already) array_push(other.turn_order, id);
+    }
 }
 
 // ── Place Limbo tiles after all units are positioned ──────────────────────────
