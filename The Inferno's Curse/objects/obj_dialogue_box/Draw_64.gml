@@ -5,7 +5,8 @@
 // This is the window into every soul Benedetto meets.
 //
 // The frame is a properly proportioned 4:1 bar (spr_ui_dialogue_frame),
-// drawn as a fixed 200px strip flush to the screen bottom via stretch.
+// stretched flush to the screen bottom. Its height auto-sizes to the text
+// content (clamped 150-300px) and lerps smoothly as lines page through.
 // No nine-slice — the art is already at the correct ratio.
 // Dynamic elements (corruption tint, name colour, sanity jitter) still shift
 // with the NPC's state so the reader feels a mind losing itself.
@@ -17,17 +18,37 @@ if (!is_active) exit;
 var _gw = display_get_gui_width();
 var _gh = display_get_gui_height();
 
-var _bar_h = 150;                 // fixed bottom-bar height
-var _bar_y = _gh - _bar_h;        // anchored flush to screen bottom
+var _text_x = 180;
+var _text_w = _gw - 360;          // 180px margin each side; also the wrap width
 
-// Text positions inside the parchment (absolute, measured up from bottom).
+// ── Autosize: measure required height for the current line ────────────────────
+// Recalculated every Draw so the bar tracks whatever text is showing. We measure
+// the full line (dialogue_text), not the partially-typed display_text, so the bar
+// is sized correctly the instant a line loads and only animates between lines.
+var _measure_text = is_loading ? ("Benedetto listens" + dot_string) : dialogue_text;
+var _text_height  = string_height_ext(_measure_text, -1, _text_w);
+
+var _padding_top     = 40;
+var _padding_bottom  = 35;
+var _name_height     = 25;
+var _continue_height = 20;
+
+var _total_height = _padding_top + _name_height + _text_height + _continue_height + _padding_bottom;
+_total_height = clamp(_total_height, 150, 300);
+
+// Smoothly expand/contract toward the target height (lerp every Draw).
+bar_height_current = lerp(bar_height_current, _total_height, 0.15);
+if (abs(bar_height_current - _total_height) < 0.5) bar_height_current = _total_height;
+
+var _bar_h = bar_height_current;
+var _bar_y = _gh - _bar_h;        // bottom-anchored: bar grows upward
+
+// Text positions anchored to the (animated) top of the bar.
 var _name_x   = 180;
-var _name_y   = _gh - 138;
-var _text_x   = 180;
-var _text_y   = _gh - 115;
-var _text_w   = _gw - 360;
+var _name_y   = _bar_y + _padding_top;
+var _text_y   = _bar_y + _padding_top + _name_height;
 var _prompt_x = _gw - 200;
-var _prompt_y = _gh - 25;
+var _prompt_y = _gh - 25;          // continue prompt rides the fixed bottom edge
 
 // ── Corruption factor (0-1) ───────────────────────────────────────────────────
 var _cf = clamp(corruption_level / 200, 0, 1);

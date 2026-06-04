@@ -30,6 +30,9 @@ dot_string = ".";       // animated "..." string shown while waiting
 dot_timer  = 0;         // steps since last dot cycle update
 loading_timer = 0;      // steps spent in the loading state (safety timeout)
 
+// ── Autosize ────────────────────────────────────────────────────────────────
+bar_height_current = 150;  // current (lerped) bar height; target computed in Draw
+
 // ── Legacy aliases (kept so existing internal code doesn't break) ─────────────
 // These shadow the old variable names in case any call site we missed
 // still writes to them — they are NOT the canonical vars above.
