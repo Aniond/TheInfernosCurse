@@ -28,3 +28,45 @@ props = [
     [spr_florence_barrels,       1130, 1545],  // logs to the RIGHT of the safe-house door
 ];
 // (Empty market stall removed — Marco's bakery now occupies that spot at 1720.)
+
+// ── Countryside ring ──────────────────────────────────────────────────────────
+// Firenze is a walled city ringed by green country. Inside this rectangle the
+// paved/cobbled city shows; everything OUTSIDE it is grassed over (drawn in Draw
+// before the road, so road exits still cut through the grass) and dotted with
+// trees & bushes. Box generously covers every building, prop, shrine and NPC.
+core_rect = [560, 480, 2480, 2300];   // [x1, y1, x2, y2] — stays cobblestone
+
+// Scenery: [sprite, x, y] — trees & bushes, bottom-centered like props. Hand-
+// placed around the ring for a natural scatter, kept clear of the E/W road exits.
+scenery = [
+    // West verge
+    [spr_florence_tree,   280,  420],
+    [spr_florence_bush,   170,  720],
+    [spr_florence_tree,   380,  980],
+    [spr_florence_tree,   210, 1300],
+    [spr_florence_bush,   430, 1460],
+    [spr_florence_tree,   260, 1880],   // below the west road exit
+    [spr_florence_bush,   400, 2160],
+    [spr_florence_tree,   150, 2520],
+    [spr_florence_tree,   440, 2860],
+    // North verge
+    [spr_florence_tree,   720,  300],
+    [spr_florence_bush,  1060,  210],
+    [spr_florence_tree,  1500,  260],
+    [spr_florence_bush,  1960,  220],
+    [spr_florence_tree,  2300,  340],
+    // East verge
+    [spr_florence_tree,  2760,  520],
+    [spr_florence_bush,  2920,  860],
+    [spr_florence_tree,  2660, 1260],
+    [spr_florence_bush,  2980, 1480],
+    [spr_florence_tree,  2820, 1900],   // below the east road exit
+    [spr_florence_tree,  2640, 2320],
+    [spr_florence_bush,  2940, 2680],
+    // South verge
+    [spr_florence_tree,   820, 2520],
+    [spr_florence_bush,  1220, 2780],
+    [spr_florence_tree,  1620, 2500],
+    [spr_florence_bush,  2060, 2820],
+    [spr_florence_tree,  2420, 2620],
+];
