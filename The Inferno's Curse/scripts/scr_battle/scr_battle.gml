@@ -189,12 +189,15 @@ function scr_battle_check_limbo_tile(unit_id) {
     ];
     scr_battle_add_log(_lines[irandom(4)]);
 
-    // Find destination — empty and not sitting on another Limbo tile
+    // Find destination — empty, not Limbo, and never the cell just left
     var _dest_gx = -1;
     var _dest_gy = -1;
+    var _excl_gx = unit_id.prev_grid_x;
+    var _excl_gy = unit_id.prev_grid_y;
     repeat (10) {
         var _cx = irandom(BATTLE_GRID_W - 1);
         var _cy = irandom(BATTLE_GRID_H - 1);
+        if (_cx == _excl_gx && _cy == _excl_gy) continue;   // never return to previous cell
         var _on_limbo = false;
         with (obj_limbo_tile) {
             if (grid_x == _cx && grid_y == _cy) { _on_limbo = true; break; }

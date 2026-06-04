@@ -56,11 +56,12 @@ if ((_dx != 0 || _dy != 0) && ap > 0) {
     var _ny = grid_y + _dy;
     if (scr_battle_is_valid_cell(_nx, _ny)
      && !scr_battle_cell_occupied(_nx, _ny, id)) {
+        prev_grid_x = grid_x;   // record before move so teleport can't return here
+        prev_grid_y = grid_y;
         grid_x = _nx;
         grid_y = _ny;
         ap--;
         _moved = true;
-        // Check Limbo tile landing
         scr_battle_check_limbo_tile(id);
     }
 }
