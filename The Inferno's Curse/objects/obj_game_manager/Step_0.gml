@@ -53,6 +53,21 @@ if (keyboard_check_pressed(vk_f4)) {
     global.save_indicator_timer = 120;
 }
 
+// ── DEBUG: corruption reset / max (F6 reset-to-0, F7 max) ─────────────────────
+// Lets you see the dialogue box (and all sin effects) at their default clean
+// state or full corruption without playing through a save. F6 clears every
+// circle; F7 maxes the current circle so you can test heavy tint/fragmentation.
+if (keyboard_check_pressed(vk_f6)) {
+    for (var _i = 0; _i < CIRCLE_COUNT; _i++) global.circle_corruption[_i] = 0;
+    global.save_indicator_text  = "CORRUPTION RESET";
+    global.save_indicator_timer = 120;
+}
+if (keyboard_check_pressed(vk_f7)) {
+    global.circle_corruption[global.current_circle] = 200;
+    global.save_indicator_text  = "CORRUPTION MAX";
+    global.save_indicator_timer = 120;
+}
+
 // ── DEBUG: battle trigger (B) — remove when proper battle triggers are wired ──
 // Unconditional in Room1 so it always works during development, regardless of
 // debug_mode / save state. Pressing B drops Benedetto into room_battle vs 3 Hollows.
