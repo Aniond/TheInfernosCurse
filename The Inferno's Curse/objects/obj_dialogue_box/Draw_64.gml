@@ -17,17 +17,17 @@ if (!is_active) exit;
 var _gw = display_get_gui_width();
 var _gh = display_get_gui_height();
 
-var _bar_h = 200;                 // fixed bottom-bar height
+var _bar_h = 150;                 // fixed bottom-bar height
 var _bar_y = _gh - _bar_h;        // anchored flush to screen bottom
 
 // Text positions inside the parchment (absolute, measured up from bottom).
 var _name_x   = 180;
-var _name_y   = _gh - 185;
+var _name_y   = _gh - 138;
 var _text_x   = 180;
-var _text_y   = _gh - 160;
+var _text_y   = _gh - 115;
 var _text_w   = _gw - 360;
 var _prompt_x = _gw - 200;
-var _prompt_y = _gh - 30;
+var _prompt_y = _gh - 25;
 
 // ── Corruption factor (0-1) ───────────────────────────────────────────────────
 var _cf = clamp(corruption_level / 200, 0, 1);
