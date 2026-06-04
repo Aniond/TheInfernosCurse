@@ -84,3 +84,12 @@ instructions/pixellab_api_reference.md
 The Inferno's Curse/assets/concepts/characters/image.png
 The Inferno's Curse/assets/concepts/characters/image (1).png
 The Inferno's Curse/assets/concepts/characters/00008-2772151680.png
+
+# Local dev/build/test workflow scripts (kept on disk, not version controlled)
+clean_build.ps1
+import_sprites.ps1
+watch_burst.ps1
+watch_game.ps1
+instructions/watch_game.ps1
+scripts/capture_hotkey.ahk
+scripts/capture_screenshots.ps1
