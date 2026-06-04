@@ -380,11 +380,21 @@ function scr_battle_shambler_phase_step(shambler_id) {
         }
         if (_dest_gx != -1) break;
     }
-    // Fallback: any empty cell
+    // Fallback: closest empty cell to the nearest player — Shambler always hunts
     if (_dest_gx == -1) {
-        var _fb = scr_battle_random_empty_cell();
-        _dest_gx = _fb.gx;
-        _dest_gy = _fb.gy;
+        var _best_fb = 999999;
+        for (var _fx = 0; _fx < BATTLE_GRID_W; _fx++) {
+            for (var _fy = 0; _fy < BATTLE_GRID_H; _fy++) {
+                if (scr_battle_cell_occupied(_fx, _fy, shambler_id)) continue;
+                var _fd = abs(_fx - _nearest_player.grid_x)
+                        + abs(_fy - _nearest_player.grid_y);
+                if (_fd < _best_fb) {
+                    _best_fb = _fd;
+                    _dest_gx = _fx;
+                    _dest_gy = _fy;
+                }
+            }
+        }
     }
 
     if (_dest_gx != -1) {
@@ -436,6 +446,8 @@ function scr_battle_shambler_phase_step(shambler_id) {
 
     if (scr_battle_is_valid_cell(_push_x, _push_y)
      && !scr_battle_cell_occupied(_push_x, _push_y, _target)) {
+        _target.prev_grid_x = _target.grid_x;   // teleport can't return to pre-push cell
+        _target.prev_grid_y = _target.grid_y;
         _target.grid_x = _push_x;
         _target.grid_y = _push_y;
         scr_battle_add_log("It struck with intention. He was somewhere else now.");
