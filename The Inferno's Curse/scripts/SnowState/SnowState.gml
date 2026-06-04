@@ -561,7 +561,7 @@ function SnowState(_initState, _execEnter = true) constructor {
 		
 	/// @param {bool} has_parent
 	/// @returns {SnowState} self
-	__update_states = function(_hasParent) {
+	__update_states = function(_hasParent = false) {
 		var _states, _events, _state, _event, _defEvent, _i, _j;
 		_states = variable_struct_get_names(__states);
 		_events = variable_struct_get_names(__defaultEvents);
