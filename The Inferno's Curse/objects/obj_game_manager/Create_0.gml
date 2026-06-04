@@ -241,6 +241,27 @@ global.false_shimmer_timer  = 0;
 scr_config_load();
 scr_load_world_state();
 
+// ── TEMP HTTP SELF-TEST (diagnostic — remove once dialogue works) ─────────────
+// Fires one POST identical in shape to scr_ai_call() at startup to prove the
+// runtime can reach Claude at all, independent of any NPC. The Async-HTTP event
+// logs its completion ("[GameMgr] async ... http=200"). If we see [SelfTest]
+// fired but NEVER the matching [GameMgr] line, the runtime's HTTP layer isn't
+// completing the request (TLS / firewall on Runner.exe), not an event-routing bug.
+if (global.claude_api_key != "") {
+    var _h = ds_map_create();
+    ds_map_add(_h, "Content-Type",      "application/json");
+    ds_map_add(_h, "x-api-key",         global.claude_api_key);
+    ds_map_add(_h, "anthropic-version", "2023-06-01");
+    var _b = json_stringify({
+        model:      "claude-haiku-4-5-20251001",
+        max_tokens: 16,
+        messages:   [{ role: "user", content: "Say hi." }]
+    });
+    var _sid = http_request("https://api.anthropic.com/v1/messages", "POST", _h, _b);
+    ds_map_destroy(_h);
+    show_debug_message("[SelfTest] fired http_request id=" + string(_sid));
+}
+
 // Disable texture filtering globally — keeps pixel art sharp at any zoom level.
 gpu_set_tex_filter(false);
 
