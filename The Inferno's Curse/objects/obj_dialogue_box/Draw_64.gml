@@ -35,12 +35,13 @@ var _cf = clamp(corruption_level / 200, 0, 1);
 // =============================================================================
 // FRAME — gothic parchment art
 // =============================================================================
-// At high corruption the frame darkens toward void-black, as if the parchment
-// itself is being consumed. Below 50% corruption it renders clean.
+// At high corruption the frame takes on a faint blood wash, but the tint is
+// capped at 20% so the parchment stays clearly readable at all times.
+// Below 50% corruption it renders perfectly clean.
 var _frame_blend = c_white;
 if (_cf > 0.5) {
-    var _dark = (_cf - 0.5) / 0.5;
-    _frame_blend = merge_color(c_white, make_color_rgb(40, 0, 0), _dark);
+    var _dark = (_cf - 0.5) / 0.5;          // 0..1 across 50%-100% corruption
+    _frame_blend = merge_color(c_white, make_color_rgb(40, 0, 0), _dark * 0.2);
 }
 draw_sprite_stretched_ext(
     spr_ui_dialogue_frame, 0,

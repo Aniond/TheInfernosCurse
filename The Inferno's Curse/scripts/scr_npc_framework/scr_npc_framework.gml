@@ -250,15 +250,15 @@ function scr_close_dialogue() {
 /// @param {real}   corruption_lvl   NPC's npc_memory_corruption (0-200)
 /// @returns {string}   Modified text appropriate to the corruption level
 function scr_dialogue_get_text_display(raw_text, corruption_lvl) {
-    // Scale to 0-1 for threshold checks.
-    var _cf = clamp(corruption_lvl / 200, 0, 1);
+    // corruption_lvl is on the same 0-200 scale as the NPC corruption arcs
+    // (see obj_npc_marco Step): Arc0 <25, Arc1 25-50, Arc2 50-75, Arc3 75-90,
+    // Arc4 90+. Fragmentation is tied to those arcs so early arcs stay clearly
+    // readable and heavy breakdown is reserved for Arc 3 and beyond.
+    var _c = corruption_lvl;
 
-    // ── 0-50%: return unchanged ───────────────────────────────────────────────
-    // The NPC is present. Their words are theirs.
-    if (_cf <= 0.5) return raw_text;
+    // ── Arc 0-1 (<50): the NPC is still themselves. Words are intact. ─────────
+    if (_c < 50) return raw_text;
 
-    // ── 50-100%: fragmentation pipeline ──────────────────────────────────────
-    // Split into words, process each one, rejoin.
     var _words  = string_split(raw_text, " ");
     var _count  = array_length(_words);
     var _result = "";
@@ -266,15 +266,15 @@ function scr_dialogue_get_text_display(raw_text, corruption_lvl) {
     for (var _i = 0; _i < _count; _i++) {
         var _w = _words[_i];
 
-        if (_cf <= 0.75) {
-            // ── 50-75%: 1 in 8 words replaced with "..." ─────────────────────
-            // Trailing off. The NPC loses the thread mid-sentence.
-            if (irandom(7) == 0) {
+        if (_c < 75) {
+            // ── Arc 2 (50-75): light — ~1 in 12 words trails off ─────────────
+            // The first cracks. The reader barely notices.
+            if (irandom(11) == 0) {
                 _w = "...";
             }
 
-        } else if (_cf <= 0.90) {
-            // ── 75-90%: 1 in 4 words replaced; occasional phrase echo ────────
+        } else if (_c < 90) {
+            // ── Arc 3 (75-90): heavy — 1 in 4 words lost; occasional echo ────
             // The mind loops. Certain phrases repeat, others vanish entirely.
             if (irandom(3) == 0) {
                 _w = "...";
@@ -284,7 +284,7 @@ function scr_dialogue_get_text_display(raw_text, corruption_lvl) {
             }
 
         } else {
-            // ── 90-100%: heavy fragmentation — barely coherent ────────────────
+            // ── Arc 4 (90+): heaviest — barely coherent ──────────────────────
             // Three out of five words are lost.
             // What remains may not be in the right order.
             var _r = irandom(4);
