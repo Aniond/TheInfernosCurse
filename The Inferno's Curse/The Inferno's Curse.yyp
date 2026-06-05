@@ -23,6 +23,12 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_benedetto_walk_north_west","path":"sprites/spr_benedetto_walk_north_west/spr_benedetto_walk_north_west.yy",},},
+    {"id":{"name":"spr_benedetto_walk_north_east","path":"sprites/spr_benedetto_walk_north_east/spr_benedetto_walk_north_east.yy",},},
+    {"id":{"name":"spr_benedetto_walk_south_west","path":"sprites/spr_benedetto_walk_south_west/spr_benedetto_walk_south_west.yy",},},
+    {"id":{"name":"spr_benedetto_walk_south_east","path":"sprites/spr_benedetto_walk_south_east/spr_benedetto_walk_south_east.yy",},},
+    {"id":{"name":"spr_benedetto_walk_west","path":"sprites/spr_benedetto_walk_west/spr_benedetto_walk_west.yy",},},
+    {"id":{"name":"spr_benedetto_walk_east","path":"sprites/spr_benedetto_walk_east/spr_benedetto_walk_east.yy",},},
     {"id":{"name":"spr_benedetto_walk_north","path":"sprites/spr_benedetto_walk_north/spr_benedetto_walk_north.yy",},},
     {"id":{"name":"spr_benedetto_walk_south","path":"sprites/spr_benedetto_walk_south/spr_benedetto_walk_south.yy",},},
     {"id":{"name":"spr_florence_gate","path":"sprites/spr_florence_gate/spr_florence_gate.yy",},},
