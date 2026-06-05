@@ -57,7 +57,7 @@ var _phw = 16; // player half-width  — tight foot zone, lets Benedetto stand c
 var _phh = 8;  // player half-height — small base collision so he reaches building face
 
 // Returns true if a box of half-size (_hw,_hh) centred at (_px,_py) overlaps any
-// wall. Standard AABB overlap test against both wall object types.
+// building wall. River is handled separately — see below.
 var _wall_at = function(_px, _py, _hw, _hh) {
     var _hit = false;
     with (obj_wall_stone) {
@@ -70,32 +70,40 @@ var _wall_at = function(_px, _py, _hw, _hh) {
              && _py + _hh > y && _py - _hh < y + wall_h) { _hit = true; }
         }
     }
-    // River (the Arno): solid water across its full-width band EXCEPT where a
-    // bridge gap lets the player cross. Room1-only; geometry from globals set in
-    // obj_game_manager. Bridge test is on the player's centre x.
-    if (!_hit && room == Room1 && variable_global_exists("river_y1")) {
-        if (_py + _hh > global.river_y1 && _py - _hh < global.river_y2) {
-            var _on_bridge = false;
-            for (var _b = 0; _b < array_length(global.river_bridges); _b++) {
-                var _br = global.river_bridges[_b];
-                if (_px > _br[0] && _px < _br[1]) { _on_bridge = true; break; }
-            }
-            if (!_on_bridge) _hit = true;
-        }
-    }
     return _hit;
 };
 
-// Horizontal axis — move, and undo only X if it lands us in a wall.
+// Returns true if the position is inside the river band and NOT on a bridge.
+// Used only for Y-axis movement so east-west walking on the bank is never blocked.
+var _in_river = function(_px, _py, _hh) {
+    if (room != Room1 || !variable_global_exists("river_y1")) return false;
+    if (_py + _hh <= global.river_y1 || _py - _hh >= global.river_y2) return false;
+    for (var _b = 0; _b < array_length(global.river_bridges); _b++) {
+        var _br = global.river_bridges[_b];
+        if (_px > _br[0] && _px < _br[1]) return false;   // on bridge — passable
+    }
+    return true;
+};
+
+// Horizontal axis — building walls only. River runs E-W and never blocks X movement,
+// which also lets the player escape the bank boundary if they loaded there.
 if (_mx != 0) {
     x += _mx;
     if (_wall_at(x, y, _phw, _phh)) x -= _mx;
 }
 
-// Vertical axis — move, and undo only Y if it lands us in a wall.
+// Vertical axis — building walls + one-way river gate.
+// The river only blocks movement that ENTERS it (old pos outside, new pos inside).
+// If the player is already inside the overlap zone (e.g. loaded at the bank edge),
+// they can always move north to escape.
 if (_my != 0) {
+    var _old_y = y;
     y += _my;
-    if (_wall_at(x, y, _phw, _phh)) y -= _my;
+    var _blocked = _wall_at(x, y, _phw, _phh);
+    if (!_blocked && _in_river(x, y, _phh) && !_in_river(x, _old_y, _phh)) {
+        _blocked = true;   // entering the river from outside
+    }
+    if (_blocked) y = _old_y;
 }
 
 // ── Room border clamp — matches the 56-px visual wall ring ────────────────────
