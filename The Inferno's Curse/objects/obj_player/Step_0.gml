@@ -16,12 +16,17 @@ if (_dx != 0 && _dy != 0) {
     _dy *= 0.7071;
 }
 
+// ── Run modifier (Shift) — must be before _mx/_my ────────────────────────────
+var _running = keyboard_check(vk_shift);
+move_spd = _running ? base_move_spd * 1.8 : base_move_spd;
+
 // Intended movement this step (kept separate so we can resolve each axis alone)
 var _mx = _dx * move_spd;
 var _my = _dy * move_spd;
 
 // ── Facing direction + vision movement gate ───────────────────────────────────
-if (_dx != 0 || _dy != 0) {
+var _moving = (_dx != 0 || _dy != 0);
+if (_moving) {
     facing_dir = point_direction(0, 0, _dx, _dy);
     global.player_is_moving      = true;
     global.last_player_move_time = get_timer();
@@ -30,9 +35,14 @@ if (_dx != 0 || _dy != 0) {
 }
 
 // ── Directional sprite ────────────────────────────────────────────────────────
-// Pick the facing sprite from the 8-way lookup. facing_dir only changes while
-// moving, so when idle this keeps the last sprite the player faced.
-sprite_index = dir_sprites[(round(facing_dir / 45)) mod 8];
+// facing_dir only changes while moving, so idle keeps the last direction faced.
+var _dir_idx = (round(facing_dir / 45)) mod 8;
+if (_moving) {
+    sprite_index = _running ? run_sprites[_dir_idx] : walk_sprites[_dir_idx];
+} else {
+    sprite_index = idle_sprites[_dir_idx];
+}
+image_speed = 1;
 
 // ── Building collision (obj_wall_stone + obj_wall) ────────────────────────────
 // These walls have no sprite/mask and are sized per-instance via wall_w / wall_h,

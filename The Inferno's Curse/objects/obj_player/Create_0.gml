@@ -19,16 +19,37 @@ attack_speed    = 1.0;  // multiplied by global.attack_speed_modifier (Wrath eff
 attack_accuracy = 1.0;  // 0.0-1.0; reduced by global.attack_accuracy (Wrath effect)
 
 // --- Sprites ---
-// 8-way facing lookup, indexed by round(facing_dir / 45) mod 8.
-// Index: 0=E 1=NE 2=N 3=NW 4=W 5=SW 6=S 7=SE  (GameMaker degrees, counter-clockwise)
-dir_sprites = [
-    spr_benedetto_east,
-    spr_benedetto_north_east,
-    spr_benedetto_north,
-    spr_benedetto_north_west,
-    spr_benedetto_west,
-    spr_benedetto_south_west,
-    spr_benedetto_south,
-    spr_benedetto_south_east,
+// 8-way lookup arrays, indexed by (round(facing_dir / 45)) mod 8.
+// Index: 0=E  1=NE  2=N  3=NW  4=W  5=SW  6=S  7=SE
+walk_sprites = [
+    spr_benedetto_walk_east,
+    spr_benedetto_walk_north_east,
+    spr_benedetto_walk_north,
+    spr_benedetto_walk_north_west,
+    spr_benedetto_walk_west,
+    spr_benedetto_walk_south_west,
+    spr_benedetto_walk_south,
+    spr_benedetto_walk_south_east,
 ];
-image_speed = 0.15;  // walk-cycle animation rate
+idle_sprites = [
+    spr_benedetto_idle_east,
+    spr_benedetto_idle_north_east,
+    spr_benedetto_idle_north,
+    spr_benedetto_idle_north_west,
+    spr_benedetto_idle_west,
+    spr_benedetto_idle_south_west,
+    spr_benedetto_idle_south,
+    spr_benedetto_idle_south_east,
+];
+run_sprites = [
+    spr_benedetto_run_east,
+    spr_benedetto_run_north_east,
+    spr_benedetto_run_north,
+    spr_benedetto_run_north_west,
+    spr_benedetto_run_west,
+    spr_benedetto_run_south_west,
+    spr_benedetto_run_south,
+    spr_benedetto_run_south_east,
+];
+sprite_index = spr_benedetto_walk_south;
+image_speed  = 1;  // sprites use their own baked playback speed

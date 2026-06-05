@@ -23,6 +23,7 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_benedetto_jump_south_west","path":"sprites/spr_benedetto_jump_south_west/spr_benedetto_jump_south_west.yy",},},
     {"id":{"name":"spr_benedetto_run_north_east","path":"sprites/spr_benedetto_run_north_east/spr_benedetto_run_north_east.yy",},},
     {"id":{"name":"spr_benedetto_run_north","path":"sprites/spr_benedetto_run_north/spr_benedetto_run_north.yy",},},
     {"id":{"name":"spr_benedetto_run_south","path":"sprites/spr_benedetto_run_south/spr_benedetto_run_south.yy",},},
