@@ -21,6 +21,10 @@ if (global.debug_mode) {
         "S:" + string(round(scr_lucidity())) +
         " | C:" + string(round(global.circle_corruption[global.current_circle])) +
         " | PC:" + string(round(corruption)));
+    draw_text(32, 52,
+        "spd:" + string(image_speed) +
+        " | idx:" + string(string_format(image_index, 1, 2)) +
+        " | spr:" + string(sprite_index));
 }
 
 draw_set_color(c_white);
