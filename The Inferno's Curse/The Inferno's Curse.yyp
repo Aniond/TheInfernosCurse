@@ -23,6 +23,8 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_benedetto_walk_north","path":"sprites/spr_benedetto_walk_north/spr_benedetto_walk_north.yy",},},
+    {"id":{"name":"spr_benedetto_walk_south","path":"sprites/spr_benedetto_walk_south/spr_benedetto_walk_south.yy",},},
     {"id":{"name":"spr_florence_gate","path":"sprites/spr_florence_gate/spr_florence_gate.yy",},},
     {"id":{"name":"spr_florence_wall","path":"sprites/spr_florence_wall/spr_florence_wall.yy",},},
     {"id":{"name":"spr_florence_wall_corner","path":"sprites/spr_florence_wall_corner/spr_florence_wall_corner.yy",},},
