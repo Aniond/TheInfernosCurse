@@ -9,12 +9,12 @@ event_inherited();   // updates world pos, checks death
 // ── Only act on our turn ──────────────────────────────────────────────────────
 if (!fsm.state_is("acting")) exit;
 
-// ── Sanity warning at 10 ─────────────────────────────────────────────────────
-if (global.sanity <= 10 && global.sanity > 0) {
+// ── Near-lost warning (perceived sanity <= 10, i.e. corruption >= 90) ────────
+if (scr_lucidity() <= 10 && scr_lucidity() > 0) {
     // Log once per turn (battle manager resets this flag each turn activation)
-    if (!variable_instance_exists(id, "sanity_warned_this_turn") || !sanity_warned_this_turn) {
+    if (!variable_instance_exists(id, "near_lost_warned") || !near_lost_warned) {
         scr_battle_add_log("Benedetto is losing himself...");
-        sanity_warned_this_turn = true;
+        near_lost_warned = true;
     }
 }
 
@@ -22,9 +22,9 @@ if (global.sanity <= 10 && global.sanity > 0) {
 // TODO: API-controlled Benedetto — wire when Anthropic key available Thursday
 // Real behaviour: Claude receives battle state and acts against Benedetto's party.
 // Temp: surrender the turn and reset sanity to 10 next round so combat continues.
-if (global.sanity <= 0) {
+if (global.circle_corruption[CIRCLE_LIMBO] >= 100) {
     scr_battle_add_log("He could no longer find his way back.");
-    global.sanity = 10;   // clings on — proper API takeover wires Thursday
+    global.circle_corruption[CIRCLE_LIMBO] = 90;   // clings on — proper API takeover wires Thursday
     turn_done = true;
     exit;
 }
@@ -66,7 +66,7 @@ if ((_dx != 0 || _dy != 0) && ap > 0) {
     }
 }
 
-// ── Focus — F key: reveal hidden Limbo tiles, count scaled by sanity ──────────
+// ── Focus — F key: reveal hidden Limbo tiles, count scaled by corruption ──────
 // Full logic (class handling, perception check, chronicle) in scr_battle_focus.
 if (keyboard_check_pressed(ord("F"))) {
     scr_battle_focus();

@@ -23,7 +23,7 @@ is_active    = false;   // master gate — nothing draws or updates when false
 
 // ── Context ───────────────────────────────────────────────────────────────────
 source_npc_id   = noone; // instance ID of the NPC speaking; used for cleanup
-corruption_level = 0;    // copy of source NPC's npc_memory_corruption (0-200)
+corruption_level = 0;    // copy of source NPC's npc_memory_corruption (0-100)
 
 // ── Loading animation ─────────────────────────────────────────────────────────
 dot_string = ".";       // animated "..." string shown while waiting

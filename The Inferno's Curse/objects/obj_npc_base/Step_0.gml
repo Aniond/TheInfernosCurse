@@ -5,9 +5,9 @@ if (interact_cooldown > 0) interact_cooldown--;
 
 // ── Memory corruption update ──────────────────────────────────────────────────
 // Driven by the corruption of the circle this NPC lives in (from npc_data.circle).
-// Clamped to 0-200 to match the extended corruption scale.
+// Clamped to 0-100 — the single corruption scale.
 npc_memory_corruption = clamp(
-    global.circle_corruption[npc_data.circle], 0, 200
+    global.circle_corruption[npc_data.circle], 0, 100
 );
 
 // Proximity check against the player

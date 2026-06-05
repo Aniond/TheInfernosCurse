@@ -3,9 +3,9 @@
 // Colour fades from teal toward grey as npc_memory_corruption rises —
 // the NPC becomes ghost-like as their circle is consumed.
 
-// ── Body colour driven by npc_memory_corruption (0-200 scale) ────────────────
-// Map 0-200 corruption to a 0-1 fade factor (full = 1.0 at corruption 200).
-var _fade  = clamp(npc_memory_corruption / 200, 0, 1);
+// ── Body colour driven by npc_memory_corruption (0-100 scale) ────────────────
+// Map 0-100 corruption to a 0-1 fade factor (full = 1.0 at corruption 100).
+var _fade  = clamp(npc_memory_corruption / 100, 0, 1);
 
 // Base body colour lerps from teal (fully present) to dark grey (near-ghost).
 var _body_col = merge_color(

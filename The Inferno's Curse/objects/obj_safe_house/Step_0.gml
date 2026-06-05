@@ -2,7 +2,7 @@
 // obj_safe_house — Step Event
 // =============================================================================
 // Detects whether the player is within the 64x64 footprint and, while inside,
-// slows visions and restores sanity over time.
+// slows visions and eases Limbo corruption over time.
 //
 // Overlap is tested with point_in_rectangle rather than collision masks, since
 // these objects have no sprite. The footprint runs from (x, y) to (x+64, y+64).
@@ -20,7 +20,7 @@ if (player_inside) {
     // ── Resting: tick toward the next sanity restore ──────────────────────────
     rest_timer++;
     if (rest_timer >= rest_interval) {
-        scr_restore_sanity(3);
+        scr_corruption_relieve(3);
         rest_timer = 0;
         show_debug_message("Resting...");
     }

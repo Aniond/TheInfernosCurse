@@ -8,8 +8,8 @@
 ///
 /// Corruption effect (global.circle_corruption[CIRCLE_LIMBO]):
 ///   As Limbo corruption rises toward 100, all colours desaturate toward a
-///   grey/ash tone. At 100+ (hyper-corruption), the sky is always ash regardless
-///   of time — the Curse has consumed the light.
+///   grey/ash tone. At 100 (fully lost), the sky is pure ash regardless of
+///   time — the Curse has consumed the light.
 
 function scr_get_sky_color() {
 
@@ -37,9 +37,8 @@ function scr_get_sky_color() {
     }
 
     // ── Corruption desaturation ───────────────────────────────────────────────
-    // Limbo corruption drains colour from the sky. Values above 100 (hyper-
-    // corruption) are clamped to 1.0 so the sky stays fully ashen once the
-    // circle is consumed — the visual already shows total corruption.
+    // Limbo corruption drains colour from the sky — fully ashen at 100 (the
+    // single corruption axis maxed, the circle consumed).
     var _ratio = clamp(_corrupt / 100, 0, 1);
 
     // Ash target: dark warm grey — not pure grey, there's a faint soot warmth

@@ -22,5 +22,5 @@ function scr_update_city_state() {
 
     // TODO: implement district lockdown when CIRCLE_LIMBO >= 75
     // TODO: trigger "The Fog Thickens" world event when CIRCLE_LIMBO >= 100
-    // TODO: NPC mass disposition shift when any circle >= 150
+    // TODO: NPC mass disposition shift when any circle >= 90
 }

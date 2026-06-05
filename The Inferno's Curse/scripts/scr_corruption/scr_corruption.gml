@@ -19,6 +19,43 @@
 #macro CIRCLE_VIOLENCE 6
 #macro CIRCLE_COUNT    7  // total number of circles; valid indices are 0..(CIRCLE_COUNT-1)
 
+// ── Lucidity — the single madness axis ───────────────────────────────────────
+// There is NO sanity stat. Limbo corruption IS Benedetto's grip on reality; he
+// only THINKS he is going insane — it is the corruption tainting him. Anything
+// that needs a "high = lucid" value (0-100) reads this view of corruption:
+//   lucidity = 100 - clamp(Limbo corruption, 0, 100)
+// So 0 corruption = 100 lucid, 100 corruption = 0 = lost.
+function scr_lucidity() {
+    return 100 - clamp(global.circle_corruption[CIRCLE_LIMBO], 0, 100);
+}
+
+/// Raises Limbo corruption by `amount` (was "drain sanity"). Fires the narrative
+/// thresholds as it climbs and the lost-state at 100.
+function scr_corruption_taint(amount) {
+    var _prev = global.circle_corruption[CIRCLE_LIMBO];
+    global.circle_corruption[CIRCLE_LIMBO] = clamp(_prev + amount, 0, 100);
+    var _new  = global.circle_corruption[CIRCLE_LIMBO];
+
+    if (_prev < 25 && _new >= 25)
+        scr_world_event_log("[limbo_25] The visions begin to mislead. Benedetto can no longer trust what he sees.");
+    if (_prev < 50 && _new >= 50)
+        scr_world_event_log("[limbo_50] The corruption bleeds into things not yet corrupted. Benedetto sees what will be.");
+    if (_prev < 75 && _new >= 75)
+        scr_world_event_log("[limbo_75] The edges of the world have stopped holding. No clear boundary between seeing and dreaming.");
+    if (_prev < 100 && _new >= 100)
+        scr_game_over("corruption");
+}
+
+/// Lowers Limbo corruption by `amount` (was "restore sanity"). The scars never
+/// fully heal — a floor remains (15 normally, 10 when `deep`, e.g. a solved
+/// circle). Never raises corruption.
+function scr_corruption_relieve(amount, deep) {
+    if (is_undefined(deep)) deep = false;
+    var _floor = deep ? 10 : 15;
+    var _cur   = global.circle_corruption[CIRCLE_LIMBO];
+    if (_cur > _floor) global.circle_corruption[CIRCLE_LIMBO] = max(_floor, _cur - amount);
+}
+
 
 // =============================================================================
 // Corruption read / write
@@ -178,9 +215,7 @@ function scr_sin_profile_to_string() {
 /// Called every step from obj_game_manager Step event.
 /// Checks all circle corruption levels and fires sin effects for any
 /// circle above the 30% active threshold.
-/// Threshold is 30 on the 0-100 scale (scr_corruption_modify caps at 100;
-/// scr_new_day_corruption_update uses the extended 0-200 scale but these
-/// effects read the same array so values above 100 still trigger fine).
+/// Threshold is 30 on the 0-100 corruption scale (the single axis; 100 = lost).
 function scr_corruption_update() {
     for (var _i = 0; _i < CIRCLE_COUNT; _i++) {
         // Only ENABLED circles apply their per-frame sin effect. Disabled circles
@@ -213,19 +248,16 @@ function scr_apply_active_sin_effects() {
         if (_c <= 30) continue;
 
         // Normalised 0.0-1.0 intensity above the threshold.
-        // At corruption=30 this is 0.0; at corruption=200 it approaches 1.0.
-        var _intensity = (_c - 30) / 170;
+        // At corruption=30 this is 0.0; at corruption=100 it reaches 1.0.
+        var _intensity = (_c - 30) / 70;
 
         switch (_i) {
 
-            // ── Limbo: sanity erosion ─────────────────────────────────────────
-            // Persistent grief slowly chips away at the player's grip on reality.
-            // In battle the floor is 10 — Benedetto clings on; only repeated
-            // bad decisions (shimmer spam, teleport disorientation) push past it.
+            // ── Limbo: no continuous self-erosion ─────────────────────────────
+            // Corruption IS the madness axis now, so it must not drain itself —
+            // it rises via new-day accrual, visions (scr_corruption_taint), and
+            // battle. Nothing to do here continuously.
             case CIRCLE_LIMBO:
-                global.sanity -= 0.01 * _intensity;
-                var _sanity_floor = (variable_global_exists("battle_active") && global.battle_active) ? 1 : 0;
-                global.sanity  = max(global.sanity, _sanity_floor);
                 break;
 
             // ── Lust: HP drain via desire ─────────────────────────────────────
@@ -258,8 +290,8 @@ function scr_apply_active_sin_effects() {
             // ── Wrath: attack modifiers ───────────────────────────────────────
             // Rage sharpens speed but clouds aim.
             case CIRCLE_WRATH:
-                global.attack_speed_modifier = 1.0 + (_c / 200);
-                global.attack_accuracy       = 1.0 - (_c / 300);
+                global.attack_speed_modifier = 1.0 + (_c / 100);
+                global.attack_accuracy       = 1.0 - (_c / 150);
                 global.attack_accuracy       = max(global.attack_accuracy, 0.1);
                 break;
 
@@ -295,9 +327,10 @@ function scr_apply_sin_effect(circle_index) {
         // Grief blanks the mind. The player briefly loses control as the world
         // goes grey — a mechanical echo of forgetting who you are.
         case CIRCLE_LIMBO:
-            // Fire roughly once per (200 - _c) steps. At corruption=30 that
-            // is ~170 steps (~2.8 s at 60 fps); at corruption=100 it is ~100.
-            var _freq_limbo = max(200 - _c, 30);
+            // Fire roughly once per (130 - _c) steps. At corruption=30 that
+            // is ~100 steps (~1.7 s at 60 fps); at corruption=100 it hits the
+            // 30-step floor (~0.5 s).
+            var _freq_limbo = max(130 - _c, 30);
             if (!global.input_locked && irandom(_freq_limbo) == 0) {
                 global.input_locked    = true;
                 global.input_lock_timer = 30; // 0.5 s at 60 fps
@@ -326,10 +359,10 @@ function scr_apply_sin_effect(circle_index) {
         // Excess fills the body until movement becomes agony.
         case CIRCLE_GLUTTONY:
             if (instance_exists(obj_player)) {
-                // Speed reduction: up to 50% at corruption=100.
+                // Speed reduction: up to 50% at corruption=100 (the max).
                 // Writes to player variable each step; player Create must set
                 // a base_move_spd that this can reference.
-                var _spd_penalty = obj_player.base_move_spd * (_c / 200);
+                var _spd_penalty = obj_player.base_move_spd * (_c / 100) * 0.5;
                 obj_player.move_spd = max(obj_player.base_move_spd - _spd_penalty, 0.5);
             }
             break;
@@ -374,9 +407,9 @@ function scr_apply_sin_effect(circle_index) {
         // including the player's own hands.
         case CIRCLE_VIOLENCE:
             if (_c > 50 && !global.input_locked) {
-                // Frequency: once per (300 - _c) steps. At _c=50 → 250 steps (~4 s);
-                // at _c=200 → 100 steps (~1.7 s).
-                var _freq_violence = max(300 - _c, 60);
+                // Frequency: once per (250 - (_c-50)*3) steps. At _c=50 → 250
+                // steps (~4 s); at _c=100 → ~100 steps (~1.7 s).
+                var _freq_violence = max(250 - (_c - 50) * 3, 60);
                 if (irandom(_freq_violence) == 0) {
                     global.input_locked     = true;
                     global.input_lock_timer  = 60; // 1 second at 60 fps
@@ -446,13 +479,12 @@ function scr_solve_circle(circle_index) {
 
     // ── Reset corruption ──────────────────────────────────────────────────────
     // Setting to 0 also stops all downstream bleed triggered by this circle,
-    // because every cascade threshold check (>= 100, >= 110, etc.) will fail.
+    // because every cascade threshold check (>= 60, >= 75, etc.) will fail.
     global.circle_corruption[circle_index] = 0;
 
-    // ── Sanity recovery ───────────────────────────────────────────────────────
-    // Partial relief — never a full cure. The cap of 85 encodes the idea that
-    // descending into Hell leaves a permanent mark even when a circle is cleansed.
-    global.sanity = min(global.sanity + 15, 85);
+    // ── Relief is implicit ────────────────────────────────────────────────────
+    // Corruption for this circle was just zeroed above, which is the cure — and
+    // since corruption IS the madness axis, perceived sanity is restored with it.
 
     // ── Unlock input if it was locked ─────────────────────────────────────────
     // Solving the circle that caused a dissociation should free the player.
@@ -473,7 +505,7 @@ function scr_solve_circle(circle_index) {
     // ── World event log ───────────────────────────────────────────────────────
     scr_world_event_log("Circle solved: " + _name + ". The corruption recedes.");
 
-    show_debug_message("[solve] Circle " + string(circle_index) + " (" + _name + ") solved. Sanity: " + string(global.sanity));
+    show_debug_message("[solve] Circle " + string(circle_index) + " (" + _name + ") solved. Limbo corruption: " + string(global.circle_corruption[CIRCLE_LIMBO]));
 
     // ── Room transition ───────────────────────────────────────────────────────
     // Advance to the next circle. Violence (6) is the final circle — no room

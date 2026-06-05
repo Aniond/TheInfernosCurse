@@ -22,7 +22,7 @@ is_hollow    = false;   // set true on Hollow enemy units
 // ── Turn flags ────────────────────────────────────────────────────────────────
 is_active_turn      = false;
 turn_done           = false;   // set true by unit when it finishes; manager reads this
-sanity_zero_message = false;   // used by Benedetto's frozen display
+lost_message = false;   // used by Benedetto's frozen display
 
 // ── Status effects ────────────────────────────────────────────────────────────
 // String array. Valid values: "forgotten", "frozen", "burning", etc.
@@ -49,7 +49,7 @@ fsm.add("waiting", {
 fsm.add("acting", {
     enter: function() {
         is_active_turn = true;
-        sanity_warned_this_turn = false;   // reset warning flag each new turn
+        near_lost_warned = false;   // reset warning flag each new turn
     },
 });
 

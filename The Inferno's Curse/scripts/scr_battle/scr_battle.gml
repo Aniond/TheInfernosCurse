@@ -16,7 +16,7 @@
 // ── Limbo tile tuning ─────────────────────────────────────────────────────────
 #macro LIMBO_TILE_MIN      2     // fewest tiles at 0% corruption
 #macro LIMBO_TILE_MAX     10     // most tiles at 100% corruption
-#macro LIMBO_SHIMMER_COST  3     // sanity lost when Benedetto focuses to see a tile
+#macro LIMBO_SHIMMER_COST  3     // corruption gained when Benedetto focuses to see a tile
 #macro LIMBO_SHIMMER_STEPS 120   // how long the shimmer stays visible (2 s @ 60 fps)
 #macro LIMBO_TILE_MOVE_INTERVAL 360  // steps between tile moves (6 s @ 60 fps).
                                      // Was 90 (1.5 s) — too fast; tiles scattered
@@ -228,8 +228,10 @@ function scr_battle_check_limbo_tile(unit_id) {
         );
         global.battle_corruption = clamp(global.battle_corruption + _drain, 0, 100);
     } else {
-        global.sanity = max(1, global.sanity - 3);
-        scr_battle_add_log(unit_id.unit_name + " stepped through the fold. Sanity -3.");
+        global.circle_corruption[CIRCLE_LIMBO] = clamp(
+            global.circle_corruption[CIRCLE_LIMBO] + 3, 0, 100
+        );
+        scr_battle_add_log(unit_id.unit_name + " stepped through the fold. Corruption +3.");
     }
 
     scr_world_event_log("The floor forgot where it was. So did " + unit_id.unit_name + ".");
@@ -484,16 +486,16 @@ function scr_battle_shambler_phase_step(shambler_id) {
 // FOCUS ABILITY  (Benedetto's sight — reveals hidden Limbo tiles)
 // =============================================================================
 
-/// Returns the Focus class label + charge data for a sanity value.
+/// Returns the Focus class label + charge data for a lucidity value (0-100).
 /// charges = (a) total battle presses (set once at battle start, never refreshed)
 ///           (b) tiles revealed per press — same number, class-determined.
 /// MINIMUM 1 — the Forgotten always has one last charge.
-function scr_focus_class(sanity) {
-    if (sanity >= 75) return { name: "The Priest",    charges: 4 };  // 75-100%
-    if (sanity >= 50) return { name: "The Witness",   charges: 3 };  // 50-74%
-    if (sanity >= 25) return { name: "The Tainted",   charges: 2 };  // 25-49%
-    if (sanity >= 10) return { name: "The Cursed",    charges: 1 };  // 10-24%
-    return { name: "The Forgotten", charges: 1 };                    // 1-9% — never 0
+function scr_focus_class(lucidity) {
+    if (lucidity >= 75) return { name: "The Priest",    charges: 4 };  // lucid 75-100
+    if (lucidity >= 50) return { name: "The Witness",   charges: 3 };  // lucid 50-74
+    if (lucidity >= 25) return { name: "The Tainted",   charges: 2 };  // lucid 25-49
+    if (lucidity >= 10) return { name: "The Cursed",    charges: 1 };  // lucid 10-24
+    return { name: "The Forgotten", charges: 1 };                      // lucid 1-9 — never 0
 }
 
 /// Focus (F). Each press costs -3 sanity, spends 1 battle charge, and reveals
@@ -504,11 +506,13 @@ function scr_battle_focus() {
     // Spent — no charges left this battle. Debug mode is never spent.
     if (!global.debug_mode && global.focus_charges <= 0) return;
 
-    var _info    = scr_focus_class(global.sanity);
+    var _info    = scr_focus_class(scr_lucidity());
     var _is_last = (global.focus_charges <= 1);   // this press is the last charge
 
-    // Sanity cost — always, regardless of charges remaining or tiles found
-    global.sanity = max(1, global.sanity - LIMBO_SHIMMER_COST);
+    // Corruption cost — always, regardless of charges remaining or tiles found
+    global.circle_corruption[CIRCLE_LIMBO] = clamp(
+        global.circle_corruption[CIRCLE_LIMBO] + LIMBO_SHIMMER_COST, 0, 100
+    );
 
     // Focusing buys time: revealed tiles hold position for a full move interval.
     with (obj_battle_manager) tile_move_timer = 0;
@@ -516,7 +520,7 @@ function scr_battle_focus() {
     // Low-sanity sight can deceive: Cursed/Forgotten may reveal a FALSE tile.
     var _revealed = 0;
     if ((_info.name == "The Cursed" || _info.name == "The Forgotten")
-        && irandom_range(1, 100) > global.sanity) {
+        && irandom_range(1, 100) > scr_lucidity()) {
         scr_battle_false_reveal();   // a normal cell, highlighted as Limbo
         _revealed = 1;
     } else {
@@ -638,20 +642,20 @@ function scr_battle_hollow_forget_roll(unit_id, corruption) {
 
 
 // =============================================================================
-// SANITY 0% BRANCH  (stub — API-controlled Benedetto)
+// LOST BRANCH  (corruption >= 100 — stub, API-controlled Benedetto)
 // =============================================================================
 
-/// Called when Benedetto's sanity reaches 0 during battle.
+/// Called when Benedetto's corruption reaches 100 (fully lost) during battle.
 /// Stub: he freezes and cannot act. Real API control wired later.
 /// @param {id} benedetto_id
-function scr_battle_sanity_zero(benedetto_id) {
+function scr_battle_benedetto_lost(benedetto_id) {
     // TODO: API-controlled Benedetto — wire when Anthropic key available Thursday
     // Claude will receive battle state and choose Benedetto's action against his party.
     // For now: freeze him and surface a message.
     scr_battle_apply_status(benedetto_id, "frozen");
-    benedetto_id.sanity_zero_message = true;
+    benedetto_id.lost_message = true;
     scr_world_event_log("He could no longer find his way back.");
-    show_debug_message("[Sanity 0] Benedetto frozen. API stub — wire when key available.");
+    show_debug_message("[Lost] Benedetto frozen at full corruption. API stub — wire when key available.");
 }
 
 
@@ -672,7 +676,7 @@ function scr_battle_dante_intervene(target_id, corruption) {
     if (random(1) < _chance) {
         scr_battle_remove_status(target_id, "forgotten");
         scr_battle_remove_status(target_id, "frozen");
-        global.sanity = min(global.sanity + 5, 100);
+        scr_corruption_relieve(5);
         scr_world_event_log(
             "Dante called out. His voice crossed the corruption. "
             + target_id.unit_name + " remembers."
@@ -743,7 +747,7 @@ function scr_battle_globals_init(corruption_override) {
     global.input_locked       = false;
     global.false_shimmer_active = false;   // clear any leftover Focus false-reveal
     // Focus charges: set once per battle from the sanity class, never refreshed between turns.
-    global.focus_charges = scr_focus_class(global.sanity).charges;
+    global.focus_charges = scr_focus_class(scr_lucidity()).charges;
 }
 
 /// Triggers a battle transition from the exploration room.
@@ -759,10 +763,10 @@ function scr_battle_trigger(enemy_count) {
 /// to Florence. Fleeing always costs something — that's the design.
 function scr_battle_flee() {
     // ── Penalty ───────────────────────────────────────────────────────────────
+    // Flee penalty: +3 cowardice plus the old -5 sanity, now both corruption = +8.
     global.circle_corruption[CIRCLE_LIMBO] = clamp(
-        global.circle_corruption[CIRCLE_LIMBO] + 3, 0, 100
+        global.circle_corruption[CIRCLE_LIMBO] + 8, 0, 100
     );
-    global.sanity = max(global.sanity - 5, 1);   // never below 1 in battle
 
     // ── World state log ───────────────────────────────────────────────────────
     scr_world_event_log(
@@ -812,10 +816,12 @@ function scr_battle_start_round() {
         // Corruption escalation + tile movement — skip Round 1 so entry state carries over
         if (global.battle_round > 1) scr_battle_turn_start_effects();
 
-        // Passive sanity drain — skip Round 1 so entry sanity carries over cleanly
+        // Passive corruption gain — skip Round 1 so entry state carries over cleanly
         if (global.battle_round > 1 && instance_exists(obj_unit_benedetto)) {
-            global.sanity = max(1, global.sanity - 1);
-            scr_battle_add_log("The grey presses closer. Sanity -1.");
+            global.circle_corruption[CIRCLE_LIMBO] = clamp(
+                global.circle_corruption[CIRCLE_LIMBO] + 1, 0, 100
+            );
+            scr_battle_add_log("The grey presses closer. Corruption +1.");
         }
 
         // Reset AP and clear round-scoped flags on all units

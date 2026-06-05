@@ -34,16 +34,14 @@
 function scr_update_vision_intensity() {
     var _limbo    = global.circle_corruption[CIRCLE_LIMBO];
     var _gluttony = global.circle_corruption[CIRCLE_GLUTTONY];
-    var _sanity   = global.sanity;
 
-    // Weighted composite:
-    //   Limbo    40% — grief and forgetting are the root of seeing wrongly
+    // Weighted composite. The old "inverse sanity" 30% term IS Limbo corruption
+    // now (sanity = 100 - Limbo), so it folds into Limbo's weight:
+    //   Limbo    70% — grief/forgetting are the root of seeing wrongly (40% + 30%)
     //   Gluttony 30% — excess warps perception of space and flesh
-    //   Sanity   30% — inverse: lower sanity = higher intensity
     global.vision_intensity = clamp(
-        _limbo    * 0.4 +
-        _gluttony * 0.3 +
-        (100 - _sanity) * 0.3,
+        _limbo    * 0.7 +
+        _gluttony * 0.3,
         0, 100
     );
 }
@@ -162,10 +160,10 @@ function scr_trigger_vision() {
         }
     }
 
-    // ── Drain sanity ──────────────────────────────────────────────────────────
-    // Cap vision drain during battle — combat pressure is tracked separately
+    // ── Taint: raise corruption ───────────────────────────────────────────────
+    // Cap vision taint during battle — combat pressure is tracked separately
     if (global.battle_active) _chosen_drain = min(_chosen_drain, 2);
-    scr_drain_sanity(_chosen_drain);
+    scr_corruption_taint(_chosen_drain);
 
     // ── Log to global state ───────────────────────────────────────────────────
     global.last_vision_type    = _chosen_type;
@@ -175,103 +173,32 @@ function scr_trigger_vision() {
     scr_world_event_log(
         "Vision: " + _chosen_type +
         " [intensity:" + string(round(global.vision_intensity)) +
-        " sanity:" + string(round(global.sanity)) + "]"
+        " corruption:" + string(round(global.circle_corruption[CIRCLE_LIMBO])) + "]"
     );
 
     show_debug_message(
         "[Vision] " + _chosen_type +
         " | intensity:" + string(round(global.vision_intensity)) +
-        " | sanity:" + string(round(global.sanity)) +
-        " | drain:" + string(_chosen_drain)
+        " | corruption:" + string(round(global.circle_corruption[CIRCLE_LIMBO])) +
+        " | taint:" + string(_chosen_drain)
     );
 }
 
 
 // =============================================================================
-// Part 5 — Sanity drain
+// Part 5 — (removed) Sanity drain → scr_corruption_taint()
 // =============================================================================
-
-/// Reduces global.sanity by amount, clamps to 0-100, and fires threshold
-/// events the first time each level is crossed (logged once per run via
-/// side-effects on global.world_event_log).
-/// @param {real} amount   How much sanity to remove (positive number)
-function scr_drain_sanity(amount) {
-    var _prev   = global.sanity;
-    global.sanity = clamp(global.sanity - amount, 0, 100);
-    var _new    = global.sanity;
-
-    // ── Threshold: 75 ────────────────────────────────────────────────────────
-    // Visions start showing false information. The world lies.
-    if (_prev > 75 && _new <= 75) {
-        scr_world_event_log(
-            "[sanity_threshold_75] The visions begin to mislead. " +
-            "Benedetto can no longer trust what he sees."
-        );
-        show_debug_message("[Sanity] Crossed threshold: 75");
-    }
-
-    // ── Threshold: 50 ────────────────────────────────────────────────────────
-    // Perceiving corruption beyond reality. Input feels unreliable.
-    if (_prev > 50 && _new <= 50) {
-        scr_world_event_log(
-            "[sanity_threshold_50] The corruption bleeds into things that " +
-            "are not yet corrupted. Benedetto sees what will be."
-        );
-        show_debug_message("[Sanity] Crossed threshold: 50");
-    }
-
-    // ── Threshold: 25 ────────────────────────────────────────────────────────
-    // Constant distortion. Vision cooldown is halved (applied in
-    // scr_check_trigger_vision — it reads global.sanity directly).
-    if (_prev > 25 && _new <= 25) {
-        scr_world_event_log(
-            "[sanity_threshold_25] The edges of the world have stopped " +
-            "holding. There is no clear boundary between seeing and dreaming."
-        );
-        show_debug_message("[Sanity] Crossed threshold: 25");
-    }
-
-    // ── Threshold: 0 — game over ──────────────────────────────────────────────
-    if (_prev > 0 && _new <= 0) {
-        scr_game_over("sanity");
-    }
-}
+// Corruption is the single madness axis. Raising it (with the narrative
+// thresholds and the lost-state at 100) now lives in scr_corruption_taint() in
+// scr_corruption.gml.
 
 
 // =============================================================================
-// Part 6 — Sanity restoration
+// Part 6 — (removed) Sanity restoration → scr_corruption_relieve()
 // =============================================================================
-
-/// Restores sanity by amount, with a ceiling that depends on context.
-/// During an active circle: hard cap at 85 (permanent mark of descent).
-/// On circle solved: ceiling rises to 90 (called by scr_solve_circle).
-///
-/// Sources and their expected amounts (called externally by game systems):
-///   Praying at uncorrupted shrine : +10
-///   Completing story objective    : +15
-///   Safe NPC interaction          : +5
-///   Resting at safe house         : +8
-///   Circle solved                 : restore to 90 (call with amount=90, circle_solved=true)
-///
-/// @param {real}    amount          How much sanity to restore
-/// @param {bool}    circle_solved   Pass true when called from scr_solve_circle
-function scr_restore_sanity(amount, circle_solved) {
-    // GML in this project rejects ?? and ? : — use explicit checks.
-    if (is_undefined(circle_solved)) circle_solved = false;
-
-    // Ceiling: 90 if a circle was just solved; 85 otherwise.
-    // The world's scars do not fully heal — except when a circle is cleansed.
-    var _ceiling = 85;
-    if (circle_solved) _ceiling = 90;
-
-    global.sanity = min(global.sanity + amount, _ceiling);
-
-    show_debug_message(
-        "[Sanity] Restored +" + string(amount) +
-        " → " + string(round(global.sanity)) +
-        " (ceiling: " + string(_ceiling) + ")"
-    );
-}
+// Relief now LOWERS Limbo corruption (with a floor — the scars never fully
+// heal). See scr_corruption_relieve(amount, deep) in scr_corruption.gml.
+// Callers (shrine, safe house) were updated to call it directly.
 
 
 // =============================================================================
@@ -286,7 +213,7 @@ function scr_restore_sanity(amount, circle_solved) {
 /// a dedicated game-over Draw GUI flow — stubbed with debug output until
 /// those are fully built.
 ///
-/// @param {string} reason   "sanity" | "corruption" | "battle"
+/// @param {string} reason   "corruption" | "battle"
 function scr_game_over(reason) {
     // Prevent double-fire if sanity hits 0 twice in the same frame.
     if (global.game_state == "game_over") exit;
@@ -297,7 +224,7 @@ function scr_game_over(reason) {
         reason:             reason,
         days_survived:      global.day_count,
         visions_witnessed:  global.manifestation_count,
-        final_sanity:       global.sanity,
+        final_corruption:   global.circle_corruption[CIRCLE_LIMBO],
         circle_corruption:  global.circle_corruption,
         player_sin_affinity: global.player_sin_affinity,
         last_vision_type:   global.last_vision_type
@@ -306,7 +233,7 @@ function scr_game_over(reason) {
     // Log to world state so debug tooling captures the ending.
     scr_world_event_log("[GAME OVER: " + reason + "] " +
         "Day " + string(global.day_count) + " | " +
-        "Sanity " + string(round(global.sanity)) + " | " +
+        "Corruption " + string(round(global.circle_corruption[CIRCLE_LIMBO])) + " | " +
         "Visions " + string(global.manifestation_count)
     );
 
@@ -318,20 +245,6 @@ function scr_game_over(reason) {
     }
 
     switch (reason) {
-
-        // ── Sanity ending ─────────────────────────────────────────────────────
-        // Fade to black. The mind could not hold.
-        case "sanity":
-            show_debug_message(
-                "[Game Over: sanity] " +
-                "\"He could no longer find his way back.\" " +
-                "Days: " + string(global.day_count) + " | " +
-                "Visions: " + string(global.manifestation_count)
-            );
-            // Placeholder room name: rm_game_over_sanity
-            // Wire up in Prompt 8 room setup.
-            // room_goto(rm_game_over_sanity);
-            break;
 
         // ── Corruption ending ─────────────────────────────────────────────────
         // Fade to deep red. The world forgot itself.

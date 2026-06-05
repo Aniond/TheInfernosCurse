@@ -51,7 +51,7 @@ var _prompt_x = _gw - 200;
 var _prompt_y = _gh - 25;          // continue prompt rides the fixed bottom edge
 
 // ── Corruption factor (0-1) ───────────────────────────────────────────────────
-var _cf = clamp(corruption_level / 200, 0, 1);
+var _cf = clamp(corruption_level / 100, 0, 1);
 
 // =============================================================================
 // FRAME — gothic parchment art
@@ -118,13 +118,13 @@ if (is_loading) {
     // ── Sanity: alpha and distortion ─────────────────────────────────────────
     // Text alpha fades slightly as sanity drops — words become harder to hold.
     // Below sanity 50, the text occasionally jitters by ±1 pixel.
-    var _text_alpha = 0.7 + (global.sanity / 100 * 0.3);
+    var _text_alpha = 0.7 + (scr_lucidity() / 100 * 0.3);
     draw_set_alpha(_text_alpha);
 
     var _jitter_x = 0;
     var _jitter_y = 0;
-    if (global.sanity < 50) {
-        var _jitter_chance = (50 - global.sanity) / 50; // 0.0-1.0
+    if (scr_lucidity() < 50) {
+        var _jitter_chance = (50 - scr_lucidity()) / 50; // 0.0-1.0
         var _jitter_seed   = floor(current_time / (30 + 60 * (1 - _jitter_chance)));
         if ((_jitter_seed & 3) == 0) {
             _jitter_x = irandom_range(-1, 1);

@@ -36,7 +36,7 @@ if (is_shimmer_visible) {
 // Priest (sanity 75+): no passive — relies on Focus quality (reveals 4 tiles).
 // Tainted (low sanity): no passive — mostly blind.
 var _corr = global.battle_corruption;
-var _san  = global.sanity;
+var _san  = scr_lucidity();
 var _cap  = 0;
 // Only the Witness tier (50-74) gets passive shimmer — Priest relies on Focus quality,
 // Tainted/Cursed/Forgotten are too far gone to benefit.

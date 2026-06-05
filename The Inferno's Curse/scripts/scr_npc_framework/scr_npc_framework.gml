@@ -247,10 +247,10 @@ function scr_close_dialogue() {
 /// The player reads a degraded truth — not lies, just loss.
 ///
 /// @param {string} raw_text         The original dialogue string
-/// @param {real}   corruption_lvl   NPC's npc_memory_corruption (0-200)
+/// @param {real}   corruption_lvl   NPC's npc_memory_corruption (0-100)
 /// @returns {string}   Modified text appropriate to the corruption level
 function scr_dialogue_get_text_display(raw_text, corruption_lvl) {
-    // corruption_lvl is on the same 0-200 scale as the NPC corruption arcs
+    // corruption_lvl is on the 0-100 scale, matching the NPC corruption arcs
     // (see obj_npc_marco Step): Arc0 <25, Arc1 25-50, Arc2 50-75, Arc3 75-90,
     // Arc4 90+. Fragmentation is tied to those arcs so early arcs stay clearly
     // readable and heavy breakdown is reserved for Arc 3 and beyond.
@@ -315,7 +315,7 @@ function scr_get_sin_behavior_description() {
         if (_c <= 30) continue;
         _active++;
 
-        var _intensity = round((_c / 200) * 100); // percentage of max
+        var _intensity = round(_c); // percentage of max (0-100 scale)
         switch (_i) {
             case CIRCLE_LIMBO:
                 _out += "The bells of Santa Maria del Fiore ring at the wrong hours (" + string(_intensity) + "%). ";

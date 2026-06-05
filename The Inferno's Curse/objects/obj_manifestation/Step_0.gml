@@ -57,7 +57,7 @@ if (instance_exists(obj_player)) {
     if (is_aware) {
         var _dist = point_distance(x, y, obj_player.x, obj_player.y);
         if (_dist > _approach_stop_distance) {
-            var _spd = (global.sanity < 50) ? 1.0 : 0.5; // faster at low sanity
+            var _spd = (scr_lucidity() < 50) ? 1.0 : 0.5; // faster when far gone (high corruption)
             var _dir = point_direction(x, y, obj_player.x, obj_player.y);
             x += lengthdir_x(_spd, _dir);
             y += lengthdir_y(_spd, _dir);

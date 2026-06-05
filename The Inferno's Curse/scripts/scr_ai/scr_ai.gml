@@ -133,15 +133,15 @@ function scr_npc_build_system_prompt(npc_id) {
 
     // ── Corruption behaviour string ───────────────────────────────────────────
     var _corruption_behavior;
-    if (_c > 150) {
+    if (_c > 75) {
         _corruption_behavior =
             "You speak in fragments. You confuse this person for someone else. " +
             "You forget mid-sentence.";
-    } else if (_c > 100) {
+    } else if (_c > 50) {
         _corruption_behavior =
             "You are confused about who this person is. " +
             "You trail off sometimes. You repeat yourself occasionally.";
-    } else if (_c > 50) {
+    } else if (_c > 25) {
         _corruption_behavior =
             "You are slightly forgetful. You occasionally pause mid-thought.";
     } else {

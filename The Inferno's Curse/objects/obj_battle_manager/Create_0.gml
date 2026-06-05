@@ -23,9 +23,9 @@ combat_log_capacity = 8;
 // Mirror of global.battle_corruption, read each step.
 displayed_corruption = global.battle_corruption;
 
-// ── Sanity zero message ───────────────────────────────────────────────────────
-show_sanity_zero_text = false;
-sanity_zero_alpha     = 0;
+// ── Lost message (Benedetto fully corrupted) ──────────────────────────────────
+show_lost_text = false;
+lost_alpha     = 0;
 
 // ── Flee state ────────────────────────────────────────────────────────────────
 flee_confirm = false;   // true while awaiting Y/N confirmation

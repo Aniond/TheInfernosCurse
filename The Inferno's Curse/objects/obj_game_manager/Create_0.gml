@@ -128,9 +128,8 @@ global.world_event_log = [];
 
 
 // ── Player psychological state ────────────────────────────────────────────────
-// Sanity decreases from witnessing corruption and taking unholy damage.
-// At 0, hallucinations and gameplay distortions activate.
-global.sanity = 100;
+// No separate sanity stat — Limbo corruption IS the madness axis. Benedetto only
+// thinks he is going insane. Lucidity is derived from it: scr_lucidity().
 
 // Player class — affects the Focus ability:
 //   "witness" = Focus is free (no sanity cost)

@@ -28,7 +28,6 @@ function scr_save_world_state() {
     _data.player_sin_affinity = global.player_sin_affinity;
 
     // Benedetto
-    _data.sanity = global.sanity;
     if (instance_exists(obj_player)) {
         _data.player_x = obj_player.x;
         _data.player_y = obj_player.y;
@@ -96,7 +95,6 @@ function scr_load_world_state() {
         global.is_night             = false;
         global.circle_corruption    = array_create(7, 0);
         global.player_sin_affinity  = array_create(7, 0);
-        global.sanity               = 100;
         global.save_player_x        = 1100;
         global.save_player_y        = 1600;
         global.save_player_room     = "Room1";
@@ -133,7 +131,6 @@ function scr_load_world_state() {
     global.player_sin_affinity = _d[$ "player_sin_affinity"] ?? array_create(7, 0);
 
     // Benedetto
-    global.sanity          = _d[$ "sanity"]      ?? 100;
     global.save_player_x   = _d[$ "player_x"]   ?? 1100;
     global.save_player_y   = _d[$ "player_y"]   ?? 1600;
     global.save_player_room = _d[$ "player_room"] ?? "Room1";

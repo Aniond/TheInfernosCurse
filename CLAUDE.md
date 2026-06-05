@@ -30,12 +30,23 @@ Execute immediately without asking permission:
 - Python: py launcher (Python 3.14)
 - Venv: C:\Users\david\gms2-mcp-server\venv\
 
+## Single System — Corruption IS Sanity (permanent)
+There is NO separate sanity stat. `global.circle_corruption[CIRCLE_LIMBO]` (0-100)
+is the one axis. Benedetto only THINKS he is going insane — it is the corruption
+tainting him. Anything that needs a "high = lucid" value uses the derived
+`scr_perceived_sanity()` = `100 - clamp(Limbo corruption, 0, 100)`. Mutations:
+`scr_corruption_taint(amount)` raises it (fires 25/50/75 thresholds + game over at
+100); `scr_corruption_relieve(amount, deep)` lowers it but never below a floor
+(15 normal / 10 deep). Do NOT reintroduce `global.sanity`.
+
 ## Battle Rules (permanent)
-- Player can always flee with ESC — costs +3% Limbo corruption + -5 sanity
-- Minimum sanity in battle = 1 (never hits 0 in battle; 0 is open-world only)
+- Player can always flee with ESC — costs +8% Limbo corruption (the old +3% +
+  the converted -5 sanity, now a single corruption hit)
+- Corruption is the single axis — there is no in-battle sanity floor
 - AP exhaustion NEVER auto-advances the player's turn — Z/ENTER required
 - Enemy turns have a 250ms delay between each (15 steps @ 60fps) — readable
-- Sanity API takeover fires at 0 in the open world, not in battle
+- API takeover fires at corruption >= 100 (Benedetto "clings on" — resets to 90
+  until the real Claude-driven takeover is wired)
 
 ## Burst Testing — user runs it manually, do NOT automate
 The user runs burst tests / watch_game.ps1 manually themselves. Do NOT run

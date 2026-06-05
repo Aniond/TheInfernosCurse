@@ -25,10 +25,10 @@ if (instance_exists(obj_player)) {
         if (keyboard_check_pressed(ord("E"))) {
             if (shrine_active && global.circle_corruption[0] < 50) {
                 // The shrine answers.
-                scr_restore_sanity(10);
+                scr_corruption_relieve(10);
                 shrine_active = false;
                 cooldown      = cooldown_max;
-                show_debug_message("Sanity restored at shrine");
+                show_debug_message("Corruption eased at shrine");
             } else if (global.circle_corruption[0] >= 50) {
                 // Corruption has silenced this place.
                 show_debug_message("The shrine is dark. It does not respond.");

@@ -92,7 +92,7 @@ switch (current_vision_type) {
 
     // ── GAME_OVER screens ─────────────────────────────────────────────────────
     // Fades handled here; text rendering stubbed until font assets exist.
-    case "GAME_OVER_sanity":
+    case "GAME_OVER_corruption":
         draw_set_alpha(min(_a, 1));
         draw_set_colour(c_black);
         draw_rectangle(0, 0, _w, _h, false);

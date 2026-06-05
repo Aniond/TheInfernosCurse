@@ -1,17 +1,13 @@
 /// @description Called every in-game day rollover. Advances corruption and
 /// triggers cascade effects between circles.
 ///
-/// Corruption scale used here is 0-200 (not the standard 0-100):
-///   0-100  = standard corruption range
-///   100+   = hyper-corruption; the circle has fully merged with Hell.
-///            Hyper-corruption in one circle begins bleeding into neighbours.
+/// Corruption scale is 0-100 (the single madness axis; 100 = fully lost).
 ///
-/// Cascade thresholds (Limbo, index 0):
-///   >= 100  Gluttony (index 2) begins spreading — consumed souls feed excess
-///   >= 110  Lust (index 1) begins spreading — desire fills the void of grief
+/// Cascade thresholds (Limbo, index 0) — fire during the descent, before 100:
+///   >= 60   Gluttony (index 2) begins spreading — consumed souls feed excess
+///   >= 75   Lust (index 1) begins spreading — desire fills the void of grief
 ///
 /// NOTE: This function writes directly to the global corruption arrays.
-/// Do NOT use scr_corruption_modify() here — that function caps at 100.
 
 // DESIGN: Limbo is the root corruption.
 // Solving Limbo stops all downstream bleed.
@@ -30,18 +26,17 @@ function scr_new_day_corruption_update() {
     // once the player reaches that city (scr_solve_circle unlocks the next).
     // During Circle 1 development only Limbo is enabled, so these are inert.
     // TODO: tune thresholds when those circles are sealed and tested.
-    if (global.circle_enabled[CIRCLE_GLUTTONY] && global.circle_corruption[CIRCLE_LIMBO] >= 100) {
+    if (global.circle_enabled[CIRCLE_GLUTTONY] && global.circle_corruption[CIRCLE_LIMBO] >= 60) {
         global.circle_corruption[CIRCLE_GLUTTONY] += 5;   // Gluttony cascade
     }
-    if (global.circle_enabled[CIRCLE_LUST] && global.circle_corruption[CIRCLE_LIMBO] >= 110) {
+    if (global.circle_enabled[CIRCLE_LUST] && global.circle_corruption[CIRCLE_LIMBO] >= 75) {
         global.circle_corruption[CIRCLE_LUST] += 3;       // Lust cascade
     }
 
-    // ── Clamp all circles 0-200 ───────────────────────────────────────────────
-    // Standard ceiling is 200. Values above 100 are hyper-corruption —
-    // the circle has crossed the point of no return.
+    // ── Clamp all circles 0-100 ───────────────────────────────────────────────
+    // 100 is the ceiling — fully lost, the single madness axis maxed out.
     for (var _i = 0; _i < CIRCLE_COUNT; _i++) {
-        global.circle_corruption[_i] = clamp(global.circle_corruption[_i], 0, 200);
+        global.circle_corruption[_i] = clamp(global.circle_corruption[_i], 0, 100);
     }
 
     // ── World event log ───────────────────────────────────────────────────────

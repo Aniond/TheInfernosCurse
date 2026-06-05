@@ -39,7 +39,7 @@ if (global.debug_mode) {
     draw_set_color(make_color_rgb(160, 220, 160));
     draw_set_halign(fa_left);
     draw_text(32, 32,
-        "S:" + string(round(global.sanity)) +
+        "S:" + string(round(scr_lucidity())) +
         " | C:" + string(round(global.battle_corruption)) +
         " | R:" + string(global.battle_round));
 }
@@ -201,11 +201,11 @@ if (flee_confirm) {
 }
 
 // ── Sanity-zero message (now just informational — no lock) ───────────────────
-if (show_sanity_zero_text && sanity_zero_alpha > 0) {
-    draw_set_alpha(sanity_zero_alpha * 0.85);
+if (show_lost_text && lost_alpha > 0) {
+    draw_set_alpha(lost_alpha * 0.85);
     draw_set_color(make_color_rgb(4, 2, 8));
     draw_rectangle(_gw / 2 - 340, _gh / 2 - 50, _gw / 2 + 340, _gh / 2 + 50, false);
-    draw_set_alpha(sanity_zero_alpha);
+    draw_set_alpha(lost_alpha);
     draw_set_color(make_color_rgb(160, 120, 200));
     draw_rectangle(_gw / 2 - 340, _gh / 2 - 50, _gw / 2 + 340, _gh / 2 + 50, true);
     draw_set_color(make_color_rgb(200, 180, 230));

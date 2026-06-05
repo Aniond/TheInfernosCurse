@@ -43,5 +43,5 @@ request_id   = -1;
 // ── Memory corruption ─────────────────────────────────────────────────────────
 // Tracks how corrupted this NPC's perception is, driven by their home circle.
 // Updated every step. Drives Draw colour and system prompt tone.
-// Scale: 0-200 (matches the extended corruption scale in scr_new_day_corruption_update).
+// Scale: 0-100 (the single corruption scale).
 npc_memory_corruption = 0;

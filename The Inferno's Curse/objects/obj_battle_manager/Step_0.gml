@@ -16,10 +16,8 @@ if (global.battle_corruption >= LIMBO_MOVE_THRESHOLD) {
     }
 }
 
-// ── Sanity zero check — clamp to 1 in battle (floor already in scr_corruption)
-if (instance_exists(obj_unit_benedetto)) {
-    if (global.sanity <= 0) global.sanity = 1;   // hard floor — 0 is open-world only
-}
+// ── Corruption is the single madness axis — no separate sanity floor needed. ─
+// Benedetto's near-lost behaviour is handled in his own Step at corruption >= 100.
 
 // ── Focus false-reveal timer (Cursed perception failure) ─────────────────────
 if (global.false_shimmer_active) {

@@ -2,7 +2,7 @@
 /// Pass to scr_ai_call() with the returned system prompt to get a Sonnet response,
 /// then ds_list_add(obj_journal.journal_entries, json_stringify(entry)).
 ///
-/// @returns {struct}   Entry struct with day, city, sanity_at_entry, dominant_sin,
+/// @returns {struct}   Entry struct with day, city, corruption_at_entry, dominant_sin,
 ///                     dominant_level, and a placeholder text field for the AI response.
 function scr_generate_journal_entry() {
     // Find dominant sin for context
@@ -23,7 +23,7 @@ function scr_generate_journal_entry() {
         day:             global.day_count,
         city:            _city,
         text:            "",   // filled by API response or caller
-        sanity_at_entry: global.sanity,
+        corruption_at_entry: global.circle_corruption[CIRCLE_LIMBO],
         dominant_sin:    global.circle_names[_dom_idx],
         dominant_level:  _dom_level
     };
@@ -40,7 +40,7 @@ function scr_generate_journal_entry() {
         "The walls of the Baptistery breathed this morning. You did not tell anyone.\n\n" +
         "Current day: " + string(_entry.day) + ".\n" +
         "City: " + _city + ".\n" +
-        "Your sanity: " + string(round(_entry.sanity_at_entry)) + "/100.\n" +
+        "The corruption upon you: " + string(round(_entry.corruption_at_entry)) + "/100.\n" +
         "Dominant corruption: " + _entry.dominant_sin + " at " + string(round(_dom_level)) + "%.\n\n" +
         "Write one short journal entry (2-4 sentences) in first person, past tense.\n" +
         "Be specific. Reference a real Florence landmark or a real person you saw today.\n" +

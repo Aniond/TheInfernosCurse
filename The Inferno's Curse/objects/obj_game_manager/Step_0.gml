@@ -41,15 +41,15 @@ if (keyboard_check_pressed(vk_f2)) {
     global.save_indicator_timer = 120;
 }
 
-// ── DEBUG: sanity tiers (F3 -20, F4 +20) — test Focus reveal scaling ─────────
+// ── DEBUG: corruption tiers (F3 +20 worse, F4 -20 better) — test perception ──
 if (keyboard_check_pressed(vk_f3)) {
-    global.sanity = max(1, global.sanity - 20);
-    global.save_indicator_text  = "SANITY: " + string(round(global.sanity));
+    global.circle_corruption[CIRCLE_LIMBO] = clamp(global.circle_corruption[CIRCLE_LIMBO] + 20, 0, 100);
+    global.save_indicator_text  = "CORRUPTION: " + string(round(global.circle_corruption[CIRCLE_LIMBO]));
     global.save_indicator_timer = 120;
 }
 if (keyboard_check_pressed(vk_f4)) {
-    global.sanity = min(100, global.sanity + 20);
-    global.save_indicator_text  = "SANITY: " + string(round(global.sanity));
+    global.circle_corruption[CIRCLE_LIMBO] = clamp(global.circle_corruption[CIRCLE_LIMBO] - 20, 0, 100);
+    global.save_indicator_text  = "CORRUPTION: " + string(round(global.circle_corruption[CIRCLE_LIMBO]));
     global.save_indicator_timer = 120;
 }
 
@@ -63,7 +63,7 @@ if (keyboard_check_pressed(vk_f6)) {
     global.save_indicator_timer = 120;
 }
 if (keyboard_check_pressed(vk_f7)) {
-    global.circle_corruption[global.current_circle] = 200;
+    global.circle_corruption[global.current_circle] = 100;
     global.save_indicator_text  = "CORRUPTION MAX";
     global.save_indicator_timer = 120;
 }

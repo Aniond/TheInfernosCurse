@@ -18,7 +18,7 @@ draw_text(_bar_x, _bar_y - 22, "HP  " + string(round(hp)) + " / " + string(round
 if (global.debug_mode) {
     draw_set_color(make_color_rgb(160, 220, 160));
     draw_text(32, 32,
-        "S:" + string(round(global.sanity)) +
+        "S:" + string(round(scr_lucidity())) +
         " | C:" + string(round(global.circle_corruption[global.current_circle])) +
         " | PC:" + string(round(corruption)));
 }

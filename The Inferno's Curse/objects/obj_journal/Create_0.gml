@@ -22,7 +22,7 @@ if (variable_global_exists("codex_entries") && array_length(global.codex_entries
         day:              1,
         city:             "Florence",
         text:             "The wall moved today. I told myself it was exhaustion. I am not exhausted.",
-        sanity_at_entry:  95,
+        corruption_at_entry:  5,
         dominant_sin:     "Limbo",
         dominant_level:   8
     };
