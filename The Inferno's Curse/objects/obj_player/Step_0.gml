@@ -92,17 +92,17 @@ if (_mx != 0) {
     if (_wall_at(x, y, _phw, _phh)) x -= _mx;
 }
 
-// Vertical axis — building walls + one-way river gate.
-// The river only blocks movement that ENTERS it (old pos outside, new pos inside).
-// If the player is already inside the overlap zone (e.g. loaded at the bank edge),
-// they can always move north to escape.
+// Vertical axis — building walls + river.
+// River blocks Y movement in both directions unless the player is on a bridge.
+// X movement never checks the river (east-west bank walking always free).
+// If the player somehow loads inside the river band, moving north or south will
+// hit this check but the _in_river AABB means they can exit by moving away from
+// the river centre — the first step that clears the AABB zone is unblocked.
 if (_my != 0) {
     var _old_y = y;
     y += _my;
     var _blocked = _wall_at(x, y, _phw, _phh);
-    if (!_blocked && _in_river(x, y, _phh) && !_in_river(x, _old_y, _phh)) {
-        _blocked = true;   // entering the river from outside
-    }
+    if (!_blocked && _in_river(x, y, _phh)) _blocked = true;
     if (_blocked) y = _old_y;
 }
 
