@@ -64,6 +64,17 @@ CRITICAL — always read existing .yy files first and match exact verified forma
 from yy_templates.md before creating any new ones. Never deviate from verified
 format. Close GameMaker before editing .yy files.
 
+## Tilesets — NEVER hand-author
+NEVER hand-author tileset .yy files.
+Only GameMaker IDE creates tilesets.
+Hand-authored tileset .yy always fails
+due to required fields like
+tileAnimationFrames that GM manages.
+(History: 2026-06-04 — a hand-authored ts_florence_cobblestone.yy failed
+project load and the whole branch had to be discarded. Tilesets MUST be made
+via IDE: right-click Tilesets > Create, assign sprite, set tile size. Same for
+assigning a tileset to a room Ground layer — do it in the IDE room editor.)
+
 ## Clean Build — AUTOMATIC after every change that needs a rebuild
 GameMaker caches "unused asset" stripping, so incremental builds keep assets
 stripped even after the .gml/.yy edit that should reference them.
