@@ -37,10 +37,13 @@ if (_moving) {
 // ── Directional sprite ────────────────────────────────────────────────────────
 // facing_dir only changes while moving, so idle keeps the last direction faced.
 var _dir_idx = (round(facing_dir / 45)) mod 8;
-if (_moving) {
-    sprite_index = _running ? run_sprites[_dir_idx] : walk_sprites[_dir_idx];
-} else {
-    sprite_index = idle_sprites[_dir_idx];
+var _sluggish = global.circle_corruption[CIRCLE_LIMBO] > 30;
+var _target_spr = _moving
+    ? (_running ? run_sprites[_dir_idx] : (_sluggish ? sluggish_sprites[_dir_idx] : walk_sprites[_dir_idx]))
+    : idle_sprites[_dir_idx];
+if (sprite_index != _target_spr) {
+    sprite_index = _target_spr;
+    image_index  = 0;
 }
 image_speed = 1;
 

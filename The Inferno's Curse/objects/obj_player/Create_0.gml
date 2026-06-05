@@ -51,5 +51,15 @@ run_sprites = [
     spr_benedetto_run_south,
     spr_benedetto_run_south_east,
 ];
+sluggish_sprites = [
+    spr_benedetto_walk_sluggish_east,
+    spr_benedetto_walk_sluggish_north_east,
+    spr_benedetto_walk_sluggish_north,
+    spr_benedetto_walk_sluggish_north_west,
+    spr_benedetto_walk_sluggish_west,
+    spr_benedetto_walk_sluggish_south_west,
+    spr_benedetto_walk_sluggish_south,
+    spr_benedetto_walk_sluggish_south_east,
+];
 sprite_index = spr_benedetto_walk_south;
 image_speed  = 1;  // sprites use their own baked playback speed

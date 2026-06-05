@@ -323,21 +323,15 @@ function scr_apply_sin_effect(circle_index) {
 
     switch (circle_index) {
 
-        // ── CIRCLE 0: LIMBO — input dissociation ──────────────────────────────
-        // Grief blanks the mind. The player briefly loses control as the world
-        // goes grey — a mechanical echo of forgetting who you are.
+        // ── CIRCLE 0: LIMBO — sluggish movement ───────────────────────────────
+        // Grief weighs on every step. Movement slows as corruption rises —
+        // up to 40% at corruption=100. The player uses a separate sluggish
+        // walk animation (swap handled in obj_player Step). No input lock —
+        // the dragging gait IS the mechanic.
         case CIRCLE_LIMBO:
-            // Fire roughly once per (130 - _c) steps. At corruption=30 that
-            // is ~100 steps (~1.7 s at 60 fps); at corruption=100 it hits the
-            // 30-step floor (~0.5 s).
-            var _freq_limbo = max(130 - _c, 30);
-            if (!global.input_locked && irandom(_freq_limbo) == 0) {
-                global.input_locked    = true;
-                global.input_lock_timer = 30; // 0.5 s at 60 fps
-                // Grey flash: draw_set_colour and alpha handled in obj_player Draw.
-                // Signal via a global so the Draw event can read it cheaply.
-                global.vision_intensity = min(global.vision_intensity + 20, 100);
-                scr_world_event_log("A moment of grey dissociation — Limbo takes hold.");
+            if (instance_exists(obj_player)) {
+                var _spd_penalty = obj_player.base_move_spd * (_c / 100) * 0.4;
+                obj_player.move_spd = max(obj_player.base_move_spd - _spd_penalty, 1.0);
             }
             break;
 
