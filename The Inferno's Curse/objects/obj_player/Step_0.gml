@@ -73,37 +73,18 @@ var _wall_at = function(_px, _py, _hw, _hh) {
     return _hit;
 };
 
-// Returns true if the position is inside the river band and NOT on a bridge.
-// Used only for Y-axis movement so east-west walking on the bank is never blocked.
-var _in_river = function(_px, _py, _hh) {
-    if (room != Room1 || !variable_global_exists("river_y1")) return false;
-    if (_py + _hh <= global.river_y1 || _py - _hh >= global.river_y2) return false;
-    for (var _b = 0; _b < array_length(global.river_bridges); _b++) {
-        var _br = global.river_bridges[_b];
-        if (_px + 16 > _br[0] && _px - 16 < _br[1]) return false;   // AABB bridge — any overlap is passable
-    }
-    return true;
-};
-
-// Horizontal axis — building walls only. River runs E-W and never blocks X movement,
-// which also lets the player escape the bank boundary if they loaded there.
+// Horizontal axis
 if (_mx != 0) {
     x += _mx;
     if (_wall_at(x, y, _phw, _phh)) x -= _mx;
 }
 
-// Vertical axis — building walls + river.
-// River blocks Y movement in both directions unless the player is on a bridge.
-// X movement never checks the river (east-west bank walking always free).
-// If the player somehow loads inside the river band, moving north or south will
-// hit this check but the _in_river AABB means they can exit by moving away from
-// the river centre — the first step that clears the AABB zone is unblocked.
+// Vertical axis — river collision is handled by invisible obj_wall instances
+// spawned by obj_game_manager, so no special river logic needed here.
 if (_my != 0) {
     var _old_y = y;
     y += _my;
-    var _blocked = _wall_at(x, y, _phw, _phh);
-    if (!_blocked && _in_river(x, y, _phh)) _blocked = true;
-    if (_blocked) y = _old_y;
+    if (_wall_at(x, y, _phw, _phh)) y = _old_y;
 }
 
 // ── Room border clamp — matches the 56-px visual wall ring ────────────────────

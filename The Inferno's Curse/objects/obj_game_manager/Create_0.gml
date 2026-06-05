@@ -252,6 +252,31 @@ global.river_y1      = 2704;   // bottom quarter of room (y 2400-3200)
 global.river_y2      = 2896;   // 192px band (3 × 64px water tiles)
 global.river_bridges = [[1024, 1280], [1984, 2240]];   // 256px (4 tiles) — wide enough to walk onto naturally from south bank
 
+// ── River collision walls ─────────────────────────────────────────────────────
+// Three invisible obj_wall instances span the full river height (y1→y2) with
+// gaps at each bridge. _wall_at in Step_0 catches them automatically — no
+// custom river math needed in the player. Placed Room1-only on first run.
+if (room == Room1) {
+    var _ry1   = global.river_y1;
+    var _rh    = global.river_y2 - global.river_y1;
+    var _b0    = global.river_bridges[0];
+    var _b1    = global.river_bridges[1];
+    var _ixl   = 56;
+    var _ixr   = room_width - 56;
+    // [start_x, end_x] for each solid segment
+    var _segs = [[_ixl, _b0[0]], [_b0[1], _b1[0]], [_b1[1], _ixr]];
+    for (var _s = 0; _s < 3; _s++) {
+        var _x0 = _segs[_s][0];
+        var _x1 = _segs[_s][1];
+        if (_x1 > _x0) {
+            var _w      = instance_create_depth(_x0, _ry1, 500, obj_wall);
+            _w.wall_w   = _x1 - _x0;
+            _w.wall_h   = _rh;
+            _w.visible  = false;
+        }
+    }
+}
+
 // ── Street dressing ───────────────────────────────────────────────────────────
 // Spawn the persistent Florence street scene (paved road + market props) at a
 // low depth so it sits over the cobble floor but under characters/buildings.

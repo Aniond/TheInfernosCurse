@@ -25,6 +25,8 @@ if (global.debug_mode) {
         "spd:" + string(image_speed) +
         " | idx:" + string(string_format(image_index, 1, 2)) +
         " | spr:" + string(sprite_index));
+    draw_text(32, 72,
+        "x:" + string(round(x)) + " | y:" + string(round(y)));
 }
 
 draw_set_color(c_white);

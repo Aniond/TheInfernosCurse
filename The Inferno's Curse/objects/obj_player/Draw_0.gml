@@ -23,3 +23,39 @@ draw_sprite_ext(
     _tint,          // corruption-driven colour tint
     1               // full alpha
 );
+
+// ── Collision debug overlay (F1) ──────────────────────────────────────────────
+if (global.debug_mode) {
+    // Player AABB — yellow outline
+    draw_set_color(c_yellow);
+    draw_set_alpha(0.9);
+    draw_rectangle(x - 16, y - 8, x + 16, y + 8, true);
+    draw_set_alpha(1);
+
+    // River collision zones — red fill + bright edge lines
+    if (room == Room1 && variable_global_exists("river_y1")) {
+        var _ry1 = global.river_y1;
+        var _ry2 = global.river_y2;
+        draw_set_color(make_color_rgb(200, 40, 40));
+        draw_set_alpha(0.18);
+        draw_rectangle(56, _ry1, room_width - 56, _ry2, false);
+        draw_set_alpha(0.8);
+        draw_line(56, _ry1, room_width - 56, _ry1);
+        draw_line(56, _ry2, room_width - 56, _ry2);
+        draw_set_alpha(1);
+
+        // Bridge passable zones — green fill
+        draw_set_color(make_color_rgb(40, 200, 80));
+        draw_set_alpha(0.30);
+        var _brs = global.river_bridges;
+        for (var _b = 0; _b < array_length(_brs); _b++) {
+            draw_rectangle(_brs[_b][0], _ry1, _brs[_b][1], _ry2, false);
+        }
+        draw_set_alpha(1);
+    }
+
+    // Player world coords next to sprite
+    draw_set_color(c_white);
+    draw_text(x + 18, y - 24, string(round(x)) + "," + string(round(y)));
+    draw_set_color(c_white);
+}
