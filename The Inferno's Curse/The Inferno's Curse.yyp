@@ -23,6 +23,9 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_florence_gate","path":"sprites/spr_florence_gate/spr_florence_gate.yy",},},
+    {"id":{"name":"spr_florence_wall","path":"sprites/spr_florence_wall/spr_florence_wall.yy",},},
+    {"id":{"name":"spr_florence_wall_corner","path":"sprites/spr_florence_wall_corner/spr_florence_wall_corner.yy",},},
     {"id":{"name":"spr_florence_rooftop","path":"sprites/spr_florence_rooftop/spr_florence_rooftop.yy",},},
     {"id":{"name":"spr_florence_cypress","path":"sprites/spr_florence_cypress/spr_florence_cypress.yy",},},
     {"id":{"name":"spr_florence_reeds","path":"sprites/spr_florence_reeds/spr_florence_reeds.yy",},},
