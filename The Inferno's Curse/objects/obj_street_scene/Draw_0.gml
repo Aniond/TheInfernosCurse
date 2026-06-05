@@ -3,6 +3,8 @@
 // =============================================================================
 // Clean rebuild. Layers (bottom to top):
 //   1) GROUND  — seamless grass over the whole room.
+//   1b) STREET — cobblestone market street band across the middle (E-W),
+//                replaces grass in that zone only; buildings/props draw on top.
 //   2) ARNO    — seamless scrolling water tile (PixelLab Wang fill) across the
 //                lower third, stone banks on both edges, and bridges connecting.
 //   3) WALLS   — SEAMLESS city wall ring (drawn procedurally so it connects on
@@ -41,12 +43,27 @@ var _gx1  = _cx + _gap * 0.5;
 var _gy0  = _cy - _gap * 0.5;   // W/E gate gap (y range)
 var _gy1  = _cy + _gap * 0.5;
 
+// ── 1b. MARKET STREET: cobblestone piazza — middle half of room (E-W) ──────────
+// Room layout: top quarter (y 0–800) = buildings + grass;
+//              middle half (y 800–2400) = cobblestone piazza / market square;
+//              bottom quarter (y 2400–3200) = river bank + Arno.
+// 1600px = 25 × 64px tile rows, spans wall-to-wall inside the city.
+var _st_y0 = 800;
+var _st_y1 = 2400;
+var _sw    = sprite_get_width(spr_florence_street);    // 64
+var _sh    = sprite_get_height(spr_florence_street);   // 64
+for (var _sy = _st_y0; _sy < _st_y1; _sy += _sh) {
+    for (var _sx = _ix0; _sx < _ix1; _sx += _sw) {
+        draw_sprite(spr_florence_street, 0, _sx, _sy);
+    }
+}
+
 // ── 2. ARNO river (interior only) ─────────────────────────────────────────────
 // Geometry is OWNED by the globals set in obj_game_manager — obj_player collision
 // routes the player over the same bridge spans, so visuals MUST read these or the
 // water and the walkable crossings drift apart.
-var _ry1     = global.river_y1;        // 2368
-var _ry2     = global.river_y2;        // 2560  (band = 192px = 3 water tiles)
+var _ry1     = global.river_y1;        // 2704 — bottom quarter of room
+var _ry2     = global.river_y2;        // 2896  (band = 192px = 3 water tiles)
 var _bridges = global.river_bridges;   // [[x0,x1], ...] walkable crossings
 var _bankh   = 22;                     // stone bank thickness
 
@@ -107,30 +124,33 @@ draw_rectangle(_ix0, _ry1 - 4, _ix1, _ry1,     false);
 draw_rectangle(_ix0, _ry2,     _ix1, _ry2 + 4, false);
 draw_set_color(c_white);
 
-// ── bridges: one stone deck per walkable span, north bank → south bank ─────────
+// ── bridges: cobblestone-tiled stone deck + parapets ───────────────────────────
 var _bdy0   = _ry1 - _bankh;       // deck top    (flush with north bank)
 var _bdy1   = _ry2 + _bankh;       // deck bottom (flush with south bank)
-var _deck   = make_color_rgb(140, 128, 108);
-var _deck_d = make_color_rgb(104, 94, 78);
 var _rail   = make_color_rgb(120, 110, 92);
 var _rail_l = make_color_rgb(170, 160, 140);
+var _bsw    = sprite_get_width(spr_florence_street);    // 64
+var _bsh    = sprite_get_height(spr_florence_street);   // 64
 for (var _b = 0; _b < array_length(_bridges); _b++) {
     var _bx0 = _bridges[_b][0];
     var _bx1 = _bridges[_b][1];
-    // deck
-    draw_set_color(_deck);
-    draw_rectangle(_bx0, _bdy0, _bx1, _bdy1, false);
-    // plank/cobble seams across the deck
-    draw_set_color(_deck_d);
-    for (var _py = _bdy0 + 18; _py < _bdy1; _py += 18) {
-        draw_rectangle(_bx0, _py, _bx1, _py + 2, false);
+    // stone deck — cobblestone tiles clipped to exact bridge bounds
+    draw_set_color(c_white);
+    for (var _btile_y = _bdy0; _btile_y < _bdy1; _btile_y += _bsh) {
+        for (var _btile_x = _bx0; _btile_x < _bx1; _btile_x += _bsw) {
+            draw_sprite_part(spr_florence_street, 0,
+                0, 0,
+                min(_bsw, _bx1 - _btile_x),
+                min(_bsh, _bdy1 - _btile_y),
+                _btile_x, _btile_y);
+        }
     }
     // stone parapets along both long sides
     draw_set_color(_rail);
-    draw_rectangle(_bx0,      _bdy0, _bx0 + 12, _bdy1, false);   // west rail
-    draw_rectangle(_bx1 - 12, _bdy0, _bx1,      _bdy1, false);   // east rail
+    draw_rectangle(_bx0,      _bdy0, _bx0 + 12, _bdy1, false);   // west parapet
+    draw_rectangle(_bx1 - 12, _bdy0, _bx1,      _bdy1, false);   // east parapet
     draw_set_color(_rail_l);
-    draw_rectangle(_bx0,     _bdy0, _bx0 + 4, _bdy1, false);     // rail highlights
+    draw_rectangle(_bx0,     _bdy0, _bx0 + 4, _bdy1, false);     // parapet highlights
     draw_rectangle(_bx1 - 4, _bdy0, _bx1,     _bdy1, false);
 }
 draw_set_color(c_white);

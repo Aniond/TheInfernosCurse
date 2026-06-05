@@ -248,8 +248,8 @@ gpu_set_tex_filter(false);
 // obj_player (collision routes the player over the bridge gaps). A full-width
 // band across the south of the map; two bridges flank the south_row building so
 // each crossing lands in an open grass corridor. Tile-aligned (64px grid).
-global.river_y1      = 2368;
-global.river_y2      = 2560;
+global.river_y1      = 2704;   // bottom quarter of room (y 2400-3200)
+global.river_y2      = 2896;   // 192px band (3 × 64px water tiles)
 global.river_bridges = [[1040, 1240], [1980, 2180]];   // walkable x-spans
 
 // ── Street dressing ───────────────────────────────────────────────────────────
