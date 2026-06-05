@@ -80,7 +80,7 @@ var _in_river = function(_px, _py, _hh) {
     if (_py + _hh <= global.river_y1 || _py - _hh >= global.river_y2) return false;
     for (var _b = 0; _b < array_length(global.river_bridges); _b++) {
         var _br = global.river_bridges[_b];
-        if (_px > _br[0] && _px < _br[1]) return false;   // on bridge — passable
+        if (_px + 16 > _br[0] && _px - 16 < _br[1]) return false;   // AABB bridge — any overlap is passable
     }
     return true;
 };
