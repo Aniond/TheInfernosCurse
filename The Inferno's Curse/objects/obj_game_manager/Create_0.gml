@@ -250,7 +250,7 @@ gpu_set_tex_filter(false);
 // each crossing lands in an open grass corridor. Tile-aligned (64px grid).
 global.river_y1      = 2704;   // bottom quarter of room (y 2400-3200)
 global.river_y2      = 2896;   // 192px band (3 × 64px water tiles)
-global.river_bridges = [[1040, 1240], [1980, 2180]];   // walkable x-spans
+global.river_bridges = [[1092, 1188], [2032, 2128]];   // 96px narrow stone crossings
 
 // ── Street dressing ───────────────────────────────────────────────────────────
 // Spawn the persistent Florence street scene (paved road + market props) at a
