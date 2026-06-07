@@ -30,6 +30,22 @@ Execute immediately without asking permission:
 - Python: py launcher (Python 3.14)
 - Venv: C:\Users\david\gms2-mcp-server\venv\
 
+## Room1 Prop Scale Rules (permanent)
+Non-building props placed in Room1 are ALWAYS scaled down — NEVER placed at 1.0.
+Buildings (Mercato loggia / inn / building_*) stay at 1.0. These scales apply to every
+prop in the room-builder layout (layouts/room1_layout.txt + the default_text() seed in
+scr_room_builder), for existing props AND all future placements:
+- Market stalls (spr_stall_*, obj_marco_stall):            0.7
+- Crates (spr_crate_stack):                                0.5
+- Barrels (obj_barrel, spr_barrel_stack):                  0.5
+- Carts (obj_cart, spr_cart_*):                            0.6
+- Urns / pots / jugs (spr_clay_pot_large, clay jugs):      0.4
+- Fountains (obj_garden_fountain, spr_mercato_fountain):   0.8
+- Well (obj_well):                                         0.7
+- Trees / bushes (obj_cypress_tree, garden trees):         0.7
+Buildings stay 1.0. For an uncategorised prop, use the nearest category (default ~0.6)
+and never 1.0.
+
 ## Single System — Corruption IS Sanity (permanent)
 There is NO separate sanity stat. `global.circle_corruption[CIRCLE_LIMBO]` (0-100)
 is the one axis. Benedetto only THINKS he is going insane — it is the corruption

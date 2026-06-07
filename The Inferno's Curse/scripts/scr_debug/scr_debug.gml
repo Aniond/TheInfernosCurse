@@ -175,6 +175,34 @@ function scr_debug_gui_common(_in_battle) {
     ];
     if (_show_panels) scr_debug_panel(_gw - 6, 6, _tr, fa_right, fa_top, "SYSTEMS", make_color_rgb(210, 235, 210));
 
+    // TOP RIGHT (below SYSTEMS) — OBJECT INSPECTOR (left-click a builder object).
+    // Stays until a different object is selected or you click empty space.
+    if (variable_global_exists("room_builder_selected") && instance_exists(global.room_builder_selected)) {
+        var _s    = global.room_builder_selected;
+        var _hasS = (_s.sprite_index != -1 && sprite_exists(_s.sprite_index));
+        var _sprn = _hasS ? sprite_get_name(_s.sprite_index) : "(none)";
+        var _mask = _hasS ? (string(_s.bbox_right - _s.bbox_left + 1) + "x" + string(_s.bbox_bottom - _s.bbox_top + 1) + " px") : "(none)";
+        var _ins  = [
+            "name:  " + object_get_name(_s.object_index),
+            "grid:  " + string(round(_s.x / 64)) + "," + string(round(_s.y / 64)),
+            "px:    " + string(round(_s.x)) + "," + string(round(_s.y)),
+            "scale: " + string(_s.image_xscale),
+            "spr:   " + _sprn,
+            "mask:  " + _mask,
+        ];
+        if (variable_instance_exists(_s, "builder_solid"))
+            array_push(_ins, "solid: " + (_s.builder_solid ? "yes" : "no"));
+        if (variable_instance_exists(_s, "proximity_radius"))
+            array_push(_ins, "prox:  " + string(_s.proximity_radius) + " px");
+        else if (variable_instance_exists(_s, "interact_dist"))
+            array_push(_ins, "prox:  " + string(_s.interact_dist) + " px");
+        if (variable_instance_exists(_s, "corruption"))
+            array_push(_ins, "corrupt: " + string(_s.corruption));
+        else if (variable_instance_exists(_s, "corruption_state"))
+            array_push(_ins, "corrupt: " + string(_s.corruption_state));
+        scr_debug_panel(_gw - 6, 150, _ins, fa_right, fa_top, "INSPECTOR [Del · arrows=nudge]", make_color_rgb(255, 190, 190));
+    }
+
     // BOTTOM CENTER — Performance (F10 to hide) ----------------------------------
     if (_show_panels) {
         var _perf = "FPS " + string(fps) + "/60 (cap)   raw " + string(round(fps_real)) +
@@ -220,6 +248,22 @@ function scr_debug_world_overworld() {
     draw_set_font(-1);
     draw_set_alpha(1);
 
+    // Grid overlay (F2) — 64px lines across the whole room + coords on every 5th cell.
+    if (variable_global_exists("debug_grid_overlay") && global.debug_grid_overlay) {
+        draw_set_alpha(0.22);
+        draw_set_color(make_color_rgb(120, 135, 160));
+        for (var _glx = 0; _glx <= room_width;  _glx += 64) draw_line(_glx, 0, _glx, room_height);
+        for (var _gly = 0; _gly <= room_height; _gly += 64) draw_line(0, _gly, room_width, _gly);
+        draw_set_alpha(0.95);
+        draw_set_color(make_color_rgb(190, 205, 235));
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        for (var _cx = 0; _cx * 64 <= room_width; _cx += 5)
+            for (var _cy = 0; _cy * 64 <= room_height; _cy += 5)
+                draw_text(_cx * 64 + 3, _cy * 64 + 2, string(_cx) + "," + string(_cy));
+        draw_set_alpha(1);
+    }
+
     // River collision band (red) + bridge gaps (green) — faint fills
     if (room == Room1 && variable_global_exists("river_y1")) {
         var _ry1 = global.river_y1, _ry2 = global.river_y2;
@@ -262,7 +306,8 @@ function scr_debug_world_overworld() {
             var _o = global.room_builder_objects[_bi];
             if (!instance_exists(_o)) continue;
             var _drag = (variable_global_exists("room_builder_drag") && global.room_builder_drag == _o);
-            draw_set_color(_drag ? c_yellow : make_color_rgb(60, 200, 220));
+            var _sel  = (variable_global_exists("room_builder_selected") && global.room_builder_selected == _o);
+            draw_set_color(_sel ? make_color_rgb(255, 45, 45) : (_drag ? c_yellow : make_color_rgb(60, 200, 220)));
             if (_o.sprite_index != -1 && sprite_exists(_o.sprite_index))
                 draw_rectangle(_o.bbox_left, _o.bbox_top, _o.bbox_right, _o.bbox_bottom, true);
             else

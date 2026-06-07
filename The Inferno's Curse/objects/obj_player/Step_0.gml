@@ -4,11 +4,16 @@
 // box, sin-induced dissociation). Movement and collision are skipped entirely.
 if (global.input_locked) exit;
 
-// 8-directional movement — WASD and arrow keys
-var _dx = (keyboard_check(ord("D")) || keyboard_check(vk_right))
-        - (keyboard_check(ord("A")) || keyboard_check(vk_left));
-var _dy = (keyboard_check(ord("S")) || keyboard_check(vk_down))
-        - (keyboard_check(ord("W")) || keyboard_check(vk_up));
+// 8-directional movement — WASD and arrow keys.
+// In debug mode with a builder object selected, the ARROW keys fine-nudge that
+// object (scr_room_builder_nudge_update), so the player uses WASD only in that mode.
+var _nudge_mode = variable_global_exists("debug_mode") && global.debug_mode
+    && variable_global_exists("room_builder_selected")
+    && instance_exists(global.room_builder_selected);
+var _dx = (keyboard_check(ord("D")) || (!_nudge_mode && keyboard_check(vk_right)))
+        - (keyboard_check(ord("A")) || (!_nudge_mode && keyboard_check(vk_left)));
+var _dy = (keyboard_check(ord("S")) || (!_nudge_mode && keyboard_check(vk_down)))
+        - (keyboard_check(ord("W")) || (!_nudge_mode && keyboard_check(vk_up)));
 
 // Normalize diagonal so speed stays constant in all directions
 if (_dx != 0 && _dy != 0) {

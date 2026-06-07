@@ -53,8 +53,22 @@ if (keyboard_check_pressed(vk_f11)) {
 // ── DEBUG: click-drag builder objects (grid-snapped on release; F8 saves) ─────
 scr_room_builder_drag_update();
 
-// ── DEBUG: cycle Focus class (F2) — default -> witness -> cursed ──────────────
+// ── DEBUG: fine-nudge the selected object with arrow keys (sub-grid; F8 saves) ─
+scr_room_builder_nudge_update();
+
+// ── DEBUG: toggle 64px grid overlay (F2) — coords every 5th cell, for placement ─
 if (keyboard_check_pressed(vk_f2)) {
+    if (!variable_global_exists("debug_grid_overlay")) global.debug_grid_overlay = false;
+    global.debug_grid_overlay = !global.debug_grid_overlay;
+    global.save_indicator_text  = global.debug_grid_overlay ? "GRID ON" : "GRID OFF";
+    global.save_indicator_timer = 120;
+}
+
+// ── DEBUG: delete the selected room-builder object (Delete key) ────────────────
+if (global.debug_mode && keyboard_check_pressed(vk_delete)) scr_room_builder_delete_selected();
+
+// ── DEBUG: cycle Focus class (C) — default -> witness -> cursed (moved off F2) ─
+if (keyboard_check_pressed(ord("C"))) {
     if      (global.player_class == "default") global.player_class = "witness";
     else if (global.player_class == "witness") global.player_class = "cursed";
     else                                       global.player_class = "default";

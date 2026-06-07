@@ -347,6 +347,20 @@ var _bsh    = sprite_get_height(spr_florence_street);   // 64
 for (var _b = 0; _b < array_length(_bridges); _b++) {
     var _bx0 = _bridges[_b][0];
     var _bx1 = _bridges[_b][1];
+
+    // WEST crossing (below the market) = the PONTE VECCHIO: one sprite stretched to the
+    // deck bounds, replacing the plain cobble deck + railings. Collision is untouched —
+    // the river gap + the rail obj_walls (obj_game_manager) still own blocking, and the
+    // future room transition will hang off this same crossing. The east crossing keeps
+    // the plain stone deck drawn below.
+    if (_bx0 < 1000) {
+        draw_sprite_ext(spr_ponte_vecchio, 0, _bx0, _bdy0,
+            (_bx1 - _bx0) / sprite_get_width(spr_ponte_vecchio),
+            (_bdy1 - _bdy0) / sprite_get_height(spr_ponte_vecchio),
+            0, c_white, 1);
+        continue;
+    }
+
     // stone deck — cobblestone tiles clipped to exact bridge bounds
     draw_set_color(c_white);
     for (var _btile_y = _bdy0; _btile_y < _bdy1; _btile_y += _bsh) {

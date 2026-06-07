@@ -23,6 +23,12 @@
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_ponte_vecchio","path":"sprites/spr_ponte_vecchio/spr_ponte_vecchio.yy",},},
+    {"id":{"name":"spr_florence_church","path":"sprites/spr_florence_church/spr_florence_church.yy",},},
+    {"id":{"name":"spr_florence_stable","path":"sprites/spr_florence_stable/spr_florence_stable.yy",},},
+    {"id":{"name":"spr_bread_board","path":"sprites/spr_bread_board/spr_bread_board.yy",},},
+    {"id":{"name":"spr_clay_jugs","path":"sprites/spr_clay_jugs/spr_clay_jugs.yy",},},
+    {"id":{"name":"spr_hanging_herbs","path":"sprites/spr_hanging_herbs/spr_hanging_herbs.yy",},},
     {"id":{"name":"obj_mercato_prop","path":"objects/obj_mercato_prop/obj_mercato_prop.yy",},},
     {"id":{"name":"spr_mercato_loggia","path":"sprites/spr_mercato_loggia/spr_mercato_loggia.yy",},},
     {"id":{"name":"spr_mercato_building_a","path":"sprites/spr_mercato_building_a/spr_mercato_building_a.yy",},},

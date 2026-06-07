@@ -85,6 +85,10 @@ instructions/pixellab_api_reference.md
 The Inferno's Curse/assets/concepts/characters/image.png
 The Inferno's Curse/assets/concepts/characters/image (1).png
 The Inferno's Curse/assets/concepts/characters/00008-2772151680.png
+# Local map/worldbuilding reference images (download.jpg, florence.png — local only)
+The Inferno's Curse/resources/
+# Sprite-background-removal backups (safety copies before flood-fill, local only)
+_bg_backup/
 
 # Local dev/build/test workflow scripts (kept on disk, not version controlled)
 clean_build.ps1
