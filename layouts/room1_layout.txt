@@ -1,0 +1,30 @@
+# VERSION 6
+# Room1 layout — OBJECT_NAME  GRID_X  GRID_Y  SCALE   (1 cell = 64 px)
+# Source mirror of scr_room_builder_default_text(). The Giardino delle Rose is now
+# DRAWN procedurally by obj_street_scene (hedges/roses/paths/court); only the
+# fountain is a placed object, centred in the garden court.
+
+# --- 4 buildings lining the NORTH street edge, bases at y=940 (12px into street) ---
+obj_florence_building    1    10.0     1.5
+obj_florence_tower      11     7.1875  1.5
+obj_florence_cathedral  15     5.3125  1.5
+obj_florence_building   22    10.0     1.5
+
+# --- Market in the open PIAZZA (park zone, north half) ---
+obj_well                16  20   1.0
+obj_marco_stall         13  19   1.0
+obj_cart                19  21   0.8
+obj_barrel              11  19   0.5
+obj_barrel              21  20   0.5
+
+# --- Cypress trees framing the park edges ---
+obj_cypress_tree         2  18   1.0
+obj_cypress_tree         2  22   1.0
+obj_cypress_tree        28  18   1.0
+obj_cypress_tree        28  22   1.0
+
+# --- Giardino delle Rose — fountain centrepiece in the drawn parterre ---
+obj_garden_fountain      5.1875  19.828125  1.5
+
+# --- Wayside shrine on the south bank ---
+obj_shrine              16  28   1.0

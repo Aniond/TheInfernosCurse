@@ -125,6 +125,8 @@ global.player_sin_affinity = array_create(7, 0);
 // Managed by scr_world_event_log() in scr_corruption.gml.
 // Newest entry is always at index 0; capped at 20 entries.
 global.world_event_log = [];
+global.api_call_count  = 0;        // debug overlay: Claude API calls this run
+global.last_save_info  = "never";  // debug overlay: last save stamp
 
 
 // ── Player psychological state ────────────────────────────────────────────────
@@ -195,7 +197,8 @@ global.vision_cooldown = 300;
 // true  = placeholder rectangles visible (dev/testing mode)
 // false = all placeholders hidden (player-facing build)
 // Every placeholder object's Draw event checks this flag before drawing.
-global.debug_mode = false;
+global.debug_mode     = false;
+global.debug_show_log = true;    // F10 hides/shows the EVENT LOG panel
 
 // ── NPC persistence globals ───────────────────────────────────────────────────
 // These hold the last saved state for NPC instances that need cross-session
@@ -211,8 +214,8 @@ global.codex_entries     = [];
 global.codex_entry_count = 0;
 
 // ── Player spawn globals (restored from save, applied when player Create runs) ─
-global.save_player_x    = 1100;
-global.save_player_y    = 1600;
+global.save_player_x    = 1024;   // centre of the cobblestone street (street is y 928–1120)
+global.save_player_y    = 1024;
 global.save_player_room = "Room1";
 
 // ── Save indicator UI state ───────────────────────────────────────────────────
@@ -240,17 +243,27 @@ global.false_shimmer_timer  = 0;
 scr_config_load();
 scr_load_world_state();
 
+// ── Room builder ──────────────────────────────────────────────────────────────
+// Place props from the plain-text layout file (layouts/room1.txt) AFTER world
+// state has loaded. Edit the text file instead of the room editor — no .yy edits.
+if (room == Room1) scr_room_builder_load();
+
 // Disable texture filtering globally — keeps pixel art sharp at any zoom level.
 gpu_set_tex_filter(false);
+
+// Frame-rate cap — lock the game loop to 60 fps. The debug overlay's second
+// number is fps_real (raw headroom: how fast it COULD render) and can read in the
+// thousands; that is NOT the actual rate, which this pins at 60.
+game_set_speed(60, gamespeed_fps);
 
 // ── The Arno (river that quarters the city) ───────────────────────────────────
 // Geometry shared by obj_street_scene (draws the animated water + bridges) and
 // obj_player (collision routes the player over the bridge gaps). A full-width
-// band across the south of the map; two bridges flank the south_row building so
-// each crossing lands in an open grass corridor. Tile-aligned (64px grid).
-global.river_y1      = 2704;   // bottom quarter of room (y 2400-3200)
-global.river_y2      = 2896;   // 192px band (3 × 64px water tiles)
-global.river_bridges = [[1024, 1280], [1984, 2240]];   // 256px (4 tiles) — wide enough to walk onto naturally from south bank
+// band running just below the central park; two bridges flank the centre so each
+// crossing feeds off the piazza into the south grass approach. Tile-aligned (64px).
+global.river_y1      = 1536;   // shrunk 2048 world: river runs BELOW the central park
+global.river_y2      = 1728;   // 192px band (3 × 64px water tiles)
+global.river_bridges = [[640, 896], [1152, 1408]];   // 256px (4 tiles) crossings, flanking centre
 
 // ── River collision walls ─────────────────────────────────────────────────────
 // Three invisible obj_wall instances span the full river height (y1→y2) with
@@ -259,6 +272,9 @@ global.river_bridges = [[1024, 1280], [1984, 2240]];   // 256px (4 tiles) — wi
 if (room == Room1) {
     var _ry1   = global.river_y1;
     var _rh    = global.river_y2 - global.river_y1;
+    var _south_ext = 0;    // south collision edge = waterline, SYMMETRIC with the north
+                           // edge so the player approaches the south stone row exactly
+                           // like the north (the earlier +20 overshot -> grass gap)
     var _b0    = global.river_bridges[0];
     var _b1    = global.river_bridges[1];
     var _ixl   = 56;
@@ -271,9 +287,31 @@ if (room == Room1) {
         if (_x1 > _x0) {
             var _w      = instance_create_depth(_x0, _ry1, 500, obj_wall);
             _w.wall_w   = _x1 - _x0;
-            _w.wall_h   = _rh;
+            _w.wall_h   = _rh + _south_ext;
             _w.visible  = false;
         }
+    }
+    // Collision is ONLY this water band (y1→y2), flush with the stone row on each
+    // bank, with gaps at the bridges. Nothing extends below the south edge — the
+    // south grass is fully walkable.
+
+    // ── Bridge handrail collision ─────────────────────────────────────────────
+    // Invisible barriers down each bridge's left & right rail edge so the player
+    // can't walk off the side of a crossing. Sized to the 50%-scale rails drawn in
+    // obj_street_scene: thickness = railing sprite * 0.5 (32px), spanning the full
+    // deck length (water band + both 22px stone banks). Leaves an open central
+    // channel (~192px on each 256px bridge).
+    var _bankh  = 22;                                            // stone bank thickness (matches Draw)
+    var _rthick = sprite_get_height(spr_bridge_railing) * 0.5;   // 64 * 0.5 = 32px rail
+    var _bdy0   = global.river_y1 - _bankh;                      // deck top    (flush w/ north bank)
+    var _bdy1   = global.river_y2 + _bankh;                      // deck bottom (flush w/ south bank)
+    for (var _br = 0; _br < array_length(global.river_bridges); _br++) {
+        var _rbx0 = global.river_bridges[_br][0];
+        var _rbx1 = global.river_bridges[_br][1];
+        var _wl = instance_create_depth(_rbx0, _bdy0, 500, obj_wall);            // west (left) rail
+        _wl.wall_w = _rthick;  _wl.wall_h = _bdy1 - _bdy0;  _wl.visible = false;
+        var _wr = instance_create_depth(_rbx1 - _rthick, _bdy0, 500, obj_wall);  // east (right) rail
+        _wr.wall_w = _rthick;  _wr.wall_h = _bdy1 - _bdy0;  _wr.visible = false;
     }
 }
 

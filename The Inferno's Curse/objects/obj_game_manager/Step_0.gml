@@ -32,6 +32,19 @@ if (keyboard_check_pressed(vk_f1)) {
     global.save_indicator_timer = 120;
 }
 
+// ── DEBUG: save the current room-builder layout to file (F8) ──────────────────
+if (global.debug_mode && keyboard_check_pressed(vk_f8)) scr_room_builder_save();
+
+// ── DEBUG: toggle event log panel (F10) ───────────────────────────────────────
+if (keyboard_check_pressed(vk_f10)) {
+    global.debug_show_log = !global.debug_show_log;
+    global.save_indicator_text  = global.debug_show_log ? "PANELS ON" : "PANELS OFF";
+    global.save_indicator_timer = 120;
+}
+
+// ── DEBUG: click-drag builder objects (grid-snapped on release; F8 saves) ─────
+scr_room_builder_drag_update();
+
 // ── DEBUG: cycle Focus class (F2) — default -> witness -> cursed ──────────────
 if (keyboard_check_pressed(vk_f2)) {
     if      (global.player_class == "default") global.player_class = "witness";

@@ -101,3 +101,6 @@ if (global.false_shimmer_active) {
 
 draw_set_color(c_white);
 draw_set_alpha(1);
+
+// ── Comprehensive debug overlay (F1) — battle world layer ─────────────────────
+scr_debug_battle_world();

@@ -77,6 +77,10 @@ function scr_save_world_state() {
     global.save_indicator_text  = "SAVED";
     global.save_indicator_timer = 120; // 2 seconds at 60 fps
 
+    // debug overlay: stamp last save + log it
+    global.last_save_info = "D" + string(global.day_count) + " " + string(round(global.time_of_day * 100) / 100);
+    if (variable_global_exists("world_event_log")) scr_world_event_log("Saved (Day " + string(global.day_count) + ")");
+
     show_debug_message("[Save] World state saved — Day " + string(global.day_count));
 }
 
@@ -95,8 +99,8 @@ function scr_load_world_state() {
         global.is_night             = false;
         global.circle_corruption    = array_create(7, 0);
         global.player_sin_affinity  = array_create(7, 0);
-        global.save_player_x        = 1100;
-        global.save_player_y        = 1600;
+        global.save_player_x        = 1024;
+        global.save_player_y        = 1024;
         global.save_player_room     = "Room1";
         global.marco_met            = false;
         global.marco_recognition    = 100;
@@ -131,8 +135,8 @@ function scr_load_world_state() {
     global.player_sin_affinity = _d[$ "player_sin_affinity"] ?? array_create(7, 0);
 
     // Benedetto
-    global.save_player_x   = _d[$ "player_x"]   ?? 1100;
-    global.save_player_y   = _d[$ "player_y"]   ?? 1600;
+    global.save_player_x   = _d[$ "player_x"]   ?? 1024;
+    global.save_player_y   = _d[$ "player_y"]   ?? 1024;
     global.save_player_room = _d[$ "player_room"] ?? "Room1";
 
     // Marco

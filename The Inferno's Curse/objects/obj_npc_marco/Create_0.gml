@@ -47,10 +47,11 @@ bg_sprite   = spr_marco_stall;
 prop_sprite = spr_item_bread;
 npc_scale   = 0.75;   // shrink the whole bakery assembly to sit cleanly on the street
 
-// Relocate to the old empty-stall spot on the right of the market (was 1200,1600).
-// Done in code so no Room1.yy edit is needed; reconcile in the room editor later.
-x = 1720;
-y = 1640;
+// Relocate to the east side of the piazza (the market square is now in the park,
+// between the street and the Arno). Done in code so no Room1.yy edit is needed;
+// reconcile in the room editor later. (Was 1720,1640 — that spot is now river.)
+x = 1340;
+y = 1300;
 
 // ── Restore from saved world state ───────────────────────────────────────────
 // scr_load_world_state() runs before room instances are created, so globals

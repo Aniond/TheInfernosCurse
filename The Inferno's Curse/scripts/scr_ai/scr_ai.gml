@@ -61,6 +61,11 @@ function scr_ai_call(prompt, system_prompt) {
         + "\"messages\":[{\"role\":\"user\",\"content\":" + json_stringify(_user) + "}]"
         + "}";
 
+    // debug overlay metrics + event log
+    if (!variable_global_exists("api_call_count")) global.api_call_count = 0;
+    global.api_call_count++;
+    if (variable_global_exists("world_event_log")) scr_world_event_log("API -> Claude (Haiku)");
+
     var _req_id = http_request(
         "https://api.anthropic.com/v1/messages", "POST", _headers, _body
     );

@@ -1,0 +1,30 @@
+# Room layout for Room1 — loaded by scr_room_builder_load()
+# Format:  OBJECT_NAME  GRID_X  GRID_Y  SCALE
+# Lines starting with # are comments.
+# In game: F1 = debug overlay, F8 (debug on) = save layout.
+
+obj_shrine             25  20  1.0
+
+# Buildings along top of street
+obj_florence_building   4   8  1.0
+obj_florence_building  10   8  1.0
+obj_florence_building  17   8  1.0
+obj_florence_building  24   8  1.0
+obj_florence_building  31   8  1.0
+obj_florence_building  38   8  1.0
+
+# Market objects on street
+obj_marco_stall        22  14  1.0
+obj_well               16  16  1.0
+obj_cart               10  15  0.8
+
+# Cypress trees between buildings
+obj_cypress_tree        8   7  1.0
+obj_cypress_tree       15   7  1.0
+obj_cypress_tree       28   7  1.0
+obj_cypress_tree       35   7  1.0
+
+# Barrels near buildings
+obj_barrel              5  11  0.5
+obj_barrel             12  11  0.5
+obj_barrel             38  11  0.5

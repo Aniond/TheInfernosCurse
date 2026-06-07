@@ -94,17 +94,10 @@ switch (current_vision_type) {
     // Fades handled here; text rendering stubbed until font assets exist.
     case "GAME_OVER_corruption":
         draw_set_alpha(min(_a, 1));
-        draw_set_colour(c_black);
+        draw_set_colour(make_colour_rgb(60, 0, 0));   // deep red — the world forgot itself
         draw_rectangle(0, 0, _w, _h, false);
         // TODO: draw "He could no longer find his way back" with game font
         // TODO: draw stats from game_over_stats struct
-        break;
-
-    case "GAME_OVER_corruption":
-        draw_set_alpha(min(_a, 1));
-        draw_set_colour(make_colour_rgb(60, 0, 0));
-        draw_rectangle(0, 0, _w, _h, false);
-        // TODO: draw "The world forgot itself completely"
         break;
 
     case "GAME_OVER_battle":

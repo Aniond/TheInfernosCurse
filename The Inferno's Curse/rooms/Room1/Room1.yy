@@ -17,6 +17,9 @@
     {"name":"inst_wall_bottom","path":"rooms/Room1/Room1.yy",},
     {"name":"inst_wall_left","path":"rooms/Room1/Room1.yy",},
     {"name":"inst_wall_right","path":"rooms/Room1/Room1.yy",},
+    {"name":"inst_garden_archway","path":"rooms/Room1/Room1.yy",},
+    {"name":"inst_garden_bench_left","path":"rooms/Room1/Room1.yy",},
+    {"name":"inst_garden_bench_right","path":"rooms/Room1/Room1.yy",},
   ],
   "isDnd":false,
   "layers":[
@@ -33,6 +36,9 @@
         {"$GMRInstance":"v4","%Name":"inst_wall_bottom","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_wall_bottom","objectId":{"name":"obj_wall","path":"objects/obj_wall/obj_wall.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":100.0,"scaleY":1.0,"x":0.0,"y":3168.0,},
         {"$GMRInstance":"v4","%Name":"inst_wall_left","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_wall_left","objectId":{"name":"obj_wall","path":"objects/obj_wall/obj_wall.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":98.0,"x":0.0,"y":32.0,},
         {"$GMRInstance":"v4","%Name":"inst_wall_right","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_wall_right","objectId":{"name":"obj_wall","path":"objects/obj_wall/obj_wall.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":98.0,"x":3168.0,"y":32.0,},
+        {"$GMRInstance":"v4","%Name":"inst_garden_archway","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_garden_archway","objectId":{"name":"obj_garden_archway","path":"objects/obj_garden_archway/obj_garden_archway.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":976.0,"y":1118.0,},
+        {"$GMRInstance":"v4","%Name":"inst_garden_bench_left","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_garden_bench_left","objectId":{"name":"obj_garden_bench","path":"objects/obj_garden_bench/obj_garden_bench.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":864.0,"y":1280.0,},
+        {"$GMRInstance":"v4","%Name":"inst_garden_bench_right","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_garden_bench_right","objectId":{"name":"obj_garden_bench","path":"objects/obj_garden_bench/obj_garden_bench.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":1088.0,"y":1280.0,},
       ],"layers":[],"name":"Instances","properties":[],"resourceType":"GMRInstanceLayer","resourceVersion":"2.0","userdefinedDepth":false,"visible":true,},
     {"$GMRBackgroundLayer":"","%Name":"Background","animationFPS":15.0,"animationSpeedType":0,"colour":4278190080,"depth":200,"effectEnabled":true,"effectType":null,"gridX":32,"gridY":32,"hierarchyFrozen":false,"hspeed":0.0,"htiled":true,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"layers":[],"name":"Background","properties":[],"resourceType":"GMRBackgroundLayer","resourceVersion":"2.0","spriteId":{"name":"spr_florence_grass","path":"sprites/spr_florence_grass/spr_florence_grass.yy",},"stretch":false,"userdefinedAnimFPS":false,"userdefinedDepth":false,"visible":true,"vspeed":0.0,"vtiled":true,"x":0,"y":0,},
   ],
@@ -52,10 +58,10 @@
   "resourceType":"GMRoom",
   "resourceVersion":"2.0",
   "roomSettings":{
-    "Height":3200,
+    "Height":2048,
     "inheritRoomSettings":false,
     "persistent":false,
-    "Width":3200,
+    "Width":2048,
   },
   "sequenceId":null,
   "views":[

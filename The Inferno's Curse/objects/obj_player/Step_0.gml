@@ -87,25 +87,10 @@ if (_my != 0) {
     if (_wall_at(x, y, _phw, _phh)) y = _old_y;
 }
 
-// ── Room border clamp — matches the 56-px visual wall ring ────────────────────
-// The visual city wall is 56px thick on all four sides. Gate openings are 140px
-// wide, centred on the room (x/y 1530..1670). Inside a gate the clamp relaxes
-// to the room edge so the player can walk through; everywhere else the 56-px
-// wall is solid.
-var _wt     = 56;
-var _half   = 16;
-var _gate_h = 70;   // half of 140-px gate gap
-
-// N/S gate: open in x range 1530..1670; W/E gate: open in y range 1530..1670
-var _ngx0 = room_width  * 0.5 - _gate_h;   // 1530
-var _ngx1 = room_width  * 0.5 + _gate_h;   // 1670
-var _egy0 = room_height * 0.5 - _gate_h;   // 1530
-var _egy1 = room_height * 0.5 + _gate_h;   // 1670
-
-var _min_x = (y >= _egy0 && y <= _egy1) ? _half                    : _wt + _half;
-var _max_x = (y >= _egy0 && y <= _egy1) ? room_width  - _half      : room_width  - _wt - _half;
-var _min_y = (x >= _ngx0 && x <= _ngx1) ? _half                    : _wt + _half;
-var _max_y = (x >= _ngx0 && x <= _ngx1) ? room_height - _half      : room_height - _wt - _half;
-
-x = clamp(x, _min_x, _max_x);
-y = clamp(y, _min_y, _max_y);
+// ── Hard movement bounds — confine Benedetto to the playable area ─────────────
+// The 2048x2048 room's play area is clamped to a 1920x1920 box (grid 1..31).
+// Visual walls suggest the edge; this clamp is the hard limit. The river/bridges
+// (y1536-1728) and everything built sit INSIDE this box, so the crossings stay
+// reachable.
+x = clamp(x, 64, 1984);
+y = clamp(y, 64, 1984);

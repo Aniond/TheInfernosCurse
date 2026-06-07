@@ -14,48 +14,27 @@ if (_c01 > 0.3) {
     else                 _tint = merge_color(make_color_rgb(120, 130, 108), make_color_rgb(200, 205, 195), (_t - 0.71) / 0.29);
 }
 
+// The benedetto sprites are 128x128 with origin (0,0), but collision is a small
+// foot-box centred at (x,y). Drawing at (x,y) would put the sprite's TOP-LEFT on
+// the collision point, so the whole ~160px body renders down-and-right of where
+// Benedetto actually stands — he looks stranded a tile south of whatever he's
+// touching (the river edge, building faces, etc.). Anchor his FEET to (x,y)
+// instead. _foot_dx/_foot_dy = character centre-x / feet-y inside the 128 frame
+// (tune these if he sits slightly high/low or off-centre).
+var _spr_scale = 0.9;
+var _foot_dx   = 62 * _spr_scale;   // horizontal centre of the character in-frame
+var _foot_dy   = 120 * _spr_scale;  // feet (bottom of the character) in-frame
 draw_sprite_ext(
     sprite_index,   // current directional sprite (set each step in Step_0)
     image_index,    // current animation frame
-    x, y,           // world position
-    1.25, 1.25,     // display scale
+    x - _foot_dx, y - _foot_dy,   // anchor feet to the collision point
+    _spr_scale, _spr_scale,       // display scale
     0,              // no rotation
     _tint,          // corruption-driven colour tint
     1               // full alpha
 );
 
-// ── Collision debug overlay (F1) ──────────────────────────────────────────────
-if (global.debug_mode) {
-    // Player AABB — yellow outline
-    draw_set_color(c_yellow);
-    draw_set_alpha(0.9);
-    draw_rectangle(x - 16, y - 8, x + 16, y + 8, true);
-    draw_set_alpha(1);
-
-    // River collision zones — red fill + bright edge lines
-    if (room == Room1 && variable_global_exists("river_y1")) {
-        var _ry1 = global.river_y1;
-        var _ry2 = global.river_y2;
-        draw_set_color(make_color_rgb(200, 40, 40));
-        draw_set_alpha(0.18);
-        draw_rectangle(56, _ry1, room_width - 56, _ry2, false);
-        draw_set_alpha(0.8);
-        draw_line(56, _ry1, room_width - 56, _ry1);
-        draw_line(56, _ry2, room_width - 56, _ry2);
-        draw_set_alpha(1);
-
-        // Bridge passable zones — green fill
-        draw_set_color(make_color_rgb(40, 200, 80));
-        draw_set_alpha(0.30);
-        var _brs = global.river_bridges;
-        for (var _b = 0; _b < array_length(_brs); _b++) {
-            draw_rectangle(_brs[_b][0], _ry1, _brs[_b][1], _ry2, false);
-        }
-        draw_set_alpha(1);
-    }
-
-    // Player world coords next to sprite
-    draw_set_color(c_white);
-    draw_text(x + 18, y - 24, string(round(x)) + "," + string(round(y)));
-    draw_set_color(c_white);
-}
+// ── Comprehensive debug overlay (F1) — world-space layer ──────────────────────
+// Collision outlines, player foot-box + crosshair + coords, NPC interaction
+// rings/labels, and the river collision/bridge zones — all in scr_debug.
+scr_debug_world_overworld();
