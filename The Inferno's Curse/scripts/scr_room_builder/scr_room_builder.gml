@@ -26,7 +26,7 @@
 // this number, so a structural relayout actually reaches the player. Bump this when
 // you change default_text(). F8 saves stamp the current version, so hand-dragged
 // layouts are preserved across launches and only a version bump clobbers them.
-#macro ROOM_BUILDER_LAYOUT_VERSION  8
+#macro ROOM_BUILDER_LAYOUT_VERSION  9
 
 
 /// Split a line on runs of spaces/tabs. Returns an array of tokens.
@@ -112,72 +112,54 @@ function scr_room_builder_seed_if_needed() {
 /// Default layout written to the save folder on first run (sandbox-safe seed).
 /// Mirrors layouts/room1.txt in the project tree. Unknown objects are skipped.
 function scr_room_builder_default_text() {
-    // Building grid_y — each is calculated so its BASE sits exactly at the street
-    // edge (y=928). Formula: grid_y = (928 - sprite_h * scale) / 64
-    //   obj_florence_building  (200px × 1.5 = 300px): (928-300)/64 = 9.8125
-    //   obj_florence_tower     (320px × 1.5 = 480px): (928-480)/64 = 7.0
-    //   obj_florence_cathedral (400px × 1.5 = 600px): (928-600)/64 = 5.125
-    // X layout — 4 buildings across the 1936px interior (no overlap):
-    //   Building  x=1  (px 64,  right 640)  → 64px gap
-    //   Tower     x=11 (px 704, right 848)  → 112px gap
-    //   Cathedral x=15 (px 960, right 1344) → 64px gap
-    //   Building  x=22 (px 1408,right 1984) → 8px gap to east wall (1992)
+    // FINALISED market square (locked 2026-06-07). Positions are the exact hand-
+    // curated save-folder layout; every obj_mercato_prop is SOLID. Collision boxes
+    // are built from these by scr_room_builder_build_collision() (stalls = back+sides
+    // only so the player shops from the front; buildings + fountain = full body).
+    // Bump ROOM_BUILDER_LAYOUT_VERSION whenever this text changes (forces a re-seed).
     return
-        "# VERSION 8\n" +
-        "# Florence layout — buildings at 1.5×, bases 12px INTO cobblestone (anchored).\n" +
-        "# Street centred at y928-1120; park y1120-1514; Arno y1536-1728.\n" +
-        "# obj_florence_* SOLID. Format: OBJECT  GRID_X  GRID_Y  SCALE\n" +
+        "# VERSION 9\n" +
+        "# Room1 layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)\n" +
+        "# Market square FINALISED + collision LOCKED. All obj_mercato_prop are solid\n" +
+        "# (stalls: back+sides only; buildings + fountain: full body). Park/piazza props\n" +
+        "# scaled per CLAUDE.md Room1 Prop Scale Rules.\n" +
         "\n" +
-        "# --- North buildings REMOVED — the MERCATO VECCHIO market square now fills  ---\n" +
-        "# --- the north zone (y 0-640): loggia + buildings + stalls + fountain are    ---\n" +
-        "# --- draggable obj_mercato_prop objects (cobble GROUND drawn by scene). See below.--\n" +
+        "# --- Piazza + park ---\n" +
+        "obj_well                16        20        0.7\n" +
+        "obj_marco_stall         13        19        0.7\n" +
+        "obj_cart                19        21        0.6\n" +
+        "obj_barrel              11        19        0.5\n" +
+        "obj_barrel              21        20        0.5\n" +
+        "obj_garden_fountain     5         20        0.8\n" +
+        "obj_shrine              16        28        1\n" +
         "\n" +
-        "# --- Market in the open PIAZZA (park zone, north half, grid y~18-20) ---\n" +
-        "obj_well                16  20   1.0\n" +
-        "obj_marco_stall         13  19   1.0\n" +
-        "obj_cart                19  21   0.8\n" +
-        "obj_barrel              11  19   0.5\n" +
-        "obj_barrel              21  20   0.5\n" +
+        "# --- Cypress trees (park edges + market backdrop) ---\n" +
+        "obj_cypress_tree        3         18        0.7\n" +
+        "obj_cypress_tree        3         22        0.7\n" +
+        "obj_cypress_tree        28        18        0.7\n" +
+        "obj_cypress_tree        28        22        0.7\n" +
+        "obj_cypress_tree        14        8         0.7\n" +
+        "obj_cypress_tree        16        3.6875    0.7\n" +
+        "obj_cypress_tree        11.25     3.4375    0.7\n" +
+        "obj_cypress_tree        19.625    3.5       0.7\n" +
+        "obj_cypress_tree        8.9375    3.5       0.7\n" +
         "\n" +
-        "# --- Cypress trees framing the park edges ---\n" +
-        "obj_cypress_tree         3  18   1.0\n" +
-        "obj_cypress_tree         3  22   1.0\n" +
-        "obj_cypress_tree        28  18   1.0\n" +
-        "obj_cypress_tree        28  22   1.0\n" +
-        "\n" +
-        "# --- Giardino delle Rose — formal parterre is DRAWN by obj_street_scene; ---\n" +
-        "# --- only the fountain is a placed object, centred in the garden court.  ---\n" +
-        "obj_garden_fountain     5.1875  19.828125  1.5\n" +
-        "\n" +
-        "# --- Wayside shrine on the south bank ---\n" +
-        "obj_shrine              16  28   1.0\n" +
-        "\n" +
-        "# --- MERCATO VECCHIO market (north zone y0-640) — draggable obj_mercato_prop ---\n" +
-        "# Format: obj_mercato_prop  GRID_X  GRID_Y  SCALE  SPRITE  [solid]\n" +
-        "obj_mercato_prop   1.25     1.5      1.0  spr_mercato_building_a   solid\n" +
-        "obj_mercato_prop   5.625    1.25     1.0  spr_mercato_inn          solid\n" +
-        "obj_mercato_prop  13.5      0.5625   1.0  spr_mercato_loggia       solid\n" +
-        "obj_mercato_prop  18.75     1.25     1.0  spr_mercato_building_b   solid\n" +
-        "obj_mercato_prop  23.25     1.5      1.0  spr_mercato_building_a   solid\n" +
-        "obj_mercato_prop  27.625    1.4375   1.0  spr_mercato_building_c   solid\n" +
-        "obj_mercato_prop  14.25     2.4375   1.0  spr_hanging_cloth\n" +
-        "obj_mercato_prop   0.875    4.6875   1.0  spr_barrel_stack\n" +
-        "obj_mercato_prop   2.5      5.15625  1.0  spr_stall_dye_merchant   solid\n" +
-        "obj_mercato_prop   7.1875   5.15625  1.0  spr_stall_striped_green  solid\n" +
-        "obj_mercato_prop  11.5625   5.15625  1.0  spr_stall_striped_cream  solid\n" +
-        "obj_mercato_prop  18.5      5.15625  1.0  spr_stall_striped_blue   solid\n" +
-        "obj_mercato_prop  23.375    5.15625  1.0  spr_stall_weapon_smith   solid\n" +
-        "obj_mercato_prop  29.75     5.1875   1.0  spr_clay_pot_large\n" +
-        "obj_mercato_prop  15        6.375    1.0  spr_mercato_fountain     solid\n" +
-        "obj_mercato_prop  16.25     6.125    1.0  spr_crate_stack\n" +
-        "obj_mercato_prop   2.5      8        1.0  spr_stall_herbalist      solid\n" +
-        "obj_mercato_prop   7.1875   8        1.0  spr_stall_striped_purple solid\n" +
-        "obj_mercato_prop  11.5625   8        1.0  spr_stall_striped_red    solid\n" +
-        "obj_mercato_prop  18.5      8        1.0  spr_stall_produce        solid\n" +
-        "obj_mercato_prop  23.375    8        1.0  spr_stall_flat_green     solid\n" +
-        "obj_mercato_prop   4.875    8.6875   1.0  spr_cart_loaded\n" +
-        "obj_mercato_prop  21.5      8.75     1.0  spr_sack_pile\n" +
-        "obj_mercato_prop  26.125    8.625    1.0  spr_cart_covered\n";
+        "# --- MERCATO VECCHIO market (north zone) — all SOLID ---\n" +
+        "obj_mercato_prop        1         1         1     spr_mercato_building_a   solid\n" +
+        "obj_mercato_prop        9         1         1     spr_mercato_inn          solid\n" +
+        "obj_mercato_prop        15.875    0.9375    1     spr_mercato_loggia       solid\n" +
+        "obj_mercato_prop        20.4375   1         1     spr_mercato_building_a   solid\n" +
+        "obj_mercato_prop        4.5625    2.3125    1     spr_florence_church      solid\n" +
+        "obj_mercato_prop        11.8125   2.6875    1     spr_florence_stable      solid\n" +
+        "obj_mercato_prop        11.62     7         0.7   spr_stall_striped_green  solid\n" +
+        "obj_mercato_prop        8.62      5.62      0.7   spr_stall_striped_cream  solid\n" +
+        "obj_mercato_prop        11.62     5.62      0.7   spr_stall_striped_blue   solid\n" +
+        "obj_mercato_prop        10        6         0.7   spr_stall_herbalist      solid\n" +
+        "obj_mercato_prop        10        5         0.8   spr_mercato_fountain     solid\n" +
+        "obj_mercato_prop        11.81     7.56      0.4   spr_hanging_herbs        solid\n" +
+        "obj_mercato_prop        9.125     5.875     0.4   spr_bread_board          solid\n" +
+        "obj_mercato_prop        12.4375   6.625     0.4   spr_clay_jugs            solid\n" +
+        "obj_mercato_prop        21        4         0.4   spr_clay_pot_large       solid\n";
 }
 
 
@@ -204,7 +186,9 @@ function scr_room_builder_load() {
         spr_stall_striped_blue, spr_stall_striped_purple, spr_stall_flat_green,
         spr_stall_dye_merchant, spr_stall_weapon_smith, spr_stall_herbalist, spr_stall_produce,
         spr_barrel_stack, spr_crate_stack, spr_sack_pile, spr_clay_pot_large,
-        spr_cart_loaded, spr_cart_covered, spr_hanging_cloth];
+        spr_cart_loaded, spr_cart_covered, spr_hanging_cloth,
+        spr_hanging_herbs, spr_bread_board, spr_clay_jugs,
+        spr_florence_church, spr_florence_stable];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
 
@@ -286,26 +270,102 @@ function scr_room_builder_load() {
                 _inst.builder_sprite = _sprn;
             }
         }
-        if (array_length(_tok) >= 6 && _tok[5] == "solid" && sprite_exists(_inst.sprite_index)) {
+        if (array_length(_tok) >= 6 && _tok[5] == "solid") {
             _inst.builder_solid = true;
-            var _bw = sprite_get_width(_inst.sprite_index)  * _scale;
-            var _bh = sprite_get_height(_inst.sprite_index) * _scale;
-            var _fw = _bw * 0.80, _fh = _bh * 0.32;                 // footprint = bottom band
-            var _wl = instance_create_depth(_px + (_bw - _fw) * 0.5, (_py + _bh) - _fh, 500, obj_wall);
-            _wl.wall_w = _fw;  _wl.wall_h = _fh;  _wl.visible = false;
-            array_push(global.room_builder_objects, _wl);           // cleared on next load
         }
+        // Market square FINALISED: EVERY obj_mercato_prop is solid (the layout's
+        // "solid" token is still honoured for other types, but a mercato prop is
+        // always solid regardless). scr_room_builder_build_collision() then lays a
+        // tight, per-category obj_wall footprint under each — no full-bbox ghosts.
+        if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = true;
 
         array_push(global.room_builder_objects, _inst);
         _placed++;
     }
     file_text_close(_f);
 
+    // Build the market collision now that every prop is placed + flagged.
+    scr_room_builder_build_collision();
+
     show_debug_message("[room_builder] loaded " + string(_placed) + " placed, " +
         string(_skipped) + " skipped from " + _path);
     if (variable_global_exists("world_event_log"))
         scr_world_event_log("Room builder: " + string(_placed) + " placed, " + string(_skipped) + " skipped");
     return _placed;
+}
+
+
+// ── COLLISION (market props) ────────────────────────────────────────────────────
+/// Build an invisible obj_wall footprint under every "solid" builder prop. Called
+/// once at the end of scr_room_builder_load(). Footprints are INSET fractions of
+/// each prop's on-screen bbox — the prop sprites use a Full-Image mask, so the raw
+/// bbox is the whole PNG incl. transparent padding; using it whole is what put stray
+/// walls out in the open cobble before. Per category:
+///   • stalls    — BACK + SIDES only (top ~55% of height). The front (south) strip is
+///                 left open so Benedetto can step up to the counter and shop.
+///   • buildings — near-full body (church, stable, loggia, inn, building…), inset off
+///                 the painted edges.
+///   • fountain  — solid central basin.
+///   • all else  — small base footprint (urns, pots, herbs, bread, jugs, crates…).
+/// Walls are tracked in global.__room_builder_collision so a rebuild clears only
+/// THESE, never the river / garden walls (also obj_wall) that obj_game_manager owns.
+function scr_room_builder_build_collision() {
+    if (!variable_global_exists("__room_builder_collision")) global.__room_builder_collision = [];
+    // clear any walls from a previous build (defensive — load normally runs once)
+    for (var _i = 0; _i < array_length(global.__room_builder_collision); _i++) {
+        if (instance_exists(global.__room_builder_collision[_i])) instance_destroy(global.__room_builder_collision[_i]);
+    }
+    global.__room_builder_collision = [];
+
+    if (!variable_global_exists("room_builder_objects")) return 0;
+    var _made = 0;
+
+    for (var _i = 0; _i < array_length(global.room_builder_objects); _i++) {
+        var _o = global.room_builder_objects[_i];
+        if (!instance_exists(_o)) continue;
+        if (!variable_instance_exists(_o, "builder_solid") || !_o.builder_solid) continue;
+        if (_o.sprite_index == -1 || !sprite_exists(_o.sprite_index)) continue;
+
+        // on-screen extent (Full-Image bbox == the displayed sprite rectangle)
+        var _L = _o.bbox_left, _T = _o.bbox_top, _R = _o.bbox_right, _B = _o.bbox_bottom;
+        var _bw = _R - _L, _bh = _B - _T;
+        if (_bw <= 0 || _bh <= 0) continue;
+
+        var _nm = (variable_instance_exists(_o, "builder_sprite") && _o.builder_sprite != "")
+            ? _o.builder_sprite : sprite_get_name(_o.sprite_index);
+
+        // category → inset fractions [x0,y0,x1,y1] of the bbox
+        var _x0f, _y0f, _x1f, _y1f;
+        if (string_pos("stall", _nm) > 0) {
+            // BACK + SIDES: top band only, front (south) left open to shop from
+            _x0f = 0.05; _y0f = 0.05; _x1f = 0.95; _y1f = 0.58;
+        } else if (string_pos("fountain", _nm) > 0) {
+            // solid central basin
+            _x0f = 0.18; _y0f = 0.24; _x1f = 0.82; _y1f = 0.90;
+        } else if (string_pos("building", _nm) > 0 || string_pos("loggia", _nm) > 0
+                || string_pos("inn", _nm) > 0 || string_pos("church", _nm) > 0
+                || string_pos("stable", _nm) > 0 || string_pos("cathedral", _nm) > 0
+                || string_pos("tower", _nm) > 0 || string_pos("house", _nm) > 0) {
+            // building body — inset off the painted edges so no ghost in the cobble
+            _x0f = 0.12; _y0f = 0.10; _x1f = 0.88; _y1f = 0.94;
+        } else {
+            // small ground prop (urn, pot, herbs, bread, jugs, crate, sack, cloth…)
+            _x0f = 0.22; _y0f = 0.50; _x1f = 0.78; _y1f = 0.92;
+        }
+
+        var _wx0 = _L + _bw * _x0f, _wy0 = _T + _bh * _y0f;
+        var _wx1 = _L + _bw * _x1f, _wy1 = _T + _bh * _y1f;
+
+        var _w = instance_create_depth(_wx0, _wy0, 500, obj_wall);
+        _w.wall_w  = _wx1 - _wx0;
+        _w.wall_h  = _wy1 - _wy0;
+        _w.visible = false;
+        array_push(global.__room_builder_collision, _w);
+        _made++;
+    }
+
+    show_debug_message("[room_builder] built " + string(_made) + " market collision boxes");
+    return _made;
 }
 
 
@@ -340,14 +400,19 @@ function scr_room_builder_save() {
 
             if (_inst.object_index == obj_wall) continue;        // collision boxes aren't saved
             var _name = object_get_name(_inst.object_index);
-            var _gx   = round(_inst.x / ROOM_BUILDER_GRID);
-            var _gy   = round(_inst.y / ROOM_BUILDER_GRID);
+            var _gx   = _inst.x / ROOM_BUILDER_GRID;   // fractional — keeps fine-nudge sub-grid offsets
+            var _gy   = _inst.y / ROOM_BUILDER_GRID;
             var _sc   = _inst.image_xscale;
 
-            var _line = scr_room_builder_pad(_name, 24) +
-                        scr_room_builder_pad(string(_gx), 4) +
-                        scr_room_builder_pad(string(_gy), 4) +
-                        scr_room_builder_pad(string(_sc), 6);
+            // Whole cells print as integers; nudged props keep 4-decimal precision.
+            // Explicit "  " separators guarantee fields never merge (a fractional value
+            // can be wider than the pad width, which previously ran columns together).
+            var _gxs = (_gx == round(_gx)) ? string(round(_gx)) : string_format(_gx, 0, 4);
+            var _gys = (_gy == round(_gy)) ? string(round(_gy)) : string_format(_gy, 0, 4);
+            var _line = scr_room_builder_pad(_name, 22) + "  " +
+                        scr_room_builder_pad(_gxs, 9) + "  " +
+                        scr_room_builder_pad(_gys, 9) + "  " +
+                        scr_room_builder_pad(string(_sc), 5);
             // generic placeables carry their sprite (+ solid flag) so F8 round-trips them
             if (_name == "obj_mercato_prop") {
                 var _sn = (variable_instance_exists(_inst, "builder_sprite") && _inst.builder_sprite != "")
@@ -393,10 +458,13 @@ function scr_room_builder_drag_update() {
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
 
+    if (!variable_global_exists("room_builder_selected")) global.room_builder_selected = noone;
+
     var _mx = mouse_x, _my = mouse_y;
 
     // begin drag — pick the last (topmost) builder instance under the cursor
     if (global.room_builder_drag == noone && mouse_check_button_pressed(mb_left)) {
+        var _picked = noone;
         for (var _i = array_length(global.room_builder_objects) - 1; _i >= 0; _i--) {
             var _inst = global.room_builder_objects[_i];
             if (!instance_exists(_inst)) continue;
@@ -405,9 +473,15 @@ function scr_room_builder_drag_update() {
                 global.room_builder_drag    = _inst;
                 global.room_builder_drag_dx = _inst.x - _mx;
                 global.room_builder_drag_dy = _inst.y - _my;
+                global.room_builder_drag_ox = _inst.x;   // grab position — distinguishes
+                global.room_builder_drag_oy = _inst.y;   // a pure select-click from a drag
+                _picked = _inst;
                 break;
             }
         }
+        // Left click selects the picked object (red outline + inspector panel);
+        // clicking empty space clears the selection.
+        global.room_builder_selected = _picked;
     }
 
     // active drag
@@ -418,13 +492,79 @@ function scr_room_builder_drag_update() {
             _o.x = _mx + global.room_builder_drag_dx;     // follow cursor (smooth, unsnapped)
             _o.y = _my + global.room_builder_drag_dy;
         } else {
-            // release -> snap to the 64px grid
-            _o.x = round(_o.x / ROOM_BUILDER_GRID) * ROOM_BUILDER_GRID;
-            _o.y = round(_o.y / ROOM_BUILDER_GRID) * ROOM_BUILDER_GRID;
-            if (variable_global_exists("world_event_log"))
-                scr_world_event_log(object_get_name(_o.object_index) + " moved -> grid " +
-                    string(_o.x / ROOM_BUILDER_GRID) + "," + string(_o.y / ROOM_BUILDER_GRID) + "  (F8 to save)");
+            // release -> snap to the 64px grid, but ONLY if it actually moved. A pure
+            // click (no movement) just selects, leaving fractional positions intact.
+            if (_o.x != global.room_builder_drag_ox || _o.y != global.room_builder_drag_oy) {
+                _o.x = round(_o.x / ROOM_BUILDER_GRID) * ROOM_BUILDER_GRID;
+                _o.y = round(_o.y / ROOM_BUILDER_GRID) * ROOM_BUILDER_GRID;
+                if (variable_global_exists("world_event_log"))
+                    scr_world_event_log(object_get_name(_o.object_index) + " moved -> grid " +
+                        string(_o.x / ROOM_BUILDER_GRID) + "," + string(_o.y / ROOM_BUILDER_GRID) + "  (F8 to save)");
+            }
             global.room_builder_drag = noone;
         }
+    }
+}
+
+
+/// DEBUG: delete the currently-selected builder object. Destroys the instance,
+/// drops it from the builder list, persists the layout (save-folder copy, minus the
+/// deleted entry) and shows a confirmation. Bound to the Delete key in debug mode.
+function scr_room_builder_delete_selected() {
+    if (!variable_global_exists("room_builder_selected")) return false;
+    var _sel = global.room_builder_selected;
+    if (!instance_exists(_sel)) { global.room_builder_selected = noone; return false; }
+
+    var _name = object_get_name(_sel.object_index);
+    var _gx   = round(_sel.x / ROOM_BUILDER_GRID);
+    var _gy   = round(_sel.y / ROOM_BUILDER_GRID);
+
+    // Drop from the builder list so it is neither re-saved nor re-outlined.
+    if (variable_global_exists("room_builder_objects")) {
+        for (var _i = array_length(global.room_builder_objects) - 1; _i >= 0; _i--) {
+            if (global.room_builder_objects[_i] == _sel)
+                array_delete(global.room_builder_objects, _i, 1);
+        }
+    }
+    instance_destroy(_sel);
+    global.room_builder_selected = noone;
+    if (variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
+
+    // Persist: rewrite the layout file (save folder) without the deleted entry.
+    scr_room_builder_save();
+
+    var _msg = "Deleted " + _name + " at " + string(_gx) + "," + string(_gy);
+    if (variable_global_exists("save_indicator_text")) {
+        global.save_indicator_text  = _msg;
+        global.save_indicator_timer = 150;
+    }
+    if (variable_global_exists("world_event_log")) scr_world_event_log(_msg);
+    return true;
+}
+
+
+/// DEBUG: fine-nudge the selected builder object with the ARROW KEYS (sub-grid).
+/// 4px per tap; hold Shift for 1px ultra-fine. Player arrow-movement is suppressed
+/// while a prop is selected (see obj_player Step) so the arrows drive the nudge.
+/// F8 then saves the exact fractional position (the save no longer rounds to grid).
+function scr_room_builder_nudge_update() {
+    if (!global.debug_mode) return;
+    if (room != Room1) return;
+    if (variable_global_exists("input_locked") && global.input_locked) return;
+    if (!variable_global_exists("room_builder_selected")) return;
+    var _sel = global.room_builder_selected;
+    if (!instance_exists(_sel)) return;
+
+    var _step = keyboard_check(vk_shift) ? 1 : 4;   // Shift = 1px ultra-fine
+    var _nx = (keyboard_check_pressed(vk_right) - keyboard_check_pressed(vk_left)) * _step;
+    var _ny = (keyboard_check_pressed(vk_down)  - keyboard_check_pressed(vk_up))   * _step;
+    if (_nx == 0 && _ny == 0) return;
+
+    _sel.x += _nx;
+    _sel.y += _ny;
+    if (variable_global_exists("save_indicator_text")) {
+        global.save_indicator_text  = "Nudged " + object_get_name(_sel.object_index) +
+            " -> " + string(_sel.x) + "," + string(_sel.y) + "  (F8 to save)";
+        global.save_indicator_timer = 90;
     }
 }
