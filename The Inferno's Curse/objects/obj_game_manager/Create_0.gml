@@ -199,6 +199,7 @@ global.vision_cooldown = 300;
 // Every placeholder object's Draw event checks this flag before drawing.
 global.debug_mode     = false;
 global.debug_show_log = true;    // F10 hides/shows the EVENT LOG panel
+global.ai_disabled    = false;   // F11 kills Claude API calls during testing (no tokens spent)
 
 // ── NPC persistence globals ───────────────────────────────────────────────────
 // These hold the last saved state for NPC instances that need cross-session

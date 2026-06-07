@@ -30,6 +30,11 @@
 /// @param {string} system_prompt   NPC system prompt
 /// @returns {real}                 Async request ID, or -1 if no key set
 function scr_ai_call(prompt, system_prompt) {
+    // Debug kill-switch (F11): skip the request entirely so testing burns no tokens.
+    if (variable_global_exists("ai_disabled") && global.ai_disabled) {
+        show_debug_message("[scr_ai_call] AI disabled (debug F11) — no request sent, no tokens spent.");
+        return -1;
+    }
     if (global.claude_api_key == "") {
         show_debug_message(
             "[scr_ai_call] No API key — cannot reach Claude. " +
@@ -215,8 +220,11 @@ function scr_npc_call_api(npc_id, player_input) {
     npc_id.api_pending              = (_req_id != -1);
     npc_id.npc_data.pending_request = _req_id;
 
-    // No key / call failed — surface a clear error instead of hanging in "loading".
+    // No key / disabled / call failed — surface a clear line instead of hanging in "loading".
     if (_req_id == -1) {
-        scr_open_dialogue(npc_id, "[ No connection to Claude — check config.ini API key. ]");
+        var _msg = (variable_global_exists("ai_disabled") && global.ai_disabled)
+            ? "[ AI disabled for testing (F11) — no tokens spent. Press F11 to go live. ]"
+            : "[ No connection to Claude — check config.ini API key. ]";
+        scr_open_dialogue(npc_id, _msg);
     }
 }

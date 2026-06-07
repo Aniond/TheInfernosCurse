@@ -42,6 +42,14 @@ if (keyboard_check_pressed(vk_f10)) {
     global.save_indicator_timer = 120;
 }
 
+// ── DEBUG: AI kill-switch (F11) — no Claude API calls = no tokens during testing ─
+// NPC dialogue short-circuits to a placeholder line instead of reaching Claude.
+if (keyboard_check_pressed(vk_f11)) {
+    global.ai_disabled = !global.ai_disabled;
+    global.save_indicator_text  = global.ai_disabled ? "AI OFF (no tokens)" : "AI ON (live)";
+    global.save_indicator_timer = 120;
+}
+
 // ── DEBUG: click-drag builder objects (grid-snapped on release; F8 saves) ─────
 scr_room_builder_drag_update();
 

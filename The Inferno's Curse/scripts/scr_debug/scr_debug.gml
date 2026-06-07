@@ -154,7 +154,8 @@ function scr_debug_gui_common(_in_battle) {
     if (_show_panels) scr_debug_panel(6, 6, _tl, fa_left, fa_top, "WORLD STATE", make_color_rgb(210, 220, 235));
 
     // TOP RIGHT — Systems (F10 to hide) -----------------------------------------
-    var _api   = (variable_global_exists("claude_api_key") && global.claude_api_key != "") ? "LIVE" : "MOCK(no key)";
+    var _api   = (variable_global_exists("ai_disabled") && global.ai_disabled) ? "OFF (F11)"
+               : ((variable_global_exists("claude_api_key") && global.claude_api_key != "") ? "LIVE" : "MOCK(no key)");
     var _calls = variable_global_exists("api_call_count") ? global.api_call_count : 0;
     var _cc    = variable_global_exists("current_circle") ? global.current_circle : 0;
     var _en = "";
