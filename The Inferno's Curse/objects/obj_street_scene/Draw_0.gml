@@ -34,6 +34,20 @@ for (var _gy = 0; _gy < _rh; _gy += _gh) {
     }
 }
 
+// ── MERCATO VECCHIO — cobblestone ground over the NORTH market zone (y 0..640) ─
+// 16 cobble variations, deterministic per-cell pick (stable, no per-frame random).
+var _cob = [spr_florence_plaza,     spr_florence_plaza_v2,  spr_florence_plaza_v3,  spr_florence_plaza_v4,
+            spr_florence_plaza_v5,  spr_florence_plaza_v6,  spr_florence_plaza_v7,  spr_florence_plaza_v8,
+            spr_florence_plaza_v9,  spr_florence_plaza_v10, spr_florence_plaza_v11, spr_florence_plaza_v12,
+            spr_florence_plaza_v13, spr_florence_plaza_v14, spr_florence_plaza_v15, spr_florence_plaza_v16];
+for (var _czy = 0; _czy < MERCATO_ZONE_Y1; _czy += 64) {
+    for (var _czx = 0; _czx < _rw; _czx += 64) {
+        var _ci = (((_czx div 64) * 7) + ((_czy div 64) * 13)) mod 16;
+        draw_sprite(_cob[_ci], 0, _czx, _czy);
+    }
+}
+// (Market items are draggable obj_mercato_prop objects placed by the room-builder.)
+
 // ── wall + interior metrics ───────────────────────────────────────────────────
 var _wt   = 56;                 // wall thickness
 var _ix0  = _wt;                // interior left edge

@@ -74,6 +74,7 @@ config.ini
 _lib_staging/
 # Reference PDFs (large rulebooks / grimoires, local reference only)
 refrences/
+references/
 # Burst-test / debug screenshots (regenerated, large)
 screenshots/
 # Source image staging before GameMaker import

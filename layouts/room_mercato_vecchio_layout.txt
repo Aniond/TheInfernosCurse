@@ -1,0 +1,67 @@
+# =============================================================================
+# Room_mercato_vecchio — Mercato Vecchio (The Old Market) layout
+# =============================================================================
+# Central hub: inn + open-air market (food & goods vendors). 2048x2048, grid 64px.
+# This is the human-readable source of truth; the live placement is mirrored in
+# obj_mercato_scene/Create_0.gml (_place SPRITE GRID_X GRID_Y SCALE SOLID).
+# Ground (worn cobble) + south Arno + central steps are DRAWN in obj_mercato_scene.
+# Format:  SPRITE                 GRID_X GRID_Y SCALE  SOLID
+# =============================================================================
+
+# --- LOGGIA DEL MERCATO (top centre; central arch = the north gate) ---
+spr_mercato_loggia          13.5  0.3   1.0   piers-only
+
+# --- INN (hub landmark, mid-west) ---
+spr_mercato_inn             0     9     1.1   solid
+
+# --- BUILDINGS lining the top + side edges (alley gaps between) ---
+spr_mercato_building_a      1     0.2   1.0   solid
+spr_florence_house          4     0.5   1.4   solid
+spr_mercato_building_c      6     0.0   1.0   solid
+spr_mercato_building_b      18    0.4   1.0   solid
+spr_florence_building       22    1.0   1.3   solid
+spr_mercato_building_a      25    0.2   1.0   solid
+spr_florence_tower          28    0.6   1.1   solid
+spr_florence_house          0     5     1.4   solid
+spr_mercato_building_a      0     13    1.0   solid
+spr_florence_house          0     18    1.4   solid
+spr_mercato_building_b      26    5     1.0   solid
+spr_florence_tower          27    9     1.1   solid
+spr_mercato_building_a      26    14    1.0   solid
+spr_florence_house          27    18    1.4   solid
+
+# --- MARKET STALLS (3 rows, all face south) ---
+spr_stall_striped_green     8     6     1.0   solid
+spr_stall_striped_cream     14    6     1.0   solid
+spr_stall_flat_green        20    6     1.0   solid
+spr_stall_dye_merchant      4     10    1.0   solid
+spr_stall_striped_red       10    10    1.0   solid
+spr_stall_striped_blue      16    10    1.0   solid
+spr_stall_weapon_smith      22    10    1.0   solid
+spr_stall_herbalist         4     16    1.0   solid
+spr_stall_striped_purple    10    16    1.0   solid
+spr_stall_striped_cream     16    16    1.0   solid
+spr_stall_produce           22    16    1.0   solid
+
+# --- CENTRAL FOUNTAIN (statue + circular base) ---
+spr_mercato_fountain        15    12    1.0   solid
+
+# --- PROPS ---
+spr_barrel_stack            2     4     1.0   solid
+spr_barrel_stack            26    8     1.0   solid
+spr_crate_stack             7     8     1.0   solid
+spr_crate_stack             17    14    1.0   solid
+spr_sack_pile               12    8     1.0   solid
+spr_sack_pile               21    14    1.0   solid
+spr_clay_pot_large          1     12    1.0   solid
+spr_clay_pot_large          27    12    1.0   solid
+spr_clay_pot_large          3     7     1.0   solid
+spr_cart_loaded             6     14    1.0   solid
+spr_cart_covered            24    14    1.0   solid
+spr_hanging_cloth           4     2     1.0   decor
+spr_hanging_cloth           20    2     1.0   decor
+
+# --- EXITS (zones; handled by obj_mercato_exit) ---
+# NORTH  through the loggia centre arch  -> Room_piazza_signoria (not built yet)
+# EAST   right edge, mid                 -> Room1 (Florence) — Benedetto enters here
+# SOUTH  central steps down              -> Room_ponte_vecchio (not built yet)

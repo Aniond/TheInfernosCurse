@@ -1,8 +1,11 @@
 // =============================================================================
 // obj_street_scene — Create
 // =============================================================================
-// Nothing to precompute. All scene dressing is drawn in Draw_0 (grass, street,
-// piazza, the formal Giardino delle Rose, river, walls, gates); buildings, market
-// props and the garden fountain are placed by the room-builder layout. The rose
-// parterre uses a deterministic grid (no per-frame random), so no seeding here.
+// Scene dressing is drawn in Draw_0 (grass, the Mercato cobble ground, street,
+// piazza, Giardino delle Rose, river, walls). The MERCATO VECCHIO market ITEMS
+// (loggia / buildings / stalls / fountain / props) are now DRAGGABLE
+// obj_mercato_prop objects placed + collided by the room-builder
+// (layouts/room1_layout.txt) — no longer drawn here.
 // =============================================================================
+
+#macro MERCATO_ZONE_Y1 640   // market cobble zone spans y 0 .. this (north third)

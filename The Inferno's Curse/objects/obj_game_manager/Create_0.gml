@@ -358,6 +358,9 @@ if (!instance_exists(obj_street_scene)) {
     instance_create_depth(0, 0, 160, obj_street_scene);
 }
 
+// (Mercato market collision is built by the room-builder loader — it lays an
+//  obj_wall footprint under each "solid" obj_mercato_prop. See scr_room_builder.)
+
 // NOTE: obj_journal and obj_vision_manager are placed directly in Room1 (see the
 // room's instance list), so they are NOT spawned here — doing both would create
 // duplicate instances because this Create runs before the room instances exist.
