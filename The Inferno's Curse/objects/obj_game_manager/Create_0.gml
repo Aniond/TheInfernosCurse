@@ -315,6 +315,40 @@ if (room == Room1) {
     }
 }
 
+// ── Giardino delle Rose geometry + hedge collision ────────────────────────────
+// Geometry OWNED here and read by obj_street_scene Draw (which paints the parterre)
+// so the visuals and the collision can never drift. The four boxwood-hedged rose
+// quadrants are made solid with invisible obj_wall boxes; the outer stone walkway
+// and the gravel cross-path stay open, so the player is guided onto the paths. The
+// central fountain is left pass-through — a wall there would plug the 56px cross-
+// path (it is barely wider than the 32px player).
+global.garden_cx  = 380;    // garden centre  (== fountain centre)
+global.garden_cy  = 1317;
+global.garden_hw  = 220;    // half width  (outer paving edge)
+global.garden_hh  = 190;    // half height
+global.garden_wt  = 32;     // outer paving ring thickness
+global.garden_cph = 28;     // cross-path half width
+if (room == Room1) {
+    var _gx0 = global.garden_cx - global.garden_hw, _gy0 = global.garden_cy - global.garden_hh;
+    var _gx1 = global.garden_cx + global.garden_hw, _gy1 = global.garden_cy + global.garden_hh;
+    var _gfx0 = _gx0 + global.garden_wt, _gfy0 = _gy0 + global.garden_wt;   // field (inside paving)
+    var _gfx1 = _gx1 - global.garden_wt, _gfy1 = _gy1 - global.garden_wt;
+    var _gcphw = global.garden_cph;
+    var _gqcx  = global.garden_cx, _gqcy = global.garden_cy;
+    var _gquads = [
+        [_gfx0,          _gfy0,          _gqcx - _gcphw, _gqcy - _gcphw],   // NW
+        [_gqcx + _gcphw, _gfy0,          _gfx1,          _gqcy - _gcphw],   // NE
+        [_gfx0,          _gqcy + _gcphw, _gqcx - _gcphw, _gfy1],            // SW
+        [_gqcx + _gcphw, _gqcy + _gcphw, _gfx1,          _gfy1],            // SE
+    ];
+    for (var _gq = 0; _gq < 4; _gq++) {
+        var _gw = instance_create_depth(_gquads[_gq][0], _gquads[_gq][1], 500, obj_wall);
+        _gw.wall_w  = _gquads[_gq][2] - _gquads[_gq][0];
+        _gw.wall_h  = _gquads[_gq][3] - _gquads[_gq][1];
+        _gw.visible = false;
+    }
+}
+
 // ── Street dressing ───────────────────────────────────────────────────────────
 // Spawn the persistent Florence street scene (paved road + market props) at a
 // low depth so it sits over the cobble floor but under characters/buildings.

@@ -105,10 +105,10 @@ draw_set_color(c_white);
 // builder at the garden centre). Round topiary balls + flower clusters dot the
 // grass just outside. Drawn at depth 160 (under the player & the fountain). Visual
 // only — no collision yet. Move/resize via _rg_cx/_rg_cy and the half-extents.
-var _rg_cx = 380, _rg_cy = 1317;             // garden centre  (== fountain centre)
-var _rg_hw = 220, _rg_hh = 190;              // half width / half height (outer paving)
-var _rg_x0 = _rg_cx - _rg_hw, _rg_y0 = _rg_cy - _rg_hh;   // 160, 1127
-var _rg_x1 = _rg_cx + _rg_hw, _rg_y1 = _rg_cy + _rg_hh;   // 600, 1507
+var _rg_cx = global.garden_cx, _rg_cy = global.garden_cy;   // geometry OWNED by obj_game_manager
+var _rg_hw = global.garden_hw, _rg_hh = global.garden_hh;   // so the hedge collision matches exactly
+var _rg_x0 = _rg_cx - _rg_hw, _rg_y0 = _rg_cy - _rg_hh;
+var _rg_x1 = _rg_cx + _rg_hw, _rg_y1 = _rg_cy + _rg_hh;
 
 // palette
 var _rg_pave   = make_color_rgb(201, 184, 153);   // outer stone walkway
@@ -122,8 +122,8 @@ var _rg_hed_d  = make_color_rgb(52, 86, 38);
 var _rg_soil   = make_color_rgb(88, 60, 40);
 
 // metrics
-var _rg_wt  = 32;    // outer paving ring thickness
-var _rg_cph = 28;    // cross-path half width
+var _rg_wt  = global.garden_wt;    // outer paving ring thickness (shared w/ collision)
+var _rg_cph = global.garden_cph;   // cross-path half width        (shared w/ collision)
 var _rg_qht = 16;    // per-quadrant hedge border thickness
 var _rg_cr  = 54;    // central fountain court radius
 
