@@ -1,0 +1,67 @@
+// =============================================================================
+// obj_npc_innkeeper — Step
+// =============================================================================
+if (msg_timer > 0) msg_timer--;
+if (!instance_exists(obj_player)) exit;
+
+// In debug mode the innkeeper is a draggable builder object — never open the menu.
+if (variable_global_exists("debug_mode") && global.debug_mode) {
+    if (menu_open) { menu_open = false; global.input_locked = false; }
+    player_near = false; greeted = false;
+    exit;
+}
+
+var _cx = x + sprite_get_width(sprite_index)  * image_xscale * 0.5;
+var _cy = y + sprite_get_height(sprite_index) * image_yscale * 0.5;
+var _near = (point_distance(_cx, _cy, obj_player.x, obj_player.y) < proximity_radius);
+
+// leaving the zone closes the menu + re-arms the greeting
+if (!_near) {
+    if (menu_open) { menu_open = false; global.input_locked = false; }
+    player_near = false;
+    greeted = false;
+    exit;
+}
+player_near = true;
+
+// open the menu once on ENTERING the proximity zone
+if (!greeted) {
+    greeted   = true;
+    menu_open = true;
+    menu_sel  = 0;
+    global.input_locked = true;
+}
+
+if (!menu_open) {
+    if (keyboard_check_pressed(ord("E"))) { menu_open = true; menu_sel = 0; global.input_locked = true; }
+    exit;
+}
+
+// ── menu navigation (2 options) ────────────────────────────────────────────────
+if (keyboard_check_pressed(vk_up) || keyboard_check_pressed(vk_down)) menu_sel = (menu_sel + 1) mod 2;
+if (keyboard_check_pressed(vk_escape)) { menu_open = false; global.input_locked = false; exit; }
+
+if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
+    if (menu_sel == 1) {                                     // "Maybe later"
+        menu_open = false; global.input_locked = false; exit;
+    }
+    // Buy the room offered for the player's reputation tier.
+    var _tier = scr_inn_rep_tier();
+    var _cost, _relief, _name;
+    if      (_tier == "high")   { _name = "The Merchant's Suite"; _cost = 20; _relief = 3;   }
+    else if (_tier == "medium") { _name = "Standard Room";        _cost = 10; _relief = 1.5; }
+    else                        { _name = "Common Cot";           _cost = 4;  _relief = 0;   }
+
+    if (global.player_gold >= _cost) {
+        global.player_gold -= _cost;
+        obj_player.hp = obj_player.max_hp;                   // full rest
+        if (_relief > 0) scr_corruption_relieve(_relief, false);
+        msg_text = "You take " + _name + ". The night passes.  (-" + string(_cost) + "g)";
+        scr_chronicle_add("A night's rest at the Fiorentine Inn — " + _name + ".");
+    } else {
+        msg_text = "Not enough gold for " + _name + " (" + string(_cost) + "g).";
+    }
+    msg_timer = 150;
+    menu_open = false;
+    global.input_locked = false;
+}

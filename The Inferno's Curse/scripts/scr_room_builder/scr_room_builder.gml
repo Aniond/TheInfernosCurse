@@ -451,6 +451,9 @@ function scr_room_builder_save() {
     // Transitions persist to their own override file (drag in debug, F8 saves here).
     scr_transition_save_overrides();
 
+    // NPC data persists too (save-folder copy; layouts\npc_data.json synced on commit).
+    if (variable_global_exists("npc_data")) scr_npc_sync_to_layouts();
+
     show_debug_message("[room_builder] saved " + string(_count) + " objects -> " + _path);
     if (variable_global_exists("save_indicator_text")) {
         global.save_indicator_text  = "LAYOUT SAVED (" + string(_count) + ")";
@@ -480,7 +483,7 @@ function scr_room_builder_point_in(_inst, _mx, _my) {
 /// Called every step from obj_game_manager. F8 then writes the new positions.
 function scr_room_builder_drag_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo) return;   // draggable in all built rooms
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_fiorentine_inn) return;   // draggable in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
@@ -528,7 +531,7 @@ function scr_room_builder_drag_update() {
                     scr_world_event_log(object_get_name(_o.object_index) + " moved -> grid " +
                         string(_o.x / ROOM_BUILDER_GRID) + "," + string(_o.y / ROOM_BUILDER_GRID) + "  (F8 to save)");
             }
-            if (room == Room_duomo) scr_duomo_rebuild_collision();   // footprint follows the prop — no ghosts
+            if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_fiorentine_inn) scr_inn_rebuild_collision();   // footprint follows the prop — no ghosts
             global.room_builder_drag = noone;
         }
     }
@@ -557,7 +560,7 @@ function scr_room_builder_delete_selected() {
     instance_destroy(_sel);
     global.room_builder_selected = noone;
     if (variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
-    if (room == Room_duomo) scr_duomo_rebuild_collision();   // drop the deleted prop's footprint
+    if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_fiorentine_inn) scr_inn_rebuild_collision();   // drop the deleted prop's footprint
 
     // Persist: rewrite the layout file (save folder) without the deleted entry.
     scr_room_builder_save();
@@ -578,7 +581,7 @@ function scr_room_builder_delete_selected() {
 /// F8 then saves the exact fractional position (the save no longer rounds to grid).
 function scr_room_builder_nudge_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo) return;   // nudge in all built rooms
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_fiorentine_inn) return;   // nudge in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_selected")) return;
     var _sel = global.room_builder_selected;
@@ -603,7 +606,7 @@ function scr_room_builder_nudge_update() {
 
     _sel.x += _nx;
     _sel.y += _ny;
-    if (room == Room_duomo) scr_duomo_rebuild_collision();   // footprint follows the prop — no ghosts
+    if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_fiorentine_inn) scr_inn_rebuild_collision();   // footprint follows the prop — no ghosts
     if (variable_global_exists("save_indicator_text")) {
         global.save_indicator_text  = "Nudged " + object_get_name(_sel.object_index) +
             " -> " + string(_sel.x) + "," + string(_sel.y) + "  (F8 to save)";

@@ -311,6 +311,13 @@ if (!instance_exists(obj_street_scene)) {
 // Default for every room going forward — see scr_camera. Tune via global.cam_*.
 scr_camera_init();
 
+// ── Economy (minimal) — player gold + guild reputation (drives the inn menu) ────
+if (!variable_global_exists("player_gold"))      global.player_gold      = 50;
+if (!variable_global_exists("guild_reputation")) global.guild_reputation = 50;   // 0-100; 50 = medium tier
+
+// ── NPC behaviour + event tracking (mock AI; ready for live swap) ───────────────
+scr_npc_system_init();
+
 
 // ── LOAD POINT: start inside the cathedral (Room_duomo) ───────────────────────
 // Boot Benedetto straight into the Basilica interior instead of the Florence
@@ -318,6 +325,8 @@ scr_camera_init();
 // out the south door to Florence does NOT bounce you back here. The player spawns at
 // Room_duomo's instance position (the south doorway, 640,1252).
 // Flip DUOMO_LOAD_POINT (scr_duomo) to false to restore the normal Florence start.
-if (DUOMO_LOAD_POINT && room == Room1) {
+if (INN_LOAD_POINT && room == Room1) {
+    room_goto(Room_fiorentine_inn);   // TEMP boot for testing the inn (flip INN_LOAD_POINT to false)
+} else if (DUOMO_LOAD_POINT && room == Room1) {
     room_goto(Room_duomo);
 }
