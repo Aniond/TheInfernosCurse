@@ -373,7 +373,10 @@ function scr_room_builder_build_collision() {
 /// Writes every builder-placed instance back to the layout file (current grid
 /// position + scale). Tries the project-tree path first, then the save folder.
 function scr_room_builder_save() {
-    var _path = working_directory + "room1_layout.txt";   // sandbox-safe save area
+    // Per-room save file (sandbox-safe save area) — the bridge room has its own
+    // statue layout so F8 there never clobbers Room1's market layout.
+    var _path = working_directory + "room1_layout.txt";
+    if (room == Room_ponte_vecchio) _path = working_directory + "room_ponte_vecchio_layout.txt";
     var _f = file_text_open_write(_path);
     if (_f == -1) {
         show_debug_message("[room_builder] SAVE FAILED — sandbox blocks " + ROOM_BUILDER_FILE +
@@ -453,7 +456,7 @@ function scr_room_builder_point_in(_inst, _mx, _my) {
 /// Called every step from obj_game_manager. F8 then writes the new positions.
 function scr_room_builder_drag_update() {
     if (!global.debug_mode) return;
-    if (room != Room1) return;
+    if (room != Room1 && room != Room_ponte_vecchio) return;   // draggable in both built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
@@ -549,7 +552,7 @@ function scr_room_builder_delete_selected() {
 /// F8 then saves the exact fractional position (the save no longer rounds to grid).
 function scr_room_builder_nudge_update() {
     if (!global.debug_mode) return;
-    if (room != Room1) return;
+    if (room != Room1 && room != Room_ponte_vecchio) return;   // nudge in both built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_selected")) return;
     var _sel = global.room_builder_selected;
@@ -567,4 +570,185 @@ function scr_room_builder_nudge_update() {
             " -> " + string(_sel.x) + "," + string(_sel.y) + "  (F8 to save)";
         global.save_indicator_timer = 90;
     }
+}
+
+
+// ── ROOM1 BUILD (props + all code-spawned collision) ────────────────────────────
+/// Builds (or REBUILDS) everything Room1 spawns in code: the market props (room
+/// builder), the Arno river+bank collision, the bridge handrails, the Ponte Vecchio
+/// entry zones (N/S split → bridge room), and the Giardino delle Rose hedge
+/// collision. obj_game_manager is PERSISTENT so its Create runs only once; a room
+/// change destroys all these instances, so obj_game_manager Step calls this again on
+/// every Room1 (re)entry — otherwise returning from the bridge room would leave Room1
+/// with no props and no river collision. Reads the geometry globals (river_*,
+/// garden_*) that obj_game_manager Create sets once.
+function scr_room1_build() {
+    if (room != Room1) return;
+
+    // market props (+ their footprint collision, built inside the loader)
+    scr_room_builder_load();
+
+    // ── Arno river + bank collision ───────────────────────────────────────────
+    // Solid water fills every gap BETWEEN the bridges (generic over any count). The
+    // band reaches 22px onto each stone bank so the shore ROCKS are solid too.
+    var _ry1 = global.river_y1;
+    var _rh  = global.river_y2 - global.river_y1;
+    var _ixl = 56;
+    var _ixr = room_width - 56;
+    var _segs = [];
+    var _prev = _ixl;
+    for (var _bi = 0; _bi < array_length(global.river_bridges); _bi++) {
+        array_push(_segs, [_prev, global.river_bridges[_bi][0]]);
+        _prev = global.river_bridges[_bi][1];
+    }
+    array_push(_segs, [_prev, _ixr]);
+    for (var _s = 0; _s < array_length(_segs); _s++) {
+        var _x0 = _segs[_s][0];
+        var _x1 = _segs[_s][1];
+        if (_x1 > _x0) {
+            var _w = instance_create_depth(_x0, _ry1 - 22, 500, obj_wall);   // -22: north bank rocks
+            _w.wall_w  = _x1 - _x0;
+            _w.wall_h  = _rh + 44;                                           // +44: north + south banks
+            _w.visible = false;
+        }
+    }
+
+    // ── bridge handrail collision (down each crossing's edges) ────────────────
+    var _bankh  = 22;
+    var _rthick = sprite_get_height(spr_bridge_railing) * 0.5;   // 32px rail
+    var _bdy0   = global.river_y1 - _bankh;                      // deck top
+    var _bdy1   = global.river_y2 + _bankh;                      // deck bottom
+    for (var _br = 0; _br < array_length(global.river_bridges); _br++) {
+        var _rbx0 = global.river_bridges[_br][0];
+        var _rbx1 = global.river_bridges[_br][1];
+        var _wl = instance_create_depth(_rbx0, _bdy0, 500, obj_wall);
+        _wl.wall_w = _rthick;  _wl.wall_h = _bdy1 - _bdy0;  _wl.visible = false;
+        var _wr = instance_create_depth(_rbx1 - _rthick, _bdy0, 500, obj_wall);
+        _wr.wall_w = _rthick;  _wr.wall_h = _bdy1 - _bdy0;  _wr.visible = false;
+    }
+
+    // ── Ponte Vecchio entry zones — N/S split decides the bridge-room landing ──
+    var _pv      = global.river_bridges[0];
+    var _pe_x    = _pv[0] + _rthick;
+    var _pe_w    = (_pv[1] - _pv[0]) - _rthick * 2;
+    var _deckmid = (_bdy0 + _bdy1) * 0.5;
+    var _pn = instance_create_depth(_pe_x, _bdy0, 500, obj_mercato_exit);    // NORTH half
+    _pn.zone_w = _pe_w;  _pn.zone_h = _deckmid - _bdy0;
+    _pn.exit_target = "Room_ponte_vecchio";  _pn.exit_label = "Ponte Vecchio";
+    _pn.pre_text = "The Ponte Vecchio";  _pn.arrive_x = 288;  _pn.arrive_y = 200;
+    var _ps = instance_create_depth(_pe_x, _deckmid, 500, obj_mercato_exit); // SOUTH half
+    _ps.zone_w = _pe_w;  _ps.zone_h = _bdy1 - _deckmid;
+    _ps.exit_target = "Room_ponte_vecchio";  _ps.exit_label = "Ponte Vecchio";
+    _ps.pre_text = "The Ponte Vecchio";  _ps.arrive_x = 288;  _ps.arrive_y = 700;
+
+    // ── Giardino delle Rose hedge collision (four quadrants, open cross-path) ──
+    var _gx0 = global.garden_cx - global.garden_hw, _gy0 = global.garden_cy - global.garden_hh;
+    var _gx1 = global.garden_cx + global.garden_hw, _gy1 = global.garden_cy + global.garden_hh;
+    var _gfx0 = _gx0 + global.garden_wt, _gfy0 = _gy0 + global.garden_wt;
+    var _gfx1 = _gx1 - global.garden_wt, _gfy1 = _gy1 - global.garden_wt;
+    var _gcphw = global.garden_cph;
+    var _gqcx  = global.garden_cx, _gqcy = global.garden_cy;
+    var _gquads = [
+        [_gfx0,          _gfy0,          _gqcx - _gcphw, _gqcy - _gcphw],   // NW
+        [_gqcx + _gcphw, _gfy0,          _gfx1,          _gqcy - _gcphw],   // NE
+        [_gfx0,          _gqcy + _gcphw, _gqcx - _gcphw, _gfy1],            // SW
+        [_gqcx + _gcphw, _gqcy + _gcphw, _gfx1,          _gfy1],            // SE
+    ];
+    for (var _gq = 0; _gq < 4; _gq++) {
+        var _gw = instance_create_depth(_gquads[_gq][0], _gquads[_gq][1], 500, obj_wall);
+        _gw.wall_w  = _gquads[_gq][2] - _gquads[_gq][0];
+        _gw.wall_h  = _gquads[_gq][3] - _gquads[_gq][1];
+        _gw.visible = false;
+    }
+}
+
+
+// ── PONTE VECCHIO STATUES (draggable bridge guides) ─────────────────────────────
+/// Build the bridge-room statues: load the player's saved/tweaked layout if present
+/// (working_directory/room_ponte_vecchio_layout.txt), else the built-in default
+/// corridor layout. Placed as draggable obj_mercato_prop, so the debug drag / nudge
+/// (arrows) / Delete / F8-save all work in this room too. Solid footprints come from
+/// scr_room_builder_build_collision(). Called from obj_ponte_scene Create.
+function scr_ponte_statues_build() {
+    if (room != Room_ponte_vecchio) return;
+    // keep-alive: the statue sprites are placed by NAME, invisible to the stripper.
+    global.__statue_keep = [spr_statue_david, spr_statue_madonna, spr_statue_lion, spr_statue_angel];
+
+    if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
+    for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
+        if (instance_exists(global.room_builder_objects[_i])) instance_destroy(global.room_builder_objects[_i]);
+    global.room_builder_objects = [];
+
+    var _path   = working_directory + "room_ponte_vecchio_layout.txt";
+    var _placed = file_exists(_path) ? scr_ponte_statues_load(_path) : 0;
+    if (_placed == 0) scr_ponte_statues_default();
+
+    scr_room_builder_build_collision();
+}
+
+/// Read a saved ponte statue layout (OBJECT GX GY SCALE SPRITE [solid]) and place it.
+function scr_ponte_statues_load(_path) {
+    var _f = file_text_open_read(_path);
+    if (_f == -1) return 0;
+    var _layer = layer_exists("Instances") ? "Instances" : "";
+    var _n = 0;
+    while (!file_text_eof(_f)) {
+        var _raw  = file_text_read_string(_f); file_text_readln(_f);
+        var _line = string_trim(string_replace_all(_raw, chr(13), ""));
+        if (_line == "" || string_char_at(_line, 1) == "#") continue;
+        var _tok = scr_room_builder_tokenize(_line);
+        if (array_length(_tok) < 3) continue;
+        var _obj = asset_get_index(_tok[0]);
+        if (_obj < 0 || asset_get_type(_tok[0]) != asset_object) continue;
+        var _inst = scr_ponte_place(_obj, real(_tok[1]), real(_tok[2]),
+            (array_length(_tok) >= 4) ? real(_tok[3]) : 1,
+            (array_length(_tok) >= 5) ? _tok[4] : "", _layer);
+        if (_inst != noone) _n++;
+    }
+    file_text_close(_f);
+    return _n;
+}
+
+/// Built-in default statue corridor — two columns flanking the walkway, organic y,
+/// mixing the three variants (left x=1.5 -> px96, right x=6.5 -> px416). All solid.
+/// Plus 2 SPARE statues parked at the top of the walkway for easy grab/delete.
+function scr_ponte_statues_default() {
+    var _layer = layer_exists("Instances") ? "Instances" : "";
+    var _L = [
+        // left column — all four variants, organic spacing
+        [1.5,  1.75, "spr_statue_david"],   [1.5,  3.50, "spr_statue_angel"],
+        [1.5,  5.10, "spr_statue_lion"],    [1.5,  6.80, "spr_statue_madonna"],
+        [1.5,  8.35, "spr_statue_david"],   [1.5, 10.05, "spr_statue_angel"],
+        [1.5, 11.70, "spr_statue_lion"],
+        // right column — all four variants, organic spacing
+        [6.5,  2.25, "spr_statue_lion"],    [6.5,  3.85, "spr_statue_madonna"],
+        [6.5,  5.45, "spr_statue_angel"],   [6.5,  7.05, "spr_statue_david"],
+        [6.5,  8.70, "spr_statue_lion"],    [6.5, 10.30, "spr_statue_angel"],
+        [6.5, 11.60, "spr_statue_madonna"],
+        // 2 SPARES parked in the walkway near the spawn (drag into place or Delete)
+        [3.0, 4.0, "spr_statue_angel"],     [6.0, 4.0, "spr_statue_lion"],
+    ];
+    for (var _i = 0; _i < array_length(_L); _i++)
+        scr_ponte_place(obj_mercato_prop, _L[_i][0], _L[_i][1], 1, _L[_i][2], _layer);
+}
+
+/// Place one ponte prop (obj_mercato_prop with a sprite) + register it for dragging.
+function scr_ponte_place(_obj, _gx, _gy, _sc, _sprn, _layer) {
+    var _px = _gx * ROOM_BUILDER_GRID, _py = _gy * ROOM_BUILDER_GRID;
+    var _inst = (_layer != "")
+        ? instance_create_layer(_px, _py, _layer, _obj)
+        : instance_create_depth(_px, _py, 100, _obj);
+    _inst.image_xscale = _sc;  _inst.image_yscale = _sc;
+    _inst.room_builder_placed = true;
+    _inst.builder_sprite = "";  _inst.builder_solid = false;
+    if (_sprn != "") {
+        var _sprid = asset_get_index(_sprn);
+        if (_sprid >= 0 && asset_get_type(_sprn) == asset_sprite) {
+            _inst.sprite_index   = _sprid;
+            _inst.builder_sprite = _sprn;
+        }
+    }
+    if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = true;
+    array_push(global.room_builder_objects, _inst);
+    return _inst;
 }

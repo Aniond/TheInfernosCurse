@@ -11,4 +11,6 @@ exit_label  = "exit";
 pre_text    = "";       // "" = instant transition; set = brief title card first
 zone_active = false;    // edge-trigger guard so it fires once per entry
 trans_timer = 0;        // >0 while a gated transition is counting down (frames)
+arrive_x    = undefined; // optional arrival position in the destination room — set
+arrive_y    = undefined; // both to place the player; leave undefined to keep default
 visible     = false;

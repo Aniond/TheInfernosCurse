@@ -226,10 +226,12 @@ function scr_debug_gui_common(_in_battle) {
         // BOTTOM RIGHT — Collision legend (F10 to hide)
         if (_show_panels) {
             var _leg = [
-                "red    = solid (walls)",
-                "green  = player foot box",
-                "yellow = interaction zone",
-                "white+ = player origin",
+                "red     = solid (walls)",
+                "green   = player foot box",
+                "yellow  = interaction zone",
+                "cyan    = builder prop",
+                "magenta = transition zone",
+                "white+  = player origin",
             ];
             scr_debug_panel(_gw - 6, _gh - 26, _leg, fa_right, fa_bottom, "COLLISION", make_color_rgb(215, 210, 200));
         }
@@ -320,6 +322,21 @@ function scr_debug_world_overworld() {
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     }
+
+    // Transition zones — magenta rectangles + target room (obj_mercato_exit, invisible)
+    with (obj_mercato_exit) {
+        draw_set_alpha(0.14);
+        draw_set_color(make_color_rgb(225, 70, 230));
+        draw_rectangle(x, y, x + zone_w, y + zone_h, false);   // faint fill
+        draw_set_alpha(1);
+        draw_rectangle(x, y, x + zone_w, y + zone_h, true);    // outline
+        draw_set_halign(fa_center);
+        draw_set_valign(fa_middle);
+        draw_text(x + zone_w * 0.5, y + zone_h * 0.5, "-> " + string(exit_target));
+    }
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    draw_set_color(c_white);
 
     // Per-NPC labels
     scr_debug_npc_labels();

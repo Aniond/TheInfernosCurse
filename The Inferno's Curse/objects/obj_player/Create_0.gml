@@ -72,3 +72,14 @@ if (room == Room1 && variable_global_exists("river_y1")) {
         y = (y - _ry1 < _ry2 - y) ? (_ry1 - 8) : (_ry2 + 8);
     }
 }
+
+// ── One-shot arrival override ─────────────────────────────────────────────────
+// A room transition (obj_mercato_exit with arrive_x/arrive_y set) drops the player
+// at a specific spot in the destination room — e.g. returning from the Ponte
+// Vecchio onto the correct Arno bank at the west crossing. Cleared after use so it
+// never re-applies on the next room load.
+if (variable_global_exists("player_spawn_override") && is_array(global.player_spawn_override)) {
+    x = global.player_spawn_override[0];
+    y = global.player_spawn_override[1];
+    global.player_spawn_override = undefined;
+}

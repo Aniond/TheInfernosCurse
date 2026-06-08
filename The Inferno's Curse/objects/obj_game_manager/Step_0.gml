@@ -5,6 +5,20 @@
 // timer that Limbo and Violence effects write to.
 // =============================================================================
 
+// ── Room1 (re)build ────────────────────────────────────────────────────────────
+// This manager is persistent — its Create runs only once. A room change destroys
+// Room1's code-spawned props + collision, so rebuild them whenever we (re)enter
+// Room1 (e.g. returning from the Ponte Vecchio bridge room) — otherwise Room1 comes
+// back with no market and no river collision.
+if (room == Room1) {
+    if (!variable_global_exists("__room1_built") || !global.__room1_built) {
+        scr_room1_build();
+        global.__room1_built = true;
+    }
+} else if (variable_global_exists("__room1_built")) {
+    global.__room1_built = false;
+}
+
 // ── Corruption system ─────────────────────────────────────────────────────────
 // Poll all seven circles, trigger sin effects for active ones, and apply
 // continuous scaled modifiers (speed drain, price inflation, etc.).

@@ -97,5 +97,5 @@ if (_my != 0) {
 // Visual walls suggest the edge; this clamp is the hard limit. The river/bridges
 // (y1536-1728) and everything built sit INSIDE this box, so the crossings stay
 // reachable.
-x = clamp(x, 64, 1984);
-y = clamp(y, 64, 1984);
+x = clamp(x, 64, room_width  - 64);
+y = clamp(y, 64, room_height - 64);

@@ -158,6 +158,18 @@ function scr_world_event_log(text) {
     }
 }
 
+/// Add a short narrative "chronicle" line — Benedetto's passing thoughts (e.g. the
+/// Ponte Vecchio corruption disorientation). Surfaces in the on-screen EVENT LOG and
+/// flashes briefly via the save indicator so it reads even without the log open.
+/// @param {string} _text
+function scr_chronicle_add(_text) {
+    if (variable_global_exists("world_event_log")) scr_world_event_log(_text);
+    if (variable_global_exists("save_indicator_text")) {
+        global.save_indicator_text  = _text;
+        global.save_indicator_timer = 180;
+    }
+}
+
 /// Returns the most recent world events concatenated into one string
 /// for inclusion in Claude API system prompts.
 /// @param {real}   count   How many recent entries to include (capped at log length)

@@ -244,10 +244,9 @@ global.false_shimmer_timer  = 0;
 scr_config_load();
 scr_load_world_state();
 
-// ── Room builder ──────────────────────────────────────────────────────────────
-// Place props from the plain-text layout file (layouts/room1.txt) AFTER world
-// state has loaded. Edit the text file instead of the room editor — no .yy edits.
-if (room == Room1) scr_room_builder_load();
+// ── Room builder + Room1 collision ─────────────────────────────────────────────
+// Props + all of Room1's code-spawned collision are built by scr_room1_build() (the
+// call is below, after the garden geometry) and rebuilt by Step on every re-entry.
 
 // Disable texture filtering globally — keeps pixel art sharp at any zoom level.
 gpu_set_tex_filter(false);
@@ -264,57 +263,13 @@ game_set_speed(60, gamespeed_fps);
 // crossing feeds off the piazza into the south grass approach. Tile-aligned (64px).
 global.river_y1      = 1536;   // shrunk 2048 world: river runs BELOW the central park
 global.river_y2      = 1728;   // 192px band (3 × 64px water tiles)
-global.river_bridges = [[640, 896], [1152, 1408]];   // 256px (4 tiles) crossings, flanking centre
+global.river_bridges = [[640, 896]];   // ONE crossing = the Ponte Vecchio (west). The old
+                                       // east "brick bridge" was removed -> that span is plain river now.
 
-// ── River collision walls ─────────────────────────────────────────────────────
-// Three invisible obj_wall instances span the full river height (y1→y2) with
-// gaps at each bridge. _wall_at in Step_0 catches them automatically — no
-// custom river math needed in the player. Placed Room1-only on first run.
-if (room == Room1) {
-    var _ry1   = global.river_y1;
-    var _rh    = global.river_y2 - global.river_y1;
-    var _south_ext = 0;    // south collision edge = waterline, SYMMETRIC with the north
-                           // edge so the player approaches the south stone row exactly
-                           // like the north (the earlier +20 overshot -> grass gap)
-    var _b0    = global.river_bridges[0];
-    var _b1    = global.river_bridges[1];
-    var _ixl   = 56;
-    var _ixr   = room_width - 56;
-    // [start_x, end_x] for each solid segment
-    var _segs = [[_ixl, _b0[0]], [_b0[1], _b1[0]], [_b1[1], _ixr]];
-    for (var _s = 0; _s < 3; _s++) {
-        var _x0 = _segs[_s][0];
-        var _x1 = _segs[_s][1];
-        if (_x1 > _x0) {
-            var _w      = instance_create_depth(_x0, _ry1, 500, obj_wall);
-            _w.wall_w   = _x1 - _x0;
-            _w.wall_h   = _rh + _south_ext;
-            _w.visible  = false;
-        }
-    }
-    // Collision is ONLY this water band (y1→y2), flush with the stone row on each
-    // bank, with gaps at the bridges. Nothing extends below the south edge — the
-    // south grass is fully walkable.
-
-    // ── Bridge handrail collision ─────────────────────────────────────────────
-    // Invisible barriers down each bridge's left & right rail edge so the player
-    // can't walk off the side of a crossing. Sized to the 50%-scale rails drawn in
-    // obj_street_scene: thickness = railing sprite * 0.5 (32px), spanning the full
-    // deck length (water band + both 22px stone banks). Leaves an open central
-    // channel (~192px on each 256px bridge).
-    var _bankh  = 22;                                            // stone bank thickness (matches Draw)
-    var _rthick = sprite_get_height(spr_bridge_railing) * 0.5;   // 64 * 0.5 = 32px rail
-    var _bdy0   = global.river_y1 - _bankh;                      // deck top    (flush w/ north bank)
-    var _bdy1   = global.river_y2 + _bankh;                      // deck bottom (flush w/ south bank)
-    for (var _br = 0; _br < array_length(global.river_bridges); _br++) {
-        var _rbx0 = global.river_bridges[_br][0];
-        var _rbx1 = global.river_bridges[_br][1];
-        var _wl = instance_create_depth(_rbx0, _bdy0, 500, obj_wall);            // west (left) rail
-        _wl.wall_w = _rthick;  _wl.wall_h = _bdy1 - _bdy0;  _wl.visible = false;
-        var _wr = instance_create_depth(_rbx1 - _rthick, _bdy0, 500, obj_wall);  // east (right) rail
-        _wr.wall_w = _rthick;  _wr.wall_h = _bdy1 - _bdy0;  _wr.visible = false;
-    }
-}
+// (The Arno river/bank collision, the bridge handrails and the Ponte Vecchio entry
+//  zones are built by scr_room1_build() — see the Room1 build call below the garden
+//  geometry. They are rebuilt on every Room1 re-entry, so returning from the bridge
+//  room restores them.)
 
 // ── Giardino delle Rose geometry + hedge collision ────────────────────────────
 // Geometry OWNED here and read by obj_street_scene Draw (which paints the parterre)
@@ -329,26 +284,12 @@ global.garden_hw  = 220;    // half width  (outer paving edge)
 global.garden_hh  = 190;    // half height
 global.garden_wt  = 32;     // outer paving ring thickness
 global.garden_cph = 28;     // cross-path half width
-if (room == Room1) {
-    var _gx0 = global.garden_cx - global.garden_hw, _gy0 = global.garden_cy - global.garden_hh;
-    var _gx1 = global.garden_cx + global.garden_hw, _gy1 = global.garden_cy + global.garden_hh;
-    var _gfx0 = _gx0 + global.garden_wt, _gfy0 = _gy0 + global.garden_wt;   // field (inside paving)
-    var _gfx1 = _gx1 - global.garden_wt, _gfy1 = _gy1 - global.garden_wt;
-    var _gcphw = global.garden_cph;
-    var _gqcx  = global.garden_cx, _gqcy = global.garden_cy;
-    var _gquads = [
-        [_gfx0,          _gfy0,          _gqcx - _gcphw, _gqcy - _gcphw],   // NW
-        [_gqcx + _gcphw, _gfy0,          _gfx1,          _gqcy - _gcphw],   // NE
-        [_gfx0,          _gqcy + _gcphw, _gqcx - _gcphw, _gfy1],            // SW
-        [_gqcx + _gcphw, _gqcy + _gcphw, _gfx1,          _gfy1],            // SE
-    ];
-    for (var _gq = 0; _gq < 4; _gq++) {
-        var _gw = instance_create_depth(_gquads[_gq][0], _gquads[_gq][1], 500, obj_wall);
-        _gw.wall_w  = _gquads[_gq][2] - _gquads[_gq][0];
-        _gw.wall_h  = _gquads[_gq][3] - _gquads[_gq][1];
-        _gw.visible = false;
-    }
-}
+// ── Room1 props + collision (built here; rebuilt by Step on every re-entry) ─────
+// This manager is PERSISTENT (its Create runs once), and a room change destroys
+// Room1's code-spawned props + collision — so Step calls scr_room1_build() again
+// whenever we return to Room1. Build the first time now.
+global.__room1_built = false;
+if (room == Room1) { scr_room1_build(); global.__room1_built = true; }
 
 // ── Street dressing ───────────────────────────────────────────────────────────
 // Spawn the persistent Florence street scene (paved road + market props) at a

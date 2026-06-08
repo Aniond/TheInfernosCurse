@@ -24,6 +24,10 @@ if (_inside && !zone_active) {
     zone_active = true;
     var _r = asset_get_index(exit_target);
     if (_r >= 0 && room_exists(_r) && room != _r) {
+        // optional arrival override — place the player at a set spot in the new room
+        if (variable_instance_exists(id, "arrive_x") && !is_undefined(arrive_x)) {
+            global.player_spawn_override = [arrive_x, arrive_y];
+        }
         if (string_length(pre_text) > 0) {
             global.transition_text = pre_text;   // drawn centred by obj_player Draw GUI
             global.input_locked     = true;      // freeze the player while the card shows

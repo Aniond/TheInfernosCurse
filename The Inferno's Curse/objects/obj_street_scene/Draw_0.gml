@@ -348,11 +348,11 @@ for (var _b = 0; _b < array_length(_bridges); _b++) {
     var _bx0 = _bridges[_b][0];
     var _bx1 = _bridges[_b][1];
 
-    // WEST crossing (below the market) = the PONTE VECCHIO: one sprite stretched to the
-    // deck bounds, replacing the plain cobble deck + railings. Collision is untouched —
-    // the river gap + the rail obj_walls (obj_game_manager) still own blocking, and the
-    // future room transition will hang off this same crossing. The east crossing keeps
-    // the plain stone deck drawn below.
+    // WEST crossing (below the market) = the PONTE VECCHIO — one sprite stretched to
+    // the deck bounds. This is the walkable ENTRANCE to Room_ponte_vecchio (the
+    // transition trigger sits on this deck, obj_game_manager). The old EAST "brick
+    // bridge" was removed (river_bridges holds only this crossing now), so it no
+    // longer draws here and that span is plain river — water + bank rocks — again.
     if (_bx0 < 1000) {
         draw_sprite_ext(spr_ponte_vecchio, 0, _bx0, _bdy0,
             (_bx1 - _bx0) / sprite_get_width(spr_ponte_vecchio),
@@ -412,7 +412,7 @@ var _stone_s    = 0.42;                                            // small pebb
 var _stone_h0   = sprite_get_height(spr_river_stone);             // 64
 var _sdraw      = sprite_get_width(spr_river_stone) * _stone_s;    // ~27 px drawn width
 var _stone_step = 16;                                             // heavy overlap = no seams/stripes
-var _bridge_pad = 12;                                             // keep pebbles off the deck edge
+var _bridge_pad = -16;                                            // rocks run right up to (and just under) the deck edge
 var _subcol     = make_color_rgb(96, 120, 112);                  // murky shallow-water tint
 var _col_stone  = merge_color(c_white, _subcol, 0.10);           // faintly wet
 var _north_y    = _ry1 + 6 - (_stone_h0 * _stone_s) * 0.5;        // just inside the north waterline
