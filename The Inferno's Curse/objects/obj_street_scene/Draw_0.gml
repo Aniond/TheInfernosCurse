@@ -112,6 +112,39 @@ draw_set_color(_flag_l);
 draw_circle(_pcx, _pcy, 40, true);
 draw_set_color(c_white);
 
+// ── GRASS PATCH east of the Giardino delle Rose ───────────────────────────────
+// Cleanup: convert the tan piazza flagstones immediately east of the rose garden
+// back to grass (requested x:550–1100, y:1300–1600). Clipped to the piazza's own
+// bounds AND kept off the garden — the left edge is pinned at x≥600 (the garden's
+// east paving edge) so no garden tile is ever overdrawn. Painted here, after the
+// piazza paving but before the garden / benches / river, so all of those redraw
+// cleanly on top. Tiles are snapped to the 0,0 grass grid to seam-match the base
+// ground laid in section 1.
+var _gp_x0 = max(600, _pz_x0);          // x≥600 keeps the garden untouched
+var _gp_x1 = min(1100, _pz_x1);
+var _gp_y0 = max(1300, _pz_y0);
+var _gp_y1 = min(1600, _pz_y1);         // piazza ends ~1480, so this clamps there
+if (_gp_x1 > _gp_x0 && _gp_y1 > _gp_y0) {
+    draw_set_color(c_white);
+    var _gpw = sprite_get_width(spr_florence_grass);     // 64
+    var _gph = sprite_get_height(spr_florence_grass);    // 64
+    var _gcx = floor(_gp_x0 / _gpw) * _gpw;              // snap to the base-grass grid
+    var _gcy = floor(_gp_y0 / _gph) * _gph;
+    for (var _gty = _gcy; _gty < _gp_y1; _gty += _gph) {
+        for (var _gtx = _gcx; _gtx < _gp_x1; _gtx += _gpw) {
+            var _csx = max(_gtx, _gp_x0);                // clip each tile to the patch rect
+            var _csy = max(_gty, _gp_y0);
+            var _cex = min(_gtx + _gpw, _gp_x1);
+            var _cey = min(_gty + _gph, _gp_y1);
+            draw_sprite_part(spr_florence_grass, 0,
+                _csx - _gtx, _csy - _gty,                // sub-image source offset
+                _cex - _csx, _cey - _csy,                // clipped size
+                _csx, _csy);
+        }
+    }
+    draw_set_color(c_white);
+}
+
 // ── GIARDINO DELLE ROSE — formal box-hedge rose parterre (left park) ───────────
 // Reference: refrences/rosegarden.png. A stone-paving ring frames four boxwood-
 // hedged PINK-rose quadrants split by a gravel cross-path, with a circular stone
@@ -244,32 +277,9 @@ for (var _rg_a = 0; _rg_a < array_length(_rg_acc); _rg_a++) {
 }
 draw_set_color(c_white);
 
-// stone benches — low slabs set around the piazza edge, facing the centre
-var _bn_seat   = make_color_rgb(170, 162, 146);
-var _bn_seat_l = make_color_rgb(196, 190, 176);
-var _bn_leg    = make_color_rgb(120, 112, 98);
-var _bn_shad   = make_color_rgb(40, 52, 30);
-var _benches = [
-    [760, _pz_y0 + 10], [1288, _pz_y0 + 10],     // along the street-side piazza edge
-    [760, _pz_y1 - 24], [1288, _pz_y1 - 24],     // along the river-side piazza edge
-    [_pz_x0 + 24, _pcy], [_pz_x1 - 24, _pcy],     // flanking the medallion
-];
-var _bn_w = 78, _bn_hh = 14;
-for (var _bi2 = 0; _bi2 < array_length(_benches); _bi2++) {
-    var _bx = _benches[_bi2][0], _by = _benches[_bi2][1];
-    draw_set_alpha(0.18);
-    draw_set_color(_bn_shad);                                              // soft shadow
-    draw_rectangle(_bx - _bn_w*0.5 + 4, _by + _bn_hh, _bx + _bn_w*0.5 + 6, _by + _bn_hh + 8, false);
-    draw_set_alpha(1);
-    draw_set_color(_bn_leg);                                               // legs
-    draw_rectangle(_bx - _bn_w*0.5 + 6,  _by + _bn_hh, _bx - _bn_w*0.5 + 16, _by + _bn_hh + 14, false);
-    draw_rectangle(_bx + _bn_w*0.5 - 16, _by + _bn_hh, _bx + _bn_w*0.5 - 6,  _by + _bn_hh + 14, false);
-    draw_set_color(_bn_seat);                                              // seat slab
-    draw_rectangle(_bx - _bn_w*0.5, _by, _bx + _bn_w*0.5, _by + _bn_hh, false);
-    draw_set_color(_bn_seat_l);                                            // top highlight
-    draw_rectangle(_bx - _bn_w*0.5, _by, _bx + _bn_w*0.5, _by + 4, false);
-}
-draw_set_color(c_white);
+// stone benches — REMOVED (piazza cleanup). The 6 procedurally-drawn grey stone
+// benches that dressed the piazza edges/medallion were taken out per request; the
+// piazza now reads cleaner and the new grass patch is unobstructed.
 
 // ── 2. ARNO river (interior only) ─────────────────────────────────────────────
 // Geometry is OWNED by the globals set in obj_game_manager — obj_player collision

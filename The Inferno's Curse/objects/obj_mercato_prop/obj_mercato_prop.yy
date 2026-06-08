@@ -1,7 +1,9 @@
 {
   "$GMObject":"",
   "%Name":"obj_mercato_prop",
-  "eventList":[],
+  "eventList":[
+    {"$GMEvent":"v1","%Name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,"name":"","resourceType":"GMEvent","resourceVersion":"2.0",},
+  ],
   "managed":false,
   "name":"obj_mercato_prop",
   "overriddenProperties":[],

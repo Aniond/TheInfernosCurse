@@ -1,4 +1,4 @@
-# VERSION 9
+# VERSION 10
 # Room1 layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)
 # Market square FINALISED + collision LOCKED. Synced from the live save-folder layout.
 # All obj_mercato_prop are solid (stalls: back+sides only so the player shops from the
@@ -40,3 +40,6 @@ obj_mercato_prop        11.81     7.56      0.4   spr_hanging_herbs        solid
 obj_mercato_prop        9.125     5.875     0.4   spr_bread_board          solid
 obj_mercato_prop        12.4375   6.625     0.4   spr_clay_jugs            solid
 obj_mercato_prop        21        4         0.4   spr_clay_pot_large       solid
+
+# --- Landmark: Basilica di Santa Maria del Fiore (draggable; open area) ---
+obj_mercato_prop        24        10        1     spr_duomo_exterior       solid

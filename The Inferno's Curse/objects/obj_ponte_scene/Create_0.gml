@@ -10,7 +10,7 @@
 //   water columns   x[0,32]   and x[544,576]   (Arno, animated, corruption-tinted)
 //   shop columns    x[32,160] & x[416,544], y[128,768]  (spr_bridge_shop_left/right)
 //   central walkway x[160,416]  full length    (4 cells of cobblestone)
-//   north landing   y[0,128]    cobble plaza  → NORTH exit (to Room1)
+//   north landing   y[0,128]    cobble plaza  → NORTH exit (to Florence)
 //   south landing   y[768,896]  cobble plaza  → SOUTH exit (placeholder)
 // =============================================================================
 if (room != Room_ponte_vecchio) exit;
@@ -36,33 +36,20 @@ for (var _i = 0; _i < array_length(_walls); _i++) {
 
 // ── draggable statue guides lining the corridor ────────────────────────────────
 // Default layout (or the player's saved/tweaked positions). Movable in debug mode
-// like Room1 props: click-drag, arrow-nudge, Delete, F8 saves to the bridge's own
+// like Florence props: click-drag, arrow-nudge, Delete, F8 saves to the bridge's own
 // layout file. The full-length side walls above guarantee the corridor regardless.
 scr_ponte_statues_build();
 
 // ── transition zones (obj_mercato_exit — walk into the rectangle to fire) ───────
 // 3 tiles (192px) wide, centred on the room (centre x = 288). BOTH exits return to
-// Room1 (the south bank is future content) but drop the player on different Arno
+// Florence (the south bank is future content) but drop the player on different Arno
 // banks at the WEST crossing (x = 768) — the Ponte Vecchio's two ends.
-// NORTH (top centre) → Room1, arriving on the Arno's NORTH bank (Florence side).
-var _n = instance_create_depth(192, 0, 400, obj_mercato_exit);
-_n.zone_w      = 192;
-_n.zone_h      = 112;
-_n.exit_target = "Room1";
-_n.exit_label  = "Florence";
-_n.pre_text    = "Firenze";
-_n.arrive_x    = 768;     // west-crossing centre, just NORTH of the Arno bank
-_n.arrive_y    = 1490;
-
-// SOUTH (bottom centre) → Room1 for now, arriving on the Arno's SOUTH bank.
-var _s = instance_create_depth(192, _rh - 112, 400, obj_mercato_exit);
-_s.zone_w      = 192;
-_s.zone_h      = 112;
-_s.exit_target = "Room1";
-_s.exit_label  = "The road south";
-_s.pre_text    = "The road south. Not yet.";   // placeholder card, then load
-_s.arrive_x    = 768;     // west-crossing centre, just SOUTH of the Arno bank
-_s.arrive_y    = 1780;
+// NORTH (top centre) → Florence, arriving on the Arno's NORTH bank (Florence side).
+// Draggable + persistable (drag in debug, F8 saves).
+scr_transition_spawn("ponte_north", 192, 0, 192, 112,
+    "Room1", "Florence", 768, 1490, "Firenze");
+scr_transition_spawn("ponte_south", 192, _rh - 112, 192, 112,
+    "Room1", "The road south", 768, 1780, "The road south. Not yet.");
 
 // ── Corruption disorientation (coded — no API) ─────────────────────────────────
 // At high Limbo corruption, entering the bridge sometimes lands Benedetto at the

@@ -3,7 +3,7 @@
 // =============================================================================
 // Manages the in-game 24-hour clock and triggers day-cycle events.
 // PERSISTENT — one instance survives every room transition.
-// Created SECOND in Room1 (after obj_game_manager) so globals are ready.
+// Created SECOND in Florence (after obj_game_manager) so globals are ready.
 //
 // Time scale:
 //   global.time_of_day runs 0.0 – 23.999…  (one full day)

@@ -5,10 +5,10 @@
 // timer that Limbo and Violence effects write to.
 // =============================================================================
 
-// ── Room1 (re)build ────────────────────────────────────────────────────────────
+// ── Florence (re)build ────────────────────────────────────────────────────────────
 // This manager is persistent — its Create runs only once. A room change destroys
-// Room1's code-spawned props + collision, so rebuild them whenever we (re)enter
-// Room1 (e.g. returning from the Ponte Vecchio bridge room) — otherwise Room1 comes
+// Florence's code-spawned props + collision, so rebuild them whenever we (re)enter
+// Florence (e.g. returning from the Ponte Vecchio bridge room) — otherwise Florence comes
 // back with no market and no river collision.
 if (room == Room1) {
     if (!variable_global_exists("__room1_built") || !global.__room1_built) {
@@ -18,6 +18,9 @@ if (room == Room1) {
 } else if (variable_global_exists("__room1_built")) {
     global.__room1_built = false;
 }
+
+// ── Global FF6 camera — follow + clamp in every room (see scr_camera) ─────────
+scr_camera_update();
 
 // ── Corruption system ─────────────────────────────────────────────────────────
 // Poll all seven circles, trigger sin effects for active ones, and apply
@@ -118,7 +121,7 @@ if (keyboard_check_pressed(vk_f7)) {
 }
 
 // ── DEBUG: battle trigger (B) — remove when proper battle triggers are wired ──
-// Unconditional in Room1 so it always works during development, regardless of
+// Unconditional in Florence so it always works during development, regardless of
 // debug_mode / save state. Pressing B drops Benedetto into room_battle vs 3 Hollows.
 if (room == Room1 && keyboard_check_pressed(ord("B"))) {
     scr_battle_trigger(1);   // 1 Hollow, Florence corruption level

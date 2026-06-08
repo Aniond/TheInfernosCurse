@@ -3,7 +3,7 @@
 // =============================================================================
 // The single source of truth for all global game state.
 // This object is PERSISTENT — one instance survives every room transition.
-// It is placed FIRST in Room1's creation order so every other object can
+// It is placed FIRST in Florence's creation order so every other object can
 // safely read globals from their own Create events.
 //
 // Circle array indexing (0-based) used throughout the entire project:
@@ -244,8 +244,8 @@ global.false_shimmer_timer  = 0;
 scr_config_load();
 scr_load_world_state();
 
-// ── Room builder + Room1 collision ─────────────────────────────────────────────
-// Props + all of Room1's code-spawned collision are built by scr_room1_build() (the
+// ── Room builder + Florence collision ─────────────────────────────────────────────
+// Props + all of Florence's code-spawned collision are built by scr_room1_build() (the
 // call is below, after the garden geometry) and rebuilt by Step on every re-entry.
 
 // Disable texture filtering globally — keeps pixel art sharp at any zoom level.
@@ -267,8 +267,8 @@ global.river_bridges = [[640, 896]];   // ONE crossing = the Ponte Vecchio (west
                                        // east "brick bridge" was removed -> that span is plain river now.
 
 // (The Arno river/bank collision, the bridge handrails and the Ponte Vecchio entry
-//  zones are built by scr_room1_build() — see the Room1 build call below the garden
-//  geometry. They are rebuilt on every Room1 re-entry, so returning from the bridge
+//  zones are built by scr_room1_build() — see the Florence build call below the garden
+//  geometry. They are rebuilt on every Florence re-entry, so returning from the bridge
 //  room restores them.)
 
 // ── Giardino delle Rose geometry + hedge collision ────────────────────────────
@@ -284,17 +284,17 @@ global.garden_hw  = 220;    // half width  (outer paving edge)
 global.garden_hh  = 190;    // half height
 global.garden_wt  = 32;     // outer paving ring thickness
 global.garden_cph = 28;     // cross-path half width
-// ── Room1 props + collision (built here; rebuilt by Step on every re-entry) ─────
+// ── Florence props + collision (built here; rebuilt by Step on every re-entry) ─────
 // This manager is PERSISTENT (its Create runs once), and a room change destroys
-// Room1's code-spawned props + collision — so Step calls scr_room1_build() again
-// whenever we return to Room1. Build the first time now.
+// Florence's code-spawned props + collision — so Step calls scr_room1_build() again
+// whenever we return to Florence. Build the first time now.
 global.__room1_built = false;
 if (room == Room1) { scr_room1_build(); global.__room1_built = true; }
 
 // ── Street dressing ───────────────────────────────────────────────────────────
 // Spawn the persistent Florence street scene (paved road + market props) at a
 // low depth so it sits over the cobble floor but under characters/buildings.
-// It draws only in Room1 (room guard in its Draw event).
+// It draws only in Florence (room guard in its Draw event).
 if (!instance_exists(obj_street_scene)) {
     instance_create_depth(0, 0, 160, obj_street_scene);
 }
@@ -302,6 +302,22 @@ if (!instance_exists(obj_street_scene)) {
 // (Mercato market collision is built by the room-builder loader — it lays an
 //  obj_wall footprint under each "solid" obj_mercato_prop. See scr_room_builder.)
 
-// NOTE: obj_journal and obj_vision_manager are placed directly in Room1 (see the
+// NOTE: obj_journal and obj_vision_manager are placed directly in Florence (see the
 // room's instance list), so they are NOT spawned here — doing both would create
 // duplicate instances because this Create runs before the room instances exist.
+
+
+// ── Global camera (FF6 follow-and-clamp) ──────────────────────────────────────
+// Default for every room going forward — see scr_camera. Tune via global.cam_*.
+scr_camera_init();
+
+
+// ── LOAD POINT: start inside the cathedral (Room_duomo) ───────────────────────
+// Boot Benedetto straight into the Basilica interior instead of the Florence
+// street. This Create runs ONCE (obj_game_manager is persistent), so walking back
+// out the south door to Florence does NOT bounce you back here. The player spawns at
+// Room_duomo's instance position (the south doorway, 640,1252).
+// Flip DUOMO_LOAD_POINT (scr_duomo) to false to restore the normal Florence start.
+if (DUOMO_LOAD_POINT && room == Room1) {
+    room_goto(Room_duomo);
+}

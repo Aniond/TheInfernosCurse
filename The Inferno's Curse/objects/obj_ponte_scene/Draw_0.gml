@@ -3,7 +3,7 @@
 // =============================================================================
 // Paints the Ponte Vecchio crossing top-down (ref: references/Ponte Vecchio.png):
 //   1) deep base fill
-//   2) animated Arno water in the left & right columns — SAME system as Room1
+//   2) animated Arno water in the left & right columns — SAME system as Florence
 //      (spr_florence_water tiles + the identical Limbo-corruption flow/colour
 //       progression), scrolling along the channel
 //   3) cobble bridge core: wide landings N & S + the 4-cell central walkway

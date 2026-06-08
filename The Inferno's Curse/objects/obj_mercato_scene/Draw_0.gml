@@ -3,7 +3,7 @@
 // =============================================================================
 // Ground dressing for Room_mercato_vecchio: worn Florentine cobblestone over the
 // whole square, the Arno along the SOUTH edge (same corruption-driven water as
-// Room1), a stone embankment, and central stone steps down to the Ponte Vecchio
+// Florence), a stone embankment, and central stone steps down to the Ponte Vecchio
 // exit. The loggia, buildings, stalls, props and fountain are placed OBJECTS
 // (spawned in Create), not drawn here. Room-guarded so it only paints in the
 // mercato.
@@ -13,7 +13,7 @@ if (room_get_name(room) != "Room_mercato_vecchio") exit;
 var _rw = room_width;
 var _rh = room_height;
 
-// ── worn cobblestone ground (darker / more weathered than Room1's street) ─────
+// ── worn cobblestone ground (darker / more weathered than Florence's street) ─────
 draw_set_color(make_color_rgb(60, 54, 48));                 // dark base (no smear under tiles)
 draw_rectangle(0, 0, _rw, _rh, false);
 draw_set_color(c_white);
@@ -32,7 +32,7 @@ var _ry2   = _rh;                // to the bottom edge
 var _ix0   = 0, _ix1 = _rw;
 var _bankh = 24;
 
-// water surface — DEGRADES with Limbo corruption, identical staging to Room1.
+// water surface — DEGRADES with Limbo corruption, identical staging to Florence.
 var _ww   = sprite_get_width(spr_florence_water);          // 64
 var _wh   = sprite_get_height(spr_florence_water);         // 64
 var _corr = clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1);

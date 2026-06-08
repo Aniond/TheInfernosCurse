@@ -26,7 +26,7 @@
 // this number, so a structural relayout actually reaches the player. Bump this when
 // you change default_text(). F8 saves stamp the current version, so hand-dragged
 // layouts are preserved across launches and only a version bump clobbers them.
-#macro ROOM_BUILDER_LAYOUT_VERSION  9
+#macro ROOM_BUILDER_LAYOUT_VERSION  10
 
 
 /// Split a line on runs of spaces/tabs. Returns an array of tokens.
@@ -118,7 +118,7 @@ function scr_room_builder_default_text() {
     // only so the player shops from the front; buildings + fountain = full body).
     // Bump ROOM_BUILDER_LAYOUT_VERSION whenever this text changes (forces a re-seed).
     return
-        "# VERSION 9\n" +
+        "# VERSION 10\n" +
         "# Room1 layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)\n" +
         "# Market square FINALISED + collision LOCKED. All obj_mercato_prop are solid\n" +
         "# (stalls: back+sides only; buildings + fountain: full body). Park/piazza props\n" +
@@ -159,7 +159,10 @@ function scr_room_builder_default_text() {
         "obj_mercato_prop        11.81     7.56      0.4   spr_hanging_herbs        solid\n" +
         "obj_mercato_prop        9.125     5.875     0.4   spr_bread_board          solid\n" +
         "obj_mercato_prop        12.4375   6.625     0.4   spr_clay_jugs            solid\n" +
-        "obj_mercato_prop        21        4         0.4   spr_clay_pot_large       solid\n";
+        "obj_mercato_prop        21        4         0.4   spr_clay_pot_large       solid\n" +
+        "\n" +
+        "# --- Landmark: Basilica di Santa Maria del Fiore (draggable; open area) ---\n" +
+        "obj_mercato_prop        24        10        1     spr_duomo_exterior       solid\n";
 }
 
 
@@ -188,7 +191,7 @@ function scr_room_builder_load() {
         spr_barrel_stack, spr_crate_stack, spr_sack_pile, spr_clay_pot_large,
         spr_cart_loaded, spr_cart_covered, spr_hanging_cloth,
         spr_hanging_herbs, spr_bread_board, spr_clay_jugs,
-        spr_florence_church, spr_florence_stable];
+        spr_florence_church, spr_florence_stable, spr_duomo_exterior];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
 
@@ -256,6 +259,14 @@ function scr_room_builder_load() {
         _inst.image_xscale = _scale;
         _inst.image_yscale = _scale;
         _inst.room_builder_placed = true;        // tag for save
+
+        // Optional ROTATION — the last PURE-INTEGER token (e.g. "90"). Works for both
+        // "obj gx gy scale ANGLE" and "...sprite solid ANGLE". 0 if absent.
+        _inst.builder_angle = 0;
+        if (array_length(_tok) >= 5) {
+            var _angt = _tok[array_length(_tok) - 1];
+            if (_angt != "" && string_digits(_angt) == _angt) _inst.builder_angle = real(_angt);
+        }
 
         // Optional SPRITE override (token 5) + SOLID flag (token 6). Generic
         // placeables (obj_mercato_prop) carry their sprite + collision in the layout,
@@ -345,7 +356,8 @@ function scr_room_builder_build_collision() {
         } else if (string_pos("building", _nm) > 0 || string_pos("loggia", _nm) > 0
                 || string_pos("inn", _nm) > 0 || string_pos("church", _nm) > 0
                 || string_pos("stable", _nm) > 0 || string_pos("cathedral", _nm) > 0
-                || string_pos("tower", _nm) > 0 || string_pos("house", _nm) > 0) {
+                || string_pos("tower", _nm) > 0 || string_pos("house", _nm) > 0
+                || string_pos("duomo", _nm) > 0 || string_pos("basilica", _nm) > 0) {
             // building body — inset off the painted edges so no ghost in the cobble
             _x0f = 0.12; _y0f = 0.10; _x1f = 0.88; _y1f = 0.94;
         } else {
@@ -374,9 +386,10 @@ function scr_room_builder_build_collision() {
 /// position + scale). Tries the project-tree path first, then the save folder.
 function scr_room_builder_save() {
     // Per-room save file (sandbox-safe save area) — the bridge room has its own
-    // statue layout so F8 there never clobbers Room1's market layout.
+    // statue layout so F8 there never clobbers Florence's market layout.
     var _path = working_directory + "room1_layout.txt";
     if (room == Room_ponte_vecchio) _path = working_directory + "room_ponte_vecchio_layout.txt";
+    if (room == Room_duomo)         _path = working_directory + "room_duomo_layout.txt";
     var _f = file_text_open_write(_path);
     if (_f == -1) {
         show_debug_message("[room_builder] SAVE FAILED — sandbox blocks " + ROOM_BUILDER_FILE +
@@ -402,6 +415,7 @@ function scr_room_builder_save() {
             if (!instance_exists(_inst)) continue;
 
             if (_inst.object_index == obj_wall) continue;        // collision boxes aren't saved
+            if (_inst.object_index == obj_mercato_exit) continue; // transitions saved separately (overrides)
             var _name = object_get_name(_inst.object_index);
             var _gx   = _inst.x / ROOM_BUILDER_GRID;   // fractional — keeps fine-nudge sub-grid offsets
             var _gy   = _inst.y / ROOM_BUILDER_GRID;
@@ -423,12 +437,19 @@ function scr_room_builder_save() {
                 _line += "  " + _sn;
                 if (variable_instance_exists(_inst, "builder_solid") && _inst.builder_solid) _line += "  solid";
             }
+            // ROTATION — appended as the last column only when non-zero, so unrotated
+            // lines stay clean and both loaders read it as the trailing integer.
+            if (variable_instance_exists(_inst, "builder_angle") && _inst.builder_angle != 0)
+                _line += "  " + string(_inst.builder_angle);
             file_text_write_string(_f, _line);
             file_text_writeln(_f);
             _count++;
         }
     }
     file_text_close(_f);
+
+    // Transitions persist to their own override file (drag in debug, F8 saves here).
+    scr_transition_save_overrides();
 
     show_debug_message("[room_builder] saved " + string(_count) + " objects -> " + _path);
     if (variable_global_exists("save_indicator_text")) {
@@ -445,6 +466,9 @@ function scr_room_builder_save() {
 /// True if (mx,my) is over a builder instance — sprite bbox if it has one, else a
 /// ~grid-sized box around the origin (for shape-drawn objects like obj_shrine).
 function scr_room_builder_point_in(_inst, _mx, _my) {
+    if (_inst.object_index == obj_mercato_exit && variable_instance_exists(_inst, "zone_w")) {
+        return point_in_rectangle(_mx, _my, _inst.x, _inst.y, _inst.x + _inst.zone_w, _inst.y + _inst.zone_h);
+    }
     if (_inst.sprite_index != -1 && sprite_exists(_inst.sprite_index)) {
         return point_in_rectangle(_mx, _my, _inst.bbox_left, _inst.bbox_top, _inst.bbox_right, _inst.bbox_bottom);
     }
@@ -456,7 +480,7 @@ function scr_room_builder_point_in(_inst, _mx, _my) {
 /// Called every step from obj_game_manager. F8 then writes the new positions.
 function scr_room_builder_drag_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio) return;   // draggable in both built rooms
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo) return;   // draggable in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
@@ -504,6 +528,7 @@ function scr_room_builder_drag_update() {
                     scr_world_event_log(object_get_name(_o.object_index) + " moved -> grid " +
                         string(_o.x / ROOM_BUILDER_GRID) + "," + string(_o.y / ROOM_BUILDER_GRID) + "  (F8 to save)");
             }
+            if (room == Room_duomo) scr_duomo_rebuild_collision();   // footprint follows the prop — no ghosts
             global.room_builder_drag = noone;
         }
     }
@@ -532,6 +557,7 @@ function scr_room_builder_delete_selected() {
     instance_destroy(_sel);
     global.room_builder_selected = noone;
     if (variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
+    if (room == Room_duomo) scr_duomo_rebuild_collision();   // drop the deleted prop's footprint
 
     // Persist: rewrite the layout file (save folder) without the deleted entry.
     scr_room_builder_save();
@@ -552,11 +578,23 @@ function scr_room_builder_delete_selected() {
 /// F8 then saves the exact fractional position (the save no longer rounds to grid).
 function scr_room_builder_nudge_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio) return;   // nudge in both built rooms
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo) return;   // nudge in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_selected")) return;
     var _sel = global.room_builder_selected;
     if (!instance_exists(_sel)) return;
+
+    // R = rotate 90° clockwise · Shift+R = 90° counter-clockwise (any selected prop).
+    if (keyboard_check_pressed(ord("R"))) {
+        if (!variable_instance_exists(_sel, "builder_angle")) _sel.builder_angle = 0;
+        var _rd = keyboard_check(vk_shift) ? -90 : 90;
+        _sel.builder_angle = ((_sel.builder_angle + _rd) mod 360 + 360) mod 360;
+        if (variable_global_exists("save_indicator_text")) {
+            global.save_indicator_text  = object_get_name(_sel.object_index) +
+                " [" + string(_sel.builder_angle) + "°]  (F8 to save)";
+            global.save_indicator_timer = 90;
+        }
+    }
 
     var _step = keyboard_check(vk_shift) ? 1 : 4;   // Shift = 1px ultra-fine
     var _nx = (keyboard_check_pressed(vk_right) - keyboard_check_pressed(vk_left)) * _step;
@@ -565,6 +603,7 @@ function scr_room_builder_nudge_update() {
 
     _sel.x += _nx;
     _sel.y += _ny;
+    if (room == Room_duomo) scr_duomo_rebuild_collision();   // footprint follows the prop — no ghosts
     if (variable_global_exists("save_indicator_text")) {
         global.save_indicator_text  = "Nudged " + object_get_name(_sel.object_index) +
             " -> " + string(_sel.x) + "," + string(_sel.y) + "  (F8 to save)";
@@ -573,13 +612,37 @@ function scr_room_builder_nudge_update() {
 }
 
 
+/// Draw a builder instance's sprite rotated by its builder_angle (CLOCKWISE degrees)
+/// around the sprite CENTRE, so 90° turns stay put. image_angle stays 0, so the bbox
+/// (click-pick + collision) is never disturbed. Objects call this from their Draw.
+/// _tint is the blend colour (c_white normally).
+function scr_room_builder_draw_rotated(_inst, _tint) {
+    if (_inst.sprite_index == -1 || !sprite_exists(_inst.sprite_index)) return;
+    var _ang = variable_instance_exists(_inst, "builder_angle") ? _inst.builder_angle : 0;
+    if (_ang == 0) {
+        draw_sprite_ext(_inst.sprite_index, _inst.image_index, _inst.x, _inst.y,
+            _inst.image_xscale, _inst.image_yscale, 0, _tint, _inst.image_alpha);
+        return;
+    }
+    var _w  = sprite_get_width(_inst.sprite_index)  * _inst.image_xscale;
+    var _h  = sprite_get_height(_inst.sprite_index) * _inst.image_yscale;
+    var _gm = -_ang;                                  // GM rotates CCW; builder_angle is CW
+    var _a  = degtorad(_gm);
+    var _cx = (_w * 0.5) * cos(_a) + (_h * 0.5) * sin(_a);
+    var _cy = -(_w * 0.5) * sin(_a) + (_h * 0.5) * cos(_a);
+    draw_sprite_ext(_inst.sprite_index, _inst.image_index,
+        _inst.x + _w * 0.5 - _cx, _inst.y + _h * 0.5 - _cy,
+        _inst.image_xscale, _inst.image_yscale, _gm, _tint, _inst.image_alpha);
+}
+
+
 // ── ROOM1 BUILD (props + all code-spawned collision) ────────────────────────────
-/// Builds (or REBUILDS) everything Room1 spawns in code: the market props (room
+/// Builds (or REBUILDS) everything Florence spawns in code: the market props (room
 /// builder), the Arno river+bank collision, the bridge handrails, the Ponte Vecchio
 /// entry zones (N/S split → bridge room), and the Giardino delle Rose hedge
 /// collision. obj_game_manager is PERSISTENT so its Create runs only once; a room
 /// change destroys all these instances, so obj_game_manager Step calls this again on
-/// every Room1 (re)entry — otherwise returning from the bridge room would leave Room1
+/// every Florence (re)entry — otherwise returning from the bridge room would leave Florence
 /// with no props and no river collision. Reads the geometry globals (river_*,
 /// garden_*) that obj_game_manager Create sets once.
 function scr_room1_build() {
@@ -587,6 +650,22 @@ function scr_room1_build() {
 
     // market props (+ their footprint collision, built inside the loader)
     scr_room_builder_load();
+
+    // ── Duomo entrance (walk up + press E → Room_duomo) ────────────────────────
+    // Spawned in CODE (not the saved layout, so no version bump / clobber) just
+    // south of the Basilica exterior prop. Located off the exterior's live bbox so
+    // it follows the prop if it's dragged; falls back to its default grid spot.
+    var _dux = 1664, _duy = 960;
+    for (var _di = 0; _di < array_length(global.room_builder_objects); _di++) {
+        var _dp = global.room_builder_objects[_di];
+        if (!instance_exists(_dp)) continue;
+        if (_dp.sprite_index == spr_duomo_exterior) {
+            _dux = (_dp.bbox_left + _dp.bbox_right) * 0.5;
+            _duy = _dp.bbox_bottom + 48;     // just south of the doors
+            break;
+        }
+    }
+    var _de = instance_create_depth(_dux, _duy, 400, obj_duomo_entrance);
 
     // ── Arno river + bank collision ───────────────────────────────────────────
     // Solid water fills every gap BETWEEN the bridges (generic over any count). The
@@ -632,14 +711,10 @@ function scr_room1_build() {
     var _pe_x    = _pv[0] + _rthick;
     var _pe_w    = (_pv[1] - _pv[0]) - _rthick * 2;
     var _deckmid = (_bdy0 + _bdy1) * 0.5;
-    var _pn = instance_create_depth(_pe_x, _bdy0, 500, obj_mercato_exit);    // NORTH half
-    _pn.zone_w = _pe_w;  _pn.zone_h = _deckmid - _bdy0;
-    _pn.exit_target = "Room_ponte_vecchio";  _pn.exit_label = "Ponte Vecchio";
-    _pn.pre_text = "The Ponte Vecchio";  _pn.arrive_x = 288;  _pn.arrive_y = 200;
-    var _ps = instance_create_depth(_pe_x, _deckmid, 500, obj_mercato_exit); // SOUTH half
-    _ps.zone_w = _pe_w;  _ps.zone_h = _bdy1 - _deckmid;
-    _ps.exit_target = "Room_ponte_vecchio";  _ps.exit_label = "Ponte Vecchio";
-    _ps.pre_text = "The Ponte Vecchio";  _ps.arrive_x = 288;  _ps.arrive_y = 700;
+    scr_transition_spawn("florence_ponte_n", _pe_x, _bdy0, _pe_w, _deckmid - _bdy0,
+        "Room_ponte_vecchio", "Ponte Vecchio", 288, 200, "The Ponte Vecchio");
+    scr_transition_spawn("florence_ponte_s", _pe_x, _deckmid, _pe_w, _bdy1 - _deckmid,
+        "Room_ponte_vecchio", "Ponte Vecchio", 288, 700, "The Ponte Vecchio");
 
     // ── Giardino delle Rose hedge collision (four quadrants, open cross-path) ──
     var _gx0 = global.garden_cx - global.garden_hw, _gy0 = global.garden_cy - global.garden_hh;

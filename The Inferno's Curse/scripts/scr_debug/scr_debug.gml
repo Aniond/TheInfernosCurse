@@ -6,7 +6,7 @@
 //
 // Rendering is split into world-space and GUI-space helpers and called from the
 // Draw / Draw GUI events that already exist in each room:
-//   Room1  : obj_player        — Draw    -> scr_debug_world_overworld()
+//   Florence  : obj_player        — Draw    -> scr_debug_world_overworld()
 //                                Draw GUI -> scr_debug_gui_common(false)
 //   battle : obj_battle_manager — Draw    -> scr_debug_battle_world()
 //                                Draw GUI -> scr_debug_gui_common(true)
@@ -196,6 +196,12 @@ function scr_debug_gui_common(_in_battle) {
             array_push(_ins, "prox:  " + string(_s.proximity_radius) + " px");
         else if (variable_instance_exists(_s, "interact_dist"))
             array_push(_ins, "prox:  " + string(_s.interact_dist) + " px");
+        if (variable_instance_exists(_s, "exit_target")) {
+            array_push(_ins, "-> room: " + string(_s.exit_target));
+            array_push(_ins, "zone:  " + string(_s.zone_w) + "x" + string(_s.zone_h) + " px");
+            if (variable_instance_exists(_s, "arrive_x"))
+                array_push(_ins, "land:  " + string(_s.arrive_x) + "," + string(_s.arrive_y));
+        }
         if (variable_instance_exists(_s, "corruption"))
             array_push(_ins, "corrupt: " + string(_s.corruption));
         else if (variable_instance_exists(_s, "corruption_state"))
@@ -244,7 +250,7 @@ function scr_debug_gui_common(_in_battle) {
 }
 
 
-// ── OVERWORLD WORLD-SPACE OVERLAY (Room1) ──────────────────────────────────────
+// ── OVERWORLD WORLD-SPACE OVERLAY (Florence) ──────────────────────────────────────
 function scr_debug_world_overworld() {
     if (!global.debug_mode) return;
     draw_set_font(-1);
@@ -307,6 +313,7 @@ function scr_debug_world_overworld() {
         for (var _bi = 0; _bi < array_length(global.room_builder_objects); _bi++) {
             var _o = global.room_builder_objects[_bi];
             if (!instance_exists(_o)) continue;
+            if (_o.object_index == obj_mercato_exit) continue;   // drawn by the transition block below
             var _drag = (variable_global_exists("room_builder_drag") && global.room_builder_drag == _o);
             var _sel  = (variable_global_exists("room_builder_selected") && global.room_builder_selected == _o);
             draw_set_color(_sel ? make_color_rgb(255, 45, 45) : (_drag ? c_yellow : make_color_rgb(60, 200, 220)));
@@ -316,23 +323,30 @@ function scr_debug_world_overworld() {
                 draw_rectangle(_o.x - 24, _o.y - 24, _o.x + 24, _o.y + 24, true);
             draw_set_halign(fa_center);
             draw_set_valign(fa_bottom);
+            var _ba   = variable_instance_exists(_o, "builder_angle") ? _o.builder_angle : 0;
+            var _atxt = (_ba != 0 || _sel) ? "  [" + string(_ba) + "°]" : "";
             draw_text(_o.x, _o.y - 26, object_get_name(_o.object_index) + "  " +
-                string(round(_o.x / 64)) + "," + string(round(_o.y / 64)));
+                string(round(_o.x / 64)) + "," + string(round(_o.y / 64)) + _atxt);
         }
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
     }
 
-    // Transition zones — magenta rectangles + target room (obj_mercato_exit, invisible)
+    // Transition zones — PURPLE (distinct from the red selection blocks). Draws EVERY
+    // obj_mercato_exit in the room; the selected one flips to bright yellow.
     with (obj_mercato_exit) {
-        draw_set_alpha(0.14);
-        draw_set_color(make_color_rgb(225, 70, 230));
-        draw_rectangle(x, y, x + zone_w, y + zone_h, false);   // faint fill
+        var _seltz = (variable_global_exists("room_builder_selected") && global.room_builder_selected == id);
+        var _tcol  = _seltz ? make_color_rgb(255, 232, 60) : make_color_rgb(190, 60, 235);
+        draw_set_alpha(0.18);
+        draw_set_color(_tcol);
+        draw_rectangle(x, y, x + zone_w, y + zone_h, false);   // fill
         draw_set_alpha(1);
         draw_rectangle(x, y, x + zone_w, y + zone_h, true);    // outline
+        if (_seltz) draw_rectangle(x - 2, y - 2, x + zone_w + 2, y + zone_h + 2, true);
         draw_set_halign(fa_center);
         draw_set_valign(fa_middle);
-        draw_text(x + zone_w * 0.5, y + zone_h * 0.5, "-> " + string(exit_target));
+        draw_text(x + zone_w * 0.5, y + zone_h * 0.5 - 7, "obj_transition [" + string(exit_target) + "]");
+        draw_text(x + zone_w * 0.5, y + zone_h * 0.5 + 7, string(zone_w) + "x" + string(zone_h) + " px");
     }
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);

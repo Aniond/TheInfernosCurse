@@ -18,6 +18,10 @@ if (trans_timer > 0) {
 
 if (!instance_exists(obj_player)) exit;
 
+// In debug mode, transitions are draggable TUNING objects — never fire them, so you
+// can reposition a zone (even onto the player) without being warped out of the room.
+if (variable_global_exists("debug_mode") && global.debug_mode) exit;
+
 var _inside = point_in_rectangle(obj_player.x, obj_player.y, x, y, x + zone_w, y + zone_h);
 
 if (_inside && !zone_active) {

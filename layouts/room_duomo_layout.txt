@@ -1,0 +1,60 @@
+# Room_duomo layout — OBJECT  GRID_X  GRID_Y  SCALE   (1 cell = 64 px)
+# Basilica di Santa Maria del Fiore — INTERIOR (FF6 multi-chamber plan, 28 x 44).
+# Floor/walls/dome/carpet are DRAWN procedurally by obj_duomo_scene from the zone
+# rectangles in scr_duomo (scr_duomo_cell_zone). Only the interactive props below
+# are placed objects. Mirror of scr_duomo_default_layout(). Draggable / nudgeable /
+# Delete-able in debug; F8 saves to the save-folder copy.
+#
+# Zones: 1 Entrance(save pt) · 2 Nave · 3/4 Chapels · 5/6 Transepts ·
+#        7 Sanctuary/Altar · 8 Crypt · 9 Treasury · 10 Priest Qtrs ·
+#        11 Confessional · 12 Bell Tower (stairs, left transept)
+
+# --- Sanctuary (7) ---
+obj_duomo_altar         13    1.5   1
+obj_duomo_candelabra    10.5  2     0.6
+obj_duomo_candelabra    16    2     0.6
+
+# --- Nave (2) columns ---
+obj_duomo_pillar        11    17    1
+obj_duomo_pillar        11    21    1
+obj_duomo_pillar        11    27    1
+obj_duomo_pillar        11    31    1
+obj_duomo_pillar        11    37    1
+obj_duomo_pillar        16    17    1
+obj_duomo_pillar        16    21    1
+obj_duomo_pillar        16    27    1
+obj_duomo_pillar        16    31    1
+obj_duomo_pillar        16    37    1
+
+# --- Nave (2) pews ---
+obj_duomo_pew           11.5  18    1
+obj_duomo_pew           11.5  20    1
+obj_duomo_pew           11.5  26    1
+obj_duomo_pew           11.5  28    1
+obj_duomo_pew           11.5  35    1
+obj_duomo_pew           14.6  18    1
+obj_duomo_pew           14.6  20    1
+obj_duomo_pew           14.6  26    1
+obj_duomo_pew           14.6  28    1
+obj_duomo_pew           14.6  35    1
+
+# --- Transepts (5,6) + Chapels (3,4) ---
+obj_duomo_candelabra    3     12    0.6
+obj_duomo_candelabra    24    12    0.6
+obj_duomo_candelabra    4     3     0.6
+obj_duomo_candelabra    23    3     0.6
+
+# --- Confessional (11) ---
+obj_duomo_confessional  22    33    1
+
+# --- Bell Tower access (12) — stairs, left transept ---
+obj_duomo_stairs        2     15    1
+
+# --- Crypt (8) / Treasury (9) readability candelabra ---
+obj_duomo_candelabra    5     23    0.6
+obj_duomo_candelabra    22    23    0.6
+
+# --- Entrance (1) — save point + flanking candelabra ---
+obj_duomo_save_point    13.4  40    1
+obj_duomo_candelabra    11.4  40    0.6
+obj_duomo_candelabra    15    40    0.6

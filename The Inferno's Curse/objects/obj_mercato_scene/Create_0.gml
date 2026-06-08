@@ -146,7 +146,7 @@ var _mk_exit = function(_x, _y, _w, _h, _target, _label) {
 };
 // North — through the loggia's central arch -> Piazza della Signoria (not built yet)
 _mk_exit(room_width * 0.5 - 96, 0, 192, 96, "Room_piazza_signoria", "To Piazza della Signoria");
-// East — right edge, mid -> back to Room1 (Florence) — Benedetto enters from here
+// East — right edge, mid -> back to Florence (Florence) — Benedetto enters from here
 _mk_exit(room_width - 72, room_height * 0.5 - 96, 72, 192, "Room1", "To Florence");
 // South — central steps -> Ponte Vecchio (not built yet)
 _mk_exit(_step_x0, _ry1 - _bankh - 24, _step_w, 48, "Room_ponte_vecchio", "To Ponte Vecchio");

@@ -5,7 +5,7 @@
 ///   4 = Wrath  |  5 = Heresy  |  6 = Violence
 ///
 /// INITIALISATION: Global arrays are declared in obj_game_manager Create_0.gml
-///   and that object is first in Room1's creation order. Do NOT call
+///   and that object is first in Florence's creation order. Do NOT call
 ///   scr_corruption_init() — that function has been removed.
 
 // ── Circle index constants (0-based) ─────────────────────────────────────────
