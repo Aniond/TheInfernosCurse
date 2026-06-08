@@ -51,6 +51,14 @@ scr_transition_spawn("ponte_north", 192, 0, 192, 112,
 scr_transition_spawn("ponte_south", 192, _rh - 112, 192, 112,
     "Room1", "The road south", 768, 1780, "The road south. Not yet.");
 
+// ── North-entrance save point (standardised save crystal) ────────────────────
+// Just south of the NORTH exit zone (y<112) so reaching it never fires the exit.
+var _sp = instance_create_depth(288, 175, 100, obj_duomo_save_point);
+_sp.save_msg = "The bridge holds your place.";
+
+// ── Entry banner (standardised location banner, gold, fades after 3s) ────────
+scr_banner_show("Ponte Vecchio");
+
 // ── Corruption disorientation (coded — no API) ─────────────────────────────────
 // At high Limbo corruption, entering the bridge sometimes lands Benedetto at the
 // SOUTH end instead of where he meant to arrive — the span "forgets which way he was

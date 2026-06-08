@@ -50,6 +50,7 @@
     {"id":{"name":"scr_camera","path":"scripts/scr_camera/scr_camera.yy",},},
     {"id":{"name":"scr_duomo","path":"scripts/scr_duomo/scr_duomo.yy",},},
     {"id":{"name":"scr_transition","path":"scripts/scr_transition/scr_transition.yy",},},
+    {"id":{"name":"scr_banner","path":"scripts/scr_banner/scr_banner.yy",},},
     {"id":{"name":"Room_duomo","path":"rooms/Room_duomo/Room_duomo.yy",},},
     {"id":{"name":"spr_duomo_altar","path":"sprites/spr_duomo_altar/spr_duomo_altar.yy",},},
     {"id":{"name":"spr_duomo_candelabra","path":"sprites/spr_duomo_candelabra/spr_duomo_candelabra.yy",},},

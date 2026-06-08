@@ -27,3 +27,6 @@ if (_corr >= 100) {
 } else if (_corr >= 75) {
     scr_chronicle_add("Something is wrong with this place. Something has been wrong for a while.");
 }
+
+// ── Entry banner (standardised location banner, gold, fades after 3s) ────────
+scr_banner_show("Basilica di Santa Maria del Fiore");

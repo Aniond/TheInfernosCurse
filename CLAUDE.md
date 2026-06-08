@@ -113,6 +113,20 @@ it in the report. Especially required after hand-editing a .yy event list or
 when an imported sprite isn't appearing (sign: compile log lists "Unused Assets
 found", or a unit draws nothing — no sprite AND no placeholder rectangle).
 
+## Interior vs Exterior Rooms — Black Void (permanent)
+Rooms are one of two types, and the BLACK-VOID wall method applies to INTERIOR
+rooms ONLY:
+- INTERIOR rooms (e.g. Room_duomo): use the black-void method — black background
+  everywhere, floor tiles only on walkable cells, void = walls (FF6/JRPG style;
+  scr_duomo + the obj_*_scene Draw). See design_room_construction.md.
+- EXTERIOR rooms (Room1 / Florence, Room_ponte_vecchio): KEEP ALL EXISTING ART.
+  NEVER convert them to black void. The Arno water, the Ponte shop sprites, and the
+  Florence map all stay. Do NOT remove, replace, or black-out exterior art.
+The ONLY edge standardization for exterior rooms is "solid black beyond the room
+boundary," and that is ALREADY guaranteed by the global FF6 camera (scr_camera),
+which clamps the view to the room so nothing past the edge is ever shown — so NO
+art change is needed in exterior rooms to satisfy it. (Decision: 2026-06-08.)
+
 ## Reporting Style
 Report AFTER doing, not before.
 No confirmation prompts.

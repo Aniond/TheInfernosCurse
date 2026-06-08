@@ -12,7 +12,7 @@ if (_d < interact_range) {
     player_near = true;
     if (keyboard_check_pressed(ord("E")) && cooldown == 0) {
         scr_save_world_state();
-        scr_chronicle_add("The cathedral remembers you.");
+        scr_chronicle_add(save_msg);
         cooldown = 40;
     }
 }

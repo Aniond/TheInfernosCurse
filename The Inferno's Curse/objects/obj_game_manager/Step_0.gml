@@ -21,6 +21,7 @@ if (room == Room1) {
 
 // ── Global FF6 camera — follow + clamp in every room (see scr_camera) ─────────
 scr_camera_update();
+scr_banner_step();   // count down the location banner (drawn in obj_player Draw GUI)
 
 // ── Corruption system ─────────────────────────────────────────────────────────
 // Poll all seven circles, trigger sin effects for active ones, and apply

@@ -17,4 +17,7 @@ draw_text(_bar_x, _bar_y - 22, "HP  " + string(round(hp)) + " / " + string(round
 // Debug overlay — comprehensive HUD panels (see scr_debug); self-guards on F1.
 scr_debug_gui_common(false);
 
+// Location banner (FF6 gold plaque) — shown on entering a named room, fades after 3s.
+scr_banner_draw();
+
 draw_set_color(c_white);

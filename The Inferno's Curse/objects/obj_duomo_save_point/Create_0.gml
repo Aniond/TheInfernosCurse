@@ -7,3 +7,4 @@ interact_range = 64;
 player_near    = false;
 cooldown       = 0;
 pulse          = 0;
+save_msg       = "The cathedral remembers you.";   // overridable per placement (e.g. the bridge)
