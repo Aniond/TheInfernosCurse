@@ -82,21 +82,31 @@ function scr_inn_default_layout() {
     array_push(_L, ["obj_mercato_prop", 5.5, 1, 1.2, "spr_inn_fireplace"]);
     array_push(_L, ["obj_mercato_prop", 4.3, 1, 1.0, "spr_inn_oven_lit", "solid"]);
     array_push(_L, ["obj_mercato_prop", 2,   2, 0.9, "spr_inn_table"]);
-    // Zone 2 — TAVERN / BAR: back-bar wine shelf against the kitchen divider wall,
-    // then the counter run x1-8 (straight segments + corner closing the east end —
-    // R-rotate the corner in debug if it faces the wrong way) at y 6.5, the
-    // reference's 43% height line. All solid; the nook is sealed in build_collision.
+    // Zone 2 — TAVERN / BAR: ONE CONTINUOUS counter (per the bartender reference —
+    // it reads as a real bar because it's one adjoining piece joined to the wall):
+    // the EAST arm runs from the kitchen divider wall (drawn stable-style in
+    // obj_inn_scene Draw) south past the main run as the side-service counter; the
+    // main run goes west at y 6.5; a corner anchors the WEST end, with the staff
+    // opening above it (x1, y5-6). Entries may carry a trailing ANGLE (deg CW) for
+    // the vertical arm — R-rotate + F8 in debug if a corner faces the wrong way.
     array_push(_L, ["obj_mercato_prop", 2, 4.2, 0.8, "spr_inn_wine_shelf"]);
+    array_push(_L, ["obj_mercato_prop", 1, 6.5, 1, "spr_inn_counter_corner", 270]);   // west end turn (staff opening above)
     var _bar = ["spr_inn_counter_empty", "spr_inn_counter_food", "spr_inn_counter_empty",
-                "spr_inn_counter_empty", "spr_inn_counter_food", "spr_inn_counter_empty",
-                "spr_inn_counter_empty"];
+                "spr_inn_counter_empty", "spr_inn_counter_food", "spr_inn_counter_empty"];
     for (var _b = 0; _b < array_length(_bar); _b++)
-        array_push(_L, ["obj_mercato_prop", 1 + _b, 6.5, 1, _bar[_b]]);
-    array_push(_L, ["obj_mercato_prop", 8, 6.5, 1, "spr_inn_counter_corner"]);
-    // Bar stools hugging the counter front (reference: ~1-tile spacing)
-    var _stools = [1.7, 3.2, 4.7, 6.2];
+        array_push(_L, ["obj_mercato_prop", 2 + _b, 6.5, 1, _bar[_b]]);
+    array_push(_L, ["obj_mercato_prop", 8, 6.5, 1, "spr_inn_counter_corner"]);        // junction corner
+    // EAST arm: north to the kitchen wall (seals the workspace with REAL geometry)...
+    array_push(_L, ["obj_mercato_prop", 8, 4.5, 1, "spr_inn_counter_empty", 90]);
+    array_push(_L, ["obj_mercato_prop", 8, 5.5, 1, "spr_inn_counter_empty", 90]);
+    // ...and south past the run — the side-service counter near the floor
+    array_push(_L, ["obj_mercato_prop", 8, 7.5, 1, "spr_inn_counter_food", 90]);
+    array_push(_L, ["obj_mercato_prop", 8, 8.5, 1, "spr_inn_counter_empty", 90]);
+    // Bar stools hugging the main-run front + one at the side-service arm's east face
+    var _stools = [2.2, 3.5, 4.8, 6.1];
     for (var _st = 0; _st < array_length(_stools); _st++)
         array_push(_L, ["obj_mercato_prop", _stools[_st], 7.7, 0.5, "spr_inn_stool"]);
+    array_push(_L, ["obj_mercato_prop", 9.1, 8, 0.5, "spr_inn_stool"]);
     // Zone 3 — Aldo the innkeeper (lodging, WEST end) + Rosa (bar menu, EAST end)
     array_push(_L, ["obj_npc_innkeeper", 3, 5.3, 1]);
     array_push(_L, ["obj_npc_rosa",      6, 5.3, 1]);
@@ -170,7 +180,11 @@ function scr_inn_default_place() {
     for (var _i = 0; _i < array_length(_L); _i++) {
         var _e   = _L[_i];
         var _spr = (array_length(_e) >= 5) ? _e[4] : "";
-        scr_inn_place(_e[0], _e[1], _e[2], _e[3], _spr, _layer);
+        var _inst = scr_inn_place(_e[0], _e[1], _e[2], _e[3], _spr, _layer);
+        // optional trailing ANGLE (deg CW, drawn via the centre-pivot rotation
+        // helper) — non-numeric extras like the oven's "solid" flag are skipped
+        if (_inst != noone && array_length(_e) >= 6 && is_real(_e[5]))
+            _inst.builder_angle = _e[5];
     }
 }
 
@@ -242,14 +256,14 @@ function scr_inn_build_collision() {
             _w.wall_h  = INN_GRID_PX;
             _w.visible = false;
         }
-    // Seal the bar nook so the player can't walk behind the counter: the kitchen/bar
-    // divider wall (row 4, cols 1-9 — the kitchen stays reachable around the east
-    // end via col 10) + the east opening beside the counter corner (col 9, rows 5-6).
-    // The counter run itself is solid props.
+    // Kitchen/bar divider wall (row 4, cols 1-9) — DRAWN stable-style in
+    // obj_inn_scene Draw (black void band + plank tile); this is its collision.
+    // The kitchen stays reachable around the east end via col 10. The bar nook
+    // needs no other seals: the one-piece counter's east arm joins this wall and
+    // its solid prop footprints close the workspace, with the staff opening at
+    // the west end (x1, y5-6) per the reference.
     var _nwA = instance_create_depth(1 * 64, 4 * 64, 500, obj_wall);   // kitchen/bar divider
     _nwA.wall_w = 9 * 64; _nwA.wall_h = 64; _nwA.visible = false;
-    var _nwB = instance_create_depth(9 * 64, 5 * 64, 500, obj_wall);   // east opening (col 9, rows 5-6)
-    _nwB.wall_w = 64; _nwB.wall_h = 2 * 64; _nwB.visible = false;
 
     scr_room_builder_build_collision();   // tight per-prop footprints (mercato_prop etc.)
 }
