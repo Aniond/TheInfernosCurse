@@ -106,6 +106,15 @@ if (global.debug_mode && keyboard_check_pressed(vk_f2)) {
 // ── DEBUG: delete the selected room-builder object (Delete key) ────────────────
 if (global.debug_mode && keyboard_check_pressed(vk_delete)) scr_room_builder_delete_selected();
 
+// ── DEBUG: noclip (N) — debug_mode only (F1). Walk through walls / out of any
+// collision zone the player got stuck inside (e.g. a building dragged under him).
+if (global.debug_mode && keyboard_check_pressed(ord("N"))) {
+    if (!variable_global_exists("debug_noclip")) global.debug_noclip = false;
+    global.debug_noclip = !global.debug_noclip;
+    global.save_indicator_text  = global.debug_noclip ? "NOCLIP ON" : "NOCLIP OFF";
+    global.save_indicator_timer = 120;
+}
+
 // ── DEBUG: cycle Focus class (C) — debug_mode only (F1) ────────────────────────
 if (global.debug_mode && keyboard_check_pressed(ord("C"))) {
     if      (global.player_class == "default") global.player_class = "witness";

@@ -63,7 +63,10 @@ var _phh = 8;  // player half-height — small base collision so he reaches buil
 
 // Returns true if a box of half-size (_hw,_hh) centred at (_px,_py) overlaps any
 // building wall. River is handled separately — see below.
+// Debug noclip (F1 then N) reports no walls at all, so a player stuck inside a
+// collision footprint can simply walk out.
 var _wall_at = function(_px, _py, _hw, _hh) {
+    if (variable_global_exists("debug_noclip") && global.debug_noclip) return false;
     var _hit = false;
     with (obj_wall_stone) {
         if (_px + _hw > x && _px - _hw < x + wall_w
