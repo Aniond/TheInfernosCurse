@@ -18,19 +18,21 @@ obj_mercato_prop        10.4      1         1.2   spr_stable_tack          solid
 obj_mercato_prop        11.8      1.6       0.9   spr_stable_tack          solid
 obj_barrel              12        2.8       0.5
 
-# --- Zone 3: HORSE STALLS 1-6 (3 left + 3 right, fronts open to the aisle) ---
-obj_mercato_prop        1         4         2.5   spr_stable_stall         solid
-obj_mercato_prop        1.5       4.5       1.5   spr_stable_horse_grey    solid
-obj_mercato_prop        10        4         2.5   spr_stable_stall         solid
-obj_mercato_prop        10.5      4.5       1.5   spr_stable_horse_brown   solid
-obj_mercato_prop        1         8.5       2.5   spr_stable_stall         solid
-obj_mercato_prop        1.5       9         1.5   spr_stable_horse_black   solid
-obj_mercato_prop        10        8.5       2.5   spr_stable_stall         solid
-obj_mercato_prop        10.5      9         1.5   spr_stable_horse_grey    solid
-obj_mercato_prop        1         13        2.5   spr_stable_stall         solid
-obj_mercato_prop        1.5       13.5      1.5   spr_stable_horse_brown   solid
-obj_mercato_prop        10        13        2.5   spr_stable_stall         solid
-obj_mercato_prop        10.5      13.5      1.5   spr_stable_horse_black   solid
+# --- Zone 3: HORSE STALLS 1-6 with PARTITION WALLS (3 left + 3 right, fronts ---
+# --- open to the aisle; back+sides solid). Horses 0.6 inside the partitions: ---
+# --- grey / brown / black top-to-bottom on BOTH sides.                       ---
+obj_mercato_prop        1         4         3     spr_stable_stall         solid
+obj_mercato_prop        2.2       5.2       0.6   spr_stable_horse_grey    solid
+obj_mercato_prop        10        4         3     spr_stable_stall         solid
+obj_mercato_prop        11.2      5.2       0.6   spr_stable_horse_grey    solid
+obj_mercato_prop        1         8.25      3     spr_stable_stall         solid
+obj_mercato_prop        2.2       9.45      0.6   spr_stable_horse_brown   solid
+obj_mercato_prop        10        8.25      3     spr_stable_stall         solid
+obj_mercato_prop        11.2      9.45      0.6   spr_stable_horse_brown   solid
+obj_mercato_prop        1         12.5      3     spr_stable_stall         solid
+obj_mercato_prop        2.2       13.7      0.6   spr_stable_horse_black   solid
+obj_mercato_prop        10        12.5      3     spr_stable_stall         solid
+obj_mercato_prop        11.2      13.7      0.6   spr_stable_horse_black   solid
 
 # --- Aisle LANTERNS (non-solid; glow handled by scr_stable_lantern_glow) ---
 obj_mercato_prop        4.1       5         1     spr_stable_lantern

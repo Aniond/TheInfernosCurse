@@ -66,16 +66,21 @@ function scr_stable_default_layout() {
     array_push(_L, ["obj_mercato_prop", 10.4, 1,    1.2, "spr_stable_tack"]);
     array_push(_L, ["obj_mercato_prop", 11.8, 1.6,  0.9, "spr_stable_tack"]);
     array_push(_L, ["obj_barrel",       12,   2.8,  0.5]);
-    // Zone 3 — SIX HORSE STALLS (3 left + 3 right, fronts open to the centre aisle)
+    // Zone 3 — SIX HORSE STALLS with PARTITION WALLS (3 left + 3 right, fronts open
+    // to the centre aisle — per the reference image). Each spr_stable_stall carries
+    // the back + side partition walls; the "stall" footprint category lays SOLID
+    // collision on back + sides only, so the front stays walkable. Horses sit
+    // INSIDE the partitions at 0.6 scale: grey / brown / black top-to-bottom on
+    // BOTH sides. Left column hugs the west wall, right column hugs the east wall.
     var _stalls = [
-        [1,    4,  "spr_stable_horse_grey"],   [10,   4,  "spr_stable_horse_brown"],
-        [1,    8.5,"spr_stable_horse_black"],  [10,   8.5,"spr_stable_horse_grey"],
-        [1,    13, "spr_stable_horse_brown"],  [10,   13, "spr_stable_horse_black"],
+        [1,  4,    "spr_stable_horse_grey"],   [10, 4,    "spr_stable_horse_grey"],
+        [1,  8.25, "spr_stable_horse_brown"],  [10, 8.25, "spr_stable_horse_brown"],
+        [1,  12.5, "spr_stable_horse_black"],  [10, 12.5, "spr_stable_horse_black"],
     ];
     for (var _i = 0; _i < array_length(_stalls); _i++) {
         var _s = _stalls[_i];
-        array_push(_L, ["obj_mercato_prop", _s[0],       _s[1],       2.5, "spr_stable_stall"]);
-        array_push(_L, ["obj_mercato_prop", _s[0] + 0.5, _s[1] + 0.5, 1.5, _s[2]]);
+        array_push(_L, ["obj_mercato_prop", _s[0],       _s[1],       3.0, "spr_stable_stall"]);
+        array_push(_L, ["obj_mercato_prop", _s[0] + 1.2, _s[1] + 1.2, 0.6, _s[2]]);
     }
     // Aisle LANTERNS on the stall posts (warm → cold → green; glow in scene Draw)
     var _lrows = [5, 9, 13, 17];
