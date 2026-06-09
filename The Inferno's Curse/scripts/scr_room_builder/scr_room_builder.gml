@@ -28,6 +28,34 @@
 // layouts are preserved across launches and only a version bump clobbers them.
 #macro ROOM_BUILDER_LAYOUT_VERSION  10
 
+// Per-room layout versions — the UNIVERSAL stale-layout guard. Every room's
+// loader ignores a save-folder layout whose "# VERSION n" stamp doesn't match
+// its macro and falls back to the code default, so a code relayout always
+// reaches the player. F8 re-stamps the CURRENT version, so hand-tuned layouts
+// persist until the next deliberate bump. BUMP a room's macro whenever you
+// change that room's code-default layout. (Initial values match the stamps
+// already in save folders, so existing hand-tuned layouts stay valid.)
+#macro DUOMO_LAYOUT_VERSION   10
+#macro INN_LAYOUT_VERSION     10
+#macro PONTE_LAYOUT_VERSION   9
+#macro STABLE_LAYOUT_VERSION  1
+
+/// The CURRENT room's layout schema version (Room1 = ROOM_BUILDER_LAYOUT_VERSION).
+function scr_room_builder_layout_version() {
+    if (room == Room_duomo)               return DUOMO_LAYOUT_VERSION;
+    if (room == Room_locanda_rosa_camuna) return INN_LAYOUT_VERSION;
+    if (room == Room_fiorentine_stable)   return STABLE_LAYOUT_VERSION;
+    if (room == Room_ponte_vecchio)       return PONTE_LAYOUT_VERSION;
+    return ROOM_BUILDER_LAYOUT_VERSION;
+}
+
+/// TRUE when a saved layout exists AND its version matches the current room —
+/// the universal "is this save-folder layout safe to load?" check.
+function scr_room_builder_layout_current(_path) {
+    if (!file_exists(_path)) return false;
+    return (scr_room_builder_file_version(_path) == scr_room_builder_layout_version());
+}
+
 
 /// Split a line on runs of spaces/tabs. Returns an array of tokens.
 function scr_room_builder_tokenize(_s) {
@@ -426,9 +454,10 @@ function scr_room_builder_save() {
         return false;
     }
 
-    // Stamp the current version so the re-seed check (scr_room_builder_seed_if_needed)
-    // treats this hand-saved layout as current and never clobbers it.
-    file_text_write_string(_f, "# VERSION " + string(ROOM_BUILDER_LAYOUT_VERSION));
+    // Stamp the CURRENT room's version so the stale-layout guard
+    // (scr_room_builder_layout_current / seed_if_needed) treats this hand-saved
+    // layout as current and never clobbers it — until the room's macro is bumped.
+    file_text_write_string(_f, "# VERSION " + string(scr_room_builder_layout_version()));
     file_text_writeln(_f);
     file_text_write_string(_f, "# Room1 layout — OBJECT_NAME  GRID_X  GRID_Y  SCALE   (1 cell = 64 px)");
     file_text_writeln(_f);
@@ -971,7 +1000,9 @@ function scr_ponte_statues_build() {
     global.room_builder_objects = [];
 
     var _path   = working_directory + "room_ponte_vecchio_layout.txt";
-    var _placed = file_exists(_path) ? scr_ponte_statues_load(_path) : 0;
+    // Stale-layout guard: only load an F8-saved copy stamped with the CURRENT
+    // PONTE_LAYOUT_VERSION; otherwise the default corridor below takes over.
+    var _placed = scr_room_builder_layout_current(_path) ? scr_ponte_statues_load(_path) : 0;
     if (_placed == 0) scr_ponte_statues_default();
 
     scr_room_builder_build_collision();

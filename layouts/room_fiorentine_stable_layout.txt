@@ -1,3 +1,4 @@
+# VERSION 1
 # Room_fiorentine_stable layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]   (1 cell = 64 px)
 # Mirrors scr_stable_default_layout() (references/stables_interior_map.png).
 # 14x22 cells; interior x1-12 y1-20; south doorway gap cols 6-7 row 21.

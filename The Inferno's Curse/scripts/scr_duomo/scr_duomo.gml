@@ -129,7 +129,9 @@ function scr_duomo_build() {
     global.room_builder_objects = [];
 
     var _path   = working_directory + "room_duomo_layout.txt";
-    var _placed = file_exists(_path) ? scr_duomo_load(_path) : 0;
+    // Stale-layout guard: only load an F8-saved copy stamped with the CURRENT
+    // DUOMO_LAYOUT_VERSION; otherwise the code default below takes over.
+    var _placed = scr_room_builder_layout_current(_path) ? scr_duomo_load(_path) : 0;
     if (_placed == 0) scr_duomo_default_place();
 
     scr_duomo_build_collision();
