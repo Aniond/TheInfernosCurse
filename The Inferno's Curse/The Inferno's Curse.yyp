@@ -128,7 +128,6 @@
     {"id":{"name":"obj_npc_innkeeper","path":"objects/obj_npc_innkeeper/obj_npc_innkeeper.yy",},},
     {"id":{"name":"obj_npc_rosa","path":"objects/obj_npc_rosa/obj_npc_rosa.yy",},},
     {"id":{"name":"obj_npc_marco","path":"objects/obj_npc_marco/obj_npc_marco.yy",},},
-    {"id":{"name":"obj_npc_test","path":"objects/obj_npc_test/obj_npc_test.yy",},},
     {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
     {"id":{"name":"obj_ponte_scene","path":"objects/obj_ponte_scene/obj_ponte_scene.yy",},},
     {"id":{"name":"obj_safe_house","path":"objects/obj_safe_house/obj_safe_house.yy",},},
