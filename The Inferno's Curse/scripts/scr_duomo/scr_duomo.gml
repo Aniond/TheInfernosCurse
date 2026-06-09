@@ -24,7 +24,7 @@
 #macro DUOMO_EXIT_Y 1376
 
 // Boot straight into the cathedral (read once by obj_game_manager). false = Florence.
-#macro DUOMO_LOAD_POINT true
+#macro DUOMO_LOAD_POINT false
 
 // ── Cell predicates ─────────────────────────────────────────────────────────────
 function scr_duomo_is_interior(_cx, _cy) {

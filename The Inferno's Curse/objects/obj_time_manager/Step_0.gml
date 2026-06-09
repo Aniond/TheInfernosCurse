@@ -12,4 +12,5 @@ while (last_seen_day < global.game_day) {
     last_seen_day++;
     global.day_count++;
     scr_new_day_corruption_update();   // daily corruption cascade + persist (was wired to the old >=24 rollover)
+    scr_corruption_spread();           // bleed corruption across circle boundaries once per new day
 }
