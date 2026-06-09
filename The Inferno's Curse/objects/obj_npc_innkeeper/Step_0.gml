@@ -80,6 +80,16 @@ if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
         global.player_gold -= _cost;
         obj_player.hp = obj_player.max_hp;                   // full rest
         if (_relief > 0) scr_corruption_relieve(_relief, false);
+        // Relationship: paying for lodging is patronage Aldo remembers. Logged
+        // BEFORE the sleep day-skip so the event carries the day it happened.
+        // Delta scales with the room tier, first purchase of the day only.
+        var _delta = 0;
+        if (global.game_day != rel_day_logged) {
+            rel_day_logged = global.game_day;
+            _delta = (_tier == "high") ? 4 : ((_tier == "medium") ? 3 : 2);
+        }
+        scr_npc_log_event("innkeeper", "generous", "Took " + _name + " for the night.", _delta);
+        scr_npc_show_emotion(id, "happy");
         scr_time_sleep();                                    // sleep → skip to 06:00 next day (scr_time_system)
         msg_text = "You take " + _name + ". The night passes.  (-" + string(_cost) + "g)";
         scr_chronicle_add("A night's rest at the Locanda della Rosa Camuna — " + _name + ".");

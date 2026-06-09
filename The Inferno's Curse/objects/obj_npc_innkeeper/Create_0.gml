@@ -13,6 +13,10 @@ greeted          = false;   // open once per approach
 msg_text         = "";
 msg_timer        = 0;
 
+// Relationship wiring: every purchase is LOGGED (he remembers), but the
+// relationship delta only applies the FIRST time each game day — grind-proof.
+rel_day_logged   = -1;
+
 // FIX 2 — debug: confirm emotion_state loaded from npc_data.json on room entry,
 // and whether it maps to an icon. (Output window only — costs nothing in-game.)
 var _id  = scr_npc_get("innkeeper");

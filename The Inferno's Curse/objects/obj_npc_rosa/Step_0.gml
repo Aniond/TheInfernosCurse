@@ -60,13 +60,20 @@ if (keyboard_check_pressed(vk_up))     menu_sel = (menu_sel + _count - 1) mod _c
 if (keyboard_check_pressed(vk_down))   menu_sel = (menu_sel + 1) mod _count;
 if (keyboard_check_pressed(vk_escape)) { menu_open = false; global.input_locked = false; exit; }
 
+// Relationship: each successful order/chat feeds scr_npc_log_event so Rosa
+// REMEMBERS it (event_log → AI context), but the score delta applies only on
+// the first interaction of each game day — gold isn't a relationship grind.
 if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
+    var _first_today = (global.game_day != rel_day_logged);
     switch (menu_sel) {
         case 0:   // cup of wine — 2g, dulls the whispers a touch
             if (global.player_gold >= 2) {
                 global.player_gold -= 2;
                 scr_corruption_relieve(0.5, false);
                 msg_text = "Rosa pours a cup of red. The whispers dull, a little.  (-2g)";
+                if (_first_today) rel_day_logged = global.game_day;
+                scr_npc_log_event(npc_id, "generous", "Ordered a cup of wine at the bar.", _first_today ? 1 : 0);
+                scr_npc_show_emotion(id, "happy");
             } else msg_text = "Not enough gold for wine (2g).";
             msg_timer = 150;
             break;
@@ -75,12 +82,17 @@ if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
                 global.player_gold -= 4;
                 obj_player.hp = min(obj_player.max_hp, obj_player.hp + obj_player.max_hp * 0.5);
                 msg_text = "Ribollita, hot from the hearth. You feel restored.  (-4g)";
+                if (_first_today) rel_day_logged = global.game_day;
+                scr_npc_log_event(npc_id, "generous", "Ordered the ribollita — ate at her counter.", _first_today ? 2 : 0);
+                scr_npc_show_emotion(id, "happy");
             } else msg_text = "Not enough gold for a meal (4g).";
             msg_timer = 150;
             break;
         case 2:   // just talk — her emotion/corruption-keyed line
             say_text  = scr_npc_get_response(npc_id, "");
             say_timer = 240;
+            if (_first_today) rel_day_logged = global.game_day;
+            scr_npc_log_event(npc_id, "charming", "Stopped to talk at the bar.", _first_today ? 1 : 0);
             break;
         case 3: break;   // nothing, thanks
     }

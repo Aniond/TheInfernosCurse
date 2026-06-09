@@ -20,6 +20,10 @@ msg_text  = "";
 msg_timer = 0;
 on_shift  = true;
 
+// Relationship wiring: every order/chat is LOGGED (she remembers), but the
+// relationship delta only applies the FIRST time each game day — grind-proof.
+rel_day_logged = -1;
+
 // FIX 2 — debug: confirm emotion_state loaded from npc_data.json on room entry,
 // and whether it maps to an icon. (Output window only — costs nothing in-game.)
 var _rd  = scr_npc_get(npc_id);
