@@ -88,19 +88,22 @@ function scr_inn_default_layout() {
     // kitchen wall so the ring's back side reads as the back-bar along it). The
     // bartenders stand INSIDE the ring; its manual bbox (the ring's art bounds)
     // is the collision, so patrons are walled out by the counter itself.
-    array_push(_L, ["obj_mercato_prop", 1.8, 4.6, 1, "spr_inn_bar_counter"]);
-    array_push(_L, ["obj_inn_candle",   4.6, 6.55, 0.5]);   // a candle on the bar front
+    // FLUSH against the wall: at gy 4.0 the ring's back side (sprite art top = 22px
+    // in) lands at world y 278, ON the drawn wall band (256-320) — the wall peeks
+    // out above the back counter and no floor shows between them.
+    array_push(_L, ["obj_mercato_prop", 1.8, 4.0, 1, "spr_inn_bar_counter"]);
+    array_push(_L, ["obj_inn_candle",   4.6, 6.0, 0.5]);   // a candle on the bar front
     // Bar stools hugging the front face + one at the east arm
     var _stools = [2.9, 4.0, 5.1, 6.2];
     for (var _st = 0; _st < array_length(_stools); _st++)
-        array_push(_L, ["obj_mercato_prop", _stools[_st], 7.4, 0.5, "spr_inn_stool"]);
-    array_push(_L, ["obj_mercato_prop", 7.3, 5.8, 0.5, "spr_inn_stool"]);
+        array_push(_L, ["obj_mercato_prop", _stools[_st], 6.9, 0.5, "spr_inn_stool"]);
+    array_push(_L, ["obj_mercato_prop", 7.3, 5.4, 0.5, "spr_inn_stool"]);
     // West-side clutter in the 1-cell gap between the bar ring and the west wall
-    array_push(_L, ["obj_barrel", 1, 5.5, 0.5]);
+    array_push(_L, ["obj_barrel", 1, 5.2, 0.5]);
     // Zone 3 — Aldo the innkeeper (lodging, WEST end) + Rosa (bar menu, EAST end),
-    // both inside the ring's interior opening (world x ~182-423, y ~366-421)
-    array_push(_L, ["obj_npc_innkeeper", 3.2, 5.6, 1]);
-    array_push(_L, ["obj_npc_rosa",      5.4, 5.6, 1]);
+    // both inside the ring's interior opening (world x ~182-423, y ~328-383)
+    array_push(_L, ["obj_npc_innkeeper", 3.2, 5.1, 1]);
+    array_push(_L, ["obj_npc_rosa",      5.4, 5.1, 1]);
     // Wine shelf moved into the KITCHEN (food prep + wine storage per reference)
     array_push(_L, ["obj_mercato_prop", 1, 1, 0.8, "spr_inn_wine_shelf"]);
     // Zone 5 — STORAGE / PANTRY (top-right): barrels + kegs
