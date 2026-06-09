@@ -19,6 +19,11 @@
 #macro STABLE_EXIT_X 448
 #macro STABLE_EXIT_Y 1376   // row 21.5
 
+// TEMP: boot straight into the stable for testing (takes precedence over the inn
+// and Duomo load points in obj_game_manager Create). Flip to false to restore the
+// normal Florence start.
+#macro STABLE_LOAD_POINT true
+
 // ── Cell predicates ─────────────────────────────────────────────────────────────
 function scr_stable_is_interior(_cx, _cy) {
     var _main  = (_cx >= 1 && _cx <= 12 && _cy >= 1 && _cy <= 20);

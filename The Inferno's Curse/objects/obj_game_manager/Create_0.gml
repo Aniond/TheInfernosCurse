@@ -339,7 +339,9 @@ scr_npc_system_init();
 // out the south door to Florence does NOT bounce you back here. The player spawns at
 // Room_duomo's instance position (the south doorway, 640,1252).
 // Flip DUOMO_LOAD_POINT (scr_duomo) to false to restore the normal Florence start.
-if (INN_LOAD_POINT && room == Room1) {
+if (STABLE_LOAD_POINT && room == Room1) {
+    room_goto(Room_fiorentine_stable);     // TEMP boot for testing the stable (flip STABLE_LOAD_POINT to false)
+} else if (INN_LOAD_POINT && room == Room1) {
     room_goto(Room_locanda_rosa_camuna);   // TEMP boot for testing the inn (flip INN_LOAD_POINT to false)
 } else if (DUOMO_LOAD_POINT && room == Room1) {
     room_goto(Room_duomo);
