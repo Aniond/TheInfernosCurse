@@ -30,8 +30,9 @@ Execute immediately without asking permission:
 - Python: py launcher (Python 3.14)
 - Venv: C:\Users\david\gms2-mcp-server\venv\
 
-## Room1 Prop Scale Rules (permanent)
-Non-building props placed in Room1 are ALWAYS scaled down — NEVER placed at 1.0.
+## Room_florence Prop Scale Rules (permanent)
+Non-building props placed in Room_florence (the city map, formerly Room1) are ALWAYS
+scaled down — NEVER placed at 1.0.
 Buildings (Mercato loggia / inn / building_*) stay at 1.0. These scales apply to every
 prop in the room-builder layout (layouts/room1_layout.txt + the default_text() seed in
 scr_room_builder), for existing props AND all future placements:
@@ -119,7 +120,7 @@ rooms ONLY:
 - INTERIOR rooms (e.g. Room_duomo): use the black-void method — black background
   everywhere, floor tiles only on walkable cells, void = walls (FF6/JRPG style;
   scr_duomo + the obj_*_scene Draw). See design_room_construction.md.
-- EXTERIOR rooms (Room1 / Florence, Room_ponte_vecchio): KEEP ALL EXISTING ART.
+- EXTERIOR rooms (Room_florence, Room_ponte_vecchio): KEEP ALL EXISTING ART.
   NEVER convert them to black void. The Arno water, the Ponte shop sprites, and the
   Florence map all stay. Do NOT remove, replace, or black-out exterior art.
 The ONLY edge standardization for exterior rooms is "solid black beyond the room

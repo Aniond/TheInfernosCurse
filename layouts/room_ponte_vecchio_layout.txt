@@ -10,7 +10,7 @@
 # ROOM SIZE: 576 x 896  (9 cells wide x 14 cells tall @ 64px)
 #
 # COLUMNS (x, left -> right)
-#   0   - 32    LEFT  ARNO    animated water (same system as Room1, corruption-tinted)
+#   0   - 32    LEFT  ARNO    animated water (same system as Room_florence, corruption-tinted)
 #   32  - 160   LEFT  SHOPS   spr_bridge_shop_left  (128px, stacked) — faces RIGHT
 #   160 - 416   WALKWAY       4 cells of cobblestone, runs the FULL length (N–S)
 #   416 - 544   RIGHT SHOPS   spr_bridge_shop_right (128px, stacked) — faces LEFT
@@ -29,15 +29,15 @@
 # Water columns and shop columns are solid (invisible obj_wall, spawned in Create_0).
 #
 # TRANSITION ZONES (obj_mercato_exit, spawned in obj_ponte_scene Create_0)
-# Both return to Room1 but arrive on different Arno banks at the WEST crossing (x768).
+# Both return to Room_florence but arrive on different Arno banks at the WEST crossing (x768).
 #   NORTH EXIT   x[192,384] y[0,112]      3 tiles wide, top centre (centre x = 288)
-#                -> Room1, arrive NORTH bank of the Arno at the crossing (768,1490)
+#                -> Room_florence, arrive NORTH bank of the Arno at the crossing (768,1490)
 #                   ("Firenze" title card)
 #   SOUTH EXIT   x[192,384] y[784,896]    3 tiles wide, bottom centre
-#                -> Room1, arrive SOUTH bank of the Arno at the crossing (768,1780)
+#                -> Room_florence, arrive SOUTH bank of the Arno at the crossing (768,1780)
 #                   ("The road south. Not yet." card — south bank is future content)
 #
-# ENTRY (from Room1): walking south onto the WEST bridge deck (the Ponte Vecchio,
+# ENTRY (from Room_florence): walking south onto the WEST bridge deck (the Ponte Vecchio,
 #   river_bridges[0] = x[640,896]) triggers room_goto(Room_ponte_vecchio). Wired in
 #   obj_game_manager Create. Player spawns at the NORTH landing centre (288,200).
 #

@@ -17,7 +17,7 @@
 // Depth 160: behind the player/characters (depth 100). Roads, buildings, props
 // get layered on top of this from here. NOTHING else this step.
 // =============================================================================
-if (room != Room1) exit;
+if (room != Room_florence) exit;
 
 var _rw = room_width;
 var _rh = room_height;

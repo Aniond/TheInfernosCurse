@@ -40,7 +40,7 @@
 #macro PONTE_LAYOUT_VERSION   9
 #macro STABLE_LAYOUT_VERSION  1
 
-/// The CURRENT room's layout schema version (Room1 = ROOM_BUILDER_LAYOUT_VERSION).
+/// The CURRENT room's layout schema version (Room_florence = ROOM_BUILDER_LAYOUT_VERSION).
 function scr_room_builder_layout_version() {
     if (room == Room_duomo)               return DUOMO_LAYOUT_VERSION;
     if (room == Room_locanda_rosa_camuna) return INN_LAYOUT_VERSION;
@@ -147,10 +147,10 @@ function scr_room_builder_default_text() {
     // Bump ROOM_BUILDER_LAYOUT_VERSION whenever this text changes (forces a re-seed).
     return
         "# VERSION 10\n" +
-        "# Room1 layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)\n" +
+        "# Room_florence layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)\n" +
         "# Market square FINALISED + collision LOCKED. All obj_mercato_prop are solid\n" +
         "# (stalls: back+sides only; buildings + fountain: full body). Park/piazza props\n" +
-        "# scaled per CLAUDE.md Room1 Prop Scale Rules.\n" +
+        "# scaled per CLAUDE.md Room_florence Prop Scale Rules.\n" +
         "\n" +
         "# --- Piazza + park ---\n" +
         "obj_well                16        20        0.7\n" +
@@ -389,7 +389,7 @@ function scr_room_builder_footprint(_o) {
 
 /// Rebuild whichever collision set the CURRENT room uses, so footprints always
 /// follow their props after any edit (move / scale / rotate / duplicate / delete
-/// / undo). Previously only the Duomo + inn rebuilt — Room1 / Ponte footprints
+/// / undo). Previously only the Duomo + inn rebuilt — Room_florence / Ponte footprints
 /// stayed at the prop's ORIGINAL spot until restart (the invisible-wall bug).
 function scr_room_builder_refresh_collision() {
     if (room == Room_duomo)               { scr_duomo_rebuild_collision();  return; }
@@ -459,7 +459,7 @@ function scr_room_builder_save() {
     // layout as current and never clobbers it — until the room's macro is bumped.
     file_text_write_string(_f, "# VERSION " + string(scr_room_builder_layout_version()));
     file_text_writeln(_f);
-    file_text_write_string(_f, "# Room1 layout — OBJECT_NAME  GRID_X  GRID_Y  SCALE   (1 cell = 64 px)");
+    file_text_write_string(_f, "# Room_florence layout — OBJECT_NAME  GRID_X  GRID_Y  SCALE   (1 cell = 64 px)");
     file_text_writeln(_f);
 
     var _count = 0;
@@ -537,7 +537,7 @@ function scr_room_builder_point_in(_inst, _mx, _my) {
 /// Called every step from obj_game_manager. F8 then writes the new positions.
 function scr_room_builder_drag_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;   // draggable in all built rooms
+    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;   // draggable in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
@@ -644,7 +644,7 @@ function scr_room_builder_delete_selected() {
 /// F8 then saves the exact fractional position (the save no longer rounds to grid).
 function scr_room_builder_nudge_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;   // nudge in all built rooms
+    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;   // nudge in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_selected")) return;
     var _sel = global.room_builder_selected;
@@ -813,7 +813,7 @@ function scr_room_builder_duplicate_selected() {
 ///   held (obj_player Step) so chords never also walk Benedetto.
 function scr_room_builder_edit_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;
+    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;
     if (variable_global_exists("input_locked") && global.input_locked) return;
 
     var _ctrl = keyboard_check(vk_control);
@@ -875,8 +875,8 @@ function scr_room_builder_draw_rotated(_inst, _tint) {
 /// every Florence (re)entry — otherwise returning from the bridge room would leave Florence
 /// with no props and no river collision. Reads the geometry globals (river_*,
 /// garden_*) that obj_game_manager Create sets once.
-function scr_room1_build() {
-    if (room != Room1) return;
+function scr_florence_build() {
+    if (room != Room_florence) return;
 
     // market props (+ their footprint collision, built inside the loader)
     scr_room_builder_load();

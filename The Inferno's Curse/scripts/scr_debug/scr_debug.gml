@@ -278,7 +278,7 @@ function scr_debug_world_overworld() {
     }
 
     // River collision band (red) + bridge gaps (green) — faint fills
-    if (room == Room1 && variable_global_exists("river_y1")) {
+    if (room == Room_florence && variable_global_exists("river_y1")) {
         var _ry1 = global.river_y1, _ry2 = global.river_y2;
         draw_set_alpha(0.12); draw_set_color(make_color_rgb(200, 40, 40));
         draw_rectangle(56, _ry1, room_width - 56, _ry2, false);

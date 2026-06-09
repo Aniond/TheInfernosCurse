@@ -13,7 +13,7 @@ scr_stable_build();
 // ── South doorway → Florence (draggable + persistable; F8 saves) ────────────────
 scr_transition_spawn("stable_south",
     STABLE_EXIT_X - 96, STABLE_EXIT_Y - 24, 192, 80,
-    "Room1", "Florence", 824, 392, "");
+    "Room_florence", "Florence", 824, 392, "");
 
 // ── Entry banner (gold FF6 plaque, fades after 3s) ──────────────────────────────
 scr_banner_show("Fiorentine Stable");

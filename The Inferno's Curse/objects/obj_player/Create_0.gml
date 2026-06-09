@@ -65,7 +65,7 @@ sprite_index = spr_benedetto_walk_south;
 image_speed  = 1;  // sprites use their own baked playback speed
 
 // Safety: if a saved position landed inside the river band, push to nearest bank.
-if (room == Room1 && variable_global_exists("river_y1")) {
+if (room == Room_florence && variable_global_exists("river_y1")) {
     var _ry1 = global.river_y1;
     var _ry2 = global.river_y2;
     if (y > _ry1 && y < _ry2) {

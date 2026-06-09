@@ -13,7 +13,7 @@ scr_inn_build();
 // ── South doorway → Florence (draggable + persistable; F8 saves) ────────────────
 global.inn_exit = scr_transition_spawn("inn_south",
     INN_EXIT_X - 96, INN_EXIT_Y - 24, 192, 80,
-    "Room1", "Florence", 1118, 1462, "");
+    "Room_florence", "Florence", 1118, 1462, "");
 
 // ── Stairs up → upper floor (Room_locanda_rosa_camuna_2f is a later step; the exit
 // shows "coming soon" gracefully until that room exists) ────────────────────────

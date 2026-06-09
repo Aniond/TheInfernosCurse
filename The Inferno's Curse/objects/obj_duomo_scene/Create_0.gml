@@ -18,7 +18,7 @@ scr_duomo_build();
 // global.duomo_exit so the visible door and the trigger never separate.
 global.duomo_exit = scr_transition_spawn("duomo_south",
     DUOMO_EXIT_X - 96, DUOMO_EXIT_Y - 32, 192, 64,
-    "Room1", "Florence", 1118, 1462, "");
+    "Room_florence", "Florence", 1118, 1462, "");
 
 // ── Entry chronicle, keyed to how far the corruption has taken the church ────────
 var _corr = global.circle_corruption[CIRCLE_LIMBO];

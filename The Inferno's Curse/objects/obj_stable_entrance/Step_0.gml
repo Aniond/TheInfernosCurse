@@ -5,7 +5,7 @@
 // the south doorway of Room_fiorentine_stable (matching where the interior exit
 // returns from).
 player_near = false;
-if (room != Room1) exit;
+if (room != Room_florence) exit;
 if (!instance_exists(obj_player)) exit;
 
 var _d = point_distance(x, y, obj_player.x, obj_player.y);

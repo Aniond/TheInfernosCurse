@@ -1,5 +1,5 @@
 # VERSION 10
-# Room1 layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)
+# Room_florence (Florence) layout — file kept as room1_layout.txt for save compatibility — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)
 # Market square FINALISED + collision LOCKED. Synced from the live save-folder layout.
 # All obj_mercato_prop are solid (stalls: back+sides only so the player shops from the
 # front; buildings + fountain: full body). Park/piazza props scaled per CLAUDE.md rules.

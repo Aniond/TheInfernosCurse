@@ -47,9 +47,9 @@ scr_ponte_statues_build();
 // NORTH (top centre) → Florence, arriving on the Arno's NORTH bank (Florence side).
 // Draggable + persistable (drag in debug, F8 saves).
 scr_transition_spawn("ponte_north", 192, 0, 192, 112,
-    "Room1", "Florence", 768, 1490, "Firenze");
+    "Room_florence", "Florence", 768, 1490, "Firenze");
 scr_transition_spawn("ponte_south", 192, _rh - 112, 192, 112,
-    "Room1", "The road south", 768, 1780, "The road south. Not yet.");
+    "Room_florence", "The road south", 768, 1780, "The road south. Not yet.");
 
 // ── North-entrance save point (standardised save crystal) ────────────────────
 // Just south of the NORTH exit zone (y<112) so reaching it never fires the exit.

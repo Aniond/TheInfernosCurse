@@ -63,5 +63,5 @@ spr_hanging_cloth           20    2     1.0   decor
 
 # --- EXITS (zones; handled by obj_mercato_exit) ---
 # NORTH  through the loggia centre arch  -> Room_piazza_signoria (not built yet)
-# EAST   right edge, mid                 -> Room1 (Florence) — Benedetto enters here
+# EAST   right edge, mid                 -> Room_florence (Florence) — Benedetto enters here
 # SOUTH  central steps down              -> Room_ponte_vecchio (not built yet)

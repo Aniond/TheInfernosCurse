@@ -227,7 +227,7 @@ global.codex_entry_count = 0;
 // ── Player spawn globals (restored from save, applied when player Create runs) ─
 global.save_player_x    = 1024;   // centre of the cobblestone street (street is y 928–1120)
 global.save_player_y    = 1024;
-global.save_player_room = "Room1";
+global.save_player_room = "Room_florence";
 
 // ── Save indicator UI state ───────────────────────────────────────────────────
 // Drives obj_save_indicator's fade-out flash in the top-right corner.
@@ -255,7 +255,7 @@ scr_config_load();
 scr_load_world_state();
 
 // ── Room builder + Florence collision ─────────────────────────────────────────────
-// Props + all of Florence's code-spawned collision are built by scr_room1_build() (the
+// Props + all of Florence's code-spawned collision are built by scr_florence_build() (the
 // call is below, after the garden geometry) and rebuilt by Step on every re-entry.
 
 // Disable texture filtering globally — keeps pixel art sharp at any zoom level.
@@ -277,7 +277,7 @@ global.river_bridges = [[640, 896]];   // ONE crossing = the Ponte Vecchio (west
                                        // east "brick bridge" was removed -> that span is plain river now.
 
 // (The Arno river/bank collision, the bridge handrails and the Ponte Vecchio entry
-//  zones are built by scr_room1_build() — see the Florence build call below the garden
+//  zones are built by scr_florence_build() — see the Florence build call below the garden
 //  geometry. They are rebuilt on every Florence re-entry, so returning from the bridge
 //  room restores them.)
 
@@ -296,10 +296,10 @@ global.garden_wt  = 32;     // outer paving ring thickness
 global.garden_cph = 28;     // cross-path half width
 // ── Florence props + collision (built here; rebuilt by Step on every re-entry) ─────
 // This manager is PERSISTENT (its Create runs once), and a room change destroys
-// Florence's code-spawned props + collision — so Step calls scr_room1_build() again
+// Florence's code-spawned props + collision — so Step calls scr_florence_build() again
 // whenever we return to Florence. Build the first time now.
-global.__room1_built = false;
-if (room == Room1) { scr_room1_build(); global.__room1_built = true; }
+global.__florence_built = false;
+if (room == Room_florence) { scr_florence_build(); global.__florence_built = true; }
 
 // ── Street dressing ───────────────────────────────────────────────────────────
 // Spawn the persistent Florence street scene (paved road + market props) at a
@@ -339,10 +339,10 @@ scr_npc_system_init();
 // out the south door to Florence does NOT bounce you back here. The player spawns at
 // Room_duomo's instance position (the south doorway, 640,1252).
 // Flip DUOMO_LOAD_POINT (scr_duomo) to false to restore the normal Florence start.
-if (STABLE_LOAD_POINT && room == Room1) {
+if (STABLE_LOAD_POINT && room == Room_florence) {
     room_goto(Room_fiorentine_stable);     // TEMP boot for testing the stable (flip STABLE_LOAD_POINT to false)
-} else if (INN_LOAD_POINT && room == Room1) {
+} else if (INN_LOAD_POINT && room == Room_florence) {
     room_goto(Room_locanda_rosa_camuna);   // TEMP boot for testing the inn (flip INN_LOAD_POINT to false)
-} else if (DUOMO_LOAD_POINT && room == Room1) {
+} else if (DUOMO_LOAD_POINT && room == Room_florence) {
     room_goto(Room_duomo);
 }

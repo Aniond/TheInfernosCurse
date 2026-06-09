@@ -10,13 +10,13 @@
 // Florence's code-spawned props + collision, so rebuild them whenever we (re)enter
 // Florence (e.g. returning from the Ponte Vecchio bridge room) — otherwise Florence comes
 // back with no market and no river collision.
-if (room == Room1) {
-    if (!variable_global_exists("__room1_built") || !global.__room1_built) {
-        scr_room1_build();
-        global.__room1_built = true;
+if (room == Room_florence) {
+    if (!variable_global_exists("__florence_built") || !global.__florence_built) {
+        scr_florence_build();
+        global.__florence_built = true;
     }
-} else if (variable_global_exists("__room1_built")) {
-    global.__room1_built = false;
+} else if (variable_global_exists("__florence_built")) {
+    global.__florence_built = false;
 }
 
 // ── Global FF6 camera — follow + clamp in every room (see scr_camera) ─────────
@@ -190,7 +190,7 @@ if (global.debug_mode && keyboard_check(vk_control) && keyboard_check_pressed(or
 
 // ── DEBUG: battle trigger (B) — remove when proper battle triggers are wired ──
 // debug_mode only (F1). Pressing B in Florence drops Benedetto into room_battle.
-if (global.debug_mode && room == Room1 && keyboard_check_pressed(ord("B"))) {
+if (global.debug_mode && room == Room_florence && keyboard_check_pressed(ord("B"))) {
     scr_battle_trigger(1);   // 1 Hollow, Florence corruption level
 }
 

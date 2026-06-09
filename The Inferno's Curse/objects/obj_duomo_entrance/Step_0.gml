@@ -4,7 +4,7 @@
 // Press E within range → enter the cathedral. The player is dropped just inside
 // the south doorway of Room_duomo (matching where the interior exit returns from).
 player_near = false;
-if (room != Room1) exit;
+if (room != Room_florence) exit;
 if (!instance_exists(obj_player)) exit;
 
 var _d = point_distance(x, y, obj_player.x, obj_player.y);
