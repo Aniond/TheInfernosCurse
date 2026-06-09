@@ -50,6 +50,98 @@ function scr_stable_is_border(_cx, _cy) {
          || !scr_stable_is_interior(_cx, _cy - 1) || !scr_stable_is_interior(_cx, _cy + 1));
 }
 
+// ── STALL PARTITIONS — real WALLS, not props ────────────────────────────────────
+// Six enclosed stall boxes per the reference: the room's void edge is each
+// column's back wall; horizontal timber dividers split the band into 3 stalls a
+// side; a vertical front wall along the aisle closes each box, with a gate gap
+// so Benedetto (and one day the horses) can walk in. ONE geometry source drives
+// BOTH the dark-wood drawing (obj_stable_scene Draw) and the obj_wall collision
+// (scr_stable_build_collision) — they can never drift apart.
+#macro STABLE_STALL_Y0     4.5     // stall band top (cells)
+#macro STABLE_STALL_Y3     16      // stall band bottom
+#macro STABLE_STALL_LX     4.5     // LEFT column front wall (aisle west edge)
+#macro STABLE_STALL_RX     9.5     // RIGHT column front wall (aisle east edge)
+#macro STABLE_WALL_HALF    24      // wall half-thickness in px (48px — FF6-style
+                                   // THICK walls textured with a small plank tile)
+#macro STABLE_GATE_HALF    44      // gate gap half-height in px (~1.4 cells)
+
+/// All partition wall segments as [x0, y0, x1, y1] px rects.
+function scr_stable_partitions() {
+    var _g    = STABLE_GRID_PX;
+    var _segs = [];
+    var _rows = 3;
+    var _band = (STABLE_STALL_Y3 - STABLE_STALL_Y0) / _rows;   // one stall's height
+
+    // horizontal dividers: 4 per side (top edge, 2 between stalls, bottom edge)
+    for (var _i = 0; _i <= _rows; _i++) {
+        var _wy = (STABLE_STALL_Y0 + _i * _band) * _g;
+        array_push(_segs, [1 * _g,                 _wy - STABLE_WALL_HALF, STABLE_STALL_LX * _g, _wy + STABLE_WALL_HALF]);   // left:  west wall -> aisle
+        array_push(_segs, [STABLE_STALL_RX * _g,   _wy - STABLE_WALL_HALF, 13 * _g,              _wy + STABLE_WALL_HALF]);   // right: aisle -> east wall
+    }
+    // vertical front walls along the aisle, split by a centred gate gap per stall
+    for (var _s = 0; _s < _rows; _s++) {
+        var _ya = (STABLE_STALL_Y0 + _s * _band) * _g;
+        var _yb = _ya + _band * _g;
+        var _gc = (_ya + _yb) * 0.5;
+        var _fxs = [STABLE_STALL_LX * _g, STABLE_STALL_RX * _g];
+        for (var _f = 0; _f < 2; _f++) {
+            var _fx = _fxs[_f];
+            array_push(_segs, [_fx - STABLE_WALL_HALF, _ya, _fx + STABLE_WALL_HALF, _gc - STABLE_GATE_HALF]);   // above the gate
+            array_push(_segs, [_fx - STABLE_WALL_HALF, _gc + STABLE_GATE_HALF, _fx + STABLE_WALL_HALF, _yb]);   // below the gate
+        }
+    }
+    return _segs;
+}
+
+/// Paint the partitions FF6-style (cf. the SNES inn interiors): THICK wall bands
+/// textured by tiling a SMALL plank tile — spr_stable_wall_tile (32px, seamless)
+/// drawn 1:1, like FF6 textures its void walls. Fallbacks: quarter-scale
+/// spr_stable_floor tinted timber, then flat dark wood. A lit top edge + black
+/// grounding shadow make the band read as a raised wall, and corruption cools
+/// the wood like everything else in the room.
+function scr_stable_draw_partitions(_corr01) {
+    var _segs = scr_stable_partitions();
+    var _wood = merge_color(c_white,                     make_color_rgb(110, 112, 124), _corr01);
+    var _tint = merge_color(make_color_rgb(96, 62, 36),  make_color_rgb(46, 44, 50),    _corr01);
+    var _flat = merge_color(make_color_rgb(58, 38, 24),  make_color_rgb(30, 28, 32),    _corr01);
+    var _top  = merge_color(make_color_rgb(132, 92, 54), make_color_rgb(64, 62, 68),    _corr01);
+
+    // preferred: the dedicated 32px seamless plank tile, drawn unscaled
+    var _tile  = asset_get_index("spr_stable_wall_tile");
+    var _scale = 1;
+    var _col   = _wood;
+    if (_tile < 0 || asset_get_type("spr_stable_wall_tile") != asset_sprite) {
+        _tile  = asset_get_index("spr_stable_floor");   // fallback: floor at 0.5, timber tint
+        _scale = 0.5;
+        _col   = _tint;
+        if (_tile < 0 || asset_get_type("spr_stable_floor") != asset_sprite) _tile = -1;
+    }
+    var _ts = 32;   // texture tile size on screen
+
+    for (var _i = 0; _i < array_length(_segs); _i++) {
+        var _s = _segs[_i];
+        if (_tile != -1) {
+            // tile the band, clipping the partial tiles at the rect edges
+            for (var _ty = _s[1]; _ty < _s[3]; _ty += _ts) {
+                var _h = min(_ts, _s[3] - _ty);
+                for (var _tx = _s[0]; _tx < _s[2]; _tx += _ts) {
+                    var _w = min(_ts, _s[2] - _tx);
+                    draw_sprite_part_ext(_tile, 0, 0, 0, _w / _scale, _h / _scale,
+                        _tx, _ty, _scale, _scale, _col, 1);
+                }
+            }
+        } else {
+            draw_set_color(_flat);
+            draw_rectangle(_s[0], _s[1], _s[2], _s[3], false);
+        }
+        draw_set_color(_top);                                  // lit top edge — reads as height
+        draw_rectangle(_s[0], _s[1], _s[2], min(_s[1] + 4, _s[3]), false);
+        draw_set_color(c_black);                               // grounding shadow line
+        draw_rectangle(_s[0], max(_s[3] - 2, _s[1]), _s[2], _s[3], false);
+    }
+    draw_set_color(c_white);
+}
+
 // ── Default prop layout — [object, gx, gy, scale, (sprite)] ───────────────────────
 // Mirrors references/stables_interior_map.png. obj_mercato_prop carries the sprite +
 // collision, so every piece is click-drag / nudge / rotate / Delete / F8-saveable.
@@ -67,25 +159,18 @@ function scr_stable_default_layout() {
     array_push(_L, ["obj_mercato_prop", 10.4, 1,    1.2, "spr_stable_tack"]);
     array_push(_L, ["obj_mercato_prop", 11.8, 1.6,  0.9, "spr_stable_tack"]);
     array_push(_L, ["obj_barrel",       12,   2.8,  0.5]);
-    // Zone 3 — SIX HORSE STALLS with PARTITION WALLS (3 left + 3 right, fronts open
-    // to the centre aisle — per the reference image). Each spr_stable_stall carries
-    // the back + side partition walls; the "stall" footprint category lays SOLID
-    // collision on back + sides only, so the front stays walkable. Horses sit
-    // INSIDE the partitions at 0.6 scale: grey / brown / black top-to-bottom on
-    // BOTH sides. Left column hugs the west wall, right column hugs the east wall.
-    // Stall band runs rows ~4.5-16 per the reference; fronts reach the aisle,
-    // leaving a 5-cell centre aisle (x4.5-9.5). Columns sit flush against the
-    // west / east walls.
-    var _stalls = [
-        [1,  4.5,  "spr_stable_horse_grey"],   [9.5, 4.5,  "spr_stable_horse_grey"],
-        [1,  8.6,  "spr_stable_horse_brown"],  [9.5, 8.6,  "spr_stable_horse_brown"],
-        [1,  12.7, "spr_stable_horse_black"],  [9.5, 12.7, "spr_stable_horse_black"],
+    // Zone 3 — SIX HORSES inside the partition-wall stalls (the walls themselves
+    // are DRAWN + collided by scr_stable_partitions, NOT props — see above).
+    // 0.6 scale, centred in each stall box: grey / brown / black top-to-bottom on
+    // BOTH sides. Stall centres: band 4.5-16, 3 stalls -> centres y 6.42 / 10.25 /
+    // 14.08; horse top-left = centre - 0.3 (a 0.6-scale 64px sprite is 0.6 cells).
+    var _horses = [
+        [2.45,  6.12, "spr_stable_horse_grey"],   [10.95, 6.12,  "spr_stable_horse_grey"],
+        [2.45,  9.95, "spr_stable_horse_brown"],  [10.95, 9.95,  "spr_stable_horse_brown"],
+        [2.45, 13.78, "spr_stable_horse_black"],  [10.95, 13.78, "spr_stable_horse_black"],
     ];
-    for (var _i = 0; _i < array_length(_stalls); _i++) {
-        var _s = _stalls[_i];
-        array_push(_L, ["obj_mercato_prop", _s[0],        _s[1],       3.5, "spr_stable_stall"]);
-        array_push(_L, ["obj_mercato_prop", _s[0] + 1.45, _s[1] + 1.3, 0.6, _s[2]]);
-    }
+    for (var _i = 0; _i < array_length(_horses); _i++)
+        array_push(_L, ["obj_mercato_prop", _horses[_i][0], _horses[_i][1], 0.6, _horses[_i][2]]);
     // Aisle LANTERNS hugging the stall fronts (warm → cold → green; glow in Draw)
     var _lrows = [5, 9, 13, 17];
     for (var _l = 0; _l < array_length(_lrows); _l++) {
@@ -202,7 +287,8 @@ function scr_stable_load(_path) {
     return _n;
 }
 
-/// Collision: the void-ring walls + each solid prop's tight footprint.
+/// Collision: the void-ring walls + the stall partition walls + each solid
+/// prop's tight footprint.
 function scr_stable_build_collision() {
     for (var _cy = 0; _cy < STABLE_H_CELLS; _cy++)
         for (var _cx = 0; _cx < STABLE_W_CELLS; _cx++) {
@@ -212,6 +298,15 @@ function scr_stable_build_collision() {
             _w.wall_h  = STABLE_GRID_PX;
             _w.visible = false;
         }
+    // stall partitions — same rects the scene draws (single geometry source)
+    var _segs = scr_stable_partitions();
+    for (var _i = 0; _i < array_length(_segs); _i++) {
+        var _s  = _segs[_i];
+        var _pw = instance_create_depth(_s[0], _s[1], 500, obj_wall);
+        _pw.wall_w  = _s[2] - _s[0];
+        _pw.wall_h  = _s[3] - _s[1];
+        _pw.visible = false;
+    }
     scr_room_builder_build_collision();   // tight per-prop footprints (mercato_prop etc.)
 }
 

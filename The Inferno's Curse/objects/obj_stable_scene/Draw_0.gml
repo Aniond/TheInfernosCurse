@@ -42,7 +42,11 @@ if (_has) {
     draw_sprite_ext(_floor, 0, 7 * _g, 21 * _g, 1, 1, 0, _thr, 1);
 }
 
-// Layer 3 — lantern glow (corruption-keyed: warm → dim → cold → GREEN at 100)
+// Layer 3 — STALL PARTITION WALLS (dark timber dividers; same geometry as the
+// obj_wall collision — scr_stable_partitions is the single source)
+scr_stable_draw_partitions(_corr);
+
+// Layer 4 — lantern glow (corruption-keyed: warm → dim → cold → GREEN at 100)
 scr_stable_lantern_glow();
 
 // Ambient — warm hay-light when lucid, cold dark as corruption deepens

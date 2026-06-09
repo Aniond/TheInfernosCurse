@@ -1,4 +1,4 @@
-# VERSION 1
+# VERSION 2
 # Room_fiorentine_stable layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]   (1 cell = 64 px)
 # Mirrors scr_stable_default_layout() (references/stables_interior_map.png).
 # 14x22 cells; interior x1-12 y1-20; south doorway gap cols 6-7 row 21.
@@ -19,21 +19,16 @@ obj_mercato_prop        10.4      1         1.2   spr_stable_tack          solid
 obj_mercato_prop        11.8      1.6       0.9   spr_stable_tack          solid
 obj_barrel              12        2.8       0.5
 
-# --- Zone 3: HORSE STALLS 1-6 with PARTITION WALLS (3 left + 3 right, fronts ---
-# --- reach the 5-cell aisle x4.5-9.5 per the reference; back+sides solid).   ---
-# --- Horses 0.6 inside the partitions: grey/brown/black top-to-bottom.       ---
-obj_mercato_prop        1         4.5       3.5   spr_stable_stall         solid
-obj_mercato_prop        2.45      5.8       0.6   spr_stable_horse_grey    solid
-obj_mercato_prop        9.5       4.5       3.5   spr_stable_stall         solid
-obj_mercato_prop        10.95     5.8       0.6   spr_stable_horse_grey    solid
-obj_mercato_prop        1         8.6       3.5   spr_stable_stall         solid
-obj_mercato_prop        2.45      9.9       0.6   spr_stable_horse_brown   solid
-obj_mercato_prop        9.5       8.6       3.5   spr_stable_stall         solid
-obj_mercato_prop        10.95     9.9       0.6   spr_stable_horse_brown   solid
-obj_mercato_prop        1         12.7      3.5   spr_stable_stall         solid
-obj_mercato_prop        2.45      14        0.6   spr_stable_horse_black   solid
-obj_mercato_prop        9.5       12.7      3.5   spr_stable_stall         solid
-obj_mercato_prop        10.95     14        0.6   spr_stable_horse_black   solid
+# --- Zone 3: SIX HORSES in the partition-wall stalls. The stall walls are NOT ---
+# --- props: scr_stable_partitions() draws them (FF6 thick tile-textured bands) --
+# --- and lays matching obj_wall collision. Horses 0.6, centred per stall box:  --
+# --- grey / brown / black top-to-bottom on BOTH sides.                         --
+obj_mercato_prop        2.45      6.12      0.6   spr_stable_horse_grey    solid
+obj_mercato_prop        10.95     6.12      0.6   spr_stable_horse_grey    solid
+obj_mercato_prop        2.45      9.95      0.6   spr_stable_horse_brown   solid
+obj_mercato_prop        10.95     9.95      0.6   spr_stable_horse_brown   solid
+obj_mercato_prop        2.45      13.78     0.6   spr_stable_horse_black   solid
+obj_mercato_prop        10.95     13.78     0.6   spr_stable_horse_black   solid
 
 # --- Aisle LANTERNS hugging the stall fronts (non-solid; glow in scene Draw) ---
 obj_mercato_prop        4.6       5         1     spr_stable_lantern

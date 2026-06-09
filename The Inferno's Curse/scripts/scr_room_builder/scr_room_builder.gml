@@ -38,7 +38,7 @@
 #macro DUOMO_LAYOUT_VERSION   10
 #macro INN_LAYOUT_VERSION     10
 #macro PONTE_LAYOUT_VERSION   9
-#macro STABLE_LAYOUT_VERSION  1
+#macro STABLE_LAYOUT_VERSION  2
 
 /// The CURRENT room's layout schema version (Room_florence = ROOM_BUILDER_LAYOUT_VERSION).
 function scr_room_builder_layout_version() {
@@ -847,7 +847,23 @@ function scr_room_builder_edit_update() {
 /// (click-pick + collision) is never disturbed. Objects call this from their Draw.
 /// _tint is the blend colour (c_white normally).
 function scr_room_builder_draw_rotated(_inst, _tint) {
-    if (_inst.sprite_index == -1 || !sprite_exists(_inst.sprite_index)) return;
+    if (_inst.sprite_index == -1 || !sprite_exists(_inst.sprite_index)) {
+        // A name-assigned sprite failed to resolve (not imported / stripped /
+        // stale GM session). Invisible props are undebuggable — in debug mode
+        // (F1) draw a MAGENTA marker so "missing" is visible instead of silent.
+        if (variable_global_exists("debug_mode") && global.debug_mode) {
+            draw_set_color(c_fuchsia);
+            draw_rectangle(_inst.x, _inst.y, _inst.x + 48, _inst.y + 48, true);
+            draw_line(_inst.x, _inst.y, _inst.x + 48, _inst.y + 48);
+            draw_line(_inst.x + 48, _inst.y, _inst.x, _inst.y + 48);
+            draw_set_halign(fa_left); draw_set_valign(fa_bottom);
+            draw_text(_inst.x, _inst.y - 2, variable_instance_exists(_inst, "builder_sprite")
+                ? string(_inst.builder_sprite) : "(no sprite)");
+            draw_set_valign(fa_top);
+            draw_set_color(c_white);
+        }
+        return;
+    }
     var _ang = variable_instance_exists(_inst, "builder_angle") ? _inst.builder_angle : 0;
     if (_ang == 0) {
         draw_sprite_ext(_inst.sprite_index, _inst.image_index, _inst.x, _inst.y,
