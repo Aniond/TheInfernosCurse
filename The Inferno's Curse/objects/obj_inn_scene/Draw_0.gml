@@ -6,7 +6,7 @@
 //   Layer 2  warm dark-stone floor on the walkable rectangle (border/corner tiles
 //            at the edges), with a red/brown rug + gold trim in the dining centre.
 //   Layer 3  a lighter doorstep in the south entrance gap; warm/cold ambient by corruption.
-if (room != Room_fiorentine_inn) exit;
+if (room != Room_locanda_rosa_camuna) exit;
 
 // Bread oven swaps lit(animated) <-> cold/corrupt by Limbo corruption (50% threshold).
 // Set here (scene draws at depth 160, before the props at 100) so it lands this frame.

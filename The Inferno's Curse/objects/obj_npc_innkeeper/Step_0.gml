@@ -35,16 +35,29 @@ if (!_near) {
 }
 player_near = true;
 
-// open the menu once on ENTERING the proximity zone
-if (!greeted) {
-    greeted   = true;
-    menu_open = true;
-    menu_sel  = 0;
-    global.input_locked = true;
-}
-
+// FIX 1: NO proximity auto-open. Walking past the counter does nothing. The player
+// must FACE the counter (turn toward Aldo) and press E to open the rest menu.
+// Aldo and Rosa stand a cell apart so their facing cones overlap — he only claims
+// the press when he is at least as directly faced as her (<= : ties go to him,
+// strict < on her side, so one E press opens exactly ONE menu). Rooms are HIS only;
+// drinks/food are hers (division of roles).
 if (!menu_open) {
-    if (keyboard_check_pressed(ord("E"))) { menu_open = true; menu_sel = 0; global.input_locked = true; }
+    if (!global.input_locked && keyboard_check_pressed(ord("E")) && scr_npc_player_facing(_cx, _cy, 60)) {
+        var _mine = scr_npc_facing_delta(_cx, _cy);
+        var _rosa = 999;
+        if (instance_exists(obj_npc_rosa) && obj_npc_rosa.on_shift) {
+            var _r = obj_npc_rosa;
+            _rosa  = scr_npc_facing_delta(
+                _r.x + sprite_get_width(_r.sprite_index)  * _r.image_xscale * 0.5,
+                _r.y + sprite_get_height(_r.sprite_index) * _r.image_yscale * 0.5);
+        }
+        if (_mine <= _rosa) {
+            greeted   = true;
+            menu_open = true;
+            menu_sel  = 0;
+            global.input_locked = true;
+        }
+    }
     exit;
 }
 
@@ -69,7 +82,7 @@ if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
         if (_relief > 0) scr_corruption_relieve(_relief, false);
         scr_time_sleep();                                    // sleep → skip to 06:00 next day (scr_time_system)
         msg_text = "You take " + _name + ". The night passes.  (-" + string(_cost) + "g)";
-        scr_chronicle_add("A night's rest at the Fiorentine Inn — " + _name + ".");
+        scr_chronicle_add("A night's rest at the Locanda della Rosa Camuna — " + _name + ".");
     } else {
         msg_text = "Not enough gold for " + _name + " (" + string(_cost) + "g).";
     }

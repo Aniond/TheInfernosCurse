@@ -390,7 +390,7 @@ function scr_room_builder_save() {
     var _path = working_directory + "room1_layout.txt";
     if (room == Room_ponte_vecchio)  _path = working_directory + "room_ponte_vecchio_layout.txt";
     if (room == Room_duomo)          _path = working_directory + "room_duomo_layout.txt";
-    if (room == Room_fiorentine_inn) _path = working_directory + "room_fiorentine_inn_layout.txt";
+    if (room == Room_locanda_rosa_camuna) _path = working_directory + "room_locanda_rosa_camuna_layout.txt";
     var _f = file_text_open_write(_path);
     if (_f == -1) {
         show_debug_message("[room_builder] SAVE FAILED — sandbox blocks " + ROOM_BUILDER_FILE +
@@ -484,7 +484,7 @@ function scr_room_builder_point_in(_inst, _mx, _my) {
 /// Called every step from obj_game_manager. F8 then writes the new positions.
 function scr_room_builder_drag_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_fiorentine_inn) return;   // draggable in all built rooms
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna) return;   // draggable in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
@@ -532,7 +532,7 @@ function scr_room_builder_drag_update() {
                     scr_world_event_log(object_get_name(_o.object_index) + " moved -> grid " +
                         string(_o.x / ROOM_BUILDER_GRID) + "," + string(_o.y / ROOM_BUILDER_GRID) + "  (F8 to save)");
             }
-            if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_fiorentine_inn) scr_inn_rebuild_collision();   // footprint follows the prop — no ghosts
+            if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_locanda_rosa_camuna) scr_inn_rebuild_collision();   // footprint follows the prop — no ghosts
             global.room_builder_drag = noone;
         }
     }
@@ -561,7 +561,7 @@ function scr_room_builder_delete_selected() {
     instance_destroy(_sel);
     global.room_builder_selected = noone;
     if (variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
-    if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_fiorentine_inn) scr_inn_rebuild_collision();   // drop the deleted prop's footprint
+    if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_locanda_rosa_camuna) scr_inn_rebuild_collision();   // drop the deleted prop's footprint
 
     // Persist: rewrite the layout file (save folder) without the deleted entry.
     scr_room_builder_save();
@@ -582,7 +582,7 @@ function scr_room_builder_delete_selected() {
 /// F8 then saves the exact fractional position (the save no longer rounds to grid).
 function scr_room_builder_nudge_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_fiorentine_inn) return;   // nudge in all built rooms
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna) return;   // nudge in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_selected")) return;
     var _sel = global.room_builder_selected;
@@ -607,7 +607,7 @@ function scr_room_builder_nudge_update() {
 
     _sel.x += _nx;
     _sel.y += _ny;
-    if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_fiorentine_inn) scr_inn_rebuild_collision();   // footprint follows the prop — no ghosts
+    if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_locanda_rosa_camuna) scr_inn_rebuild_collision();   // footprint follows the prop — no ghosts
     if (variable_global_exists("save_indicator_text")) {
         global.save_indicator_text  = "Nudged " + object_get_name(_sel.object_index) +
             " -> " + string(_sel.x) + "," + string(_sel.y) + "  (F8 to save)";

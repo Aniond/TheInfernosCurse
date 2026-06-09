@@ -12,10 +12,13 @@ draw_set_alpha(1);
 
 draw_sprite_ext(sprite_index, image_index, x, y, image_xscale, image_yscale, 0, c_white, 1);
 
-if (player_near && !menu_open) {
-    draw_set_halign(fa_center);
-    draw_set_color(c_black);                       draw_text(x + 33, y - 11, "[E] Speak");
-    draw_set_color(make_color_rgb(236, 220, 180)); draw_text(x + 32, y - 12, "[E] Speak");
-    draw_set_color(c_white);
-    draw_set_halign(fa_left);
-}
+var _icx = x + sprite_get_width(sprite_index)  * image_xscale * 0.5;
+var _icy = y + sprite_get_height(sprite_index) * image_yscale * 0.5;
+
+// Floating parchment emotion icon above his head (emotion system).
+scr_npc_emotion_draw(id, "innkeeper", _icx, y - 12);
+
+// FIX 3: "[E] Talk" prompt above his head, shown only while in talk range and the
+// menu is closed. Uses proximity_radius (130) not a literal 80 — the player can't
+// get within 80px of him across the ~2-cell-deep counter, so 80 would never show.
+if (!menu_open) scr_npc_talk_prompt(_icx, _icx, _icy, y - 28, proximity_radius);

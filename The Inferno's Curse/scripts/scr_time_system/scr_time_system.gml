@@ -17,6 +17,8 @@
 
 // ── Step — advance the clock ──────────────────────────────────────────────────
 function scr_time_step() {
+    // Debug freeze (toggled with T) — clock holds; Ctrl+T can still step it manually.
+    if (variable_global_exists("time_frozen") && global.time_frozen) return;
     global.__time_accum += TIME_RATE / 60.0;
     var _mins = floor(global.__time_accum);
     if (_mins < 1) return;

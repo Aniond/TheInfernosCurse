@@ -29,7 +29,7 @@ draw_roundrect_ext(_px + 4, _py + 4, _px + _pw - 4, _py + _ph - 4, 10, 10, true)
 // greeting
 draw_set_halign(fa_center); draw_set_valign(fa_top);
 draw_set_color(make_color_rgb(236, 220, 180));
-draw_text_transformed(_px + _pw * 0.5, _py + 18, "Welcome traveler.",      1.4, 1.4, 0);
+draw_text_transformed(_px + _pw * 0.5, _py + 18, "Welcome to the Locanda della Rosa Camuna.", 1.0, 1.0, 0);
 draw_text_transformed(_px + _pw * 0.5, _py + 46, "A room for the night?",  1.2, 1.2, 0);
 
 // the room offered for the player's reputation tier

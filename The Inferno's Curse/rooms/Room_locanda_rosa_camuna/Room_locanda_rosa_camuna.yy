@@ -1,13 +1,13 @@
 {
   "$GMRoom":"v1",
-  "%Name":"Room_fiorentine_inn",
+  "%Name":"Room_locanda_rosa_camuna",
   "creationCodeFile":"",
   "inheritCode":false,
   "inheritCreationOrder":false,
   "inheritLayers":false,
   "instanceCreationOrder":[
-    {"name":"inst_inn_scene","path":"rooms/Room_fiorentine_inn/Room_fiorentine_inn.yy",},
-    {"name":"inst_inn_player","path":"rooms/Room_fiorentine_inn/Room_fiorentine_inn.yy",},
+    {"name":"inst_inn_scene","path":"rooms/Room_locanda_rosa_camuna/Room_locanda_rosa_camuna.yy",},
+    {"name":"inst_inn_player","path":"rooms/Room_locanda_rosa_camuna/Room_locanda_rosa_camuna.yy",},
   ],
   "isDnd":false,
   "layers":[
@@ -18,7 +18,7 @@
         {"$GMRInstance":"v4","%Name":"inst_inn_scene","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_inn_scene","objectId":{"name":"obj_inn_scene","path":"objects/obj_inn_scene/obj_inn_scene.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":0.0,"y":0.0,},
       ],"layers":[],"name":"Scene","properties":[],"resourceType":"GMRInstanceLayer","resourceVersion":"2.0","userdefinedDepth":false,"visible":true,},
   ],
-  "name":"Room_fiorentine_inn",
+  "name":"Room_locanda_rosa_camuna",
   "parent":{
     "name":"The Inferno's Curse",
     "path":"The Inferno's Curse.yyp",

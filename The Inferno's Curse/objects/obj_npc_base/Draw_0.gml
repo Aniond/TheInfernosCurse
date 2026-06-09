@@ -58,6 +58,15 @@ if (prop_sprite != noone) {
     draw_sprite_ext(prop_sprite, 0, x - _pw * 0.5, y + 6 * _s, _s, _s, 0, c_white, 1);
 }
 
+// ── Floating parchment emotion icon (shared by every NPC child — e.g. Marco) ──
+// npc_data.id is the npc_system key ("marco", …); unknown ids resolve to no icon.
+if (variable_instance_exists(id, "npc_data") && variable_struct_exists(npc_data, "id")) {
+    var _emo_top = (npc_sprite != noone)
+        ? (y - sprite_get_height(npc_sprite) * _s + 28 * _s - 12)   // 12px above the figure
+        : (y - 44);                                                  // above the placeholder
+    scr_npc_emotion_draw(id, npc_data.id, x, _emo_top);
+}
+
 // Labels sit higher when a full-size character sprite is present so they
 // clear the head (scaled with the sprite); placeholders keep tight offsets.
 var _name_label_y   = (npc_sprite != noone) ? (y - 96 * _s) : (y - 58);
@@ -69,7 +78,7 @@ if (near_player && !is_talking) {
     draw_set_color(merge_color(c_yellow, c_white, _pulse));
     draw_set_halign(fa_center);
     draw_set_valign(fa_bottom);
-    draw_text(x, _prompt_label_y, "[E / SPACE] Talk");
+    draw_text(x, _prompt_label_y, "[E] Talk");   // FIX 3: uniform Tier-1 prompt
 }
 
 // Name tag — always visible

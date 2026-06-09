@@ -42,6 +42,7 @@ global.game_hour   = 6;
 global.game_minute = 0;
 global.game_day    = 1;
 global.__time_accum = 0;
+global.time_frozen  = false;   // debug: T pauses the day/night clock (scr_time_step early-outs)
 
 // Index (0-6) of the circle the player is currently occupying.
 // 0 = Limbo (starting circle). Increases as the player descends.
@@ -335,7 +336,7 @@ scr_npc_system_init();
 // Room_duomo's instance position (the south doorway, 640,1252).
 // Flip DUOMO_LOAD_POINT (scr_duomo) to false to restore the normal Florence start.
 if (INN_LOAD_POINT && room == Room1) {
-    room_goto(Room_fiorentine_inn);   // TEMP boot for testing the inn (flip INN_LOAD_POINT to false)
+    room_goto(Room_locanda_rosa_camuna);   // TEMP boot for testing the inn (flip INN_LOAD_POINT to false)
 } else if (DUOMO_LOAD_POINT && room == Room1) {
     room_goto(Room_duomo);
 }

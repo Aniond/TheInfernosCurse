@@ -1,5 +1,5 @@
 // =============================================================================
-// scr_inn — Room_fiorentine_inn (ground floor) — BLACK-VOID rectangular interior
+// scr_inn — Room_locanda_rosa_camuna (ground floor) — BLACK-VOID rectangular interior
 // =============================================================================
 // 20 x 20 cells (1280 x 1280). Walkable floor is an inset rectangle; the 1-cell
 // black-void border is the walls. A 3-cell gap in the SOUTH wall (cols 9-11) is the
@@ -128,7 +128,7 @@ function scr_inn_default_layout() {
 
 // ── Build (called from obj_inn_scene Create) ─────────────────────────────────────
 function scr_inn_build() {
-    if (room != Room_fiorentine_inn) return 0;
+    if (room != Room_locanda_rosa_camuna) return 0;
 
     // keep-alive: name-placed sprites + objects are invisible to the asset stripper.
     global.__inn_keep     = [obj_mercato_prop, obj_duomo_candelabra, obj_barrel, obj_npc_innkeeper, obj_npc_rosa, obj_inn_candle];
@@ -142,7 +142,7 @@ function scr_inn_build() {
         if (instance_exists(global.room_builder_objects[_i])) instance_destroy(global.room_builder_objects[_i]);
     global.room_builder_objects = [];
 
-    var _path   = working_directory + "room_fiorentine_inn_layout.txt";
+    var _path   = working_directory + "room_locanda_rosa_camuna_layout.txt";
     var _placed = file_exists(_path) ? scr_inn_load(_path) : 0;
     if (_placed == 0) scr_inn_default_place();
 
@@ -245,7 +245,7 @@ function scr_inn_build_collision() {
 /// Only reassigns sprite_index when it actually changes — assigning it every frame would
 /// reset image_index to 0 and freeze the flame animation.
 function scr_inn_oven_sync() {
-    if (room != Room_fiorentine_inn) return;
+    if (room != Room_locanda_rosa_camuna) return;
     if (!variable_global_exists("room_builder_objects")) return;
     // Warm lit (<50) -> cold black, no flame (50-99) -> eerie GREEN relight at full
     // corruption (100). The green oven is the same 9-frame animation recoloured.
@@ -267,7 +267,7 @@ function scr_inn_oven_sync() {
 
 /// Rebuild inn collision from current prop positions (debug: after drag/nudge/delete).
 function scr_inn_rebuild_collision() {
-    if (room != Room_fiorentine_inn) return;
+    if (room != Room_locanda_rosa_camuna) return;
     with (obj_wall) instance_destroy();
     scr_inn_build_collision();
 }

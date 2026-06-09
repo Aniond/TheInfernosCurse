@@ -53,6 +53,17 @@ if (keyboard_check(vk_control) && keyboard_check_pressed(ord("T"))) {
     global.save_indicator_timer = 120;
 }
 
+// ── DEBUG: freeze / unfreeze the day-night clock (T, no Ctrl) ──────────────────
+// Holds the clock so NPCs don't drift off-schedule and lighting stays put while
+// testing. Ctrl+T still steps it by hand even while frozen.
+if (keyboard_check_pressed(ord("T")) && !keyboard_check(vk_control)) {
+    global.time_frozen = !global.time_frozen;
+    global.save_indicator_text  = global.time_frozen
+        ? ("TIME FROZEN " + scr_time_str() + " [" + scr_time_phase() + "]")
+        : "TIME RESUMED";
+    global.save_indicator_timer = 120;
+}
+
 // ── DEBUG: toggle debug mode (F1) — controls placeholder visuals ──────────────
 if (keyboard_check_pressed(vk_f1)) {
     global.debug_mode = !global.debug_mode;
@@ -129,6 +140,32 @@ if (keyboard_check_pressed(vk_f7)) {
     global.circle_corruption[global.current_circle] = 100;
     global.save_indicator_text  = "CORRUPTION MAX";
     global.save_indicator_timer = 120;
+}
+
+// ── DEBUG: NPC behaviour test hooks — exercise scr_npc_log_event end-to-end ────
+// The behaviour system is built but nothing in gameplay feeds it yet, so these
+// fire sample interactions on Rosa ("barmaid") to verify the whole pipeline:
+// relationship delta → emotion ladder → floating icon → corruption memory-erasure.
+//   Ctrl+G = GENEROUS +5   ·   Ctrl+H = RUDE -5
+// Workflow: raise corruption with F3/F7 first, then fire an event to watch the
+// event_log get pruned (>=50: >5-day events drop; >=75: keep last 2; >=100: wiped).
+// The save-indicator HUD echoes the new score/emotion/event-count so it's
+// verifiable even when Rosa isn't on-screen. debug_mode-gated — dev only.
+if (global.debug_mode && keyboard_check(vk_control) && keyboard_check_pressed(ord("G"))) {
+    scr_npc_log_event("barmaid", "generous", "Benedetto left extra coin on the counter.", 5);
+    var _rosa = scr_npc_get("barmaid");
+    global.save_indicator_text  = "ROSA +5  score=" + string(_rosa.relationship_score)
+        + "  " + _rosa.emotion_state + "  (events=" + string(array_length(_rosa.event_log)) + ")";
+    global.save_indicator_timer = 180;
+    scr_npc_show_emotion(obj_npc_rosa, "happy");
+}
+if (global.debug_mode && keyboard_check(vk_control) && keyboard_check_pressed(ord("H"))) {
+    scr_npc_log_event("barmaid", "rude", "Benedetto snapped at her over nothing.", -5);
+    var _rosa = scr_npc_get("barmaid");
+    global.save_indicator_text  = "ROSA -5  score=" + string(_rosa.relationship_score)
+        + "  " + _rosa.emotion_state + "  (events=" + string(array_length(_rosa.event_log)) + ")";
+    global.save_indicator_timer = 180;
+    scr_npc_show_emotion(obj_npc_rosa, "angry");
 }
 
 // ── DEBUG: battle trigger (B) — remove when proper battle triggers are wired ──

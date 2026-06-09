@@ -12,3 +12,12 @@ menu_sel         = 0;       // 0 = take the room · 1 = maybe later
 greeted          = false;   // open once per approach
 msg_text         = "";
 msg_timer        = 0;
+
+// FIX 2 — debug: confirm emotion_state loaded from npc_data.json on room entry,
+// and whether it maps to an icon. (Output window only — costs nothing in-game.)
+var _id  = scr_npc_get("innkeeper");
+var _spr = is_undefined(_id) ? noone : scr_npc_emotion_sprite(_id.emotion_state);
+show_debug_message("[npc] Aldo/innkeeper inn-entry: emotion=" +
+    (is_undefined(_id) ? "<NO DATA>" : _id.emotion_state) +
+    " score=" + (is_undefined(_id) ? "?" : string(_id.relationship_score)) +
+    " icon=" + (_spr == noone ? "none (neutral has no icon by design)" : sprite_get_name(_spr)));

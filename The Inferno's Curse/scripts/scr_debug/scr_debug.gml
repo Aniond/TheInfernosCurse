@@ -145,12 +145,13 @@ function scr_debug_gui_common(_in_battle) {
         _sprn = sprite_exists(obj_player.sprite_index) ? sprite_get_name(obj_player.sprite_index) : "-";
         _idx  = string(floor(obj_player.image_index));
     }
+    var _frozen = (variable_global_exists("time_frozen") && global.time_frozen) ? " *FROZEN*" : "";
     var _timestr = variable_global_exists("game_hour")
-        ? (scr_time_str() + " Day " + string(global.game_day) + " [" + scr_time_phase() + "]")
+        ? (scr_time_str() + " Day " + string(global.game_day) + " [" + scr_time_phase() + "]" + _frozen)
         : (scr_debug_time_str(_tod) + _night);
     var _tl = [
         "S:" + string(_san) + "  C:" + string(round(_corrL)) + "  PC:" + _pc,
-        _timestr + "  Ctrl+T=+1hr",
+        _timestr + "  Ctrl+T=+1hr  T=freeze",
         "pos:" + _px + "," + _py + "  room:" + room_get_name(room),
         "spd:" + _spd + "  spr:" + _sprn + "  idx:" + _idx,
     ];
