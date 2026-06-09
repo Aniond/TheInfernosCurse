@@ -52,10 +52,7 @@ Desktop.ini
 *.orig
 
 # ── Project docs (local reference only, not version controlled) ──────────────
-story_bible.md
-core_systems.md
-dev_setup.md
-ai_integration.md
+docs/local/
 
 # ── Misc root-level files ─────────────────────────────────────────────────────
 *.winmd
@@ -70,6 +67,9 @@ config.ini
 .mcp.json
 
 # ── Local-only staging & reference material (not version controlled) ─────────
+# Quarantine for strays / retired staging folders (installers, _lib_staging,
+# _bg_backup, empty downloads tree — review and empty manually)
+_archive/
 # Library install staging scratch (zips + extracted GM libs)
 _lib_staging/
 # Reference PDFs (large rulebooks / grimoires, local reference only)

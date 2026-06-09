@@ -89,7 +89,7 @@ Rules:
 
 ## .yy File Rules
 CRITICAL — always read existing .yy files first and match exact verified format
-from yy_templates.md before creating any new ones. Never deviate from verified
+from docs/yy_templates.md before creating any new ones. Never deviate from verified
 format. Close GameMaker before editing .yy files.
 
 ## Tilesets — NEVER hand-author
@@ -119,7 +119,7 @@ Rooms are one of two types, and the BLACK-VOID wall method applies to INTERIOR
 rooms ONLY:
 - INTERIOR rooms (e.g. Room_duomo): use the black-void method — black background
   everywhere, floor tiles only on walkable cells, void = walls (FF6/JRPG style;
-  scr_duomo + the obj_*_scene Draw). See design_room_construction.md.
+  scr_duomo + the obj_*_scene Draw). See docs/design_room_construction.md.
 - EXTERIOR rooms (Room_florence, Room_ponte_vecchio): KEEP ALL EXISTING ART.
   NEVER convert them to black void. The Arno water, the Ponte shop sprites, and the
   Florence map all stay. Do NOT remove, replace, or black-out exterior art.

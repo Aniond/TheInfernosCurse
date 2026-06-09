@@ -55,27 +55,30 @@ The world has been fractured by a ancient curse tied to Dante's seven circles of
 ## Project Structure
 
 ```
-The Infernos Curse/
-├── docs/               # Design documents, notes, references
-├── assets/
-│   ├── sprites/        # Character and enemy sprites
-│   ├── tilesets/       # World tilesets per circle
-│   ├── audio/          # Music and SFX
-│   ├── ui/             # HUD, menus, interface elements
-│   └── concepts/       # Concept art, mood boards
-├── src/
-│   ├── scripts/        # GML scripts
-│   ├── objects/        # GameMaker objects
-│   ├── rooms/          # Game rooms/maps
-│   └── shaders/        # Visual shaders for corruption effects
-├── ai/
-│   ├── prompts/        # System prompts for Claude API integration
-│   └── integration/    # API call scripts and handlers
-└── design/
-    ├── story/          # Story bible, dialogue, lore
-    ├── systems/        # Game system design docs
-    └── levels/         # Level/circle design docs
+C:\TheInfernoCurse\
+├── The Inferno's Curse/   # The GameMaker project (LTS 2026) — objects, scripts,
+│                          # rooms, sprites, .yyp. Open this in the GM IDE.
+├── docs/                  # Tracked design docs (room construction, water
+│   │                      # perception, yy_templates.md — verified .yy formats)
+│   └── local/             # Gitignored local-only docs (story bible, core
+│                          # systems, dev setup, AI integration)
+├── layouts/               # Human-readable room layout sources (mirrored into
+│                          # the code seeds; runtime copies live in the save dir)
+├── assets/                # Source PNGs by category (imported into GM sprites
+│                          # via import_sprites.ps1 — never re-download/overwrite)
+├── references/            # Gitignored visual references (room maps, PDFs)
+├── sprite_import/         # Gitignored staging for PNGs awaiting GM import
+├── instructions/          # Gitignored local refs (PixelLab API, watch_game.ps1)
+├── scripts/               # Capture/burst-test helper scripts (user-run)
+├── _archive/              # Gitignored quarantine: retired staging, strays
+├── clean_build.ps1        # Clear GM cache for a guaranteed clean compile
+├── import_sprites.ps1     # PNG -> GameMaker sprite resources (+ .yyp entries)
+├── watch_burst.ps1        # Burst screenshot capture (user runs manually)
+├── CLAUDE.md              # Claude Code project rules
+└── config.ini             # Gitignored: Claude API key (Included File source)
 ```
+Note: `ComfyUI/` (127MB, gitignored) lives at the root but is an external tool —
+candidate to relocate outside the repo.
 
 ---
 
