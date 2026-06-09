@@ -46,8 +46,8 @@ scr_check_trigger_vision();
 if (keyboard_check_pressed(vk_f5)) scr_save_world_state();
 if (keyboard_check_pressed(vk_f9)) scr_load_world_state();
 
-// ── DEBUG: advance 1 hour (Ctrl+T) ───────────────────────────────────────────
-if (keyboard_check(vk_control) && keyboard_check_pressed(ord("T"))) {
+// ── DEBUG: advance 1 hour (Ctrl+T) — debug_mode only (F1) ─────────────────────
+if (global.debug_mode && keyboard_check(vk_control) && keyboard_check_pressed(ord("T"))) {
     scr_time_advance_hours(1);
     global.save_indicator_text  = "TIME: " + scr_time_str() + " [" + scr_time_phase() + "]";
     global.save_indicator_timer = 120;
@@ -56,7 +56,7 @@ if (keyboard_check(vk_control) && keyboard_check_pressed(ord("T"))) {
 // ── DEBUG: freeze / unfreeze the day-night clock (T, no Ctrl) ──────────────────
 // Holds the clock so NPCs don't drift off-schedule and lighting stays put while
 // testing. Ctrl+T still steps it by hand even while frozen.
-if (keyboard_check_pressed(ord("T")) && !keyboard_check(vk_control)) {
+if (global.debug_mode && keyboard_check_pressed(ord("T")) && !keyboard_check(vk_control)) {
     global.time_frozen = !global.time_frozen;
     global.save_indicator_text  = global.time_frozen
         ? ("TIME FROZEN " + scr_time_str() + " [" + scr_time_phase() + "]")
@@ -95,8 +95,8 @@ scr_room_builder_drag_update();
 // ── DEBUG: fine-nudge the selected object with arrow keys (sub-grid; F8 saves) ─
 scr_room_builder_nudge_update();
 
-// ── DEBUG: toggle 64px grid overlay (F2) — coords every 5th cell, for placement ─
-if (keyboard_check_pressed(vk_f2)) {
+// ── DEBUG: toggle 64px grid overlay (F2) — debug_mode only (F1) ────────────────
+if (global.debug_mode && keyboard_check_pressed(vk_f2)) {
     if (!variable_global_exists("debug_grid_overlay")) global.debug_grid_overlay = false;
     global.debug_grid_overlay = !global.debug_grid_overlay;
     global.save_indicator_text  = global.debug_grid_overlay ? "GRID ON" : "GRID OFF";
@@ -106,8 +106,8 @@ if (keyboard_check_pressed(vk_f2)) {
 // ── DEBUG: delete the selected room-builder object (Delete key) ────────────────
 if (global.debug_mode && keyboard_check_pressed(vk_delete)) scr_room_builder_delete_selected();
 
-// ── DEBUG: cycle Focus class (C) — default -> witness -> cursed (moved off F2) ─
-if (keyboard_check_pressed(ord("C"))) {
+// ── DEBUG: cycle Focus class (C) — debug_mode only (F1) ────────────────────────
+if (global.debug_mode && keyboard_check_pressed(ord("C"))) {
     if      (global.player_class == "default") global.player_class = "witness";
     else if (global.player_class == "witness") global.player_class = "cursed";
     else                                       global.player_class = "default";
@@ -115,13 +115,13 @@ if (keyboard_check_pressed(ord("C"))) {
     global.save_indicator_timer = 120;
 }
 
-// ── DEBUG: corruption tiers (F3 +20 worse, F4 -20 better) — test perception ──
-if (keyboard_check_pressed(vk_f3)) {
+// ── DEBUG: corruption tiers (F3 +20 worse, F4 -20 better) — debug_mode only ──
+if (global.debug_mode && keyboard_check_pressed(vk_f3)) {
     global.circle_corruption[CIRCLE_LIMBO] = clamp(global.circle_corruption[CIRCLE_LIMBO] + 20, 0, 100);
     global.save_indicator_text  = "CORRUPTION: " + string(round(global.circle_corruption[CIRCLE_LIMBO]));
     global.save_indicator_timer = 120;
 }
-if (keyboard_check_pressed(vk_f4)) {
+if (global.debug_mode && keyboard_check_pressed(vk_f4)) {
     global.circle_corruption[CIRCLE_LIMBO] = clamp(global.circle_corruption[CIRCLE_LIMBO] - 20, 0, 100);
     global.save_indicator_text  = "CORRUPTION: " + string(round(global.circle_corruption[CIRCLE_LIMBO]));
     global.save_indicator_timer = 120;
@@ -131,12 +131,12 @@ if (keyboard_check_pressed(vk_f4)) {
 // Lets you see the dialogue box (and all sin effects) at their default clean
 // state or full corruption without playing through a save. F6 clears every
 // circle; F7 maxes the current circle so you can test heavy tint/fragmentation.
-if (keyboard_check_pressed(vk_f6)) {
+if (global.debug_mode && keyboard_check_pressed(vk_f6)) {
     for (var _i = 0; _i < CIRCLE_COUNT; _i++) global.circle_corruption[_i] = 0;
     global.save_indicator_text  = "CORRUPTION RESET";
     global.save_indicator_timer = 120;
 }
-if (keyboard_check_pressed(vk_f7)) {
+if (global.debug_mode && keyboard_check_pressed(vk_f7)) {
     global.circle_corruption[global.current_circle] = 100;
     global.save_indicator_text  = "CORRUPTION MAX";
     global.save_indicator_timer = 120;
@@ -169,9 +169,8 @@ if (global.debug_mode && keyboard_check(vk_control) && keyboard_check_pressed(or
 }
 
 // ── DEBUG: battle trigger (B) — remove when proper battle triggers are wired ──
-// Unconditional in Florence so it always works during development, regardless of
-// debug_mode / save state. Pressing B drops Benedetto into room_battle vs 3 Hollows.
-if (room == Room1 && keyboard_check_pressed(ord("B"))) {
+// debug_mode only (F1). Pressing B in Florence drops Benedetto into room_battle.
+if (global.debug_mode && room == Room1 && keyboard_check_pressed(ord("B"))) {
     scr_battle_trigger(1);   // 1 Hollow, Florence corruption level
 }
 

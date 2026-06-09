@@ -17,3 +17,8 @@
 // Watch the canonical day counter so the daily cascade fires exactly once per new day —
 // this covers natural midnight rollover AND sleep/prayer jumps that skip across midnight.
 last_seen_day = variable_global_exists("game_day") ? global.game_day : global.day_count;
+
+// Watch the hour for the black-market gate (Step). Init the flag here — this manager
+// owns it; -1 forces one evaluation on the first Step so a mid-window load opens it.
+last_seen_hour = -1;
+if (!variable_global_exists("black_market_active")) global.black_market_active = false;
