@@ -240,6 +240,7 @@ function scr_debug_gui_common(_in_battle) {
                 "green   = player foot box",
                 "yellow  = interaction zone",
                 "cyan    = builder prop",
+                "orange  = selected footprint",
                 "magenta = transition zone",
                 "white+  = player origin",
             ];
@@ -334,6 +335,21 @@ function scr_debug_world_overworld() {
         }
         draw_set_halign(fa_left);
         draw_set_valign(fa_top);
+    }
+
+    // Collision footprint preview — ORANGE band on the SELECTED prop: the exact
+    // obj_wall rectangle scr_room_builder_build_collision() lays under it (shared
+    // geometry — scr_room_builder_footprint). Live: follows drag / nudge / scale,
+    // so misplaced invisible walls are visible the moment they happen.
+    if (variable_global_exists("room_builder_selected") && instance_exists(global.room_builder_selected)) {
+        var _fp = scr_room_builder_footprint(global.room_builder_selected);
+        if (!is_undefined(_fp)) {
+            draw_set_color(make_color_rgb(255, 150, 40));
+            draw_set_alpha(0.22);
+            draw_rectangle(_fp[0], _fp[1], _fp[2], _fp[3], false);
+            draw_set_alpha(1);
+            draw_rectangle(_fp[0], _fp[1], _fp[2], _fp[3], true);
+        }
     }
 
     // Transition zones — PURPLE (distinct from the red selection blocks). Draws EVERY

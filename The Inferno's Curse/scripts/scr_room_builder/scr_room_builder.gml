@@ -320,6 +320,55 @@ function scr_room_builder_load() {
 ///   • all else  — small base footprint (urns, pots, herbs, bread, jugs, crates…).
 /// Walls are tracked in global.__room_builder_collision so a rebuild clears only
 /// THESE, never the river / garden walls (also obj_wall) that obj_game_manager owns.
+/// The obj_wall footprint [x0,y0,x1,y1] that build_collision() lays under one
+/// solid builder prop, or undefined (not solid / no sprite / empty bbox). Shared
+/// by the collision builder AND the debug ORANGE footprint preview (scr_debug),
+/// so what the preview shows is exactly what the player collides with.
+function scr_room_builder_footprint(_o) {
+    if (!variable_instance_exists(_o, "builder_solid") || !_o.builder_solid) return undefined;
+    if (_o.sprite_index == -1 || !sprite_exists(_o.sprite_index)) return undefined;
+
+    // on-screen extent (Full-Image bbox == the displayed sprite rectangle)
+    var _L = _o.bbox_left, _T = _o.bbox_top, _R = _o.bbox_right, _B = _o.bbox_bottom;
+    var _bw = _R - _L, _bh = _B - _T;
+    if (_bw <= 0 || _bh <= 0) return undefined;
+
+    var _nm = (variable_instance_exists(_o, "builder_sprite") && _o.builder_sprite != "")
+        ? _o.builder_sprite : sprite_get_name(_o.sprite_index);
+
+    // category → inset fractions [x0,y0,x1,y1] of the bbox
+    var _x0f, _y0f, _x1f, _y1f;
+    if (string_pos("stall", _nm) > 0) {
+        // BACK + SIDES: top band only, front (south) left open to shop from
+        _x0f = 0.05; _y0f = 0.05; _x1f = 0.95; _y1f = 0.58;
+    } else if (string_pos("fountain", _nm) > 0) {
+        // solid central basin
+        _x0f = 0.18; _y0f = 0.24; _x1f = 0.82; _y1f = 0.90;
+    } else if (string_pos("building", _nm) > 0 || string_pos("loggia", _nm) > 0
+            || string_pos("inn", _nm) > 0 || string_pos("church", _nm) > 0
+            || string_pos("stable", _nm) > 0 || string_pos("cathedral", _nm) > 0
+            || string_pos("tower", _nm) > 0 || string_pos("house", _nm) > 0
+            || string_pos("duomo", _nm) > 0 || string_pos("basilica", _nm) > 0) {
+        // building body — inset off the painted edges so no ghost in the cobble
+        _x0f = 0.12; _y0f = 0.10; _x1f = 0.88; _y1f = 0.94;
+    } else {
+        // small ground prop (urn, pot, herbs, bread, jugs, crate, sack, cloth…)
+        _x0f = 0.22; _y0f = 0.50; _x1f = 0.78; _y1f = 0.92;
+    }
+
+    return [_L + _bw * _x0f, _T + _bh * _y0f, _L + _bw * _x1f, _T + _bh * _y1f];
+}
+
+/// Rebuild whichever collision set the CURRENT room uses, so footprints always
+/// follow their props after any edit (move / scale / rotate / duplicate / delete
+/// / undo). Previously only the Duomo + inn rebuilt — Room1 / Ponte footprints
+/// stayed at the prop's ORIGINAL spot until restart (the invisible-wall bug).
+function scr_room_builder_refresh_collision() {
+    if (room == Room_duomo)               { scr_duomo_rebuild_collision(); return; }
+    if (room == Room_locanda_rosa_camuna) { scr_inn_rebuild_collision();   return; }
+    scr_room_builder_build_collision();
+}
+
 function scr_room_builder_build_collision() {
     if (!variable_global_exists("__room_builder_collision")) global.__room_builder_collision = [];
     // clear any walls from a previous build (defensive — load normally runs once)
@@ -337,40 +386,13 @@ function scr_room_builder_build_collision() {
         if (!variable_instance_exists(_o, "builder_solid") || !_o.builder_solid) continue;
         if (_o.sprite_index == -1 || !sprite_exists(_o.sprite_index)) continue;
 
-        // on-screen extent (Full-Image bbox == the displayed sprite rectangle)
-        var _L = _o.bbox_left, _T = _o.bbox_top, _R = _o.bbox_right, _B = _o.bbox_bottom;
-        var _bw = _R - _L, _bh = _B - _T;
-        if (_bw <= 0 || _bh <= 0) continue;
+        // footprint geometry shared with the debug preview — see scr_room_builder_footprint
+        var _fp = scr_room_builder_footprint(_o);
+        if (is_undefined(_fp)) continue;
 
-        var _nm = (variable_instance_exists(_o, "builder_sprite") && _o.builder_sprite != "")
-            ? _o.builder_sprite : sprite_get_name(_o.sprite_index);
-
-        // category → inset fractions [x0,y0,x1,y1] of the bbox
-        var _x0f, _y0f, _x1f, _y1f;
-        if (string_pos("stall", _nm) > 0) {
-            // BACK + SIDES: top band only, front (south) left open to shop from
-            _x0f = 0.05; _y0f = 0.05; _x1f = 0.95; _y1f = 0.58;
-        } else if (string_pos("fountain", _nm) > 0) {
-            // solid central basin
-            _x0f = 0.18; _y0f = 0.24; _x1f = 0.82; _y1f = 0.90;
-        } else if (string_pos("building", _nm) > 0 || string_pos("loggia", _nm) > 0
-                || string_pos("inn", _nm) > 0 || string_pos("church", _nm) > 0
-                || string_pos("stable", _nm) > 0 || string_pos("cathedral", _nm) > 0
-                || string_pos("tower", _nm) > 0 || string_pos("house", _nm) > 0
-                || string_pos("duomo", _nm) > 0 || string_pos("basilica", _nm) > 0) {
-            // building body — inset off the painted edges so no ghost in the cobble
-            _x0f = 0.12; _y0f = 0.10; _x1f = 0.88; _y1f = 0.94;
-        } else {
-            // small ground prop (urn, pot, herbs, bread, jugs, crate, sack, cloth…)
-            _x0f = 0.22; _y0f = 0.50; _x1f = 0.78; _y1f = 0.92;
-        }
-
-        var _wx0 = _L + _bw * _x0f, _wy0 = _T + _bh * _y0f;
-        var _wx1 = _L + _bw * _x1f, _wy1 = _T + _bh * _y1f;
-
-        var _w = instance_create_depth(_wx0, _wy0, 500, obj_wall);
-        _w.wall_w  = _wx1 - _wx0;
-        _w.wall_h  = _wy1 - _wy0;
+        var _w = instance_create_depth(_fp[0], _fp[1], 500, obj_wall);
+        _w.wall_w  = _fp[2] - _fp[0];
+        _w.wall_h  = _fp[3] - _fp[1];
         _w.visible = false;
         array_push(global.__room_builder_collision, _w);
         _made++;
@@ -526,13 +548,15 @@ function scr_room_builder_drag_update() {
             // release -> snap to the 64px grid, but ONLY if it actually moved. A pure
             // click (no movement) just selects, leaving fractional positions intact.
             if (_o.x != global.room_builder_drag_ox || _o.y != global.room_builder_drag_oy) {
+                scr_room_builder_undo_push({act:"move", inst:_o,
+                    px:global.room_builder_drag_ox, py:global.room_builder_drag_oy});
                 _o.x = round(_o.x / ROOM_BUILDER_GRID) * ROOM_BUILDER_GRID;
                 _o.y = round(_o.y / ROOM_BUILDER_GRID) * ROOM_BUILDER_GRID;
                 if (variable_global_exists("world_event_log"))
                     scr_world_event_log(object_get_name(_o.object_index) + " moved -> grid " +
                         string(_o.x / ROOM_BUILDER_GRID) + "," + string(_o.y / ROOM_BUILDER_GRID) + "  (F8 to save)");
             }
-            if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_locanda_rosa_camuna) scr_inn_rebuild_collision();   // footprint follows the prop — no ghosts
+            scr_room_builder_refresh_collision();   // footprint follows the prop — no ghosts
             global.room_builder_drag = noone;
         }
     }
@@ -551,6 +575,13 @@ function scr_room_builder_delete_selected() {
     var _gx   = round(_sel.x / ROOM_BUILDER_GRID);
     var _gy   = round(_sel.y / ROOM_BUILDER_GRID);
 
+    // Record everything needed to recreate it, so Ctrl+Z can bring it back.
+    scr_room_builder_undo_push({act:"delete", obj:_sel.object_index,
+        px:_sel.x, py:_sel.y, sc:_sel.image_xscale,
+        spr:   variable_instance_exists(_sel, "builder_sprite") ? _sel.builder_sprite : "",
+        solid: variable_instance_exists(_sel, "builder_solid") && _sel.builder_solid,
+        ang:   variable_instance_exists(_sel, "builder_angle") ? _sel.builder_angle : 0});
+
     // Drop from the builder list so it is neither re-saved nor re-outlined.
     if (variable_global_exists("room_builder_objects")) {
         for (var _i = array_length(global.room_builder_objects) - 1; _i >= 0; _i--) {
@@ -561,7 +592,7 @@ function scr_room_builder_delete_selected() {
     instance_destroy(_sel);
     global.room_builder_selected = noone;
     if (variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
-    if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_locanda_rosa_camuna) scr_inn_rebuild_collision();   // drop the deleted prop's footprint
+    scr_room_builder_refresh_collision();   // drop the deleted prop's footprint
 
     // Persist: rewrite the layout file (save folder) without the deleted entry.
     scr_room_builder_save();
@@ -589,9 +620,17 @@ function scr_room_builder_nudge_update() {
     if (!instance_exists(_sel)) return;
 
     // R = rotate 90° clockwise · Shift+R = 90° counter-clockwise (any selected prop).
-    if (keyboard_check_pressed(ord("R"))) {
+    // , / . = FINE rotate 5° counter-clockwise / clockwise (VK_OEM_COMMA/PERIOD —
+    // ord(",") would be the ASCII code, not the Windows VK code these keys send).
+    // NOTE: only props drawn via scr_room_builder_draw_rotated show it (mercato
+    // props, duomo statues/pews); other objects keep their own Draw, and the
+    // collision footprint stays axis-aligned either way.
+    var _rd = 0;
+    if (keyboard_check_pressed(ord("R"))) _rd = keyboard_check(vk_shift) ? -90 : 90;
+    _rd += (keyboard_check_pressed(190) - keyboard_check_pressed(188)) * 5;   // . / ,
+    if (_rd != 0) {
         if (!variable_instance_exists(_sel, "builder_angle")) _sel.builder_angle = 0;
-        var _rd = keyboard_check(vk_shift) ? -90 : 90;
+        scr_room_builder_undo_push({act:"rotate", inst:_sel, ang:_sel.builder_angle});
         _sel.builder_angle = ((_sel.builder_angle + _rd) mod 360 + 360) mod 360;
         if (variable_global_exists("save_indicator_text")) {
             global.save_indicator_text  = object_get_name(_sel.object_index) +
@@ -605,12 +644,168 @@ function scr_room_builder_nudge_update() {
     var _ny = (keyboard_check_pressed(vk_down)  - keyboard_check_pressed(vk_up))   * _step;
     if (_nx == 0 && _ny == 0) return;
 
+    scr_room_builder_undo_push({act:"move", inst:_sel, px:_sel.x, py:_sel.y});
     _sel.x += _nx;
     _sel.y += _ny;
-    if (room == Room_duomo) scr_duomo_rebuild_collision(); if (room == Room_locanda_rosa_camuna) scr_inn_rebuild_collision();   // footprint follows the prop — no ghosts
+    scr_room_builder_refresh_collision();   // footprint follows the prop — no ghosts
     if (variable_global_exists("save_indicator_text")) {
         global.save_indicator_text  = "Nudged " + object_get_name(_sel.object_index) +
             " -> " + string(_sel.x) + "," + string(_sel.y) + "  (F8 to save)";
+        global.save_indicator_timer = 90;
+    }
+}
+
+
+// ── EDIT-MODE EXTRAS — undo (Ctrl+Z) · duplicate (Ctrl+D) · scale ([ / ]) ───────
+
+/// Push one undoable action (stack capped at 40 — oldest dropped). Action structs:
+///   {act:"move",   inst, px, py}                       restore a pre-move position
+///   {act:"scale",  inst, sc}                           restore a pre-scale value
+///   {act:"rotate", inst, ang}                          restore a pre-rotate angle
+///   {act:"create", inst}                               destroy (undoes Ctrl+D)
+///   {act:"delete", obj, px, py, sc, spr, solid, ang}   recreate a deleted prop
+function scr_room_builder_undo_push(_a) {
+    if (!variable_global_exists("room_builder_undo")) global.room_builder_undo = [];
+    array_push(global.room_builder_undo, _a);
+    if (array_length(global.room_builder_undo) > 40) array_delete(global.room_builder_undo, 0, 1);
+}
+
+/// Ctrl+Z — revert the most recent edit. Stale instance refs (prop destroyed by a
+/// room change / reload) are skipped until a still-valid action is found.
+function scr_room_builder_undo() {
+    if (!variable_global_exists("room_builder_undo")) global.room_builder_undo = [];
+    while (array_length(global.room_builder_undo) > 0) {
+        var _a   = array_pop(global.room_builder_undo);
+        var _msg = "";
+
+        if (_a.act == "delete") {
+            // recreate exactly as the loader would, re-list, reselect, re-save
+            // (delete persisted the layout, so its undo must persist too)
+            var _layer = layer_exists("Instances") ? "Instances" : "";
+            var _r = (_layer != "")
+                ? instance_create_layer(_a.px, _a.py, _layer, _a.obj)
+                : instance_create_depth(_a.px, _a.py, 100, _a.obj);
+            _r.image_xscale = _a.sc;  _r.image_yscale = _a.sc;
+            _r.room_builder_placed = true;
+            _r.builder_sprite = _a.spr;
+            _r.builder_solid  = _a.solid;
+            _r.builder_angle  = _a.ang;
+            if (_a.spr != "") {
+                var _si = asset_get_index(_a.spr);
+                if (_si >= 0 && asset_get_type(_a.spr) == asset_sprite) _r.sprite_index = _si;
+            }
+            if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
+            array_push(global.room_builder_objects, _r);
+            global.room_builder_selected = _r;
+            scr_room_builder_save();
+            _msg = "UNDO delete — " + object_get_name(_a.obj) + " restored";
+        } else {
+            if (!instance_exists(_a.inst)) continue;   // stale ref — try the next action
+            if (_a.act == "move") {
+                _a.inst.x = _a.px;  _a.inst.y = _a.py;
+                _msg = "UNDO move — " + object_get_name(_a.inst.object_index);
+            } else if (_a.act == "scale") {
+                _a.inst.image_xscale = _a.sc;  _a.inst.image_yscale = _a.sc;
+                _msg = "UNDO scale -> " + string(_a.sc);
+            } else if (_a.act == "rotate") {
+                _a.inst.builder_angle = _a.ang;
+                _msg = "UNDO rotate -> " + string(_a.ang) + "°";
+            } else if (_a.act == "create") {
+                if (variable_global_exists("room_builder_objects")) {
+                    for (var _i = array_length(global.room_builder_objects) - 1; _i >= 0; _i--)
+                        if (global.room_builder_objects[_i] == _a.inst)
+                            array_delete(global.room_builder_objects, _i, 1);
+                }
+                if (variable_global_exists("room_builder_selected") && global.room_builder_selected == _a.inst)
+                    global.room_builder_selected = noone;
+                _msg = "UNDO duplicate — " + object_get_name(_a.inst.object_index) + " removed";
+                instance_destroy(_a.inst);
+            } else continue;                            // unknown action — skip
+        }
+
+        scr_room_builder_refresh_collision();
+        if (variable_global_exists("save_indicator_text")) {
+            global.save_indicator_text  = _msg + "  (F8 to save)";
+            global.save_indicator_timer = 120;
+        }
+        if (variable_global_exists("world_event_log")) scr_world_event_log(_msg);
+        return true;
+    }
+    if (variable_global_exists("save_indicator_text")) {
+        global.save_indicator_text  = "NOTHING TO UNDO";
+        global.save_indicator_timer = 90;
+    }
+    return false;
+}
+
+/// Ctrl+D — clone the selected prop one cell to the right (same sprite / scale /
+/// angle / solid) and select the CLONE, so it can be dragged straight into place.
+function scr_room_builder_duplicate_selected() {
+    if (!variable_global_exists("room_builder_selected")) return false;
+    var _sel = global.room_builder_selected;
+    if (!instance_exists(_sel)) return false;
+    if (_sel.object_index == obj_mercato_exit) return false;   // transitions aren't cloneable
+    if (_sel.object_index == obj_wall)         return false;
+
+    var _layer = layer_exists("Instances") ? "Instances" : "";
+    var _c = (_layer != "")
+        ? instance_create_layer(_sel.x + ROOM_BUILDER_GRID, _sel.y, _layer, _sel.object_index)
+        : instance_create_depth(_sel.x + ROOM_BUILDER_GRID, _sel.y, 100, _sel.object_index);
+    _c.image_xscale = _sel.image_xscale;
+    _c.image_yscale = _sel.image_yscale;
+    _c.room_builder_placed = true;
+    _c.builder_sprite = variable_instance_exists(_sel, "builder_sprite") ? _sel.builder_sprite : "";
+    _c.builder_solid  = variable_instance_exists(_sel, "builder_solid")  ? _sel.builder_solid  : false;
+    _c.builder_angle  = variable_instance_exists(_sel, "builder_angle")  ? _sel.builder_angle  : 0;
+    if (_sel.sprite_index != -1) _c.sprite_index = _sel.sprite_index;
+
+    if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
+    array_push(global.room_builder_objects, _c);
+    global.room_builder_selected = _c;
+
+    scr_room_builder_undo_push({act:"create", inst:_c});
+    scr_room_builder_refresh_collision();
+
+    var _msg = "Duplicated " + object_get_name(_c.object_index) + " -> grid " +
+        string(_c.x / ROOM_BUILDER_GRID) + "," + string(_c.y / ROOM_BUILDER_GRID);
+    if (variable_global_exists("save_indicator_text")) {
+        global.save_indicator_text  = _msg + "  (F8 to save)";
+        global.save_indicator_timer = 120;
+    }
+    if (variable_global_exists("world_event_log")) scr_world_event_log(_msg);
+    return true;
+}
+
+/// Debug-mode editor chords, called every step from obj_game_manager:
+///   Ctrl+Z = undo · Ctrl+D = duplicate · [ / ] = scale selected prop down/up
+///   (0.05 per tap; Shift = 0.01 fine). Player WASD is suppressed while Ctrl is
+///   held (obj_player Step) so chords never also walk Benedetto.
+function scr_room_builder_edit_update() {
+    if (!global.debug_mode) return;
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna) return;
+    if (variable_global_exists("input_locked") && global.input_locked) return;
+
+    var _ctrl = keyboard_check(vk_control);
+    if (_ctrl && keyboard_check_pressed(ord("Z"))) { scr_room_builder_undo();               return; }
+    if (_ctrl && keyboard_check_pressed(ord("D"))) { scr_room_builder_duplicate_selected(); return; }
+
+    // [ / ] — scale the selected prop (Windows VK_OEM_4 = 219 '[', VK_OEM_6 = 221 ']')
+    if (!variable_global_exists("room_builder_selected")) return;
+    var _sel = global.room_builder_selected;
+    if (!instance_exists(_sel)) return;
+    if (_sel.object_index == obj_mercato_exit) return;   // zones have no scale
+    var _ds = (keyboard_check_pressed(221) - keyboard_check_pressed(219))
+            * (keyboard_check(vk_shift) ? 0.01 : 0.05);
+    if (_ds == 0) return;
+
+    scr_room_builder_undo_push({act:"scale", inst:_sel, sc:_sel.image_xscale});
+    var _ns = clamp(_sel.image_xscale + _ds, 0.1, 3.0);
+    _sel.image_xscale = _ns;
+    _sel.image_yscale = _ns;
+    scr_room_builder_refresh_collision();   // footprint follows the new size
+    if (variable_global_exists("save_indicator_text")) {
+        global.save_indicator_text  = object_get_name(_sel.object_index) +
+            " scale " + string(_ns) + "  (F8 to save)";
         global.save_indicator_timer = 90;
     }
 }

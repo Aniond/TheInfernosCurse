@@ -95,6 +95,17 @@ scr_room_builder_drag_update();
 // ── DEBUG: fine-nudge the selected object with arrow keys (sub-grid; F8 saves) ─
 scr_room_builder_nudge_update();
 
+// ── DEBUG: editor chords — Ctrl+Z undo · Ctrl+D duplicate · [ / ] scale ────────
+scr_room_builder_edit_update();
+
+// ── DEBUG: middle-click = teleport Benedetto to the mouse (pairs with N noclip) ─
+if (global.debug_mode && mouse_check_button_pressed(mb_middle) && instance_exists(obj_player)) {
+    obj_player.x = clamp(mouse_x, 64, room_width  - 64);   // same hard bounds as obj_player Step
+    obj_player.y = clamp(mouse_y, 64, room_height - 64);
+    global.save_indicator_text  = "TELEPORT " + string(round(obj_player.x)) + "," + string(round(obj_player.y));
+    global.save_indicator_timer = 90;
+}
+
 // ── DEBUG: toggle 64px grid overlay (F2) — debug_mode only (F1) ────────────────
 if (global.debug_mode && keyboard_check_pressed(vk_f2)) {
     if (!variable_global_exists("debug_grid_overlay")) global.debug_grid_overlay = false;

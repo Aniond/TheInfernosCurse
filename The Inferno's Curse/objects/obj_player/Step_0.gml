@@ -15,6 +15,10 @@ var _dx = (keyboard_check(ord("D")) || (!_nudge_mode && keyboard_check(vk_right)
 var _dy = (keyboard_check(ord("S")) || (!_nudge_mode && keyboard_check(vk_down)))
         - (keyboard_check(ord("W")) || (!_nudge_mode && keyboard_check(vk_up)));
 
+// Ctrl is the editor-chord modifier (Ctrl+Z undo, Ctrl+D duplicate, Ctrl+T time)
+// — suppress movement while it is held so chords never also walk Benedetto.
+if (keyboard_check(vk_control)) { _dx = 0; _dy = 0; }
+
 // Normalize diagonal so speed stays constant in all directions
 if (_dx != 0 && _dy != 0) {
     _dx *= 0.7071;
