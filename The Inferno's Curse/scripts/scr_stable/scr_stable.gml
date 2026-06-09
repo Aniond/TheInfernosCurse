@@ -23,7 +23,7 @@
 // TEMP: boot straight into the stable for testing (takes precedence over the inn
 // and Duomo load points in obj_game_manager Create). Flip to false to restore the
 // normal Florence start.
-#macro STABLE_LOAD_POINT true
+#macro STABLE_LOAD_POINT false
 
 // ── Cell predicates ─────────────────────────────────────────────────────────────
 function scr_stable_is_interior(_cx, _cy) {
@@ -215,7 +215,7 @@ function scr_stable_build() {
 
     // keep-alive: name-placed sprites + objects are invisible to the asset stripper.
     global.__stable_keep     = [obj_mercato_prop, obj_barrel, obj_npc_stableboy, obj_stable_rest];
-    global.__stable_keep_spr = [spr_stable_floor, spr_stable_stall,
+    global.__stable_keep_spr = [spr_stable_floor, spr_stable_stall, spr_stable_wall_tile,
         spr_stable_horse_grey, spr_stable_horse_brown, spr_stable_horse_black,
         spr_stable_hay, spr_stable_trough, spr_stable_tack, spr_stable_sleeping,
         spr_stable_lantern, spr_npc_stableboy];

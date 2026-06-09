@@ -16,8 +16,9 @@ global.inn_exit = scr_transition_spawn("inn_south",
     "Room_florence", "Florence", 1118, 1462, "");
 
 // ── Stairs up → upper floor (Room_locanda_rosa_camuna_2f is a later step; the exit
-// shows "coming soon" gracefully until that room exists) ────────────────────────
-scr_transition_spawn("inn_stairs_up", 17 * 64, 8 * 64, 64, 128,
+// shows "coming soon" gracefully until that room exists). Trigger sits on the
+// staircase's bottom landing (the 2x4 run occupies x13-14, y5-8). ───────────────
+scr_transition_spawn("inn_stairs_up", 13 * 64, 8 * 64, 128, 64,
     "Room_locanda_rosa_camuna_2f", "Upstairs", 640, 768, "");
 
 // ── Entry banner (gold FF6 plaque, fades after 3s) ──────────────────────────────

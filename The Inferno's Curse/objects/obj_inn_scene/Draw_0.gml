@@ -45,7 +45,7 @@ for (var _ry = 0; _ry < INN_H_CELLS; _ry++)
         if (scr_inn_is_rug(_rx, _ry) && scr_inn_is_interior(_rx, _ry))
             draw_rectangle(_rx * _g, _ry * _g, _rx * _g + _g, _ry * _g + _g, false);
 // gold trim around the rug
-var _rx0 = 7 * _g, _ry0 = 8 * _g, _rx1 = 13 * _g, _ry1 = 15 * _g;
+var _rx0 = 3 * _g, _ry0 = 9 * _g, _rx1 = 11 * _g, _ry1 = 14 * _g;
 draw_set_color(merge_color(make_color_rgb(196, 160, 86), make_color_rgb(96, 84, 70), _corr));
 draw_rectangle(_rx0, _ry0, _rx1, _ry0 + 4, false);
 draw_rectangle(_rx0, _ry1 - 4, _rx1, _ry1, false);
@@ -53,10 +53,10 @@ draw_rectangle(_rx0, _ry0, _rx0 + 4, _ry1, false);
 draw_rectangle(_rx1 - 4, _ry0, _rx1, _ry1, false);
 draw_set_color(c_white);
 
-// South entrance threshold — a lighter doorstep in the 3-cell gap (cols 9-11, row 19)
+// South entrance threshold — a lighter doorstep in the 2-cell gap (cols 7-8, row 16)
 var _thr = merge_color(_amb, c_white, 0.28);
-for (var _tcx = 9; _tcx <= 11; _tcx++)
-    draw_sprite_ext(spr_duomo_floor_field, 0, _tcx * _g, 19 * _g, 1, 1, 0, _thr, 1);
+for (var _tcx = 7; _tcx <= 8; _tcx++)
+    draw_sprite_ext(spr_duomo_floor_field, 0, _tcx * _g, 16 * _g, 1, 1, 0, _thr, 1);
 
 // Ambient — warm candlelight when lucid, cold dark as corruption deepens
 if (_corr < 0.5) {

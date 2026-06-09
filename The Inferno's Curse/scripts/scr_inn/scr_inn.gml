@@ -1,25 +1,27 @@
 // =============================================================================
 // scr_inn — Room_locanda_rosa_camuna (ground floor) — BLACK-VOID rectangular interior
 // =============================================================================
-// 20 x 20 cells (1280 x 1280). Walkable floor is an inset rectangle; the 1-cell
-// black-void border is the walls. A 3-cell gap in the SOUTH wall (cols 9-11) is the
-// entrance doorway. Props (obj_mercato_prop carrying a sprite, draggable like the
-// market/bridge) lay out the reference zones: bar (N-left), kitchen hearth (left),
-// storage barrels (top-right), stairs up (right), central dining tables+chairs on a
-// red rug. INTERIOR room → black-void method (see CLAUDE.md). FF6 camera in the room.
+// 16 x 17 cells (1024 x 1088) — maps references/inn_interior_map.png 1F 1:1 (one
+// reference tile = one 64px cell; interior 14x15). Walkable floor is an inset
+// rectangle; the 1-cell black-void border is the walls. A 2-cell gap in the SOUTH
+// wall (cols 7-8) is the entrance doorway. Props (obj_mercato_prop carrying a
+// sprite, draggable like the market/bridge) lay out the reference zones: kitchen
+// across the TOP wall, bar counter below it (modular run + corner, stools), storage
+// top-right, 2x4 staircase on the right wall, dining tables scattered on the rug.
+// INTERIOR room → black-void method (see CLAUDE.md). FF6 camera in the room.
 // =============================================================================
 
-#macro INN_W_CELLS 20
-#macro INN_H_CELLS 20
+#macro INN_W_CELLS 16
+#macro INN_H_CELLS 17
 #macro INN_GRID_PX 64
 
 // South doorway centre — the entry gap + the return-to-Florence trigger.
-#macro INN_EXIT_X 640
-#macro INN_EXIT_Y 1216   // row 19 centre
+#macro INN_EXIT_X 512
+#macro INN_EXIT_Y 1056   // row 16.5
 
 // TEMP: boot straight into the inn for testing (takes precedence over DUOMO_LOAD_POINT
 // in obj_game_manager Create). Flip to false to restore the normal start.
-#macro INN_LOAD_POINT false
+#macro INN_LOAD_POINT true
 
 /// Player's guild-reputation TIER → which inn room the innkeeper offers.
 /// <34 = low · 34-66 = medium · >66 = high. (global.guild_reputation, 0-100.)
@@ -32,8 +34,8 @@ function scr_inn_rep_tier() {
 
 // ── Cell predicates ─────────────────────────────────────────────────────────────
 function scr_inn_is_interior(_cx, _cy) {
-    var _main  = (_cx >= 1 && _cx <= 18 && _cy >= 1 && _cy <= 18);
-    var _entry = (_cy == 19 && _cx >= 9 && _cx <= 11);   // south doorway gap
+    var _main  = (_cx >= 1 && _cx <= 14 && _cy >= 1 && _cy <= 15);
+    var _entry = (_cy == 16 && _cx >= 7 && _cx <= 8);   // south doorway gap
     return _main || _entry;
 }
 
@@ -66,7 +68,7 @@ function scr_inn_is_corner(_cx, _cy) {
 
 /// Red/brown dining rug — centre of the common room (drawn in obj_inn_scene Draw).
 function scr_inn_is_rug(_cx, _cy) {
-    return (_cx >= 7 && _cx <= 12 && _cy >= 8 && _cy <= 14);
+    return (_cx >= 3 && _cx <= 10 && _cy >= 9 && _cy <= 13);
 }
 
 // ── Default prop layout — [object, gx, gy, scale, (sprite)] ───────────────────────
@@ -74,55 +76,64 @@ function scr_inn_is_rug(_cx, _cy) {
 // is click-drag / nudge / rotate / Delete / F8 like the market & bridge props.
 function scr_inn_default_layout() {
     var _L = [];
-    // Zone 2 — TAVERN / BAR COUNTER — MODULAR L (corner + straight segments). This is
-    // a starter shape; assemble the exact L in debug (drag + R-rotate + arrow-nudge,
-    // then F8). All solid; the innkeeper nook behind it is sealed in build_collision.
-    // Bar counter — spr_inn_counter_empty placed by player in debug (sprite TBD).
-    // array_push(_L, ["obj_mercato_prop", 4, 2, 1, "spr_inn_counter_empty"]);  // re-enable once sprite is set
-    // Zone 4 — KITCHEN hearth + prep table (left wall)
-    array_push(_L, ["obj_mercato_prop", 2,  7, 1, "spr_inn_fireplace"]);
-    array_push(_L, ["obj_mercato_prop", 2, 10, 0.9, "spr_inn_table"]);
-    // Common-room hearth (right wall) — the warm focal fire
-    array_push(_L, ["obj_mercato_prop", 17, 13, 1, "spr_inn_fireplace"]);
-    // Zone 5 — STORAGE / PANTRY (top-right): barrels
-    array_push(_L, ["obj_barrel", 16, 2, 0.5]);
-    array_push(_L, ["obj_barrel", 17, 2, 0.5]);
-    array_push(_L, ["obj_barrel", 17, 3, 0.5]);
-    // Zone 6 — STAIRS UP (right wall) → upper floor
-    array_push(_L, ["obj_mercato_prop", 17, 8, 1, "spr_inn_stairs"]);
-    // Centre DINING — round tables on the rug
-    var _tables = [[8, 9], [11, 9], [8, 13], [11, 13], [9.5, 11]];
+    // Zone 4 — KITCHEN across the TOP wall (per the reference): hearth recessed
+    // top-centre, bread oven beside it, prep table below. The oven is placed LIT;
+    // scr_inn_oven_sync swaps it cold/corrupt at 50%+ Limbo corruption.
+    array_push(_L, ["obj_mercato_prop", 5.5, 1, 1.2, "spr_inn_fireplace"]);
+    array_push(_L, ["obj_mercato_prop", 4.3, 1, 1.0, "spr_inn_oven_lit", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 2,   2, 0.9, "spr_inn_table"]);
+    // Zone 2 — TAVERN / BAR: back-bar wine shelf against the kitchen divider wall,
+    // then the counter run x1-8 (straight segments + corner closing the east end —
+    // R-rotate the corner in debug if it faces the wrong way) at y 6.5, the
+    // reference's 43% height line. All solid; the nook is sealed in build_collision.
+    array_push(_L, ["obj_mercato_prop", 2, 4.2, 0.8, "spr_inn_wine_shelf"]);
+    var _bar = ["spr_inn_counter_empty", "spr_inn_counter_food", "spr_inn_counter_empty",
+                "spr_inn_counter_empty", "spr_inn_counter_food", "spr_inn_counter_empty",
+                "spr_inn_counter_empty"];
+    for (var _b = 0; _b < array_length(_bar); _b++)
+        array_push(_L, ["obj_mercato_prop", 1 + _b, 6.5, 1, _bar[_b]]);
+    array_push(_L, ["obj_mercato_prop", 8, 6.5, 1, "spr_inn_counter_corner"]);
+    // Bar stools hugging the counter front (reference: ~1-tile spacing)
+    var _stools = [1.7, 3.2, 4.7, 6.2];
+    for (var _st = 0; _st < array_length(_stools); _st++)
+        array_push(_L, ["obj_mercato_prop", _stools[_st], 7.7, 0.5, "spr_inn_stool"]);
+    // Zone 3 — Aldo the innkeeper (lodging, WEST end) + Rosa (bar menu, EAST end)
+    array_push(_L, ["obj_npc_innkeeper", 3, 5.3, 1]);
+    array_push(_L, ["obj_npc_rosa",      6, 5.3, 1]);
+    // Zone 5 — STORAGE / PANTRY (top-right): barrels + kegs
+    array_push(_L, ["obj_barrel", 11.5, 1.5, 0.5]);
+    array_push(_L, ["obj_barrel", 12.5, 1.5, 0.5]);
+    array_push(_L, ["obj_barrel", 12.5, 2.5, 0.5]);
+    array_push(_L, ["obj_mercato_prop", 13.3, 1.3, 0.7, "spr_inn_keg_group"]);
+    // Zone 6 — STAIRS UP: 2x4-cell staircase on the right wall (x13-14, y5-8),
+    // non-solid — the player walks onto the bottom landing to trigger going up.
+    array_push(_L, ["obj_mercato_prop", 13, 5, 1, "spr_inn_staircase"]);
+    // Hearths — LEFT-wall fireplace per the reference + the right-wall focal fire
+    array_push(_L, ["obj_mercato_prop", 1,    12, 1, "spr_inn_fireplace"]);
+    array_push(_L, ["obj_mercato_prop", 13.5, 11, 1, "spr_inn_fireplace"]);
+    // Centre DINING — the reference scatter: 3 tables on the rug + 2 off-rug east.
+    // Spacing 2-3.6 cells centre-to-centre (snug, not a grid).
+    var _tables = [[4, 10], [7.5, 11.5], [6, 13], [11.5, 10], [11.5, 13]];
     for (var _i = 0; _i < array_length(_tables); _i++)
         array_push(_L, ["obj_mercato_prop", _tables[_i][0], _tables[_i][1], 1, "spr_inn_table"]);
-    // Directional chairs — 3 of EACH facing (drag into place / Delete extras in debug).
-    // Each faces INWARD toward its table: N-side=chair_south · S-side=chair_north ·
-    // W-side=chair_east · E-side=chair_west. (Chairs don't rotate — distinct sprites.)
-    var _seat = [[8, 9], [11, 9], [8, 13], [11, 13]];   // four seated tables → 16 chairs (4 of each)
+    // Directional chairs HUG their tables (0.7 scale at 0.75-cell offset — the
+    // reference stools touch the table edge). Each faces INWARD: N-side=chair_south ·
+    // S-side=chair_north · W-side=chair_east · E-side=chair_west. Centre table is
+    // unseated. (Chairs don't rotate — distinct sprites.)
+    var _seat = [[4, 10], [6, 13], [11.5, 10], [11.5, 13]];
     for (var _s = 0; _s < array_length(_seat); _s++) {
         var _sx = _seat[_s][0], _sy = _seat[_s][1];
-        array_push(_L, ["obj_mercato_prop", _sx,     _sy - 1, 0.8, "spr_inn_chair_south"]);  // north seat
-        array_push(_L, ["obj_mercato_prop", _sx,     _sy + 1, 0.8, "spr_inn_chair_north"]);  // south seat
-        array_push(_L, ["obj_mercato_prop", _sx - 1, _sy,     0.8, "spr_inn_chair_east"]);   // west seat
-        array_push(_L, ["obj_mercato_prop", _sx + 1, _sy,     0.8, "spr_inn_chair_west"]);   // east seat
+        array_push(_L, ["obj_mercato_prop", _sx + 0.15, _sy - 0.75, 0.7, "spr_inn_chair_south"]);  // north seat
+        array_push(_L, ["obj_mercato_prop", _sx + 0.15, _sy + 1.05, 0.7, "spr_inn_chair_north"]);  // south seat
+        array_push(_L, ["obj_mercato_prop", _sx - 0.75, _sy + 0.15, 0.7, "spr_inn_chair_east"]);   // west seat
+        array_push(_L, ["obj_mercato_prop", _sx + 1.05, _sy + 0.15, 0.7, "spr_inn_chair_west"]);   // east seat
     }
     // One candle centred on each dining table — snuffs out ONE BY ONE at 50%+ corruption.
     for (var _cd = 0; _cd < array_length(_tables); _cd++)
         array_push(_L, ["obj_inn_candle", _tables[_cd][0] + 0.25, _tables[_cd][1] + 0.25, 0.5]);
-    // Zone 1 — ENTRANCE: two candelabra flanking the south doorway
-    array_push(_L, ["obj_duomo_candelabra", 8,  18, 0.6]);
-    array_push(_L, ["obj_duomo_candelabra", 12, 18, 0.6]);
-    // Zone 2 — KEG GROUP behind counter near existing barrels (drag to final position)
-    array_push(_L, ["obj_mercato_prop", 16, 3, 0.7, "spr_inn_keg_group"]);
-    // Zone 2 — WINE SHELF on wall behind counter (drag to final position)
-    array_push(_L, ["obj_mercato_prop", 5, 1, 0.8, "spr_inn_wine_shelf"]);
-    // Zone 4 — BREAD OVEN beside kitchen hearth (left wall). Placed LIT; obj_inn_scene
-    // Draw swaps it to the cold black-tiled spr_inn_oven_corrupt at 50%+ Limbo corruption
-    // (see scr_inn_oven_sync). spr_inn_oven_lit is a 9-frame dancing-flame animation.
-    array_push(_L, ["obj_mercato_prop", 2, 8, 1.0, "spr_inn_oven_lit", "solid"]);
-    // Zone 3 — INNKEEPER behind the counter (WEST end; proximity rest menu)
-    array_push(_L, ["obj_npc_innkeeper", 4, 1, 1]);
-    // Rosa the barmaid — EAST end of the counter nook (proximity dialogue + mood icon)
-    array_push(_L, ["obj_npc_rosa", 6, 1, 1]);
+    // Zone 1 — ENTRANCE: two candelabra flanking the south doorway (cols 7-8)
+    array_push(_L, ["obj_duomo_candelabra", 5.8, 14.5, 0.6]);
+    array_push(_L, ["obj_duomo_candelabra", 9.4, 14.5, 0.6]);
     return _L;
 }
 
@@ -133,6 +144,7 @@ function scr_inn_build() {
     // keep-alive: name-placed sprites + objects are invisible to the asset stripper.
     global.__inn_keep     = [obj_mercato_prop, obj_duomo_candelabra, obj_barrel, obj_npc_innkeeper, obj_npc_rosa, obj_inn_candle];
     global.__inn_keep_spr = [spr_inn_counter_corner, spr_inn_counter_empty, spr_inn_counter_food, spr_inn_keg_group, spr_inn_wine_shelf, spr_inn_table,
+        spr_inn_stool, spr_inn_staircase,
         spr_inn_chair_south, spr_inn_chair_north, spr_inn_chair_east, spr_inn_chair_west,
         spr_inn_fireplace, spr_inn_oven, spr_inn_oven_lit, spr_inn_oven_corrupt, spr_inn_oven_green, spr_inn_bed, spr_inn_stairs, spr_npc_innkeeper, spr_npc_rosa,
         spr_inn_candle, spr_inn_candle_lit, spr_inn_candle_unlit, spr_inn_candle_green];
@@ -186,8 +198,8 @@ function scr_inn_place(_objname, _gx, _gy, _sc, _sprn, _layer) {
             _inst.builder_sprite = _sprn;
         }
     }
-    // furniture is solid — EXCEPT the stairs (you walk onto it to trigger going up)
-    if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = (_sprn != "spr_inn_stairs");
+    // furniture is solid — EXCEPT the stairs/staircase (you walk onto it to trigger going up)
+    if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = (string_pos("spr_inn_stair", _sprn) != 1);
     array_push(global.room_builder_objects, _inst);
     return _inst;
 }
@@ -230,10 +242,13 @@ function scr_inn_build_collision() {
             _w.wall_h  = INN_GRID_PX;
             _w.visible = false;
         }
-    // Seal the innkeeper nook behind the counter so the player can't walk around it.
-    var _nwA = instance_create_depth(1 * 64, 2 * 64, 500, obj_wall);   // west gap (cols 1-2, row 2)
-    _nwA.wall_w = 2 * 64; _nwA.wall_h = 64; _nwA.visible = false;
-    var _nwB = instance_create_depth(7 * 64, 1 * 64, 500, obj_wall);   // east side (col 7, rows 1-2)
+    // Seal the bar nook so the player can't walk behind the counter: the kitchen/bar
+    // divider wall (row 4, cols 1-9 — the kitchen stays reachable around the east
+    // end via col 10) + the east opening beside the counter corner (col 9, rows 5-6).
+    // The counter run itself is solid props.
+    var _nwA = instance_create_depth(1 * 64, 4 * 64, 500, obj_wall);   // kitchen/bar divider
+    _nwA.wall_w = 9 * 64; _nwA.wall_h = 64; _nwA.visible = false;
+    var _nwB = instance_create_depth(9 * 64, 5 * 64, 500, obj_wall);   // east opening (col 9, rows 5-6)
     _nwB.wall_w = 64; _nwB.wall_h = 2 * 64; _nwB.visible = false;
 
     scr_room_builder_build_collision();   // tight per-prop footprints (mercato_prop etc.)
