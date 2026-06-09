@@ -324,6 +324,10 @@ scr_camera_init();
 // ── Economy (minimal) — player gold + guild reputation (drives the inn menu) ────
 if (!variable_global_exists("player_gold"))      global.player_gold      = 50;
 if (!variable_global_exists("guild_reputation")) global.guild_reputation = 50;   // 0-100; 50 = medium tier
+// Signed merchant-guild STANDING (separate axis from guild_reputation): <= 0 means
+// Benedetto is unknown/low — the Fiorentine Stable lets him sleep in the straw;
+// > 0 means a man of standing — the stable redirects him to the inn's proper beds.
+if (!variable_global_exists("merchant_guild"))   global.merchant_guild   = 0;
 
 // ── NPC behaviour + event tracking (mock AI; ready for live swap) ───────────────
 scr_npc_system_init();

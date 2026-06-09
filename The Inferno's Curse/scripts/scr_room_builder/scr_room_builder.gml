@@ -364,8 +364,9 @@ function scr_room_builder_footprint(_o) {
 /// / undo). Previously only the Duomo + inn rebuilt — Room1 / Ponte footprints
 /// stayed at the prop's ORIGINAL spot until restart (the invisible-wall bug).
 function scr_room_builder_refresh_collision() {
-    if (room == Room_duomo)               { scr_duomo_rebuild_collision(); return; }
-    if (room == Room_locanda_rosa_camuna) { scr_inn_rebuild_collision();   return; }
+    if (room == Room_duomo)               { scr_duomo_rebuild_collision();  return; }
+    if (room == Room_locanda_rosa_camuna) { scr_inn_rebuild_collision();    return; }
+    if (room == Room_fiorentine_stable)   { scr_stable_rebuild_collision(); return; }
     scr_room_builder_build_collision();
 }
 
@@ -413,6 +414,7 @@ function scr_room_builder_save() {
     if (room == Room_ponte_vecchio)  _path = working_directory + "room_ponte_vecchio_layout.txt";
     if (room == Room_duomo)          _path = working_directory + "room_duomo_layout.txt";
     if (room == Room_locanda_rosa_camuna) _path = working_directory + "room_locanda_rosa_camuna_layout.txt";
+    if (room == Room_fiorentine_stable)   _path = working_directory + "room_fiorentine_stable_layout.txt";
     var _f = file_text_open_write(_path);
     if (_f == -1) {
         show_debug_message("[room_builder] SAVE FAILED — sandbox blocks " + ROOM_BUILDER_FILE +
@@ -506,7 +508,7 @@ function scr_room_builder_point_in(_inst, _mx, _my) {
 /// Called every step from obj_game_manager. F8 then writes the new positions.
 function scr_room_builder_drag_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna) return;   // draggable in all built rooms
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;   // draggable in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
@@ -613,7 +615,7 @@ function scr_room_builder_delete_selected() {
 /// F8 then saves the exact fractional position (the save no longer rounds to grid).
 function scr_room_builder_nudge_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna) return;   // nudge in all built rooms
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;   // nudge in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_selected")) return;
     var _sel = global.room_builder_selected;
@@ -782,7 +784,7 @@ function scr_room_builder_duplicate_selected() {
 ///   held (obj_player Step) so chords never also walk Benedetto.
 function scr_room_builder_edit_update() {
     if (!global.debug_mode) return;
-    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna) return;
+    if (room != Room1 && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;
     if (variable_global_exists("input_locked") && global.input_locked) return;
 
     var _ctrl = keyboard_check(vk_control);
@@ -865,6 +867,21 @@ function scr_room1_build() {
         }
     }
     var _de = instance_create_depth(_dux, _duy, 400, obj_duomo_entrance);
+
+    // ── Fiorentine Stable entrance (walk up + press E → Room_fiorentine_stable) ─
+    // Same code-spawned pattern as the Duomo: located off the stable exterior's
+    // live bbox so it follows the prop if dragged; falls back to its grid spot.
+    var _stx = 824, _sty = 392;
+    for (var _si = 0; _si < array_length(global.room_builder_objects); _si++) {
+        var _sp = global.room_builder_objects[_si];
+        if (!instance_exists(_sp)) continue;
+        if (_sp.sprite_index == spr_florence_stable) {
+            _stx = (_sp.bbox_left + _sp.bbox_right) * 0.5;
+            _sty = _sp.bbox_bottom + 48;     // just south of the doors
+            break;
+        }
+    }
+    instance_create_depth(_stx, _sty, 400, obj_stable_entrance);
 
     // ── Arno river + bank collision ───────────────────────────────────────────
     // Solid water fills every gap BETWEEN the bridges (generic over any count). The
