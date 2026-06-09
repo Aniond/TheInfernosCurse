@@ -35,11 +35,11 @@ for (var _cy = 0; _cy < STABLE_H_CELLS; _cy++)
         else { draw_set_color(_tint); draw_rectangle(_px, _py, _px + _g, _py + _g, false); draw_set_color(c_white); }
     }
 
-// South entrance threshold — a lighter doorstep in the 2-cell gap (cols 6-7, row 21)
+// South entrance threshold — a lighter doorstep in the 2-cell gap (cols 4-5, row 14)
 var _thr = merge_color(_amb, c_white, 0.28);
 if (_has) {
-    draw_sprite_ext(_floor, 0, 6 * _g, 21 * _g, 1, 1, 0, _thr, 1);
-    draw_sprite_ext(_floor, 0, 7 * _g, 21 * _g, 1, 1, 0, _thr, 1);
+    draw_sprite_ext(_floor, 0, 4 * _g, 14 * _g, 1, 1, 0, _thr, 1);
+    draw_sprite_ext(_floor, 0, 5 * _g, 14 * _g, 1, 1, 0, _thr, 1);
 }
 
 // Layer 3 — STALL PARTITION WALLS (dark timber dividers; same geometry as the

@@ -1,8 +1,9 @@
 // =============================================================================
 // scr_stable — Room_fiorentine_stable — BLACK-VOID rectangular interior
 // =============================================================================
-// 14 x 22 cells (896 x 1408). Walkable floor is an inset rectangle; the 1-cell
-// black-void border is the walls. A 2-cell gap in the SOUTH wall (cols 6-7) is the
+// 10 x 15 cells (640 x 960) — CRAMPED per the reference's 2:3 proportions: snug
+// one-horse stalls, a narrow 2-cell aisle. Walkable floor is an inset rectangle;
+// the 1-cell black-void border is the walls. A 2-cell gap in the SOUTH wall (cols 4-5) is the
 // entrance doorway. Props (obj_mercato_prop carrying a sprite, draggable like the
 // market/inn) lay out the reference zones (references/stables_interior_map.png):
 // hay storage (top-left), water trough (top-centre), tack room (top-right), six
@@ -11,13 +12,13 @@
 // INTERIOR room → black-void method (see CLAUDE.md). FF6 camera in the room.
 // =============================================================================
 
-#macro STABLE_W_CELLS 14
-#macro STABLE_H_CELLS 22
+#macro STABLE_W_CELLS 10
+#macro STABLE_H_CELLS 15
 #macro STABLE_GRID_PX 64
 
 // South doorway centre — the entry gap + the return-to-Florence trigger.
-#macro STABLE_EXIT_X 448
-#macro STABLE_EXIT_Y 1376   // row 21.5
+#macro STABLE_EXIT_X 320
+#macro STABLE_EXIT_Y 928    // row 14.5
 
 // TEMP: boot straight into the stable for testing (takes precedence over the inn
 // and Duomo load points in obj_game_manager Create). Flip to false to restore the
@@ -26,8 +27,8 @@
 
 // ── Cell predicates ─────────────────────────────────────────────────────────────
 function scr_stable_is_interior(_cx, _cy) {
-    var _main  = (_cx >= 1 && _cx <= 12 && _cy >= 1 && _cy <= 20);
-    var _entry = (_cy == 21 && _cx >= 6 && _cx <= 7);   // south doorway gap
+    var _main  = (_cx >= 1 && _cx <= 8 && _cy >= 1 && _cy <= 13);
+    var _entry = (_cy == 14 && _cx >= 4 && _cx <= 5);   // south doorway gap
     return _main || _entry;
 }
 
@@ -57,13 +58,14 @@ function scr_stable_is_border(_cx, _cy) {
 // so Benedetto (and one day the horses) can walk in. ONE geometry source drives
 // BOTH the dark-wood drawing (obj_stable_scene Draw) and the obj_wall collision
 // (scr_stable_build_collision) — they can never drift apart.
-#macro STABLE_STALL_Y0     4.5     // stall band top (cells)
-#macro STABLE_STALL_Y3     16      // stall band bottom
-#macro STABLE_STALL_LX     4.5     // LEFT column front wall (aisle west edge)
-#macro STABLE_STALL_RX     9.5     // RIGHT column front wall (aisle east edge)
+#macro STABLE_STALL_Y0     3.5     // stall band top (cells)
+#macro STABLE_STALL_Y3     11      // stall band bottom (3 stalls of 2.5 cells)
+#macro STABLE_STALL_LX     4.0     // LEFT column front wall (aisle west edge)
+#macro STABLE_STALL_RX     6.0     // RIGHT column front wall (aisle east edge —
+                                   // 2-cell aisle, ~80px clear inside the walls)
 #macro STABLE_WALL_HALF    24      // wall half-thickness in px (48px — FF6-style
                                    // THICK walls textured with a small plank tile)
-#macro STABLE_GATE_HALF    44      // gate gap half-height in px (~1.4 cells)
+#macro STABLE_GATE_HALF    36      // gate gap half-height in px (72px gate)
 
 /// All partition wall segments as [x0, y0, x1, y1] px rects.
 function scr_stable_partitions() {
@@ -76,7 +78,7 @@ function scr_stable_partitions() {
     for (var _i = 0; _i <= _rows; _i++) {
         var _wy = (STABLE_STALL_Y0 + _i * _band) * _g;
         array_push(_segs, [1 * _g,                 _wy - STABLE_WALL_HALF, STABLE_STALL_LX * _g, _wy + STABLE_WALL_HALF]);   // left:  west wall -> aisle
-        array_push(_segs, [STABLE_STALL_RX * _g,   _wy - STABLE_WALL_HALF, 13 * _g,              _wy + STABLE_WALL_HALF]);   // right: aisle -> east wall
+        array_push(_segs, [STABLE_STALL_RX * _g,   _wy - STABLE_WALL_HALF, 9 * _g,               _wy + STABLE_WALL_HALF]);   // right: aisle -> east wall
     }
     // vertical front walls along the aisle, split by a centred gate gap per stall
     for (var _s = 0; _s < _rows; _s++) {
@@ -118,26 +120,39 @@ function scr_stable_draw_partitions(_corr01) {
     }
     var _ts = 32;   // texture tile size on screen
 
+    // FF6 layering: each wall is a SOLID BLACK void block (same rect as its
+    // obj_wall collision), with the plank tiles placed ON the black, inset so a
+    // black frame outlines every wall — reads as a solid built wall, exactly
+    // like the SNES inn interiors.
+    var _inset = 4;
     for (var _i = 0; _i < array_length(_segs); _i++) {
         var _s = _segs[_i];
-        if (_tile != -1) {
-            // tile the band, clipping the partial tiles at the rect edges
-            for (var _ty = _s[1]; _ty < _s[3]; _ty += _ts) {
-                var _h = min(_ts, _s[3] - _ty);
-                for (var _tx = _s[0]; _tx < _s[2]; _tx += _ts) {
-                    var _w = min(_ts, _s[2] - _tx);
-                    draw_sprite_part_ext(_tile, 0, 0, 0, _w / _scale, _h / _scale,
-                        _tx, _ty, _scale, _scale, _col, 1);
+
+        // 1) the black void block — the wall body
+        draw_set_color(c_black);
+        draw_rectangle(_s[0], _s[1], _s[2], _s[3], false);
+
+        // 2) texture tiles ON the black, inset for the black outline frame
+        var _x0 = _s[0] + _inset, _y0 = _s[1] + _inset;
+        var _x1 = _s[2] - _inset, _y1 = _s[3] - _inset;
+        if (_x1 > _x0 && _y1 > _y0) {
+            if (_tile != -1) {
+                for (var _ty = _y0; _ty < _y1; _ty += _ts) {
+                    var _h = min(_ts, _y1 - _ty);
+                    for (var _tx = _x0; _tx < _x1; _tx += _ts) {
+                        var _w = min(_ts, _x1 - _tx);
+                        draw_sprite_part_ext(_tile, 0, 0, 0, _w / _scale, _h / _scale,
+                            _tx, _ty, _scale, _scale, _col, 1);
+                    }
                 }
+            } else {
+                draw_set_color(_flat);
+                draw_rectangle(_x0, _y0, _x1, _y1, false);
             }
-        } else {
-            draw_set_color(_flat);
-            draw_rectangle(_s[0], _s[1], _s[2], _s[3], false);
+            // 3) lit top edge inside the texture — the wall catches the light
+            draw_set_color(_top);
+            draw_rectangle(_x0, _y0, _x1, min(_y0 + 3, _y1), false);
         }
-        draw_set_color(_top);                                  // lit top edge — reads as height
-        draw_rectangle(_s[0], _s[1], _s[2], min(_s[1] + 4, _s[3]), false);
-        draw_set_color(c_black);                               // grounding shadow line
-        draw_rectangle(_s[0], max(_s[3] - 2, _s[1]), _s[2], _s[3], false);
     }
     draw_set_color(c_white);
 }
@@ -148,46 +163,49 @@ function scr_stable_draw_partitions(_corr01) {
 function scr_stable_default_layout() {
     var _L = [];
     // Zone 4 — HAY STORAGE (top-left)
-    array_push(_L, ["obj_mercato_prop", 1,    1,    1.2, "spr_stable_hay"]);
-    array_push(_L, ["obj_mercato_prop", 2.6,  1.4,  0.9, "spr_stable_hay"]);
-    array_push(_L, ["obj_mercato_prop", 1.3,  2.6,  0.8, "spr_stable_hay"]);
+    array_push(_L, ["obj_mercato_prop", 1,    1,    1.0, "spr_stable_hay"]);
+    array_push(_L, ["obj_mercato_prop", 2.3,  1.3,  0.7, "spr_stable_hay"]);
+    array_push(_L, ["obj_mercato_prop", 1.3,  2.3,  0.6, "spr_stable_hay"]);
     // Zone 5 — WATER TROUGH (head of the aisle per the reference, two segments
-    // reading as one long trough)
-    array_push(_L, ["obj_mercato_prop", 5.6,  2,    1.2, "spr_stable_trough"]);
-    array_push(_L, ["obj_mercato_prop", 7.1,  2,    1.2, "spr_stable_trough"]);
+    // reading as one long trough spanning the aisle mouth x 4-6)
+    array_push(_L, ["obj_mercato_prop", 4,    2,    1.0, "spr_stable_trough"]);
+    array_push(_L, ["obj_mercato_prop", 5,    2,    1.0, "spr_stable_trough"]);
     // Zone 6 — TACK ROOM (top-right)
-    array_push(_L, ["obj_mercato_prop", 10.4, 1,    1.2, "spr_stable_tack"]);
-    array_push(_L, ["obj_mercato_prop", 11.8, 1.6,  0.9, "spr_stable_tack"]);
-    array_push(_L, ["obj_barrel",       12,   2.8,  0.5]);
+    array_push(_L, ["obj_mercato_prop", 6.4,  1,    1.0, "spr_stable_tack"]);
+    array_push(_L, ["obj_mercato_prop", 7.5,  1.5,  0.7, "spr_stable_tack"]);
+    array_push(_L, ["obj_barrel",       7.7,  2.5,  0.5]);
     // Zone 3 — SIX HORSES inside the partition-wall stalls (the walls themselves
     // are DRAWN + collided by scr_stable_partitions, NOT props — see above).
-    // 0.6 scale, centred in each stall box: grey / brown / black top-to-bottom on
-    // BOTH sides. Stall centres: band 4.5-16, 3 stalls -> centres y 6.42 / 10.25 /
-    // 14.08; horse top-left = centre - 0.3 (a 0.6-scale 64px sprite is 0.6 cells).
+    // 1.0 scale — ONE horse fills its snug stall like the reference. Stall band
+    // 3.5-11, 3 stalls -> centres y 4.75 / 7.25 / 9.75; a 1.0-scale 64px sprite is
+    // 1 cell, so top-left = centre - 0.5. Stall inner x: left 64-232px (centre
+    // 148 -> gx 1.8), right 408-576px (centre 492 -> gx 7.2).
     var _horses = [
-        [2.45,  6.12, "spr_stable_horse_grey"],   [10.95, 6.12,  "spr_stable_horse_grey"],
-        [2.45,  9.95, "spr_stable_horse_brown"],  [10.95, 9.95,  "spr_stable_horse_brown"],
-        [2.45, 13.78, "spr_stable_horse_black"],  [10.95, 13.78, "spr_stable_horse_black"],
+        [1.8, 4.25, "spr_stable_horse_grey"],   [7.2, 4.25, "spr_stable_horse_grey"],
+        [1.8, 6.75, "spr_stable_horse_brown"],  [7.2, 6.75, "spr_stable_horse_brown"],
+        [1.8, 9.25, "spr_stable_horse_black"],  [7.2, 9.25, "spr_stable_horse_black"],
     ];
     for (var _i = 0; _i < array_length(_horses); _i++)
-        array_push(_L, ["obj_mercato_prop", _horses[_i][0], _horses[_i][1], 0.6, _horses[_i][2]]);
-    // Aisle LANTERNS hugging the stall fronts (warm → cold → green; glow in Draw)
-    var _lrows = [5, 9, 13, 17];
+        array_push(_L, ["obj_mercato_prop", _horses[_i][0], _horses[_i][1], 1.0, _horses[_i][2]]);
+    // Aisle LANTERNS mounted on the stall-front gateposts — 0.6 scale, straddling
+    // the 48px front walls at x 4.0 / 6.0 (the 80px aisle is too narrow for posts)
+    var _lrows = [3.9, 6.4, 8.9, 11.3];
     for (var _l = 0; _l < array_length(_lrows); _l++) {
-        array_push(_L, ["obj_mercato_prop", 4.6, _lrows[_l], 1.0, "spr_stable_lantern"]);
-        array_push(_L, ["obj_mercato_prop", 8.9, _lrows[_l], 1.0, "spr_stable_lantern"]);
+        array_push(_L, ["obj_mercato_prop", 3.7, _lrows[_l], 0.6, "spr_stable_lantern"]);
+        array_push(_L, ["obj_mercato_prop", 5.7, _lrows[_l], 0.6, "spr_stable_lantern"]);
     }
     // Zone 7 — SLEEPING AREA (bottom-right; rest gate handled by obj_stable_rest)
-    array_push(_L, ["obj_mercato_prop", 10.5, 18,   1.3, "spr_stable_sleeping"]);
-    array_push(_L, ["obj_mercato_prop", 12,   17.4, 0.8, "spr_stable_hay"]);
-    array_push(_L, ["obj_barrel",       12.1, 19.2, 0.5]);
-    array_push(_L, ["obj_stable_rest",  10.5, 18,   1]);
+    array_push(_L, ["obj_mercato_prop", 6.6,  11.6, 1.0, "spr_stable_sleeping"]);
+    array_push(_L, ["obj_mercato_prop", 7.7,  11.3, 0.6, "spr_stable_hay"]);
+    array_push(_L, ["obj_barrel",       7.8,  12.6, 0.5]);
+    array_push(_L, ["obj_stable_rest",  6.6,  11.6, 1]);
     // Bottom-left clutter (barrels per the reference)
-    array_push(_L, ["obj_barrel",       1,    18,   0.5]);
-    array_push(_L, ["obj_barrel",       2,    18.6, 0.5]);
-    array_push(_L, ["obj_barrel",       1.2,  19.6, 0.5]);
-    // Zone 2 — PIETRO the stable boy, centre aisle
-    array_push(_L, ["obj_npc_stableboy", 6.5, 14.5, 1]);
+    array_push(_L, ["obj_barrel",       1,    11.5, 0.5]);
+    array_push(_L, ["obj_barrel",       1.9,  12.1, 0.5]);
+    array_push(_L, ["obj_barrel",       1.2,  12.9, 0.5]);
+    // Zone 2 — PIETRO the stable boy at the aisle mouth (the open zone below the
+    // stalls — standing IN the 2-cell aisle would plug it)
+    array_push(_L, ["obj_npc_stableboy", 4.4, 11.5, 1]);
     return _L;
 }
 

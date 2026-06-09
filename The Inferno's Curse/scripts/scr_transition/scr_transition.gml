@@ -41,7 +41,12 @@ function scr_transition_spawn(_key, _x, _y, _w, _h, _target, _label, _ax, _ay, _
     scr_transition_load_overrides();
     if (variable_struct_exists(global.transition_overrides, _key)) {
         var _o = global.transition_overrides[$ _key];
-        _x = _o[0]; _y = _o[1];
+        // Stale-override guard: ignore a saved position that falls outside the
+        // CURRENT room bounds (e.g. saved before a room was resized) — the code
+        // default takes over, same spirit as the layout version guard.
+        if (_o[0] >= 0 && _o[0] <= room_width && _o[1] >= 0 && _o[1] <= room_height) {
+            _x = _o[0]; _y = _o[1];
+        }
     }
     var _ex = instance_create_depth(_x, _y, 400, obj_mercato_exit);
     _ex.zone_w        = _w;
