@@ -381,6 +381,19 @@ Add one line to the `"resources":[` array (GM re-sorts on save, so order is free
 {"id":{"name":"<spr_name>","path":"sprites/<spr_name>/<spr_name>.yy",},},
 ```
 
+### Register a ROOM in the .yyp — VERIFIED WORKING (2026-06-09)
+
+A room needs TWO entries (rooms also live in the room order list, unlike other
+resources). Confirmed in-IDE with Room_mercato_vecchio, which existed on disk
+but was missing from the .yyp — adding both lines made it load cleanly:
+
+```json
+// in "resources":[
+{"id":{"name":"<Room_name>","path":"rooms/<Room_name>/<Room_name>.yy",},},
+// in "RoomOrderNodes":[  (position in this array = room order in the IDE)
+{"roomId":{"name":"<Room_name>","path":"rooms/<Room_name>/<Room_name>.yy",},},
+```
+
 ---
 
 ## Common mistakes to avoid
