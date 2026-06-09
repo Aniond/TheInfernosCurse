@@ -82,34 +82,27 @@ function scr_inn_default_layout() {
     array_push(_L, ["obj_mercato_prop", 5.5, 1, 1.2, "spr_inn_fireplace"]);
     array_push(_L, ["obj_mercato_prop", 4.3, 1, 1.0, "spr_inn_oven_lit", "solid"]);
     array_push(_L, ["obj_mercato_prop", 2,   2, 0.9, "spr_inn_table"]);
-    // Zone 2 — TAVERN / BAR: ONE CONTINUOUS counter (per the bartender reference —
-    // it reads as a real bar because it's one adjoining piece joined to the wall):
-    // the EAST arm runs from the kitchen divider wall (drawn stable-style in
-    // obj_inn_scene Draw) south past the main run as the side-service counter; the
-    // main run goes west at y 6.5; a corner anchors the WEST end, with the staff
-    // opening above it (x1, y5-6). Entries may carry a trailing ANGLE (deg CW) for
-    // the vertical arm — R-rotate + F8 in debug if a corner faces the wrong way.
-    array_push(_L, ["obj_mercato_prop", 2, 4.2, 0.8, "spr_inn_wine_shelf"]);
-    array_push(_L, ["obj_mercato_prop", 1, 6.5, 1, "spr_inn_counter_corner", 270]);   // west end turn (staff opening above)
-    var _bar = ["spr_inn_counter_empty", "spr_inn_counter_food", "spr_inn_counter_empty",
-                "spr_inn_counter_empty", "spr_inn_counter_food", "spr_inn_counter_empty"];
-    for (var _b = 0; _b < array_length(_bar); _b++)
-        array_push(_L, ["obj_mercato_prop", 2 + _b, 6.5, 1, _bar[_b]]);
-    array_push(_L, ["obj_mercato_prop", 8, 6.5, 1, "spr_inn_counter_corner"]);        // junction corner
-    // EAST arm: north to the kitchen wall (seals the workspace with REAL geometry)...
-    array_push(_L, ["obj_mercato_prop", 8, 4.5, 1, "spr_inn_counter_empty", 90]);
-    array_push(_L, ["obj_mercato_prop", 8, 5.5, 1, "spr_inn_counter_empty", 90]);
-    // ...and south past the run — the side-service counter near the floor
-    array_push(_L, ["obj_mercato_prop", 8, 7.5, 1, "spr_inn_counter_food", 90]);
-    array_push(_L, ["obj_mercato_prop", 8, 8.5, 1, "spr_inn_counter_empty", 90]);
-    // Bar stools hugging the main-run front + one at the side-service arm's east face
-    var _stools = [2.2, 3.5, 4.8, 6.1];
+    // Zone 2 — TAVERN / BAR: ONE-PIECE SQUARE bar (spr_inn_bar_counter, PixelLab,
+    // 384x192 — a closed rectangular counter ring per the user's design: centre
+    // front + connecting sides forming a square, placed FLUSH against the drawn
+    // kitchen wall so the ring's back side reads as the back-bar along it). The
+    // bartenders stand INSIDE the ring; its manual bbox (the ring's art bounds)
+    // is the collision, so patrons are walled out by the counter itself.
+    array_push(_L, ["obj_mercato_prop", 1.8, 4.6, 1, "spr_inn_bar_counter"]);
+    array_push(_L, ["obj_inn_candle",   4.6, 6.55, 0.5]);   // a candle on the bar front
+    // Bar stools hugging the front face + one at the east arm
+    var _stools = [2.9, 4.0, 5.1, 6.2];
     for (var _st = 0; _st < array_length(_stools); _st++)
-        array_push(_L, ["obj_mercato_prop", _stools[_st], 7.7, 0.5, "spr_inn_stool"]);
-    array_push(_L, ["obj_mercato_prop", 9.1, 8, 0.5, "spr_inn_stool"]);
-    // Zone 3 — Aldo the innkeeper (lodging, WEST end) + Rosa (bar menu, EAST end)
-    array_push(_L, ["obj_npc_innkeeper", 3, 5.3, 1]);
-    array_push(_L, ["obj_npc_rosa",      6, 5.3, 1]);
+        array_push(_L, ["obj_mercato_prop", _stools[_st], 7.4, 0.5, "spr_inn_stool"]);
+    array_push(_L, ["obj_mercato_prop", 7.3, 5.8, 0.5, "spr_inn_stool"]);
+    // West-side clutter in the 1-cell gap between the bar ring and the west wall
+    array_push(_L, ["obj_barrel", 1, 5.5, 0.5]);
+    // Zone 3 — Aldo the innkeeper (lodging, WEST end) + Rosa (bar menu, EAST end),
+    // both inside the ring's interior opening (world x ~182-423, y ~366-421)
+    array_push(_L, ["obj_npc_innkeeper", 3.2, 5.6, 1]);
+    array_push(_L, ["obj_npc_rosa",      5.4, 5.6, 1]);
+    // Wine shelf moved into the KITCHEN (food prep + wine storage per reference)
+    array_push(_L, ["obj_mercato_prop", 1, 1, 0.8, "spr_inn_wine_shelf"]);
     // Zone 5 — STORAGE / PANTRY (top-right): barrels + kegs
     array_push(_L, ["obj_barrel", 11.5, 1.5, 0.5]);
     array_push(_L, ["obj_barrel", 12.5, 1.5, 0.5]);
@@ -154,7 +147,7 @@ function scr_inn_build() {
     // keep-alive: name-placed sprites + objects are invisible to the asset stripper.
     global.__inn_keep     = [obj_mercato_prop, obj_duomo_candelabra, obj_barrel, obj_npc_innkeeper, obj_npc_rosa, obj_inn_candle];
     global.__inn_keep_spr = [spr_inn_counter_corner, spr_inn_counter_empty, spr_inn_counter_food, spr_inn_keg_group, spr_inn_wine_shelf, spr_inn_table,
-        spr_inn_stool, spr_inn_staircase,
+        spr_inn_stool, spr_inn_staircase, spr_inn_bar_counter,
         spr_inn_chair_south, spr_inn_chair_north, spr_inn_chair_east, spr_inn_chair_west,
         spr_inn_fireplace, spr_inn_oven, spr_inn_oven_lit, spr_inn_oven_corrupt, spr_inn_oven_green, spr_inn_bed, spr_inn_stairs, spr_npc_innkeeper, spr_npc_rosa,
         spr_inn_candle, spr_inn_candle_lit, spr_inn_candle_unlit, spr_inn_candle_green];
@@ -258,10 +251,10 @@ function scr_inn_build_collision() {
         }
     // Kitchen/bar divider wall (row 4, cols 1-9) — DRAWN stable-style in
     // obj_inn_scene Draw (black void band + plank tile); this is its collision.
-    // The kitchen stays reachable around the east end via col 10. The bar nook
-    // needs no other seals: the one-piece counter's east arm joins this wall and
-    // its solid prop footprints close the workspace, with the staff opening at
-    // the west end (x1, y5-6) per the reference.
+    // The kitchen stays reachable around the east end via col 10. The bar needs
+    // no other seals: the one-piece square counter ring (its manual bbox = the
+    // ring's art bounds) sits flush under this wall and walls the workspace off
+    // by itself — Aldo and Rosa stand inside the ring.
     var _nwA = instance_create_depth(1 * 64, 4 * 64, 500, obj_wall);   // kitchen/bar divider
     _nwA.wall_w = 9 * 64; _nwA.wall_h = 64; _nwA.visible = false;
 

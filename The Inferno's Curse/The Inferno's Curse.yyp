@@ -277,6 +277,7 @@
     {"id":{"name":"spr_hanging_cloth","path":"sprites/spr_hanging_cloth/spr_hanging_cloth.yy",},},
     {"id":{"name":"spr_hanging_herbs","path":"sprites/spr_hanging_herbs/spr_hanging_herbs.yy",},},
     {"id":{"name":"spr_inn_bar","path":"sprites/spr_inn_bar/spr_inn_bar.yy",},},
+    {"id":{"name":"spr_inn_bar_counter","path":"sprites/spr_inn_bar_counter/spr_inn_bar_counter.yy",},},
     {"id":{"name":"spr_inn_bed","path":"sprites/spr_inn_bed/spr_inn_bed.yy",},},
     {"id":{"name":"spr_inn_candle_green","path":"sprites/spr_inn_candle_green/spr_inn_candle_green.yy",},},
     {"id":{"name":"spr_inn_candle_lit","path":"sprites/spr_inn_candle_lit/spr_inn_candle_lit.yy",},},
