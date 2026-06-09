@@ -59,9 +59,10 @@ function scr_stable_default_layout() {
     array_push(_L, ["obj_mercato_prop", 1,    1,    1.2, "spr_stable_hay"]);
     array_push(_L, ["obj_mercato_prop", 2.6,  1.4,  0.9, "spr_stable_hay"]);
     array_push(_L, ["obj_mercato_prop", 1.3,  2.6,  0.8, "spr_stable_hay"]);
-    // Zone 5 — WATER TROUGH (top-centre, two segments read as one long trough)
-    array_push(_L, ["obj_mercato_prop", 5.4,  1,    1.2, "spr_stable_trough"]);
-    array_push(_L, ["obj_mercato_prop", 6.9,  1,    1.2, "spr_stable_trough"]);
+    // Zone 5 — WATER TROUGH (head of the aisle per the reference, two segments
+    // reading as one long trough)
+    array_push(_L, ["obj_mercato_prop", 5.6,  2,    1.2, "spr_stable_trough"]);
+    array_push(_L, ["obj_mercato_prop", 7.1,  2,    1.2, "spr_stable_trough"]);
     // Zone 6 — TACK ROOM (top-right)
     array_push(_L, ["obj_mercato_prop", 10.4, 1,    1.2, "spr_stable_tack"]);
     array_push(_L, ["obj_mercato_prop", 11.8, 1.6,  0.9, "spr_stable_tack"]);
@@ -72,21 +73,24 @@ function scr_stable_default_layout() {
     // collision on back + sides only, so the front stays walkable. Horses sit
     // INSIDE the partitions at 0.6 scale: grey / brown / black top-to-bottom on
     // BOTH sides. Left column hugs the west wall, right column hugs the east wall.
+    // Stall band runs rows ~4.5-16 per the reference; fronts reach the aisle,
+    // leaving a 5-cell centre aisle (x4.5-9.5). Columns sit flush against the
+    // west / east walls.
     var _stalls = [
-        [1,  4,    "spr_stable_horse_grey"],   [10, 4,    "spr_stable_horse_grey"],
-        [1,  8.25, "spr_stable_horse_brown"],  [10, 8.25, "spr_stable_horse_brown"],
-        [1,  12.5, "spr_stable_horse_black"],  [10, 12.5, "spr_stable_horse_black"],
+        [1,  4.5,  "spr_stable_horse_grey"],   [9.5, 4.5,  "spr_stable_horse_grey"],
+        [1,  8.6,  "spr_stable_horse_brown"],  [9.5, 8.6,  "spr_stable_horse_brown"],
+        [1,  12.7, "spr_stable_horse_black"],  [9.5, 12.7, "spr_stable_horse_black"],
     ];
     for (var _i = 0; _i < array_length(_stalls); _i++) {
         var _s = _stalls[_i];
-        array_push(_L, ["obj_mercato_prop", _s[0],       _s[1],       3.0, "spr_stable_stall"]);
-        array_push(_L, ["obj_mercato_prop", _s[0] + 1.2, _s[1] + 1.2, 0.6, _s[2]]);
+        array_push(_L, ["obj_mercato_prop", _s[0],        _s[1],       3.5, "spr_stable_stall"]);
+        array_push(_L, ["obj_mercato_prop", _s[0] + 1.45, _s[1] + 1.3, 0.6, _s[2]]);
     }
-    // Aisle LANTERNS on the stall posts (warm → cold → green; glow in scene Draw)
+    // Aisle LANTERNS hugging the stall fronts (warm → cold → green; glow in Draw)
     var _lrows = [5, 9, 13, 17];
     for (var _l = 0; _l < array_length(_lrows); _l++) {
-        array_push(_L, ["obj_mercato_prop", 4.1, _lrows[_l], 1.0, "spr_stable_lantern"]);
-        array_push(_L, ["obj_mercato_prop", 9.4, _lrows[_l], 1.0, "spr_stable_lantern"]);
+        array_push(_L, ["obj_mercato_prop", 4.6, _lrows[_l], 1.0, "spr_stable_lantern"]);
+        array_push(_L, ["obj_mercato_prop", 8.9, _lrows[_l], 1.0, "spr_stable_lantern"]);
     }
     // Zone 7 — SLEEPING AREA (bottom-right; rest gate handled by obj_stable_rest)
     array_push(_L, ["obj_mercato_prop", 10.5, 18,   1.3, "spr_stable_sleeping"]);
