@@ -34,6 +34,15 @@ global.game_state = "playing";
 // In-world days elapsed. Drives NPC schedules and world-progression events.
 global.day_count = 1;
 
+// ── Day/night clock (scr_time_system) ────────────────────────────────────────
+// First pass — 1 real second = 5 game minutes. Tune TIME_RATE after testing.
+// game_hour/minute/day are the canonical clock; time_of_day/is_night are kept
+// in sync for backwards compatibility with the existing save/debug systems.
+global.game_hour   = 6;
+global.game_minute = 0;
+global.game_day    = 1;
+global.__time_accum = 0;
+
 // Index (0-6) of the circle the player is currently occupying.
 // 0 = Limbo (starting circle). Increases as the player descends.
 global.current_circle = 0;

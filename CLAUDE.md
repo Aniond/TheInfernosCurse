@@ -127,6 +127,25 @@ boundary," and that is ALREADY guaranteed by the global FF6 camera (scr_camera),
 which clamps the view to the room so nothing past the edge is ever shown — so NO
 art change is needed in exterior rooms to satisfy it. (Decision: 2026-06-08.)
 
+## Character Sprite Standard (permanent)
+All CHARACTER / NPC sprites use a 64px canvas, and the character FIGURE occupies at
+most ~60% of the canvas — significant transparent PADDING on all sides. NEVER fill the
+full 64px with the figure. Padding keeps sprites sharp (no edge clipping) when scaled
+or rotated in engine. Generate the figure SMALL within the canvas, or pad after:
+trim to the figure → scale it to ~60% → centre it in a fresh 64px transparent canvas.
+For multi-frame ANIMATIONS, scale every frame UNIFORMLY (do NOT trim/re-centre per
+frame, or the motion breaks). (Standard set 2026-06-08.)
+
+## PixelLab Isometric Rejection Rule (permanent)
+When any sprite generated via PixelLab MCP comes out at an isometric angle
+or 3/4 perspective, REJECT it and regenerate immediately with this addition
+appended to the prompt:
+
+"STRICT top down view, viewed directly from above, zero perspective angle,
+no isometric, no 3/4 view, flat 90 degree overhead only"
+
+Do not ask — just regenerate automatically on isometric output.
+
 ## Reporting Style
 Report AFTER doing, not before.
 No confirmation prompts.

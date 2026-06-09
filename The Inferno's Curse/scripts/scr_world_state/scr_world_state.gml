@@ -19,9 +19,12 @@ function scr_save_world_state() {
     _data.version    = 1;
 
     // Time
-    _data.day_count  = global.day_count;
+    _data.day_count   = global.day_count;
     _data.time_of_day = round(global.time_of_day * 100) / 100;
-    _data.is_night   = global.is_night;
+    _data.is_night    = global.is_night;
+    _data.game_hour   = global.game_hour;
+    _data.game_minute = global.game_minute;
+    _data.game_day    = global.game_day;
 
     // Corruption & affinity
     _data.circle_corruption   = global.circle_corruption;
@@ -129,6 +132,10 @@ function scr_load_world_state() {
     global.day_count   = _d[$ "day_count"]   ?? 1;
     global.time_of_day = _d[$ "time_of_day"] ?? 6;
     global.is_night    = _d[$ "is_night"]    ?? false;
+    global.game_hour   = _d[$ "game_hour"]   ?? floor(global.time_of_day);
+    global.game_minute = _d[$ "game_minute"] ?? round(frac(global.time_of_day) * 60);
+    global.game_day    = _d[$ "game_day"]    ?? global.day_count;
+    global.__time_accum = 0;
 
     // Corruption
     global.circle_corruption   = _d[$ "circle_corruption"]   ?? array_create(7, 0);

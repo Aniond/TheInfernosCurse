@@ -1,25 +1,15 @@
 // =============================================================================
 // obj_time_manager — Step Event
 // =============================================================================
+// The clock is advanced by scr_time_step (scr_time_system) — NOT here. This manager
+// only watches for the day to turn over (natural midnight rollover, or a sleep/prayer
+// jump that crosses midnight) and fires the daily corruption cascade once per new day,
+// keeping the legacy global.day_count in step with the canonical global.game_day.
+// =============================================================================
+if (!variable_global_exists("game_day")) exit;
 
-// ── Advance time ──────────────────────────────────────────────────────────────
-global.time_of_day += global.cycle_speed;
-
-// ── Day rollover ──────────────────────────────────────────────────────────────
-// When we pass midnight (24.0), reset the clock and start a new day.
-// Subtracting 24 rather than hard-resetting to 0 preserves any fractional
-// overshoot so fast time speeds don't skip a sliver of the new day.
-if (global.time_of_day >= 24) {
-    global.time_of_day -= 24;
-
-    // Increment the global day counter (also tracked in obj_game_manager)
+while (last_seen_day < global.game_day) {
+    last_seen_day++;
     global.day_count++;
-
-    // Run the daily corruption cascade and persist world state to disk
-    scr_new_day_corruption_update();
+    scr_new_day_corruption_update();   // daily corruption cascade + persist (was wired to the old >=24 rollover)
 }
-
-// ── Night flag ────────────────────────────────────────────────────────────────
-// Night covers 19:00-24:00 and 00:00-06:00.
-// Used by NPCs, enemy spawning, and visual systems.
-global.is_night = (global.time_of_day > 18 || global.time_of_day < 6);

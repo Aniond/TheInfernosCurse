@@ -6,10 +6,21 @@ if (!instance_exists(obj_player)) exit;
 
 // In debug mode the innkeeper is a draggable builder object — never open the menu.
 if (variable_global_exists("debug_mode") && global.debug_mode) {
+    visible = true;
+    menu_open = false; global.input_locked = false;   // never hold the input lock in debug → drag works
+    player_near = false; greeted = false;
+    exit;
+}
+
+// Schedule (scr_time_system): the innkeeper tends the bar 06:00–23:00. Off-shift he is
+// absent — hide him, close any open menu, and skip interaction. Re-evaluated live.
+if (!scr_time_npc_active("innkeeper")) {
+    visible = false;
     if (menu_open) { menu_open = false; global.input_locked = false; }
     player_near = false; greeted = false;
     exit;
 }
+visible = true;
 
 var _cx = x + sprite_get_width(sprite_index)  * image_xscale * 0.5;
 var _cy = y + sprite_get_height(sprite_index) * image_yscale * 0.5;
@@ -56,6 +67,7 @@ if (keyboard_check_pressed(ord("Z")) || keyboard_check_pressed(vk_enter)) {
         global.player_gold -= _cost;
         obj_player.hp = obj_player.max_hp;                   // full rest
         if (_relief > 0) scr_corruption_relieve(_relief, false);
+        scr_time_sleep();                                    // sleep → skip to 06:00 next day (scr_time_system)
         msg_text = "You take " + _name + ". The night passes.  (-" + string(_cost) + "g)";
         scr_chronicle_add("A night's rest at the Fiorentine Inn — " + _name + ".");
     } else {

@@ -23,6 +23,9 @@ if (room == Room1) {
 scr_camera_update();
 scr_banner_step();   // count down the location banner (drawn in obj_player Draw GUI)
 
+// ── Day/night clock ───────────────────────────────────────────────────────────
+scr_time_step();
+
 // ── Corruption system ─────────────────────────────────────────────────────────
 // Poll all seven circles, trigger sin effects for active ones, and apply
 // continuous scaled modifiers (speed drain, price inflation, etc.).
@@ -42,6 +45,13 @@ scr_check_trigger_vision();
 // ── Save / load keyboard shortcuts ───────────────────────────────────────────
 if (keyboard_check_pressed(vk_f5)) scr_save_world_state();
 if (keyboard_check_pressed(vk_f9)) scr_load_world_state();
+
+// ── DEBUG: advance 1 hour (Ctrl+T) ───────────────────────────────────────────
+if (keyboard_check(vk_control) && keyboard_check_pressed(ord("T"))) {
+    scr_time_advance_hours(1);
+    global.save_indicator_text  = "TIME: " + scr_time_str() + " [" + scr_time_phase() + "]";
+    global.save_indicator_timer = 120;
+}
 
 // ── DEBUG: toggle debug mode (F1) — controls placeholder visuals ──────────────
 if (keyboard_check_pressed(vk_f1)) {

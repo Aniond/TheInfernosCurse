@@ -388,8 +388,9 @@ function scr_room_builder_save() {
     // Per-room save file (sandbox-safe save area) — the bridge room has its own
     // statue layout so F8 there never clobbers Florence's market layout.
     var _path = working_directory + "room1_layout.txt";
-    if (room == Room_ponte_vecchio) _path = working_directory + "room_ponte_vecchio_layout.txt";
-    if (room == Room_duomo)         _path = working_directory + "room_duomo_layout.txt";
+    if (room == Room_ponte_vecchio)  _path = working_directory + "room_ponte_vecchio_layout.txt";
+    if (room == Room_duomo)          _path = working_directory + "room_duomo_layout.txt";
+    if (room == Room_fiorentine_inn) _path = working_directory + "room_fiorentine_inn_layout.txt";
     var _f = file_text_open_write(_path);
     if (_f == -1) {
         show_debug_message("[room_builder] SAVE FAILED — sandbox blocks " + ROOM_BUILDER_FILE +

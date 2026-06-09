@@ -8,6 +8,10 @@
 //   Layer 3  a lighter doorstep in the south entrance gap; warm/cold ambient by corruption.
 if (room != Room_fiorentine_inn) exit;
 
+// Bread oven swaps lit(animated) <-> cold/corrupt by Limbo corruption (50% threshold).
+// Set here (scene draws at depth 160, before the props at 100) so it lands this frame.
+scr_inn_oven_sync();
+
 var _rw = room_width, _rh = room_height;
 var _corr = clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1);
 var _g = INN_GRID_PX;

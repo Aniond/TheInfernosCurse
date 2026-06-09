@@ -1,25 +1,19 @@
 // =============================================================================
 // obj_time_manager — Create Event
 // =============================================================================
-// Manages the in-game 24-hour clock and triggers day-cycle events.
+// LEGACY clock RETIRED. The single source of truth for the day/night clock is now
+// scr_time_system (driven from obj_game_manager Step -> scr_time_step), which owns
+// global.game_hour / game_minute / game_day and keeps global.time_of_day +
+// global.is_night in sync for backwards compatibility.
+//
+// This manager NO LONGER advances time and NO LONGER initialises the clock (doing so
+// would clobber a save just restored by scr_load_world_state in obj_game_manager's
+// Create, which runs first). It survives only to:
+//   (a) fire the daily corruption cascade once per new day (scr_new_day_corruption_update)
+//   (b) draw the corruption-tinted sky HUD (see Draw GUI)
 // PERSISTENT — one instance survives every room transition.
-// Created SECOND in Florence (after obj_game_manager) so globals are ready.
-//
-// Time scale:
-//   global.time_of_day runs 0.0 – 23.999…  (one full day)
-//   At 24.0 it resets to 0.0 and day_count increments.
-//
-//   With cycle_speed = 0.005 and a 60 fps game:
-//   0.005 × 60 steps/sec × 60 sec/min = 18 in-game minutes per real minute
-//   → one full day takes ~80 real seconds (good for testing; tune as needed)
 // =============================================================================
 
-// Start at dawn — time 6.0 on the 0-24 scale
-global.time_of_day = 6;
-
-// Night flag — true between 19:00 and 06:00 (drives NPC behaviour, lighting)
-global.is_night = false;
-
-// How many time units advance per game step.
-// Raise to speed up the day, lower for a longer cycle.
-global.cycle_speed = 0.005;
+// Watch the canonical day counter so the daily cascade fires exactly once per new day —
+// this covers natural midnight rollover AND sleep/prayer jumps that skip across midnight.
+last_seen_day = variable_global_exists("game_day") ? global.game_day : global.day_count;

@@ -24,12 +24,13 @@ draw_rectangle(0, 58, _gui_w, 60, false);
 draw_set_alpha(1.0);
 
 // ── Time period label ─────────────────────────────────────────────────────────
-// Map time_of_day to a human-readable period name
-var _period;
-if      (_tod >= 5  && _tod < 7)  _period = "Dawn";
-else if (_tod >= 7  && _tod < 17) _period = "Day";
-else if (_tod >= 17 && _tod < 19) _period = "Dusk";
-else                               _period = "Night";
+// Use the canonical phase from scr_time_system so this HUD can never drift from the
+// real clock again (Dawn 05-07 · Day 08-17 · Dusk 18-20 · Night 21-04).
+var _phase = scr_time_phase();
+var _period = "Night";
+if      (_phase == "dawn") _period = "Dawn";
+else if (_phase == "day")  _period = "Day";
+else if (_phase == "dusk") _period = "Dusk";
 
 // Format as HH:MM so testers can see the exact time
 var _h   = floor(_tod);

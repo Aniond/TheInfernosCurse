@@ -21,7 +21,7 @@ if (_c01 > 0.3) {
 // touching (the river edge, building faces, etc.). Anchor his FEET to (x,y)
 // instead. _foot_dx/_foot_dy = character centre-x / feet-y inside the 128 frame
 // (tune these if he sits slightly high/low or off-centre).
-var _spr_scale = 0.9;
+var _spr_scale = 0.6;               // sized to match the padded NPCs (~37px figure). Tune here.
 var _foot_dx   = 62 * _spr_scale;   // horizontal centre of the character in-frame
 var _foot_dy   = 120 * _spr_scale;  // feet (bottom of the character) in-frame
 draw_sprite_ext(

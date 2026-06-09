@@ -74,10 +74,11 @@ function scr_inn_is_rug(_cx, _cy) {
 // is click-drag / nudge / rotate / Delete / F8 like the market & bridge props.
 function scr_inn_default_layout() {
     var _L = [];
-    // Zone 2 — TAVERN / BAR COUNTER along the north wall (128px each → cols 3-6).
-    // Solid; the innkeeper nook behind it is sealed in scr_inn_build_collision.
-    array_push(_L, ["obj_mercato_prop", 3, 2, 1, "spr_inn_counter"]);
-    array_push(_L, ["obj_mercato_prop", 5, 2, 1, "spr_inn_counter"]);
+    // Zone 2 — TAVERN / BAR COUNTER — MODULAR L (corner + straight segments). This is
+    // a starter shape; assemble the exact L in debug (drag + R-rotate + arrow-nudge,
+    // then F8). All solid; the innkeeper nook behind it is sealed in build_collision.
+    // Bar counter — spr_inn_counter_empty placed by player in debug (sprite TBD).
+    // array_push(_L, ["obj_mercato_prop", 4, 2, 1, "spr_inn_counter_empty"]);  // re-enable once sprite is set
     // Zone 4 — KITCHEN hearth + prep table (left wall)
     array_push(_L, ["obj_mercato_prop", 2,  7, 1, "spr_inn_fireplace"]);
     array_push(_L, ["obj_mercato_prop", 2, 10, 0.9, "spr_inn_table"]);
@@ -110,6 +111,14 @@ function scr_inn_default_layout() {
     // Zone 1 — ENTRANCE: two candelabra flanking the south doorway
     array_push(_L, ["obj_duomo_candelabra", 8,  18, 0.6]);
     array_push(_L, ["obj_duomo_candelabra", 12, 18, 0.6]);
+    // Zone 2 — KEG GROUP behind counter near existing barrels (drag to final position)
+    array_push(_L, ["obj_mercato_prop", 16, 3, 0.7, "spr_inn_keg_group"]);
+    // Zone 2 — WINE SHELF on wall behind counter (drag to final position)
+    array_push(_L, ["obj_mercato_prop", 5, 1, 0.8, "spr_inn_wine_shelf"]);
+    // Zone 4 — BREAD OVEN beside kitchen hearth (left wall). Placed LIT; obj_inn_scene
+    // Draw swaps it to the cold black-tiled spr_inn_oven_corrupt at 50%+ Limbo corruption
+    // (see scr_inn_oven_sync). spr_inn_oven_lit is a 9-frame dancing-flame animation.
+    array_push(_L, ["obj_mercato_prop", 2, 8, 1.0, "spr_inn_oven_lit", "solid"]);
     // Zone 3 — INNKEEPER behind the counter (WEST end; proximity rest menu)
     array_push(_L, ["obj_npc_innkeeper", 4, 1, 1]);
     // Rosa the barmaid — EAST end of the counter nook (proximity dialogue + mood icon)
@@ -123,10 +132,10 @@ function scr_inn_build() {
 
     // keep-alive: name-placed sprites + objects are invisible to the asset stripper.
     global.__inn_keep     = [obj_mercato_prop, obj_duomo_candelabra, obj_barrel, obj_npc_innkeeper, obj_npc_rosa, obj_inn_candle];
-    global.__inn_keep_spr = [spr_inn_counter, spr_inn_table,
+    global.__inn_keep_spr = [spr_inn_counter_corner, spr_inn_counter_empty, spr_inn_counter_food, spr_inn_keg_group, spr_inn_wine_shelf, spr_inn_table,
         spr_inn_chair_south, spr_inn_chair_north, spr_inn_chair_east, spr_inn_chair_west,
-        spr_inn_fireplace, spr_inn_bed, spr_inn_stairs, spr_npc_innkeeper, spr_npc_rosa,
-        spr_inn_candle, spr_inn_candle_lit, spr_inn_candle_unlit];
+        spr_inn_fireplace, spr_inn_oven, spr_inn_oven_lit, spr_inn_oven_corrupt, spr_inn_oven_green, spr_inn_bed, spr_inn_stairs, spr_npc_innkeeper, spr_npc_rosa,
+        spr_inn_candle, spr_inn_candle_lit, spr_inn_candle_unlit, spr_inn_candle_green];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
@@ -226,6 +235,34 @@ function scr_inn_build_collision() {
     _nwB.wall_w = 64; _nwB.wall_h = 2 * 64; _nwB.visible = false;
 
     scr_room_builder_build_collision();   // tight per-prop footprints (mercato_prop etc.)
+}
+
+/// Corruption-reactive bread oven (mirrors the candle pattern). Below 50% Limbo
+/// corruption the oven burns warm + animated (spr_inn_oven_lit, 9-frame flame loop);
+/// at 50%+ it goes cold and black-tiled (spr_inn_oven_corrupt). Called every frame from
+/// obj_inn_scene Draw. Matches any oven prop (builder_sprite begins "spr_inn_oven",
+/// covering the lit/corrupt sprites AND a legacy spr_inn_oven from an older saved layout).
+/// Only reassigns sprite_index when it actually changes — assigning it every frame would
+/// reset image_index to 0 and freeze the flame animation.
+function scr_inn_oven_sync() {
+    if (room != Room_fiorentine_inn) return;
+    if (!variable_global_exists("room_builder_objects")) return;
+    // Warm lit (<50) -> cold black, no flame (50-99) -> eerie GREEN relight at full
+    // corruption (100). The green oven is the same 9-frame animation recoloured.
+    var _corr = global.circle_corruption[CIRCLE_LIMBO];
+    var _spr;
+    if      (_corr >= 100) _spr = spr_inn_oven_green;
+    else if (_corr >= 50)  _spr = spr_inn_oven_corrupt;
+    else                   _spr = spr_inn_oven_lit;
+    var _objs = global.room_builder_objects;
+    for (var _i = 0; _i < array_length(_objs); _i++) {
+        var _o = _objs[_i];
+        if (!instance_exists(_o)) continue;
+        if (!variable_instance_exists(_o, "builder_sprite")) continue;
+        if (string_pos("spr_inn_oven", _o.builder_sprite) == 1 && _o.sprite_index != _spr) {
+            _o.sprite_index = _spr;
+        }
+    }
 }
 
 /// Rebuild inn collision from current prop positions (debug: after drag/nudge/delete).
