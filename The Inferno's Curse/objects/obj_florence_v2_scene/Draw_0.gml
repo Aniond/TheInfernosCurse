@@ -134,6 +134,7 @@ scr_fv2_draw_arno(_corr);
 // ── 5. street life + shrines react to corruption; torch/candle glow pass ───────
 scr_fv2_corruption_sync();
 scr_fv2_torch_glow();
+scr_fv2_bridge_zoom();   // crossing the Ponte eases the camera in
 
 // ── 6. the city itself dirties as Limbo deepens (50%+) ─────────────────────────
 if (_corr >= 0.5) {

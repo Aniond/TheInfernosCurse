@@ -398,18 +398,14 @@ function scr_fv2_draw_arno(_corr) {
             for (var _dx = FV2_RIVER_X0 - _bankw; _dx < FV2_RIVER_X1 + _bankw; _dx += 32)
                 draw_sprite_ext(_t_deck, 0, _dx, _dy, 0.5, 0.5, 0, c_white, 1);
     }
-    var _t_shops = asset_get_index("spr_ponte_shop_row");
-    if (_t_shops >= 0 && asset_get_type("spr_ponte_shop_row") == asset_sprite) {
-        var _shw = sprite_get_width(_t_shops);
-        var _shh = sprite_get_height(_t_shops);
-        var _ssc = 64 / _shh;                       // shop rows one cell deep
-        var _sx0 = FV2_RIVER_X0 - _bankw, _sx1 = FV2_RIVER_X1 + _bankw;
-        for (var _sx = _sx0; _sx < _sx1; _sx += _shw * _ssc) {
-            var _wsrc = min(_shw, (_sx1 - _sx) / _ssc);
-            draw_sprite_part_ext(_t_shops, 0, 0, 0, _wsrc, _shh, _sx, FV2_PONTE_Y0 - 64, _ssc, _ssc, c_white, 1);
-            draw_sprite_part_ext(_t_shops, 0, 0, 0, _wsrc, _shh, _sx, FV2_PONTE_Y1,      _ssc, _ssc, c_white, 1);
-        }
-    }
+    // ONE bridge image across the crossing (David): the EW Ponte sprite drawn
+    // as a single piece, scaled UP 3x uniformly and positioned so its walkable
+    // deck band (rows 98-128 of the art, centre row 113) sits centred on the
+    // Ponte road band — the shop blocks overhang both banks like the reference.
+    var _bsc = 3;
+    var _brx = (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5 - sprite_get_width(spr_ponte_vecchio_ew) * _bsc * 0.5;
+    var _bry = (FV2_PONTE_Y0 + FV2_PONTE_Y1) * 0.5 - 113 * _bsc;
+    draw_sprite_ext(spr_ponte_vecchio_ew, 0, _brx, _bry, _bsc, _bsc, 0, c_white, 1);
     // ROWING BOATS adrift south of the Ponte (GAP 6) — the drift follows the
     // current, so at 75%+ corruption the boats crawl back UPSTREAM with it
     var _boat = asset_get_index("spr_arno_rowing_boat");
@@ -627,7 +623,7 @@ function scr_fv2_build() {
     global.__fv2_keep_spr = [spr_florence_road_cobble, spr_florence_road_intersection,
         spr_florence_grass, spr_florence_street,
         spr_florence_wall_section, spr_florence_wall_gate, spr_florence_wall_tower,
-        spr_florence_water, spr_river_stone, spr_ponte_shop_row,
+        spr_florence_water, spr_river_stone, spr_ponte_vecchio_ew,
         spr_florence_tower_house, spr_florence_row_block, spr_florence_cottage,
         spr_duomo_exterior, spr_florence_campanile, spr_palazzo_signoria,
         spr_merchant_guild, spr_parish_church, spr_locanda_exterior, spr_apothecary,
@@ -641,6 +637,7 @@ function scr_fv2_build() {
         spr_inn_plant, spr_florence_wall_band,
         spr_florence_packed_earth, spr_arno_rowing_boat, spr_florence_thin_wall];
 
+    if (variable_global_exists("cam_zoom_target")) global.cam_zoom_target = 1;   // fresh room = normal zoom
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
         if (instance_exists(global.room_builder_objects[_i])) instance_destroy(global.room_builder_objects[_i]);
@@ -779,6 +776,18 @@ function scr_fv2_corruption_sync() {
             else                    _o.image_alpha = 1;
         }
     }
+}
+
+/// PONTE ZONE ZOOM — the bridge sprite marks the zone; entering it eases the
+/// camera IN (cinematic crossing; later this zoom becomes the entry into the
+/// rebuilt EW bridge map). Called every frame from the scene Draw.
+function scr_fv2_bridge_zoom() {
+    if (room != Room_florence_v2) return;
+    if (!variable_global_exists("cam_zoom_target")) return;
+    if (!instance_exists(obj_player)) return;
+    var _on = (obj_player.x > FV2_RIVER_X0 - 22 && obj_player.x < FV2_RIVER_X1 + 22
+            && obj_player.y > FV2_PONTE_Y0      && obj_player.y < FV2_PONTE_Y1);
+    global.cam_zoom_target = _on ? 0.62 : 1;
 }
 
 /// Torch flames + shrine candles — additive glow pass (after the floor).

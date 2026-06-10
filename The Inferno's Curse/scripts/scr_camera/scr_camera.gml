@@ -22,6 +22,11 @@ function scr_camera_init() {
     if (!variable_global_exists("cam_enabled"))   global.cam_enabled   = true;
     if (!variable_global_exists("cam_view_h"))    global.cam_view_h    = 384;
     if (!variable_global_exists("cam_skip_room")) global.cam_skip_room = room_battle;
+    // smooth ZONE ZOOM (e.g. the Ponte crossing): a zone sets cam_zoom_target
+    // (<1 = zoom IN); the camera lerps toward it every step and back to 1 when
+    // the zone releases it.
+    if (!variable_global_exists("cam_zoom"))        global.cam_zoom        = 1;
+    if (!variable_global_exists("cam_zoom_target")) global.cam_zoom_target = 1;
 }
 
 /// Apply + update the camera for the current room. Call every step.
@@ -31,8 +36,11 @@ function scr_camera_update() {
     if (!instance_exists(obj_player)) return;
 
     // Aspect-correct view size, clamped to the room (no distortion, no black bars).
+    // cam_zoom eases toward cam_zoom_target (zone zoom; <1 = closer).
+    if (!variable_global_exists("cam_zoom")) { global.cam_zoom = 1; global.cam_zoom_target = 1; }
+    global.cam_zoom = lerp(global.cam_zoom, global.cam_zoom_target, 0.08);
     var _aspect = CAM_PORT_W / CAM_PORT_H;
-    var _vh = min(global.cam_view_h, room_height);
+    var _vh = min(global.cam_view_h * global.cam_zoom, room_height);
     var _vw = _vh * _aspect;
     if (_vw > room_width) { _vw = room_width; _vh = _vw / _aspect; }
 
