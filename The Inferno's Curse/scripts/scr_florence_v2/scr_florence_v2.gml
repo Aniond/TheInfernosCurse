@@ -109,25 +109,38 @@ function scr_fv2_street_walls() {
         var _cx0 = round(_cr[0]) * 64, _cy0 = round(_cr[1]) * 64;
         var _cx1 = round(_cr[2]) * 64, _cy1 = round(_cr[3]) * 64;
         var _horiz = (_cx1 - _cx0) >= (_cy1 - _cy0);
+        // entry = [x0, y0, x1, y1, kind] — kind 0 UPPER (road's north edge),
+        // 1 LOWER (south edge), 2 vertical. Drawing uses the rect as-is;
+        // collision applies per-kind tuning (scr_fv2_street_wall_solid).
         if (_horiz) {
             for (var _ex = _cx0; _ex < _cx1; _ex += 64) {
                 var _xe = min(_ex + 64, _cx1);
                 if (!scr_fv2_on_ground(_ex + 32, _cy0 - 32) && !scr_fv2_wall_open(_ex, _cy0 - 4, _xe, _cy0 + 20, _open))
-                    array_push(_out, [_ex, _cy0 - 4, _xe, _cy0 + 20]);
+                    array_push(_out, [_ex, _cy0 - 4, _xe, _cy0 + 20, 0]);
                 if (!scr_fv2_on_ground(_ex + 32, _cy1 + 32) && !scr_fv2_wall_open(_ex, _cy1 - 20, _xe, _cy1 + 4, _open))
-                    array_push(_out, [_ex, _cy1 - 20, _xe, _cy1 + 4]);
+                    array_push(_out, [_ex, _cy1 - 20, _xe, _cy1 + 4, 1]);
             }
         } else {
             for (var _ey = _cy0; _ey < _cy1; _ey += 64) {
                 var _ye = min(_ey + 64, _cy1);
                 if (!scr_fv2_on_ground(_cx0 - 32, _ey + 32) && !scr_fv2_wall_open(_cx0 - 4, _ey, _cx0 + 20, _ye, _open))
-                    array_push(_out, [_cx0 - 4, _ey, _cx0 + 20, _ye]);
+                    array_push(_out, [_cx0 - 4, _ey, _cx0 + 20, _ye, 2]);
                 if (!scr_fv2_on_ground(_cx1 + 32, _ey + 32) && !scr_fv2_wall_open(_cx1 - 20, _ey, _cx1 + 4, _ye, _open))
-                    array_push(_out, [_cx1 - 20, _ey, _cx1 + 4, _ye]);
+                    array_push(_out, [_cx1 - 20, _ey, _cx1 + 4, _ye, 2]);
             }
         }
     }
     return _out;
+}
+
+/// Collision rect for one street-wall entry — asymmetric per David's burst:
+/// UPPER walls block EARLY (extended 16px south so the player can never walk
+/// his body into the art); LOWER walls block LATE (top 12px shaved so his
+/// feet reach the stone and he stands flush). Vertical walls as drawn.
+function scr_fv2_street_wall_solid(_ws) {
+    if (_ws[4] == 0) return [_ws[0], _ws[1], _ws[2], _ws[3] + 16];   // upper: can't enter
+    if (_ws[4] == 1) return [_ws[0], _ws[1] + 12, _ws[2], _ws[3]];   // lower: get closer
+    return [_ws[0], _ws[1], _ws[2], _ws[3]];
 }
 
 /// TRUE if a candidate wall segment intersects any deliberate opening.
@@ -624,7 +637,8 @@ function scr_fv2_build() {
     var _pwc = scr_fv2_precinct_walls();
     for (var _pc = 0; _pc < array_length(_pwc); _pc++) array_push(_solids, _pwc[_pc]);
     var _swc = scr_fv2_street_walls();   // inner city walls are SOLID (David)
-    for (var _sc2 = 0; _sc2 < array_length(_swc); _sc2++) array_push(_solids, _swc[_sc2]);
+    for (var _sc2 = 0; _sc2 < array_length(_swc); _sc2++)
+        array_push(_solids, scr_fv2_street_wall_solid(_swc[_sc2]));   // per-kind tuning
     array_push(_solids, [0, 0, room_width, 8]);
     array_push(_solids, [0, room_height - 8, room_width, room_height]);
     array_push(_solids, [0, 0, 8, room_height]);
@@ -696,7 +710,8 @@ function scr_fv2_rebuild_collision() {
     var _pwc = scr_fv2_precinct_walls();
     for (var _pc = 0; _pc < array_length(_pwc); _pc++) array_push(_solids, _pwc[_pc]);
     var _swc = scr_fv2_street_walls();   // inner city walls are SOLID (David)
-    for (var _sc2 = 0; _sc2 < array_length(_swc); _sc2++) array_push(_solids, _swc[_sc2]);
+    for (var _sc2 = 0; _sc2 < array_length(_swc); _sc2++)
+        array_push(_solids, scr_fv2_street_wall_solid(_swc[_sc2]));   // per-kind tuning
     array_push(_solids, [0, 0, room_width, 8]);
     array_push(_solids, [0, room_height - 8, room_width, room_height]);
     array_push(_solids, [0, 0, 8, room_height]);
