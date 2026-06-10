@@ -36,7 +36,7 @@
 // change that room's code-default layout. (Initial values match the stamps
 // already in save folders, so existing hand-tuned layouts stay valid.)
 #macro DUOMO_LAYOUT_VERSION   10
-#macro INN_LAYOUT_VERSION     13
+#macro INN_LAYOUT_VERSION     14
 #macro PONTE_LAYOUT_VERSION   9
 #macro STABLE_LAYOUT_VERSION  3
 

@@ -76,36 +76,33 @@ function scr_inn_is_rug(_cx, _cy) {
 // is click-drag / nudge / rotate / Delete / F8 like the market & bridge props.
 function scr_inn_default_layout() {
     var _L = [];
-    // Zone 4 — KITCHEN across the TOP wall (per the reference): hearth recessed
-    // top-centre, bread oven beside it, prep table below. The oven is placed LIT;
-    // scr_inn_oven_sync swaps it cold/corrupt at 50%+ Limbo corruption.
-    array_push(_L, ["obj_mercato_prop", 5.5, 1, 1.2, "spr_inn_fireplace"]);
-    array_push(_L, ["obj_mercato_prop", 4.3, 1, 1.0, "spr_inn_oven_lit", "solid"]);
-    array_push(_L, ["obj_mercato_prop", 2,   2, 0.9, "spr_inn_table"]);
-    // Zone 2 — TAVERN / BAR: ONE-PIECE SQUARE bar (spr_inn_bar_counter, PixelLab,
-    // 384x192 — a closed rectangular counter ring per the user's design: centre
-    // front + connecting sides forming a square, placed FLUSH against the drawn
-    // kitchen wall so the ring's back side reads as the back-bar along it). The
-    // bartenders stand INSIDE the ring; its manual bbox (the ring's art bounds)
-    // is the collision, so patrons are walled out by the counter itself.
-    // FLUSH against the wall: at gy 4.0 the ring's back side (sprite art top = 22px
-    // in) lands at world y 278, ON the drawn wall band (256-320) — the wall peeks
-    // out above the back counter and no floor shows between them.
-    array_push(_L, ["obj_mercato_prop", 1.8, 4.0, 1, "spr_inn_bar_counter"]);
-    array_push(_L, ["obj_inn_candle",   4.6, 6.0, 0.5]);   // a candle on the bar front
+    // Zone 2 — TAVERN / BAR backed against the room's OWN back wall (no divider
+    // walls — the counter touches the existing kitchen wall): the one-piece
+    // square counter ring (spr_inn_bar_counter, art top is 22px into the canvas)
+    // at gy 0.65 puts its back counter at world y ~64 = the interior's top edge,
+    // flush under the black void wall. Bartenders stand INSIDE the ring; its
+    // manual bbox (the ring's art bounds) walls patrons out by itself.
+    array_push(_L, ["obj_mercato_prop", 1.8, 0.65, 1, "spr_inn_bar_counter"]);
+    array_push(_L, ["obj_inn_candle",   4.6, 2.7, 0.5]);   // a candle on the bar front
     // Bar stools hugging the front face + one at the east arm
     var _stools = [2.9, 4.0, 5.1, 6.2];
     for (var _st = 0; _st < array_length(_stools); _st++)
-        array_push(_L, ["obj_mercato_prop", _stools[_st], 6.9, 0.5, "spr_inn_stool"]);
-    array_push(_L, ["obj_mercato_prop", 7.3, 5.4, 0.5, "spr_inn_stool"]);
-    // West-side clutter in the 1-cell gap between the bar ring and the west wall
-    array_push(_L, ["obj_barrel", 1, 5.2, 0.5]);
+        array_push(_L, ["obj_mercato_prop", _stools[_st], 3.6, 0.5, "spr_inn_stool"]);
+    array_push(_L, ["obj_mercato_prop", 7.3, 2.0, 0.5, "spr_inn_stool"]);
     // Zone 3 — Aldo the innkeeper (lodging, WEST end) + Rosa (bar menu, EAST end),
-    // both inside the ring's interior opening (world x ~182-423, y ~328-383)
-    array_push(_L, ["obj_npc_innkeeper", 3.2, 5.1, 1]);
-    array_push(_L, ["obj_npc_rosa",      5.4, 5.1, 1]);
-    // Wine shelf moved into the KITCHEN (food prep + wine storage per reference)
-    array_push(_L, ["obj_mercato_prop", 1, 1, 0.8, "spr_inn_wine_shelf"]);
+    // both inside the ring's interior opening (world x ~182-423, y ~114-169)
+    array_push(_L, ["obj_npc_innkeeper", 3.2, 1.75, 1]);
+    array_push(_L, ["obj_npc_rosa",      5.4, 1.75, 1]);
+    // Zone 4 — KITCHEN on the same back wall, EAST of the bar (wine shelf stays
+    // top-left of the bar; oven + hearth slide east toward storage; prep table
+    // below them). The oven is placed LIT; scr_inn_oven_sync swaps it cold/corrupt
+    // at 50%+ Limbo corruption.
+    array_push(_L, ["obj_mercato_prop", 1,    1, 0.8, "spr_inn_wine_shelf"]);
+    array_push(_L, ["obj_mercato_prop", 9,    1, 1.0, "spr_inn_oven_lit", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 10.3, 1, 1.2, "spr_inn_fireplace"]);
+    array_push(_L, ["obj_mercato_prop", 8.2,  2, 0.9, "spr_inn_table"]);
+    // West-side clutter in the gap between the bar ring and the west wall
+    array_push(_L, ["obj_barrel", 1, 2.2, 0.5]);
     // Zone 5 — STORAGE / PANTRY (top-right): barrels + kegs
     array_push(_L, ["obj_barrel", 11.5, 1.5, 0.5]);
     array_push(_L, ["obj_barrel", 12.5, 1.5, 0.5]);
@@ -252,15 +249,8 @@ function scr_inn_build_collision() {
             _w.wall_h  = INN_GRID_PX;
             _w.visible = false;
         }
-    // Kitchen/bar divider wall (row 4, cols 1-9) — DRAWN stable-style in
-    // obj_inn_scene Draw (black void band + plank tile); this is its collision.
-    // The kitchen stays reachable around the east end via col 10. The bar needs
-    // no other seals: the one-piece square counter ring (its manual bbox = the
-    // ring's art bounds) sits flush under this wall and walls the workspace off
-    // by itself — Aldo and Rosa stand inside the ring.
-    var _nwA = instance_create_depth(1 * 64, 4 * 64, 500, obj_wall);   // kitchen/bar divider
-    _nwA.wall_w = 9 * 64; _nwA.wall_h = 64; _nwA.visible = false;
-
+    // No interior seal walls needed: the bar is backed against the room's own
+    // void back wall and the counter ring's solid bbox closes the workspace.
     scr_room_builder_build_collision();   // tight per-prop footprints (mercato_prop etc.)
 }
 

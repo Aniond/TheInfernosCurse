@@ -53,33 +53,6 @@ draw_rectangle(_rx0, _ry0, _rx0 + 4, _ry1, false);
 draw_rectangle(_rx1 - 4, _ry0, _rx1, _ry1, false);
 draw_set_color(c_white);
 
-// Kitchen/bar divider — a REAL drawn wall, stable-style FF6 void band (solid black
-// body + 32px plank tile inset for a black outline frame + lit top edge), exactly
-// matching its invisible obj_wall collision in scr_inn_build_collision (row 4,
-// cols 1-9). The bar counter's east arm joins it — one built structure.
-var _dx0 = 1 * _g, _dy0 = 4 * _g, _dx1 = 10 * _g, _dy1 = 5 * _g;
-draw_set_color(c_black);
-draw_rectangle(_dx0, _dy0, _dx1, _dy1, false);
-var _wt   = asset_get_index("spr_stable_wall_tile");
-var _whas = (_wt >= 0 && asset_get_type("spr_stable_wall_tile") == asset_sprite);
-var _wx0 = _dx0 + 4, _wy0 = _dy0 + 4, _wx1 = _dx1 - 4, _wy1 = _dy1 - 4;
-if (_whas) {
-    var _wcol = merge_color(c_white, make_color_rgb(110, 112, 124), _corr);
-    for (var _wy = _wy0; _wy < _wy1; _wy += 32) {
-        var _wh = min(32, _wy1 - _wy);
-        for (var _wx = _wx0; _wx < _wx1; _wx += 32) {
-            var _ww = min(32, _wx1 - _wx);
-            draw_sprite_part_ext(_wt, 0, 0, 0, _ww, _wh, _wx, _wy, 1, 1, _wcol, 1);
-        }
-    }
-} else {
-    draw_set_color(merge_color(make_color_rgb(58, 38, 24), make_color_rgb(30, 28, 32), _corr));
-    draw_rectangle(_wx0, _wy0, _wx1, _wy1, false);
-}
-draw_set_color(merge_color(make_color_rgb(132, 92, 54), make_color_rgb(64, 62, 68), _corr));
-draw_rectangle(_wx0, _wy0, _wx1, min(_wy0 + 3, _wy1), false);
-draw_set_color(c_white);
-
 // South entrance threshold — a lighter doorstep in the 2-cell gap (cols 7-8, row 16)
 var _thr = merge_color(_amb, c_white, 0.28);
 for (var _tcx = 7; _tcx <= 8; _tcx++)
