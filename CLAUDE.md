@@ -123,6 +123,19 @@ it in the report. Especially required after hand-editing a .yy event list or
 when an imported sprite isn't appearing (sign: compile log lists "Unused Assets
 found", or a unit draws nothing — no sprite AND no placeholder rectangle).
 
+## GLOBAL DEPTH RULE (permanent, set 2026-06-10)
+All world objects use Y-based depth sorting: depth = -bbox_bottom.
+Never set manual depth values. Never use depth = 0 or fixed depth.
+The player draws in front of objects to the north and behind objects to the
+south — buildings, props, NPCs, environment, everywhere.
+Implementation: scr_depth_ysort() (in scr_room_builder.gml) runs from
+obj_game_manager Create + End Step every frame; room-builder/fv2 placement
+also stamps depth = -bbox_bottom at creation (correct from frame 0).
+EXEMPT from Y-sort (fixed staging): *_scene ground drawers, *_manager
+objects, UI (obj_dialogue_box, obj_journal, obj_save_indicator),
+obj_manifestation, invisible walls/exit zones, and room_battle entirely.
+New objects need NO manual depth — the global sort handles them.
+
 ## WALLS — Void Wall + Art (permanent standard, set 2026-06-10)
 EVERY wall in the game — city walls, interior partitions, precinct/courtyard
 walls, any future wall — is built as VOID WALL + ART: a solid BLACK void band

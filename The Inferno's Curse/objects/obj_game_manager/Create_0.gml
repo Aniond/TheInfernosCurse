@@ -348,3 +348,8 @@ if (FLORENCE_V2_LOAD_POINT && room == Room_florence) {
 } else if (DUOMO_LOAD_POINT && room == Room_florence) {
     room_goto(Room_duomo);
 }
+
+// GLOBAL DEPTH RULE (David, 2026-06-10): world objects layer by their feet —
+// depth = -bbox_bottom. First pass here; the End Step re-sorts every frame so
+// the player and NPCs re-layer as they move. (scr_depth_ysort in scr_room_builder.)
+scr_depth_ysort();

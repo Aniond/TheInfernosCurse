@@ -539,6 +539,7 @@ function scr_fv2_place(_objname, _gx, _gy, _sc, _sprn, _solid, _layer) {
         }
     }
     if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = _solid;
+    _inst.depth = -_inst.bbox_bottom;   // GLOBAL DEPTH RULE: layered by feet from frame 0
     array_push(global.room_builder_objects, _inst);
     return _inst;
 }

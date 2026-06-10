@@ -364,6 +364,7 @@ function scr_room_builder_load() {
         // always solid regardless). scr_room_builder_build_collision() then lays a
         // tight, per-category obj_wall footprint under each — no full-bbox ghosts.
         if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = true;
+        _inst.depth = -_inst.bbox_bottom;   // GLOBAL DEPTH RULE: layered by feet from frame 0
 
         array_push(global.room_builder_objects, _inst);
         _placed++;
@@ -1154,6 +1155,33 @@ function scr_ponte_place(_obj, _gx, _gy, _sc, _sprn, _layer) {
         }
     }
     if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = true;
+    _inst.depth = -_inst.bbox_bottom;   // GLOBAL DEPTH RULE: layered by feet from frame 0
     array_push(global.room_builder_objects, _inst);
     return _inst;
+}
+
+// =============================================================================
+// GLOBAL DEPTH RULE (David, 2026-06-10) — Y-based depth sorting, everywhere
+// =============================================================================
+/// Every WORLD object layers by its feet: depth = -bbox_bottom. The player
+/// draws in front of what's north of him and behind what's south — FF6
+/// layering in every room. Called once from obj_game_manager Create and every
+/// frame from its End Step (movers re-sort as they walk).
+/// EXEMPT (fixed staging, never Y-sorted): scene drawers (ground would cover
+/// the world), managers, UI (dialogue/journal/save indicator), manifestation
+/// overlays, walls/exit zones (invisible), and the battle room entirely.
+function scr_depth_ysort() {
+    if (room == room_battle) return;            // battle keeps its own staging
+    with (all) {
+        if (sprite_index == -1) continue;       // zones/managers without art
+        if (!visible) continue;                 // hidden walls/markers
+        if (object_index == obj_dialogue_box || object_index == obj_journal
+         || object_index == obj_save_indicator || object_index == obj_manifestation
+         || object_index == obj_wall          || object_index == obj_mercato_exit
+         || object_index == obj_inn_candle) continue;   // candle sits ON a table — manages its own depth
+        var _nm = object_get_name(object_index);
+        if (string_pos("_scene", _nm) > 0)   continue;   // ground/scene drawers
+        if (string_pos("_manager", _nm) > 0) continue;   // managers
+        depth = -bbox_bottom;
+    }
 }
