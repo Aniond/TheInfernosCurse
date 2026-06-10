@@ -398,14 +398,18 @@ function scr_fv2_draw_arno(_corr) {
             for (var _dx = FV2_RIVER_X0 - _bankw; _dx < FV2_RIVER_X1 + _bankw; _dx += 32)
                 draw_sprite_ext(_t_deck, 0, _dx, _dy, 0.5, 0.5, 0, c_white, 1);
     }
-    // ONE bridge image across the crossing (David): spr_ponte_vecchio_exterior,
-    // COMPOSED from the city's own art (masonry platform + packed shop rows +
-    // real cobble deck + parapets) after seven PixelLab postcard failures.
-    // Drawn 1:1 — its deck band (y64-192 in the art) IS the road band 640-768,
-    // so alignment is exact by construction. The zone marker the player enters.
-    draw_sprite(spr_ponte_vecchio_exterior, 0,
-        (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5 - sprite_get_width(spr_ponte_vecchio_exterior) * 0.5,
-        FV2_PONTE_Y0 - 64);
+    // ONE bridge image across the crossing (David): spr_ponte_vecchio_exterior —
+    // the STUNNING Ponte Vecchio elevation (the FF6 world-map-icon principle:
+    // a beautiful representation of the zone, not walkable geometry). Baked
+    // water flood-keyed away so OUR animated corruption Arno flows above and
+    // below it. Drawn at clean 2x, centred on the crossing — end blocks grip
+    // both banks. Walking onto it triggers the zone zoom (the future entry
+    // into the rebuilt EW bridge map).
+    var _icw = sprite_get_width(spr_ponte_vecchio_exterior);
+    var _ich = sprite_get_height(spr_ponte_vecchio_exterior);
+    draw_sprite_ext(spr_ponte_vecchio_exterior, 0,
+        (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5 - _icw,
+        (FV2_PONTE_Y0 + FV2_PONTE_Y1) * 0.5 - _ich, 2, 2, 0, c_white, 1);
     // ROWING BOATS adrift south of the Ponte (GAP 6) — the drift follows the
     // current, so at 75%+ corruption the boats crawl back UPSTREAM with it
     var _boat = asset_get_index("spr_arno_rowing_boat");

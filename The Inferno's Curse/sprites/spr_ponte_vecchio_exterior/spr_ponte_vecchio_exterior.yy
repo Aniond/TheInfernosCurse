@@ -2,9 +2,9 @@
   "$GMSprite":"v2",
   "%Name":"spr_ponte_vecchio_exterior",
   "bboxMode":1,
-  "bbox_bottom":255,
+  "bbox_bottom":104,
   "bbox_left":0,
-  "bbox_right":623,
+  "bbox_right":217,
   "bbox_top":0,
   "collisionKind":1,
   "collisionTolerance":0,
@@ -16,7 +16,7 @@
   ],
   "gridX":0,
   "gridY":0,
-  "height":256,
+  "height":105,
   "HTile":false,
   "layers":[
     {"$GMImageLayer":"","%Name":"0d41cbb6-7c6e-4729-aba7-59f16fc2026a","blendMode":0,"displayName":"default","isLocked":false,"name":"0d41cbb6-7c6e-4729-aba7-59f16fc2026a","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
@@ -105,5 +105,5 @@
   },
   "type":0,
   "VTile":false,
-  "width":624,
+  "width":218,
 }
