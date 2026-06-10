@@ -672,6 +672,7 @@ function scr_fv2_build() {
         spr_florence_statue_dante];
 
     if (variable_global_exists("cam_zoom_target")) global.cam_zoom_target = 1;   // fresh room = normal zoom
+    global.cam_view_h = 384;   // restore the city framing (the Ponte uses 448)
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
         if (instance_exists(global.room_builder_objects[_i])) instance_destroy(global.room_builder_objects[_i]);
@@ -719,10 +720,16 @@ function scr_fv2_spawn_transitions() {
         "Room_overworld_tactics", "Tuscan Countryside", 0, 0, "");
     scr_transition_spawn("fv2_south_gate", 2304, 1654, 128, 100,
         "Room_overworld_tactics", "Tuscan Countryside", 0, 0, "");
-    // Ponte Vecchio: NO transition (removed per David 2026-06-10) — the deck
-    // is a real walkable crossing in this room; players simply walk over the
-    // Arno between the rails. (The old N-S Room_ponte_vecchio interior no
-    // longer matches the EW crossing — see the ponte-room redo ticket.)
+    // Ponte Vecchio: the deck zone marker IS the doorway (FF6 city-icon
+    // pattern) — stepping onto either half enters the rebuilt marketplace
+    // bridge at the matching end.
+    var _deckmid = (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5;
+    scr_transition_spawn("fv2_ponte_w", FV2_RIVER_X0 - 22, FV2_PONTE_Y0 + 16,
+        _deckmid - (FV2_RIVER_X0 - 22), FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
+        "Room_ponte_vecchio", "Ponte Vecchio", 96, 432, "Il Ponte Vecchio");
+    scr_transition_spawn("fv2_ponte_e", _deckmid, FV2_PONTE_Y0 + 16,
+        (FV2_RIVER_X1 + 22) - _deckmid, FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
+        "Room_ponte_vecchio", "Ponte Vecchio", 1184, 432, "Il Ponte Vecchio");
     // interior entrances, bbox-following like the old map
     var _dux = 704, _duy = 712;
     var _stx = 1216, _sty = 548;

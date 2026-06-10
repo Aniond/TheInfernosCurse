@@ -37,7 +37,7 @@
 // already in save folders, so existing hand-tuned layouts stay valid.)
 #macro DUOMO_LAYOUT_VERSION   10
 #macro INN_LAYOUT_VERSION     16
-#macro PONTE_LAYOUT_VERSION   9
+#macro PONTE_LAYOUT_VERSION   1
 #macro STABLE_LAYOUT_VERSION  3
 #macro FLORENCE_V2_LAYOUT_VERSION 8
 
@@ -464,7 +464,7 @@ function scr_room_builder_footprint(_o) {
             || string_pos("duomo", _nm) > 0 || string_pos("basilica", _nm) > 0
             || string_pos("residence", _nm) > 0 || string_pos("row_block", _nm) > 0
             || string_pos("cottage", _nm) > 0 || string_pos("palazzo", _nm) > 0
-            || string_pos("guild", _nm) > 0 || string_pos("workshop", _nm) > 0
+            || string_pos("guild", _nm) > 0 || string_pos("shop", _nm) > 0
             || string_pos("forge", _nm) > 0 || string_pos("apothecary", _nm) > 0
             || string_pos("campanile", _nm) > 0 || string_pos("locanda", _nm) > 0) {
         if (_bh > 128) { _x0f = 0.18; _y0f = 0.84; _x1f = 0.82; _y1f = 0.94; }   // tall: doorstep band (~10%)
@@ -486,6 +486,7 @@ function scr_room_builder_refresh_collision() {
     if (room == Room_locanda_rosa_camuna) { scr_inn_rebuild_collision();    return; }
     if (room == Room_fiorentine_stable)   { scr_stable_rebuild_collision(); return; }
     if (room == Room_florence_v2)         { scr_fv2_rebuild_collision();    return; }
+    if (room_get_name(room) == "Room_ponte_vecchio") { scr_ponte_rebuild_collision(); return; }
     scr_room_builder_build_collision();
 }
 
@@ -1095,17 +1096,16 @@ function scr_florence_build() {
         _wr.wall_w = _rthick;  _wr.wall_h = _bdy1 - _bdy0;  _wr.visible = false;
     }
 
-    // ── Ponte Vecchio entry zones — REMOVED 2026-06-10 (room deleted for the
-    //    accurate EW rebuild; re-add the N/S spawns here when the new bridge
-    //    room exists). Old code kept for reference:
-    // var _pv      = global.river_bridges[0];
-    // var _pe_x    = _pv[0] + _rthick;
-    // var _pe_w    = (_pv[1] - _pv[0]) - _rthick * 2;
-    // var _deckmid = (_bdy0 + _bdy1) * 0.5;
-    // scr_transition_spawn("florence_ponte_n", _pe_x, _bdy0, _pe_w, _deckmid - _bdy0,
-    //     "Room_ponte_vecchio", "Ponte Vecchio", 288, 200, "The Ponte Vecchio");
-    // scr_transition_spawn("florence_ponte_s", _pe_x, _deckmid, _pe_w, _bdy1 - _deckmid,
-    //     "Room_ponte_vecchio", "Ponte Vecchio", 288, 700, "The Ponte Vecchio");
+    // ── Ponte Vecchio entry zones — RESTORED 2026-06-10 (the rebuilt EW
+    //    marketplace bridge exists again; both halves land at the west end)
+    var _pv      = global.river_bridges[0];
+    var _pe_x    = _pv[0] + _rthick;
+    var _pe_w    = (_pv[1] - _pv[0]) - _rthick * 2;
+    var _deckmid = (_bdy0 + _bdy1) * 0.5;
+    scr_transition_spawn("florence_ponte_n", _pe_x, _bdy0, _pe_w, _deckmid - _bdy0,
+        "Room_ponte_vecchio", "Ponte Vecchio", 96, 432, "Il Ponte Vecchio");
+    scr_transition_spawn("florence_ponte_s", _pe_x, _deckmid, _pe_w, _bdy1 - _deckmid,
+        "Room_ponte_vecchio", "Ponte Vecchio", 96, 432, "Il Ponte Vecchio");
 
     // ── Giardino delle Rose hedge collision (four quadrants, open cross-path) ──
     var _gx0 = global.garden_cx - global.garden_hw, _gy0 = global.garden_cy - global.garden_hh;
@@ -1129,16 +1129,56 @@ function scr_florence_build() {
 }
 
 
-// ── PONTE VECCHIO STATUES (draggable bridge guides) ─────────────────────────────
-/// Build the bridge-room statues: load the player's saved/tweaked layout if present
-/// (working_directory/room_ponte_vecchio_layout.txt), else the built-in default
-/// corridor layout. Placed as draggable obj_mercato_prop, so the debug drag / nudge
-/// (arrows) / Delete / F8-save all work in this room too. Solid footprints come from
-/// scr_room_builder_build_collision(). Called from obj_ponte_scene Create.
-function scr_ponte_statues_build() {
-    if (room_get_name(room) != "Room_ponte_vecchio") return;   // room archived 2026-06-10 (EW redo pending)
-    // keep-alive: the statue sprites are placed by NAME, invisible to the stripper.
-    global.__statue_keep = [spr_statue_david, spr_statue_madonna, spr_statue_lion, spr_statue_angel];
+// =============================================================================
+// PONTE VECCHIO — the marketplace bridge (REBUILT 2026-06-10)
+// Reference: references/ponte_vecchio_interior_map.png — "Cuore del Commercio
+// Fiorentino". 1280x896 (20x14 cells), EW crossing. Not a corridor with shops:
+// a marketplace suspended over the Arno.
+//   water N  y0-192 · shops N y192-288 · WALKWAY y288-576 (plaza mid-bridge)
+//   shops S y576-672 · water S y672-896 (the arches live here)
+// =============================================================================
+
+/// Parapet bands — VOID WALL + ART standard, single source for draw AND
+/// collision. They run behind both shop rows and seal the deck from the water.
+function scr_ponte_walls() {
+    return [
+        [0, 168, 1280, 192],     // north parapet (behind the north shops)
+        [0, 672, 1280, 696],     // south parapet (behind the south shops)
+    ];
+}
+
+/// Geometry collision + exits — called by build AND the debug rebuild.
+function scr_ponte_spawn_geometry() {
+    var _solids = scr_ponte_walls();
+    array_push(_solids, [0, 0, 1280, 168]);          // north water (sealed)
+    array_push(_solids, [0, 696, 1280, 896]);        // south water (sealed)
+    array_push(_solids, [0, 0, 8, 288]);             // west edge above walkway
+    array_push(_solids, [0, 576, 8, 896]);           // west edge below walkway
+    array_push(_solids, [1272, 0, 1280, 288]);       // east edge above walkway
+    array_push(_solids, [1272, 576, 1280, 896]);     // east edge below walkway
+    for (var _w = 0; _w < array_length(_solids); _w++) {
+        var _s = _solids[_w];
+        var _wl = instance_create_depth(_s[0], _s[1], 500, obj_wall);
+        _wl.wall_w = _s[2] - _s[0]; _wl.wall_h = _s[3] - _s[1]; _wl.visible = false;
+    }
+    // WEST: back to Florence — arrive on the v2 west bank beside the deck
+    scr_transition_spawn("ponte_w", 0, 288, 28, 288,
+        "Room_florence_v2", "Firenze", 2486, 704, "Firenze");
+    // EAST: Santa Croce — not built yet (graceful coming-soon)
+    scr_transition_spawn("ponte_e", 1252, 288, 28, 288,
+        "Room_santa_croce", "Verso il Quartiere di Santa Croce. Not yet.", 0, 0, "");
+}
+
+/// Build the bridge marketplace: David's F8 layout if present (SOURCE OF
+/// TRUTH), else the reference default. Called from obj_ponte_scene Create.
+function scr_ponte_build() {
+    if (room_get_name(room) != "Room_ponte_vecchio") return;
+    // keep-alive: name-placed assets are invisible to the stripper
+    global.__ponte_keep     = [obj_mercato_prop, obj_npc_marco];
+    global.__ponte_keep_spr = [spr_ponte_floor_cobble, spr_ponte_shop_north,
+        spr_ponte_shop_south, spr_ponte_fountain, spr_ponte_guild_board,
+        spr_ponte_lantern_post, spr_ponte_seagull, spr_arno_rowing_boat,
+        spr_florence_water, spr_florence_thin_wall];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
@@ -1146,16 +1186,24 @@ function scr_ponte_statues_build() {
     global.room_builder_objects = [];
 
     var _path   = working_directory + "room_ponte_vecchio_layout.txt";
-    // Stale-layout guard: only load an F8-saved copy stamped with the CURRENT
-    // PONTE_LAYOUT_VERSION; otherwise the default corridor below takes over.
-    var _placed = scr_room_builder_layout_current(_path) ? scr_ponte_statues_load(_path) : 0;
-    if (_placed == 0) scr_ponte_statues_default();
+    var _placed = scr_room_builder_layout_current(_path) ? scr_ponte_load(_path) : 0;
+    if (_placed == 0) scr_ponte_default();
 
+    scr_ponte_spawn_geometry();
     scr_room_builder_build_collision();
 }
 
-/// Read a saved ponte statue layout (OBJECT GX GY SCALE SPRITE [solid]) and place it.
-function scr_ponte_statues_load(_path) {
+/// Debug rebuild after drag/nudge/delete — walls + transitions + footprints.
+function scr_ponte_rebuild_collision() {
+    if (room_get_name(room) != "Room_ponte_vecchio") return;
+    with (obj_wall) instance_destroy();
+    with (obj_mercato_exit) instance_destroy();
+    scr_ponte_spawn_geometry();
+    scr_room_builder_build_collision();
+}
+
+/// Read a saved ponte layout (OBJECT GX GY SCALE [SPRITE] [solid]).
+function scr_ponte_load(_path) {
     var _f = file_text_open_read(_path);
     if (_f == -1) return 0;
     var _layer = layer_exists("Instances") ? "Instances" : "";
@@ -1168,40 +1216,50 @@ function scr_ponte_statues_load(_path) {
         if (array_length(_tok) < 3) continue;
         var _obj = asset_get_index(_tok[0]);
         if (_obj < 0 || asset_get_type(_tok[0]) != asset_object) continue;
+        var _solid = false;
+        for (var _k = 4; _k < array_length(_tok); _k++) if (_tok[_k] == "solid") _solid = true;
         var _inst = scr_ponte_place(_obj, real(_tok[1]), real(_tok[2]),
             (array_length(_tok) >= 4) ? real(_tok[3]) : 1,
-            (array_length(_tok) >= 5) ? _tok[4] : "", _layer);
+            (array_length(_tok) >= 5) ? _tok[4] : "", _solid, _layer);
         if (_inst != noone) _n++;
     }
     file_text_close(_f);
     return _n;
 }
 
-/// Built-in default statue corridor — two columns flanking the walkway, organic y,
-/// mixing the three variants (left x=1.5 -> px96, right x=6.5 -> px416). All solid.
-/// Plus 2 SPARE statues parked at the top of the walkway for easy grab/delete.
-function scr_ponte_statues_default() {
+/// Reference default — 12 trades (3+3 per row, the centre break holds the
+/// plaza), fountain + guild board mid-bridge, lantern posts every 3 cells,
+/// seagulls on the parapets, and Marco the Baker at the Fornaio.
+function scr_ponte_default() {
     var _layer = layer_exists("Instances") ? "Instances" : "";
-    var _L = [
-        // left column — all four variants, organic spacing
-        [1.5,  1.75, "spr_statue_david"],   [1.5,  3.50, "spr_statue_angel"],
-        [1.5,  5.10, "spr_statue_lion"],    [1.5,  6.80, "spr_statue_madonna"],
-        [1.5,  8.35, "spr_statue_david"],   [1.5, 10.05, "spr_statue_angel"],
-        [1.5, 11.70, "spr_statue_lion"],
-        // right column — all four variants, organic spacing
-        [6.5,  2.25, "spr_statue_lion"],    [6.5,  3.85, "spr_statue_madonna"],
-        [6.5,  5.45, "spr_statue_angel"],   [6.5,  7.05, "spr_statue_david"],
-        [6.5,  8.70, "spr_statue_lion"],    [6.5, 10.30, "spr_statue_angel"],
-        [6.5, 11.60, "spr_statue_madonna"],
-        // 2 SPARES parked in the walkway near the spawn (drag into place or Delete)
-        [3.0, 4.0, "spr_statue_angel"],     [6.0, 4.0, "spr_statue_lion"],
-    ];
-    for (var _i = 0; _i < array_length(_L); _i++)
-        scr_ponte_place(obj_mercato_prop, _L[_i][0], _L[_i][1], 1, _L[_i][2], _layer);
+    // north row (faces south): Fioraio · Fornaio · Tessitore | Orafo · Speziale · Libraio
+    var _sx = [2.5, 4.75, 7.0, 11.0, 13.25, 15.5];
+    for (var _i = 0; _i < 6; _i++)
+        scr_ponte_place(obj_mercato_prop, _sx[_i], 3.0, 1, "spr_ponte_shop_north", true, _layer);
+    // south row (faces north): Calzolaio · Vetraio · Fabbro | Ufficio · Pergamene · Osteria
+    for (var _j = 0; _j < 6; _j++)
+        scr_ponte_place(obj_mercato_prop, _sx[_j], 9.0, 1, "spr_ponte_shop_south", true, _layer);
+    // central plaza: fountain centred, guild board to its right (per reference)
+    scr_ponte_place(obj_mercato_prop, 9.0,  5.6,  1, "spr_ponte_fountain",    true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 11.4, 5.85, 1, "spr_ponte_guild_board", true,  _layer);
+    // lantern posts every 3 cells, both walkway edges (day/night reactive via
+    // the global lighting system — "lantern" name = 64px glow)
+    var _lx = [2, 5, 8, 12, 15, 17.9];
+    for (var _l = 0; _l < array_length(_lx); _l++) {
+        scr_ponte_place(obj_mercato_prop, _lx[_l], 4.55, 1, "spr_ponte_lantern_post", false, _layer);
+        scr_ponte_place(obj_mercato_prop, _lx[_l], 7.95, 1, "spr_ponte_lantern_post", false, _layer);
+    }
+    // seagulls on the parapets (corruption thins them, 75+ none)
+    var _gull = [[3.4,2.5],[9.7,2.5],[16.2,2.5],[6.5,10.35],[13.8,10.35]];
+    for (var _g = 0; _g < array_length(_gull); _g++)
+        scr_ponte_place(obj_mercato_prop, _gull[_g][0], _gull[_g][1], 1, "spr_ponte_seagull", false, _layer);
+    // MARCO THE BAKER at the Fornaio (2nd from west, north row) — placement
+    // only, no dialogue yet (NPCs go live separately per David)
+    scr_ponte_place(obj_npc_marco, 5.55, 4.55, 1, "", false, _layer);
 }
 
-/// Place one ponte prop (obj_mercato_prop with a sprite) + register it for dragging.
-function scr_ponte_place(_obj, _gx, _gy, _sc, _sprn, _layer) {
+/// Place one ponte prop + register it for dragging. Solid only when flagged.
+function scr_ponte_place(_obj, _gx, _gy, _sc, _sprn, _solid, _layer) {
     var _px = _gx * ROOM_BUILDER_GRID, _py = _gy * ROOM_BUILDER_GRID;
     var _inst = (_layer != "")
         ? instance_create_layer(_px, _py, _layer, _obj)
@@ -1216,10 +1274,49 @@ function scr_ponte_place(_obj, _gx, _gy, _sc, _sprn, _layer) {
             _inst.builder_sprite = _sprn;
         }
     }
-    if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = true;
+    if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = _solid;
     _inst.depth = -_inst.bbox_bottom;   // GLOBAL DEPTH RULE: layered by feet from frame 0
     array_push(global.room_builder_objects, _inst);
     return _inst;
+}
+
+/// Corruption states for the marketplace — called every frame from scene Draw.
+///   0-49 alive · 50-74 some shops closed, fewer gulls · 75-99 most closed,
+///   no gulls, fountain wrong · 100 all closed, fountain stopped + chronicle.
+function scr_ponte_corruption_sync() {
+    if (room_get_name(room) != "Room_ponte_vecchio") return;
+    if (!variable_global_exists("room_builder_objects")) return;
+    var _corr = global.circle_corruption[CIRCLE_LIMBO];
+    var _objs = global.room_builder_objects;
+    var _si = 0; var _gi = 0;
+    for (var _i = 0; _i < array_length(_objs); _i++) {
+        var _o = _objs[_i];
+        if (!instance_exists(_o)) continue;
+        if (!variable_instance_exists(_o, "builder_sprite")) continue;
+        var _s = _o.builder_sprite;
+        if (string_pos("spr_ponte_shop", _s) == 1) {
+            _si++;
+            var _closed = false;
+            if (_corr >= 100)     _closed = true;                      // all closed
+            else if (_corr >= 75) _closed = ((_si mod 4) != 0);        // most closed
+            else if (_corr >= 50) _closed = ((_si mod 3) == 0);        // some closed
+            _o.image_blend = _closed ? make_color_rgb(118, 108, 104) : c_white;
+        } else if (_s == "spr_ponte_seagull") {
+            _gi++;
+            if (_corr >= 75)      _o.visible = false;                  // no gulls
+            else if (_corr >= 50) _o.visible = ((_gi mod 2) == 1);     // fewer
+            else                  _o.visible = true;
+        } else if (_s == "spr_ponte_fountain") {
+            if (_corr >= 100)     _o.image_blend = make_color_rgb(120, 120, 124); // stopped, grey
+            else if (_corr >= 75) _o.image_blend = make_color_rgb(150, 124, 168); // wrong colour
+            else if (_corr >= 50) _o.image_blend = make_color_rgb(200, 190, 196); // slightly dark
+            else                  _o.image_blend = c_white;
+        }
+    }
+    if (_corr >= 100 && !variable_global_exists("ponte_quiet_noted")) {
+        global.ponte_quiet_noted = true;
+        scr_chronicle_add("The bridge is quiet. It was never quiet before. I cannot remember when it changed.");
+    }
 }
 
 // =============================================================================
