@@ -20,6 +20,15 @@ for (var _gy = 0; _gy < _rh; _gy += 64)
     for (var _gx = 0; _gx < _rw; _gx += 64)
         draw_sprite(spr_florence_grass, 0, _gx, _gy);
 
+// ── 1b. PACKED EARTH over the whole CITY INTERIOR (GAP 2: no grass inside the
+//        walls — grass lives only outside). Roads/plazas pave over this next.
+var _t_earth = asset_get_index("spr_florence_packed_earth");
+if (_t_earth >= 0 && asset_get_type("spr_florence_packed_earth") == asset_sprite) {
+    for (var _ey2 = 128; _ey2 < 1638; _ey2 += 64)
+        for (var _ex2 = 320; _ex2 < 2538; _ex2 += 64)
+            draw_sprite_part(_t_earth, 0, 0, 0, min(64, 2538 - _ex2), min(64, 1638 - _ey2), _ex2, _ey2);
+}
+
 // ── 2. roads ────────────────────────────────────────────────────────────────────
 var _t_road = asset_get_index("spr_florence_road_cobble");
 if (_t_road < 0 || asset_get_type("spr_florence_road_cobble") != asset_sprite) _t_road = spr_florence_street;

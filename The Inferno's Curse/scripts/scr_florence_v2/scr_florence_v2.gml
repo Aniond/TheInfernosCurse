@@ -39,6 +39,10 @@ function scr_fv2_roads() {
         [27, 10, 40, 12, 0],   // Ponte Vecchio road (2 cells; touches the market plaza at y10)
         [28, 12, 30, 22, 0],   // Parish-Church lane south (touches the Ponte road at y12)
         [15,  5, 28,  7, 0],   // north lane: Duomo -> Palazzo (touches the plaza at y7)
+        [33, 11, 35, 17, 0],   // east alley: breaks up the guild/apothecary block (GAP 5)
+        // paved precincts LAST so they pave over any road beneath (GAP 2)
+        [ 7,  4, 17, 11, 1],   // Piazza del Duomo — the cathedral's paved precinct
+        [29, 10, 34, 12, 1],   // Piazza della Signoria — paved front of the palazzo
     ];
 }
 
@@ -154,12 +158,21 @@ function scr_fv2_draw_walls(_corr01) {
         }
     }
     draw_set_color(c_white);
-    // dressing: corner towers, wall piers, then the two gatehouses over their gaps
+    // dressing: corner + curtain towers (12 total, every ~8-10 cells per the
+    // reference — GAP 3; all sit ON the collided wall bands), wall piers, then
+    // the two gatehouses over their gaps
     draw_sprite(spr_florence_wall_tower, 0, 224,  16);
     draw_sprite(spr_florence_wall_tower, 0, 224,  1648);
     draw_sprite(spr_florence_wall_tower, 0, 2488, 8);
     draw_sprite(spr_florence_wall_tower, 0, 2488, 1648);
     draw_sprite(spr_florence_wall_tower, 0, 2944, 8);
+    draw_sprite(spr_florence_wall_tower, 0, 640,  8);     // top curtain
+    draw_sprite(spr_florence_wall_tower, 0, 1152, 8);
+    draw_sprite(spr_florence_wall_tower, 0, 1664, 8);
+    draw_sprite(spr_florence_wall_tower, 0, 2176, 8);
+    draw_sprite(spr_florence_wall_tower, 0, 224,  512);   // left curtain
+    draw_sprite(spr_florence_wall_tower, 0, 224,  1024);
+    draw_sprite(spr_florence_wall_tower, 0, 1280, 1648);  // bottom curtain
     draw_sprite(spr_florence_wall_section, 0, 768,  4);
     draw_sprite(spr_florence_wall_section, 0, 1408, 4);
     draw_sprite(spr_florence_wall_section, 0, 2048, 4);
@@ -190,6 +203,15 @@ function scr_fv2_draw_arno(_corr) {
     for (var _wx = FV2_RIVER_X0; _wx < FV2_RIVER_X1; _wx += 64)
         for (var _wy = -_wh + _scroll; _wy < room_height; _wy += _wh)
             draw_sprite(spr_florence_water, 0, _wx, _wy);
+    // SE river mouth — the Arno swells below the city's south wall (GAP 5):
+    // an extra water block west of the band, outside the walls (y1766+)
+    for (var _mx = 2410; _mx < FV2_RIVER_X0; _mx += 64)
+        for (var _my = 1766 - _wh + _scroll; _my < room_height; _my += _wh)
+            draw_sprite_part(spr_florence_water, 0, 0, max(0, 1766 - _my), 64,
+                _wh - max(0, 1766 - _my), _mx, max(_my, 1766));
+    draw_set_color(make_color_rgb(150, 140, 118));            // mouth west bank
+    draw_rectangle(2388, 1766, 2410, room_height, false);
+    draw_set_color(c_white);
     // corruption colour bleed (silty brown → dark murk → blood red)
     var _a;
     if (_corr < 0.25)      _a = 0;
@@ -237,6 +259,18 @@ function scr_fv2_draw_arno(_corr) {
     draw_sprite_ext(spr_ponte_vecchio_ew, 0, FV2_RIVER_X0 - _bankw, FV2_PONTE_Y0,
         (FV2_RIVER_X1 - FV2_RIVER_X0 + _bankw * 2) / sprite_get_width(spr_ponte_vecchio_ew),
         (FV2_PONTE_Y1 - FV2_PONTE_Y0) / sprite_get_height(spr_ponte_vecchio_ew), 0, c_white, 1);
+    // ROWING BOATS adrift south of the Ponte (GAP 6) — the drift follows the
+    // current, so at 75%+ corruption the boats crawl back UPSTREAM with it
+    var _boat = asset_get_index("spr_arno_rowing_boat");
+    if (_boat >= 0 && asset_get_type("spr_arno_rowing_boat") == asset_sprite) {
+        var _lane  = room_height - FV2_PONTE_Y1 - 160;   // drift lane below the deck
+        var _drift = current_time / 1000 * _spd * 0.6;
+        var _b1 = FV2_PONTE_Y1 + 48 + (((_drift + 200)       mod _lane) + _lane) mod _lane;
+        var _b2 = FV2_PONTE_Y1 + 48 + (((_drift * 0.8 + 760) mod _lane) + _lane) mod _lane;
+        var _bob = 3 * sin(current_time * 0.002);
+        draw_sprite_ext(_boat, 0, FV2_RIVER_X0 + 26 + _bob, _b1, 1, 1, 0, c_white, 1);
+        draw_sprite_ext(_boat, 0, FV2_RIVER_X1 - 90 - _bob, _b2, 1, 1, 0, c_white, 1);
+    }
 }
 
 // ── STEPS 5-8 — DEFAULT LAYOUT (all draggable obj_mercato_prop; F8 saves) ──────
@@ -257,23 +291,41 @@ function scr_fv2_default_layout() {
     array_push(_L, ["obj_mercato_prop", 6,    19.2, 0.7,  "spr_artisan_forge",        "solid"]);
     array_push(_L, ["obj_mercato_prop", 9.6,  19.4, 0.8,  "spr_florence_cottage",     "solid"]);
     // STEP 6 — RESIDENTIAL fill (narrow residences + row blocks + cottages)
+    // GAP-1 pass 2026-06-10: the two x33-35 residences were consumed by the new
+    // east alley; the cottage at (25.8,19.6) moved west to clear new infill.
     var _res = [[15.2,11],[17,11.2],[20.8,11],[15.5,19.6],[17,19.8],
-                [25.6,15.5],[27,15.7],[33,14.5],[34.6,14.7],[31.5,21.4]];
+                [25.6,15.5],[27,15.7],[31.5,21.4]];
     for (var _i = 0; _i < array_length(_res); _i++)
         array_push(_L, ["obj_mercato_prop", _res[_i][0], _res[_i][1], 1, "spr_florence_residence", "solid"]);
     array_push(_L, ["obj_mercato_prop", 15,   12.5, 0.8,  "spr_florence_row_block",   "solid"]);
     array_push(_L, ["obj_mercato_prop", 15.5, 1.5,  0.8,  "spr_florence_row_block",   "solid"]);
-    array_push(_L, ["obj_mercato_prop", 25.8, 19.6, 0.8,  "spr_florence_cottage",     "solid"]);
+    array_push(_L, ["obj_mercato_prop", 20.9, 19.9, 0.8,  "spr_florence_cottage",     "solid"]);
     array_push(_L, ["obj_mercato_prop", 38,   14.2, 0.8,  "spr_florence_cottage",     "solid"]);
+    // GAP 1 — +16 INFILL (reference skyline density): north lane row, main
+    // street east side, east quarter, west of the inn, Duomo precinct edge,
+    // south plaza north side
+    var _fill = [[21,2.6],[22.4,2.4],                       // north lane row
+                 [25.7,12.4],[27,12.6],[25.7,19.8],         // main street east side
+                 [35.1,13],[35.2,15.4],[38.3,16.4],         // east quarter
+                 [14.6,15],[16,15],                         // west of the inn
+                 [10.9,2],                                  // Duomo precinct edge
+                 [18.4,20]];                                // south plaza north side
+    for (var _f2 = 0; _f2 < array_length(_fill); _f2++)
+        array_push(_L, ["obj_mercato_prop", _fill[_f2][0], _fill[_f2][1], 1, "spr_florence_residence", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 24,   3,    0.8,  "spr_florence_cottage",     "solid"]);   // north lane
+    array_push(_L, ["obj_mercato_prop", 29.2, 21,   0.8,  "spr_florence_cottage",     "solid"]);   // east quarter
+    array_push(_L, ["obj_mercato_prop", 5.3,  11.2, 0.8,  "spr_florence_cottage",     "solid"]);   // Duomo edge
     // STEP 6 — NOBLE TOWERS + tower houses (Florence's skyline of family towers)
-    var _twr = [[21.8,12],[27.3,7.2],[12.2,21.3],[33.8,12.6]];
+    // (the x33.8 tower moved to the NE skyline — its old spot is the new alley)
+    var _twr = [[21.8,12],[27.3,7.2],[12.2,21.3],[37.2,2.6],[26.6,1.8]];
     for (var _t = 0; _t < array_length(_twr); _t++)
         array_push(_L, ["obj_mercato_prop", _twr[_t][0], _twr[_t][1], 1, "spr_florence_noble_tower", "solid"]);
     array_push(_L, ["obj_mercato_prop", 35,   2.5,  0.7,  "spr_florence_tower_house", "solid"]);
     array_push(_L, ["obj_mercato_prop", 18.5, 2,    0.7,  "spr_florence_tower_house", "solid"]);
     // STEP 7 — PIAZZA DEL GRANDE MERCATO: fountain centre, ring of awning stalls
     array_push(_L, ["obj_mercato_prop", 23.5, 7.8,  1,    "spr_mercato_fountain_piazza", "solid"]);
-    var _stl = [[21.8,7.3],[25.6,7.3],[21.8,9.4],[25.6,9.4],[23.6,6.3],[26.1,9.7]];
+    var _stl = [[21.8,7.3],[25.6,7.3],[21.8,9.4],[25.6,9.4],[23.6,6.3],[26.1,9.7],
+                [20.8,6.6],[26.5,7.9]];   // GAP 5: denser stall rows like the reference
     for (var _s = 0; _s < array_length(_stl); _s++)
         array_push(_L, ["obj_mercato_prop", _stl[_s][0], _stl[_s][1], 0.7, "spr_mercato_stall_awning", "solid"]);
     array_push(_L, ["obj_marco_stall",  22,   10.6, 0.7]);
@@ -312,14 +364,30 @@ function scr_fv2_default_layout() {
     array_push(_L, ["obj_mercato_prop", 24,   8.8,  1, "spr_citizen_woman"]);
     array_push(_L, ["obj_mercato_prop", 22,   23.5, 1, "spr_citizen_woman"]);
     array_push(_L, ["obj_mercato_prop", 31,   16.5, 1, "spr_citizen_monk"]);
-    // cypress trees
-    var _cyp = [[5,5],[16,21],[28,21.5],[38.5,9],[2.2,12],[11,2.5],[33,22.5]];
+    array_push(_L, ["obj_mercato_prop", 25.7, 8.6,  1, "spr_citizen_woman"]);   // GAP 5: market crowd
+    array_push(_L, ["obj_mercato_prop", 21.3, 9.9,  1, "spr_citizen_man"]);
+    // cypress trees ((11,2.5) moved to (13,2.3) to clear the new Duomo-edge house)
+    var _cyp = [[5,5],[16,21],[28,21.5],[38.5,9],[2.2,12],[13,2.3],[33,22.5]];
     for (var _y = 0; _y < array_length(_cyp); _y++)
         array_push(_L, ["obj_cypress_tree", _cyp[_y][0], _cyp[_y][1], 0.7]);
     // VEGETATION flourish — Tuscan olives, street flower beds, doorstep pots
-    var _olv = [[3,8],[10.5,23.5],[38.5,5],[27,2.2]];
+    // ((27,2.2) olive moved to the east countryside — its spot is a new tower)
+    var _olv = [[3,8],[10.5,23.5],[38.5,5],[44.5,11]];
     for (var _v = 0; _v < array_length(_olv); _v++)
         array_push(_L, ["obj_mercato_prop", _olv[_v][0], _olv[_v][1], 1, "spr_florence_olive_tree", "solid"]);
+    // GAP 4 — TUSCAN COUNTRYSIDE outside the walls: tree belts framing the city
+    // (left strip / below the south wall / east of the river), clear of both
+    // gate road stubs
+    var _ccy = [[0.9,4],[0.9,14],[1,22.8],                       // left strip cypress
+                [12,29.2],[21.5,29.5],[31,28.8],                 // south belt cypress
+                [44,3],[44.2,16]];                               // east-of-river cypress
+    for (var _cc = 0; _cc < array_length(_ccy); _cc++)
+        array_push(_L, ["obj_cypress_tree", _ccy[_cc][0], _ccy[_cc][1], 0.7]);
+    var _col = [[0.7,8.5],[0.8,18.5],                            // left strip olives
+                [3.5,28.6],[16,30],[26,30.1],                    // south belt olives
+                [44.8,7.5]];                                     // east-of-river olive
+    for (var _co = 0; _co < array_length(_col); _co++)
+        array_push(_L, ["obj_mercato_prop", _col[_co][0], _col[_co][1], 1, "spr_florence_olive_tree", "solid"]);
     var _fbd = [[21.3,6.6],[26.2,6.6],[20.6,22.2],[26,24.6],[14.9,10.8],[30.2,17.6]];
     for (var _b2 = 0; _b2 < array_length(_fbd); _b2++)
         array_push(_L, ["obj_mercato_prop", _fbd[_b2][0], _fbd[_b2][1], 1, "spr_florence_flower_bed"]);
@@ -428,7 +496,8 @@ function scr_fv2_build() {
         spr_mercato_fountain_piazza, spr_florence_street_shrine, spr_florence_wall_torch,
         spr_florence_stray_cat, spr_florence_pigeon_cluster, spr_florence_washing_line,
         spr_arno_stone_bank, spr_florence_olive_tree, spr_florence_flower_bed,
-        spr_inn_plant, spr_florence_low_wall, spr_florence_wall_band];
+        spr_inn_plant, spr_florence_low_wall, spr_florence_wall_band,
+        spr_florence_packed_earth, spr_arno_rowing_boat];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
@@ -452,6 +521,7 @@ function scr_fv2_build() {
     // deck handrails (16px, matches the drawn parapets)
     array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y0, FV2_RIVER_X1 + 22, FV2_PONTE_Y0 + 16]);
     array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y1 - 16, FV2_RIVER_X1 + 22, FV2_PONTE_Y1]);
+    array_push(_solids, [2388, 1766, FV2_RIVER_X0, room_height]);   // SE river mouth (GAP 5)
     for (var _w = 0; _w < array_length(_solids); _w++) {
         var _s = _solids[_w];
         var _wl = instance_create_depth(_s[0], _s[1], 500, obj_wall);
@@ -517,6 +587,7 @@ function scr_fv2_rebuild_collision() {
     array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y1, FV2_RIVER_X1 + 22, room_height]);
     array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y0, FV2_RIVER_X1 + 22, FV2_PONTE_Y0 + 16]);
     array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y1 - 16, FV2_RIVER_X1 + 22, FV2_PONTE_Y1]);
+    array_push(_solids, [2388, 1766, FV2_RIVER_X0, room_height]);   // SE river mouth (GAP 5)
     for (var _w = 0; _w < array_length(_solids); _w++) {
         var _s = _solids[_w];
         var _wl = instance_create_depth(_s[0], _s[1], 500, obj_wall);
