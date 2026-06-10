@@ -1,6 +1,14 @@
 // ── Player: Create ──────────────────────────────────────────────────────────
 // All core state lives here so other objects can read obj_player.corruption etc.
 
+// --- Bootstrap the persistent game manager ---
+// Its only placed instance lived in the old Room_florence (wiped 2026-06-10),
+// so the boot room no longer carries one. Creating it here runs its Create
+// immediately — all globals (input_locked etc.) exist before any Step fires.
+if (!instance_exists(obj_game_manager)) {
+    instance_create_depth(0, 0, 0, obj_game_manager);
+}
+
 // --- Stats ---
 hp        = 100;
 max_hp    = 100;
