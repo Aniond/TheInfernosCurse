@@ -35,6 +35,7 @@ function scr_fv2_roads() {
         [12,  8, 21, 10, 0],   // Duomo approach -> market
         [12, 10, 14, 17, 0],   // Duomo -> Artisans vertical lane
         [ 6, 17, 18, 19, 0],   // Artisans lane -> the Inn
+        [ 7, 19,  9, 21, 0],   // connector: Artisans lane down to the west road
         [27, 10, 40, 12, 0],   // Ponte Vecchio road (2 cells; touches the market plaza at y10)
         [28, 12, 30, 22, 0],   // Parish-Church lane south (touches the Ponte road at y12)
         [15,  5, 28,  7, 0],   // north lane: Duomo -> Palazzo (touches the plaza at y7)
@@ -416,7 +417,7 @@ function scr_fv2_build() {
     global.__fv2_keep_spr = [spr_florence_road_cobble, spr_florence_road_intersection,
         spr_florence_road_edge, spr_florence_grass, spr_florence_street,
         spr_florence_wall_section, spr_florence_wall_gate, spr_florence_wall_tower,
-        spr_florence_wall_tile, spr_florence_water, spr_river_stone, spr_ponte_vecchio_ew,
+        spr_florence_water, spr_river_stone, spr_ponte_vecchio_ew,
         spr_florence_tower_house, spr_florence_row_block, spr_florence_cottage,
         spr_duomo_exterior, spr_florence_campanile, spr_palazzo_signoria,
         spr_merchant_guild, spr_parish_church, spr_locanda_exterior, spr_apothecary,
