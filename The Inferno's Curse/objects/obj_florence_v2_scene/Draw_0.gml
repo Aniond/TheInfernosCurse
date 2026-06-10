@@ -96,3 +96,19 @@ draw_set_color(c_white);
 //      gatehouses and towers on top (geometry = scr_fv2_walls, also collision)
 var _corr = clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1);
 scr_fv2_draw_walls(_corr);
+
+// ── 4. THE ARNO (east band, flows south) — corruption water carried over:
+//      forward → silty → slow → REVERSED at 75% → red and wrong at 100
+scr_fv2_draw_arno(_corr);
+
+// ── 5. street life + shrines react to corruption; torch/candle glow pass ───────
+scr_fv2_corruption_sync();
+scr_fv2_torch_glow();
+
+// ── 6. the city itself dirties as Limbo deepens (50%+) ─────────────────────────
+if (_corr >= 0.5) {
+    draw_set_alpha(0.05 + 0.10 * ((_corr - 0.5) / 0.5));
+    draw_set_color(make_color_rgb(40, 34, 26));
+    draw_rectangle(0, 0, _rw, _rh, false);
+    draw_set_alpha(1); draw_set_color(c_white);
+}

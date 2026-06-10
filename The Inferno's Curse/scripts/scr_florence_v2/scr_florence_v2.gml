@@ -123,30 +123,401 @@ function scr_fv2_draw_walls(_corr01) {
     draw_sprite(spr_florence_wall_gate, 0, 2304, 1630);   // South Gate
 }
 
-/// Collision + gate transitions: the wall bands (single source above) + the
-/// room-edge ring. The gates are open passages — their transitions target the
-/// future tactics overworld and show "coming soon" gracefully until it exists.
+// ── STEP 9 — THE ARNO (vertical east band, flows SOUTH) ────────────────────────
+#macro FV2_RIVER_X0  2560
+#macro FV2_RIVER_X1  2752
+#macro FV2_PONTE_Y0  640
+#macro FV2_PONTE_Y1  896
+
+/// Animated Arno — the SAME corruption water language as the old map, rotated
+/// to the reference's vertical course: murky forward current (south) → silty →
+/// slower → the current REVERSES at 75% → red and flowing the wrong way at 100.
+function scr_fv2_draw_arno(_corr) {
+    var _bankw = 22;
+    // flow speed (px/sec; + = south). Never zero; flips at 75%.
+    var _spd;
+    if (_corr < 0.50)      _spd = lerp(16,  9,  (_corr       ) / 0.50);
+    else if (_corr < 0.75) _spd = lerp( 9,  5,  (_corr - 0.50) / 0.25);
+    else                   _spd = lerp(-5, -16, (_corr - 0.75) / 0.25);
+    var _wh = sprite_get_height(spr_florence_water);
+    var _scroll = (current_time / 1000 * _spd) mod _wh;
+    for (var _wx = FV2_RIVER_X0; _wx < FV2_RIVER_X1; _wx += 64)
+        for (var _wy = -_wh + _scroll; _wy < room_height; _wy += _wh)
+            draw_sprite(spr_florence_water, 0, _wx, _wy);
+    // corruption colour bleed (silty brown → dark murk → blood red)
+    var _a;
+    if (_corr < 0.25)      _a = 0;
+    else if (_corr < 0.50) _a = lerp(0,    0.70, (_corr - 0.25) / 0.25);
+    else                   _a = lerp(0.70, 0.92, (_corr - 0.50) / 0.50);
+    if (_a > 0) {
+        var _oc;
+        if (_corr < 0.50)      _oc = make_color_rgb(150, 112, 62);
+        else if (_corr < 0.75) _oc = merge_color(make_color_rgb(150,112,62), make_color_rgb(84,60,42),  (_corr-0.50)/0.25);
+        else if (_corr < 0.85) _oc = make_color_rgb(84, 60, 42);
+        else                   _oc = merge_color(make_color_rgb(84,60,42),   make_color_rgb(150,30,26), (_corr-0.85)/0.15);
+        draw_set_alpha(_a); draw_set_color(_oc);
+        draw_rectangle(FV2_RIVER_X0, 0, FV2_RIVER_X1, room_height, false);
+        draw_set_alpha(1); draw_set_color(c_white);
+    }
+    // stone banks (vertical strips; spr_arno_stone_bank tiles when imported)
+    var _bank = asset_get_index("spr_arno_stone_bank");
+    var _has  = (_bank >= 0 && asset_get_type("spr_arno_stone_bank") == asset_sprite);
+    if (_has) {
+        for (var _by = 0; _by < room_height; _by += 64) {
+            draw_sprite_ext(_bank, 0, FV2_RIVER_X0 - 42, _by, 0.66, 1, 0, c_white, 1);
+            draw_sprite_ext(_bank, 0, FV2_RIVER_X1,      _by, 0.66, 1, 0, c_white, 1);
+        }
+    } else {
+        draw_set_color(make_color_rgb(150, 140, 118));
+        draw_rectangle(FV2_RIVER_X0 - _bankw, 0, FV2_RIVER_X0, room_height, false);
+        draw_rectangle(FV2_RIVER_X1, 0, FV2_RIVER_X1 + _bankw, room_height, false);
+        draw_set_color(c_white);
+    }
+    // shingle pebbles just inside both waterlines (gap only at the deck)
+    var _ss = 0.42;
+    var _col_stone = merge_color(c_white, make_color_rgb(96, 120, 112), 0.10);
+    for (var _sy = 0; _sy <= room_height - 27; _sy += 16) {
+        if (_sy + 27 + 16 > FV2_PONTE_Y0 && _sy - 16 < FV2_PONTE_Y1) continue;
+        draw_sprite_ext(spr_river_stone, 0, FV2_RIVER_X0 - 8, _sy, _ss, _ss, 0, _col_stone, 1);
+        draw_sprite_ext(spr_river_stone, 0, FV2_RIVER_X1 - 19, _sy, _ss, _ss, 0, _col_stone, 1);
+    }
+    // the Ponte Vecchio deck across the band
+    draw_sprite_ext(spr_ponte_vecchio, 0, FV2_RIVER_X0 - _bankw, FV2_PONTE_Y0,
+        (FV2_RIVER_X1 - FV2_RIVER_X0 + _bankw * 2) / sprite_get_width(spr_ponte_vecchio),
+        (FV2_PONTE_Y1 - FV2_PONTE_Y0) / sprite_get_height(spr_ponte_vecchio), 0, c_white, 1);
+}
+
+// ── STEPS 5-8 — DEFAULT LAYOUT (all draggable obj_mercato_prop; F8 saves) ──────
+function scr_fv2_default_layout() {
+    var _L = [];
+    // STEP 5 — LANDMARKS at measured reference cells
+    array_push(_L, ["obj_mercato_prop", 8,    4,    1,    "spr_duomo_exterior",       "solid"]);
+    array_push(_L, ["obj_mercato_prop", 15.9, 7.6,  1,    "spr_florence_campanile",   "solid"]);
+    array_push(_L, ["obj_mercato_prop", 29,   5.8,  0.85, "spr_palazzo_signoria",     "solid"]);
+    array_push(_L, ["obj_mercato_prop", 34.5, 8.2,  0.8,  "spr_merchant_guild",       "solid"]);
+    array_push(_L, ["obj_mercato_prop", 30,   13,   0.85, "spr_parish_church",        "solid"]);
+    array_push(_L, ["obj_mercato_prop", 19.2, 15,   0.8,  "spr_locanda_exterior",     "solid"]);
+    array_push(_L, ["obj_mercato_prop", 31.8, 18,   0.8,  "spr_apothecary",           "solid"]);
+    array_push(_L, ["obj_mercato_prop", 18,   5.2,  1,    "spr_florence_stable",      "solid"]);
+    // STEP 6 — ARTISANS DISTRICT (southwest, flanking the artisans lane y17-19)
+    array_push(_L, ["obj_mercato_prop", 6,    14.6, 0.7,  "spr_artisan_workshop_a",   "solid"]);
+    array_push(_L, ["obj_mercato_prop", 9.2,  14.7, 0.7,  "spr_artisan_workshop_b",   "solid"]);
+    array_push(_L, ["obj_mercato_prop", 6,    19.2, 0.7,  "spr_artisan_forge",        "solid"]);
+    array_push(_L, ["obj_mercato_prop", 9.6,  19.4, 0.8,  "spr_florence_cottage",     "solid"]);
+    // STEP 6 — RESIDENTIAL fill (narrow residences + row blocks + cottages)
+    var _res = [[15.2,11],[17,11.2],[20.8,11],[15.5,19.6],[17,19.8],
+                [25.6,15.5],[27,15.7],[33,14.5],[34.6,14.7],[31.5,21.4]];
+    for (var _i = 0; _i < array_length(_res); _i++)
+        array_push(_L, ["obj_mercato_prop", _res[_i][0], _res[_i][1], 1, "spr_florence_residence", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 15,   12.5, 0.8,  "spr_florence_row_block",   "solid"]);
+    array_push(_L, ["obj_mercato_prop", 15.5, 1.5,  0.8,  "spr_florence_row_block",   "solid"]);
+    array_push(_L, ["obj_mercato_prop", 25.8, 19.6, 0.8,  "spr_florence_cottage",     "solid"]);
+    array_push(_L, ["obj_mercato_prop", 38,   14.2, 0.8,  "spr_florence_cottage",     "solid"]);
+    // STEP 6 — NOBLE TOWERS + tower houses (Florence's skyline of family towers)
+    var _twr = [[21.8,12],[27.3,7.2],[12.2,21.3],[33.8,12.6]];
+    for (var _t = 0; _t < array_length(_twr); _t++)
+        array_push(_L, ["obj_mercato_prop", _twr[_t][0], _twr[_t][1], 1, "spr_florence_noble_tower", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 35,   2.5,  0.7,  "spr_florence_tower_house", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 18.5, 2,    0.7,  "spr_florence_tower_house", "solid"]);
+    // STEP 7 — PIAZZA DEL GRANDE MERCATO: fountain centre, ring of awning stalls
+    array_push(_L, ["obj_mercato_prop", 23.5, 7.8,  1,    "spr_mercato_fountain_piazza", "solid"]);
+    var _stl = [[21.8,7.3],[25.6,7.3],[21.8,9.4],[25.6,9.4],[23.6,6.3],[23.6,10.3]];
+    for (var _s = 0; _s < array_length(_stl); _s++)
+        array_push(_L, ["obj_mercato_prop", _stl[_s][0], _stl[_s][1], 0.7, "spr_mercato_stall_awning", "solid"]);
+    array_push(_L, ["obj_marco_stall",  22,   10.6, 0.7]);
+    array_push(_L, ["obj_barrel",       21.2, 8.4,  0.5]);
+    array_push(_L, ["obj_barrel",       26.6, 8.6,  0.5]);
+    array_push(_L, ["obj_mercato_prop", 26.3, 6.5,  0.5,  "spr_crate_stack",          "solid"]);
+    array_push(_L, ["obj_cart",         20.2, 9.8,  0.6]);
+    // PUBLIC WELL + fountain on the south plaza (reference centre-south)
+    array_push(_L, ["obj_well",         23,   22.6, 0.7]);
+    array_push(_L, ["obj_mercato_prop", 24.4, 23.2, 0.8,  "spr_mercato_fountain",     "solid"]);
+    array_push(_L, ["obj_cart",         19.5, 23.8, 0.6]);
+    array_push(_L, ["obj_barrel",       26.2, 22.3, 0.5]);
+    array_push(_L, ["obj_barrel",       20,   21.8, 0.5]);
+    // STEP 8 — STREET DETAILS: shrines on corners, torches on main streets,
+    // cats near market/tavern, pigeons near the fountains, washing lines
+    var _shr = [[14.6,10.3],[22.5,16.2],[30.4,12.4],[8.9,21.4],[26.5,23.4]];
+    for (var _h = 0; _h < array_length(_shr); _h++)
+        array_push(_L, ["obj_mercato_prop", _shr[_h][0], _shr[_h][1], 1, "spr_florence_street_shrine"]);
+    var _tor = [[22.7,11],[24.9,13.5],[22.7,17],[24.9,20],[35.3,14],[37.4,18],
+                [13.5,8.6],[19.5,8.6],[28.7,11.2],[33,11.2]];
+    for (var _o = 0; _o < array_length(_tor); _o++)
+        array_push(_L, ["obj_mercato_prop", _tor[_o][0], _tor[_o][1], 1, "spr_florence_wall_torch"]);
+    var _cat = [[26.3,9.8],[21.6,17.8],[32.6,20.6]];
+    for (var _c = 0; _c < array_length(_cat); _c++)
+        array_push(_L, ["obj_mercato_prop", _cat[_c][0], _cat[_c][1], 1, "spr_florence_stray_cat"]);
+    var _pig = [[24.3,9.6],[23,7.5],[21,23.2],[25.2,24.2]];
+    for (var _p = 0; _p < array_length(_pig); _p++)
+        array_push(_L, ["obj_mercato_prop", _pig[_p][0], _pig[_p][1], 1, "spr_florence_pigeon_cluster"]);
+    var _wsh = [[16,11.7],[25.7,16.9],[33.4,15.9]];
+    for (var _w = 0; _w < array_length(_wsh); _w++)
+        array_push(_L, ["obj_mercato_prop", _wsh[_w][0], _wsh[_w][1], 1, "spr_florence_washing_line"]);
+    // citizens (reused from the project set; walk-through)
+    array_push(_L, ["obj_mercato_prop", 23.6, 12.5, 1, "spr_citizen_man"]);
+    array_push(_L, ["obj_mercato_prop", 36.5, 21,   1, "spr_citizen_man"]);
+    array_push(_L, ["obj_mercato_prop", 10,   21.5, 1, "spr_citizen_man"]);
+    array_push(_L, ["obj_mercato_prop", 24,   8.8,  1, "spr_citizen_woman"]);
+    array_push(_L, ["obj_mercato_prop", 22,   23.5, 1, "spr_citizen_woman"]);
+    array_push(_L, ["obj_mercato_prop", 31,   16.5, 1, "spr_citizen_monk"]);
+    // cypress trees
+    var _cyp = [[5,5],[16,21],[28,21.5],[38.5,9],[2.2,12],[11,2.5],[33,22.5]];
+    for (var _y = 0; _y < array_length(_cyp); _y++)
+        array_push(_L, ["obj_cypress_tree", _cyp[_y][0], _cyp[_y][1], 0.7]);
+    // VEGETATION flourish — Tuscan olives, street flower beds, doorstep pots
+    var _olv = [[3,8],[10.5,23.5],[38.5,5],[27,2.2]];
+    for (var _v = 0; _v < array_length(_olv); _v++)
+        array_push(_L, ["obj_mercato_prop", _olv[_v][0], _olv[_v][1], 1, "spr_florence_olive_tree", "solid"]);
+    var _fbd = [[21.3,6.6],[26.2,6.6],[20.6,22.2],[26,24.6],[14.9,10.8],[30.2,17.6]];
+    for (var _b2 = 0; _b2 < array_length(_fbd); _b2++)
+        array_push(_L, ["obj_mercato_prop", _fbd[_b2][0], _fbd[_b2][1], 1, "spr_florence_flower_bed"]);
+    var _pot = [[19.4,17.9],[32.2,20.2],[23.1,10.9],[34.9,10.9]];
+    for (var _q = 0; _q < array_length(_pot); _q++)
+        array_push(_L, ["obj_mercato_prop", _pot[_q][0], _pot[_q][1], 1, "spr_inn_plant"]);
+    return _L;
+}
+
+/// Place one v2 prop (draggable, F8-saveable; solid only when flagged).
+function scr_fv2_place(_objname, _gx, _gy, _sc, _sprn, _solid, _layer) {
+    var _obj = asset_get_index(_objname);
+    if (_obj < 0 || asset_get_type(_objname) != asset_object) return noone;
+    var _inst = (_layer != "")
+        ? instance_create_layer(_gx * FV2_GRID, _gy * FV2_GRID, _layer, _obj)
+        : instance_create_depth(_gx * FV2_GRID, _gy * FV2_GRID, 100, _obj);
+    _inst.image_xscale = _sc;  _inst.image_yscale = _sc;
+    _inst.room_builder_placed = true;
+    _inst.builder_sprite = "";  _inst.builder_solid = false;  _inst.builder_angle = 0;
+    if (_sprn != "") {
+        var _sid = asset_get_index(_sprn);
+        if (_sid >= 0 && asset_get_type(_sprn) == asset_sprite) {
+            _inst.sprite_index = _sid;  _inst.builder_sprite = _sprn;
+        }
+    }
+    if (_inst.object_index == obj_mercato_prop) _inst.builder_solid = _solid;
+    array_push(global.room_builder_objects, _inst);
+    return _inst;
+}
+
+function scr_fv2_default_place() {
+    var _layer = layer_exists("Instances") ? "Instances" : "";
+    var _L = scr_fv2_default_layout();
+    for (var _i = 0; _i < array_length(_L); _i++) {
+        var _e = _L[_i];
+        var _spr   = (array_length(_e) >= 5) ? _e[4] : "";
+        var _solid = (array_length(_e) >= 6 && _e[5] == "solid");
+        scr_fv2_place(_e[0], _e[1], _e[2], _e[3], _spr, _solid, _layer);
+    }
+}
+
+/// Read a saved v2 layout (OBJECT GX GY SCALE [SPRITE] [solid] [ANGLE]).
+function scr_fv2_load(_path) {
+    var _f = file_text_open_read(_path);
+    if (_f == -1) return 0;
+    var _layer = layer_exists("Instances") ? "Instances" : "";
+    var _n = 0;
+    while (!file_text_eof(_f)) {
+        var _raw = file_text_read_string(_f); file_text_readln(_f);
+        var _l = string_trim(string_replace_all(_raw, chr(13), ""));
+        if (_l == "" || string_char_at(_l, 1) == "#") continue;
+        var _t = scr_room_builder_tokenize(_l);
+        if (array_length(_t) < 3) continue;
+        var _sc = (array_length(_t) >= 4) ? real(_t[3]) : 1;
+        var _spr = "";
+        if (array_length(_t) >= 5 && asset_get_index(_t[4]) >= 0 && asset_get_type(_t[4]) == asset_sprite) _spr = _t[4];
+        var _solid = false;
+        for (var _k = 4; _k < array_length(_t); _k++) if (_t[_k] == "solid") _solid = true;
+        var _ang  = 0;
+        var _last = _t[array_length(_t) - 1];
+        if (array_length(_t) >= 5 && string_digits(_last) == _last && _last != "") _ang = real(_last);
+        var _inst = scr_fv2_place(_t[0], real(_t[1]), real(_t[2]), _sc, _spr, _solid, _layer);
+        if (_inst != noone) { _inst.builder_angle = _ang; _n++; }
+    }
+    file_text_close(_f);
+    return _n;
+}
+
+// ── BUILD: layout + collision + ALL transitions (Steps 4, 9, 10) ───────────────
 function scr_fv2_build() {
     if (room != Room_florence_v2) return;
-    // keep-alive: tiles resolved by NAME in Draw are invisible to the asset
-    // stripper — compile-time identifiers here force them into the build.
+    // keep-alive: name-placed sprites/objects are invisible to the stripper.
+    global.__fv2_keep     = [obj_mercato_prop, obj_marco_stall, obj_well, obj_cart,
+        obj_barrel, obj_cypress_tree, obj_duomo_entrance, obj_stable_entrance];
     global.__fv2_keep_spr = [spr_florence_road_cobble, spr_florence_road_intersection,
         spr_florence_road_edge, spr_florence_grass, spr_florence_street,
         spr_florence_wall_section, spr_florence_wall_gate, spr_florence_wall_tower,
-        spr_florence_wall_tile];
+        spr_florence_wall_tile, spr_florence_water, spr_river_stone, spr_ponte_vecchio,
+        spr_florence_tower_house, spr_florence_row_block, spr_florence_cottage,
+        spr_duomo_exterior, spr_florence_campanile, spr_palazzo_signoria,
+        spr_merchant_guild, spr_parish_church, spr_locanda_exterior, spr_apothecary,
+        spr_florence_stable, spr_artisan_workshop_a, spr_artisan_workshop_b,
+        spr_artisan_forge, spr_citizen_man, spr_citizen_woman, spr_citizen_monk,
+        spr_mercato_fountain, spr_crate_stack,
+        spr_florence_residence, spr_florence_noble_tower, spr_mercato_stall_awning,
+        spr_mercato_fountain_piazza, spr_florence_street_shrine, spr_florence_wall_torch,
+        spr_florence_stray_cat, spr_florence_pigeon_cluster, spr_florence_washing_line,
+        spr_arno_stone_bank, spr_florence_olive_tree, spr_florence_flower_bed,
+        spr_inn_plant];
+
+    if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
+    for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
+        if (instance_exists(global.room_builder_objects[_i])) instance_destroy(global.room_builder_objects[_i]);
+    global.room_builder_objects = [];
+
+    // props: saved layout (version-guarded) or the code default
+    var _path   = working_directory + "room_florence_v2_layout.txt";
+    var _placed = scr_room_builder_layout_current(_path) ? scr_fv2_load(_path) : 0;
+    if (_placed == 0) scr_fv2_default_place();
+
+    // walls + river + edge collision
     var _solids = scr_fv2_walls();
-    array_push(_solids, [0, 0, room_width, 8]);                       // room-edge ring
+    array_push(_solids, [0, 0, room_width, 8]);
     array_push(_solids, [0, room_height - 8, room_width, room_height]);
     array_push(_solids, [0, 0, 8, room_height]);
     array_push(_solids, [room_width - 8, 0, room_width, room_height]);
-    for (var _i = 0; _i < array_length(_solids); _i++) {
-        var _s = _solids[_i];
-        var _w = instance_create_depth(_s[0], _s[1], 500, obj_wall);
-        _w.wall_w = _s[2] - _s[0]; _w.wall_h = _s[3] - _s[1]; _w.visible = false;
+    // river band split around the Ponte deck (banks included via -22/+22)
+    array_push(_solids, [FV2_RIVER_X0 - 22, 0, FV2_RIVER_X1 + 22, FV2_PONTE_Y0]);
+    array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y1, FV2_RIVER_X1 + 22, room_height]);
+    // deck handrails (16px, matches the drawn parapets)
+    array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y0, FV2_RIVER_X1 + 22, FV2_PONTE_Y0 + 16]);
+    array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y1 - 16, FV2_RIVER_X1 + 22, FV2_PONTE_Y1]);
+    for (var _w = 0; _w < array_length(_solids); _w++) {
+        var _s = _solids[_w];
+        var _wl = instance_create_depth(_s[0], _s[1], 500, obj_wall);
+        _wl.wall_w = _s[2] - _s[0]; _wl.wall_h = _s[3] - _s[1]; _wl.visible = false;
     }
-    // gate transitions (walk into the archway): future FF-Tactics overworld
+    scr_room_builder_build_collision();   // tight per-prop footprints
+
+    // gate transitions → future FF-Tactics overworld (coming soon until built)
     scr_transition_spawn("fv2_west_gate",  448,  1654, 128, 100,
         "Room_overworld_tactics", "Tuscan Countryside", 0, 0, "");
     scr_transition_spawn("fv2_south_gate", 2304, 1654, 128, 100,
         "Room_overworld_tactics", "Tuscan Countryside", 0, 0, "");
+    // Ponte Vecchio entry zones — W/E half decides the bridge-room landing
+    var _deckmid = (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5;
+    scr_transition_spawn("fv2_ponte_w", FV2_RIVER_X0 - 22, FV2_PONTE_Y0 + 16,
+        _deckmid - (FV2_RIVER_X0 - 22), FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
+        "Room_ponte_vecchio", "Ponte Vecchio", 288, 200, "The Ponte Vecchio");
+    scr_transition_spawn("fv2_ponte_e", _deckmid, FV2_PONTE_Y0 + 16,
+        (FV2_RIVER_X1 + 22) - _deckmid, FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
+        "Room_ponte_vecchio", "Ponte Vecchio", 288, 700, "The Ponte Vecchio");
+
+    // STEP 10 — interior entrances, bbox-following like the old map
+    var _dux = 704, _duy = 712;
+    var _stx = 1216, _sty = 548;
+    var _inx = 1331, _iny = 1170;
+    var _chx = 2016, _chy = 1066;
+    for (var _e = 0; _e < array_length(global.room_builder_objects); _e++) {
+        var _p = global.room_builder_objects[_e];
+        if (!instance_exists(_p)) continue;
+        if (_p.sprite_index == spr_duomo_exterior)      { _dux = (_p.bbox_left + _p.bbox_right) * 0.5; _duy = _p.bbox_bottom + 48; }
+        if (_p.sprite_index == spr_florence_stable)     { _stx = (_p.bbox_left + _p.bbox_right) * 0.5; _sty = _p.bbox_bottom + 48; }
+        if (_p.sprite_index == spr_locanda_exterior)    { _inx = (_p.bbox_left + _p.bbox_right) * 0.5; _iny = _p.bbox_bottom; }
+        if (_p.sprite_index == spr_parish_church)       { _chx = (_p.bbox_left + _p.bbox_right) * 0.5; _chy = _p.bbox_bottom; }
+    }
+    instance_create_depth(_dux, _duy, 400, obj_duomo_entrance);
+    instance_create_depth(_stx, _sty, 400, obj_stable_entrance);
+    scr_transition_spawn("fv2_inn", _inx - 64, _iny + 8, 128, 56,
+        "Room_locanda_rosa_camuna", "Locanda della Rosa Camuna", 512, 960, "");
+    scr_transition_spawn("fv2_church", _chx - 64, _chy + 8, 128, 56,
+        "Room_parish_church", "Parish Church", 0, 0, "");
+}
+
+/// Rebuild v2 collision after debug drag/nudge/delete.
+function scr_fv2_rebuild_collision() {
+    if (room != Room_florence_v2) return;
+    with (obj_wall) instance_destroy();
+    with (obj_mercato_exit) instance_destroy();
+    with (obj_duomo_entrance) instance_destroy();
+    with (obj_stable_entrance) instance_destroy();
+    var _keep = global.room_builder_objects;   // rebuild walls/transitions only
+    // cheap full rebuild: clear walls + transitions then respawn them around the
+    // CURRENT prop positions (props themselves are untouched)
+    var _solids = scr_fv2_walls();
+    array_push(_solids, [0, 0, room_width, 8]);
+    array_push(_solids, [0, room_height - 8, room_width, room_height]);
+    array_push(_solids, [0, 0, 8, room_height]);
+    array_push(_solids, [room_width - 8, 0, room_width, room_height]);
+    array_push(_solids, [FV2_RIVER_X0 - 22, 0, FV2_RIVER_X1 + 22, FV2_PONTE_Y0]);
+    array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y1, FV2_RIVER_X1 + 22, room_height]);
+    array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y0, FV2_RIVER_X1 + 22, FV2_PONTE_Y0 + 16]);
+    array_push(_solids, [FV2_RIVER_X0 - 22, FV2_PONTE_Y1 - 16, FV2_RIVER_X1 + 22, FV2_PONTE_Y1]);
+    for (var _w = 0; _w < array_length(_solids); _w++) {
+        var _s = _solids[_w];
+        var _wl = instance_create_depth(_s[0], _s[1], 500, obj_wall);
+        _wl.wall_w = _s[2] - _s[0]; _wl.wall_h = _s[3] - _s[1]; _wl.visible = false;
+    }
+    scr_room_builder_build_collision();
+}
+
+// ── STEP 11 — CORRUPTION STATES ────────────────────────────────────────────────
+/// Street life + shrines react to Limbo corruption. Called from scene Draw.
+///   0-49  clean: torches lit, candles burning, cats + pigeons out
+///   50-74 dirty: half the torches dark, candles flicker, fewer animals
+///   75-99 most torches dark, shrines faded/wrong, NO animals
+///   100   all dark except GREEN remnant flames; the Madonna is GONE +
+///         one-time chronicle line.
+function scr_fv2_corruption_sync() {
+    if (room != Room_florence_v2) return;
+    if (!variable_global_exists("room_builder_objects")) return;
+    var _corr = global.circle_corruption[CIRCLE_LIMBO];
+    var _objs = global.room_builder_objects;
+    var _ai = 0;
+    for (var _i = 0; _i < array_length(_objs); _i++) {
+        var _o = _objs[_i];
+        if (!instance_exists(_o)) continue;
+        if (!variable_instance_exists(_o, "builder_sprite")) continue;
+        var _s = _o.builder_sprite;
+        if (_s == "spr_florence_stray_cat" || _s == "spr_florence_pigeon_cluster") {
+            _ai++;
+            if (_corr >= 75)      _o.visible = false;
+            else if (_corr >= 50) _o.visible = ((_ai mod 2) == 1);
+            else                  _o.visible = true;
+        } else if (_s == "spr_florence_street_shrine") {
+            if (_corr >= 100) {
+                _o.image_alpha = 0.20;   // the alcove, almost empty
+                if (!variable_global_exists("fv2_madonna_noted")) {
+                    global.fv2_madonna_noted = true;
+                    scr_chronicle_add("The Madonna is gone. I do not know when she left. I do not know if anyone else noticed.");
+                }
+            } else if (_corr >= 75) _o.image_alpha = 0.55;   // faded, wrong somehow
+            else                    _o.image_alpha = 1;
+        }
+    }
+}
+
+/// Torch flames + shrine candles — additive glow pass (after the floor).
+function scr_fv2_torch_glow() {
+    if (!variable_global_exists("room_builder_objects")) return;
+    var _corr = global.circle_corruption[CIRCLE_LIMBO];
+    var _frac;                                  // fraction of torches still lit
+    if      (_corr >= 100) _frac = 0.15;        // green remnants only
+    else if (_corr >= 75)  _frac = 0.15;
+    else if (_corr >= 50)  _frac = 0.5;
+    else                   _frac = 1.0;
+    var _green = (_corr >= 100);
+    gpu_set_blendmode(bm_add);
+    var _objs = global.room_builder_objects;
+    var _ti = 0;
+    for (var _i = 0; _i < array_length(_objs); _i++) {
+        var _o = _objs[_i];
+        if (!instance_exists(_o)) continue;
+        if (!variable_instance_exists(_o, "builder_sprite")) continue;
+        var _is_torch  = (_o.builder_sprite == "spr_florence_wall_torch");
+        var _is_shrine = (_o.builder_sprite == "spr_florence_street_shrine");
+        if (!_is_torch && !_is_shrine) continue;
+        _ti++;
+        if (((_ti * 7) mod 100) / 100 >= _frac) continue;          // this one is dark
+        if (_is_shrine && _corr >= 100) continue;                  // no candle: she is gone
+        var _cx = _o.x + 16 * _o.image_xscale;
+        var _cy = _o.y + (_is_shrine ? 52 : 16) * _o.image_yscale;
+        var _flick = 1 + 0.08 * sin(current_time * 0.004 + _o.x * 0.13 + _o.y * 0.07);
+        var _r = (_is_shrine ? 22 : 34) * _flick;
+        if (_corr >= 50 && _corr < 75 && _is_shrine) _flick *= 0.7;   // uneasy flicker
+        draw_set_color(_green ? make_color_rgb(70, 235, 110) : make_color_rgb(255, 186, 96));
+        draw_set_alpha((_green ? 0.30 : 0.24) * _flick);
+        draw_circle(_cx, _cy, _r, false);
+    }
+    gpu_set_blendmode(bm_normal);
+    draw_set_alpha(1);
+    draw_set_color(c_white);
 }

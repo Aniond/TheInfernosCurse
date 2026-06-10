@@ -39,12 +39,14 @@
 #macro INN_LAYOUT_VERSION     16
 #macro PONTE_LAYOUT_VERSION   9
 #macro STABLE_LAYOUT_VERSION  3
+#macro FLORENCE_V2_LAYOUT_VERSION 1
 
 /// The CURRENT room's layout schema version (Room_florence = ROOM_BUILDER_LAYOUT_VERSION).
 function scr_room_builder_layout_version() {
     if (room == Room_duomo)               return DUOMO_LAYOUT_VERSION;
     if (room == Room_locanda_rosa_camuna) return INN_LAYOUT_VERSION;
     if (room == Room_fiorentine_stable)   return STABLE_LAYOUT_VERSION;
+    if (room == Room_florence_v2)         return FLORENCE_V2_LAYOUT_VERSION;
     if (room == Room_ponte_vecchio)       return PONTE_LAYOUT_VERSION;
     return ROOM_BUILDER_LAYOUT_VERSION;
 }
@@ -440,6 +442,7 @@ function scr_room_builder_refresh_collision() {
     if (room == Room_duomo)               { scr_duomo_rebuild_collision();  return; }
     if (room == Room_locanda_rosa_camuna) { scr_inn_rebuild_collision();    return; }
     if (room == Room_fiorentine_stable)   { scr_stable_rebuild_collision(); return; }
+    if (room == Room_florence_v2)         { scr_fv2_rebuild_collision();    return; }
     scr_room_builder_build_collision();
 }
 
@@ -488,6 +491,7 @@ function scr_room_builder_save() {
     if (room == Room_duomo)          _path = working_directory + "room_duomo_layout.txt";
     if (room == Room_locanda_rosa_camuna) _path = working_directory + "room_locanda_rosa_camuna_layout.txt";
     if (room == Room_fiorentine_stable)   _path = working_directory + "room_fiorentine_stable_layout.txt";
+    if (room == Room_florence_v2)         _path = working_directory + "room_florence_v2_layout.txt";
     var _f = file_text_open_write(_path);
     if (_f == -1) {
         show_debug_message("[room_builder] SAVE FAILED — sandbox blocks " + ROOM_BUILDER_FILE +
@@ -582,7 +586,7 @@ function scr_room_builder_point_in(_inst, _mx, _my) {
 /// Called every step from obj_game_manager. F8 then writes the new positions.
 function scr_room_builder_drag_update() {
     if (!global.debug_mode) return;
-    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;   // draggable in all built rooms
+    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2) return;   // draggable in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
@@ -689,7 +693,7 @@ function scr_room_builder_delete_selected() {
 /// F8 then saves the exact fractional position (the save no longer rounds to grid).
 function scr_room_builder_nudge_update() {
     if (!global.debug_mode) return;
-    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;   // nudge in all built rooms
+    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2) return;   // nudge in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_selected")) return;
     var _sel = global.room_builder_selected;
@@ -858,7 +862,7 @@ function scr_room_builder_duplicate_selected() {
 ///   held (obj_player Step) so chords never also walk Benedetto.
 function scr_room_builder_edit_update() {
     if (!global.debug_mode) return;
-    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable) return;
+    if (room != Room_florence && room != Room_ponte_vecchio && room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2) return;
     if (variable_global_exists("input_locked") && global.input_locked) return;
 
     var _ctrl = keyboard_check(vk_control);
