@@ -782,17 +782,9 @@ function scr_fv2_corruption_sync() {
     }
 }
 
-/// PONTE ZONE ZOOM — the bridge sprite marks the zone; entering it eases the
-/// camera IN (cinematic crossing; later this zoom becomes the entry into the
-/// rebuilt EW bridge map). Called every frame from the scene Draw.
-function scr_fv2_bridge_zoom() {
-    if (room != Room_florence_v2) return;
-    if (!variable_global_exists("cam_zoom_target")) return;
-    if (!instance_exists(obj_player)) return;
-    var _on = (obj_player.x > FV2_RIVER_X0 - 22 && obj_player.x < FV2_RIVER_X1 + 22
-            && obj_player.y > FV2_PONTE_Y0      && obj_player.y < FV2_PONTE_Y1);
-    global.cam_zoom_target = _on ? 0.62 : 1;
-}
+// (Bridge zoom removed 2026-06-10 per David — the camera stays steady on the
+//  crossing. The generic cam_zoom support remains in scr_camera for the real
+//  zone transition when the EW bridge interior is rebuilt.)
 
 /// Torch flames + shrine candles — additive glow pass (after the floor).
 function scr_fv2_torch_glow() {
