@@ -26,16 +26,16 @@ function scr_fv2_roads() {
         [21,  7, 27, 10, 1],   // Piazza del Grande Mercato (market field)
         [18, 22, 27, 25, 1],   // south plaza — Public Well + fountain
         [23, 10, 25, 22, 0],   // main street: market <-> south plaza
-        [35, 12, 38, 26, 0],   // South-Gate road, north run (past the Apothecary)
+        [36, 12, 38, 26, 0],   // South-Gate road, north run (2 cells, past the Apothecary)
         [36, 26, 38, 32, 0],   // South Gate passage + outside stub
-        [27, 23, 35, 25, 0],   // south plaza -> South-Gate road
+        [27, 23, 36, 25, 0],   // south plaza -> South-Gate road (meets it at x36)
         [ 7, 21,  9, 26, 0],   // West-Gate road (inside the walls)
         [ 7, 26,  9, 32, 0],   // West Gate passage + outside stub
         [ 7, 21, 18, 23, 0],   // west road -> south plaza
         [12,  8, 21, 10, 0],   // Duomo approach -> market
         [12, 10, 14, 17, 0],   // Duomo -> Artisans vertical lane
         [ 6, 17, 18, 19, 0],   // Artisans lane -> the Inn
-        [27, 10, 40, 13, 0],   // Ponte Vecchio road (east, feeds the crossing)
+        [27, 11, 40, 13, 0],   // Ponte Vecchio road (2 cells, feeds the crossing mid-deck)
         [28, 13, 30, 22, 0],   // Parish-Church lane south
         [15,  4, 28,  6, 0],   // north lane: Duomo -> Palazzo della Signoria
     ];
