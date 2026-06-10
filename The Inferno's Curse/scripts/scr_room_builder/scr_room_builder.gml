@@ -1095,15 +1095,17 @@ function scr_florence_build() {
         _wr.wall_w = _rthick;  _wr.wall_h = _bdy1 - _bdy0;  _wr.visible = false;
     }
 
-    // ── Ponte Vecchio entry zones — N/S split decides the bridge-room landing ──
-    var _pv      = global.river_bridges[0];
-    var _pe_x    = _pv[0] + _rthick;
-    var _pe_w    = (_pv[1] - _pv[0]) - _rthick * 2;
-    var _deckmid = (_bdy0 + _bdy1) * 0.5;
-    scr_transition_spawn("florence_ponte_n", _pe_x, _bdy0, _pe_w, _deckmid - _bdy0,
-        "Room_ponte_vecchio", "Ponte Vecchio", 288, 200, "The Ponte Vecchio");
-    scr_transition_spawn("florence_ponte_s", _pe_x, _deckmid, _pe_w, _bdy1 - _deckmid,
-        "Room_ponte_vecchio", "Ponte Vecchio", 288, 700, "The Ponte Vecchio");
+    // ── Ponte Vecchio entry zones — REMOVED 2026-06-10 (room deleted for the
+    //    accurate EW rebuild; re-add the N/S spawns here when the new bridge
+    //    room exists). Old code kept for reference:
+    // var _pv      = global.river_bridges[0];
+    // var _pe_x    = _pv[0] + _rthick;
+    // var _pe_w    = (_pv[1] - _pv[0]) - _rthick * 2;
+    // var _deckmid = (_bdy0 + _bdy1) * 0.5;
+    // scr_transition_spawn("florence_ponte_n", _pe_x, _bdy0, _pe_w, _deckmid - _bdy0,
+    //     "Room_ponte_vecchio", "Ponte Vecchio", 288, 200, "The Ponte Vecchio");
+    // scr_transition_spawn("florence_ponte_s", _pe_x, _deckmid, _pe_w, _bdy1 - _deckmid,
+    //     "Room_ponte_vecchio", "Ponte Vecchio", 288, 700, "The Ponte Vecchio");
 
     // ── Giardino delle Rose hedge collision (four quadrants, open cross-path) ──
     var _gx0 = global.garden_cx - global.garden_hw, _gy0 = global.garden_cy - global.garden_hh;
