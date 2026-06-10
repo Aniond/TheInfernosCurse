@@ -225,9 +225,9 @@ global.codex_entries     = [];
 global.codex_entry_count = 0;
 
 // ── Player spawn globals (restored from save, applied when player Create runs) ─
-global.save_player_x    = 1024;   // centre of the cobblestone street (street is y 928–1120)
-global.save_player_y    = 1024;
-global.save_player_room = "Room_florence";
+global.save_player_x    = 1472;   // Room_florence_v2 default spawn (matches the room instance)
+global.save_player_y    = 1480;
+global.save_player_room = "Room_florence_v2";
 
 // ── Save indicator UI state ───────────────────────────────────────────────────
 // Drives obj_save_indicator's fade-out flash in the top-right corner.
@@ -266,51 +266,12 @@ gpu_set_tex_filter(false);
 // thousands; that is NOT the actual rate, which this pins at 60.
 game_set_speed(60, gamespeed_fps);
 
-// ── The Arno (river that quarters the city) ───────────────────────────────────
-// Geometry shared by obj_street_scene (draws the animated water + bridges) and
-// obj_player (collision routes the player over the bridge gaps). A full-width
-// band running just below the central park; two bridges flank the centre so each
-// crossing feeds off the piazza into the south grass approach. Tile-aligned (64px).
-global.river_y1      = 1536;   // shrunk 2048 world: river runs BELOW the central park
-global.river_y2      = 1728;   // 192px band (3 × 64px water tiles)
-global.river_bridges = [[640, 896]];   // ONE crossing = the Ponte Vecchio (west). The old
-                                       // east "brick bridge" was removed -> that span is plain river now.
-
-// (The Arno river/bank collision, the bridge handrails and the Ponte Vecchio entry
-//  zones are built by scr_florence_build() — see the Florence build call below the garden
-//  geometry. They are rebuilt on every Florence re-entry, so returning from the bridge
-//  room restores them.)
-
-// ── Giardino delle Rose geometry + hedge collision ────────────────────────────
-// Geometry OWNED here and read by obj_street_scene Draw (which paints the parterre)
-// so the visuals and the collision can never drift. The four boxwood-hedged rose
-// quadrants are made solid with invisible obj_wall boxes; the outer stone walkway
-// and the gravel cross-path stay open, so the player is guided onto the paths. The
-// central fountain is left pass-through — a wall there would plug the 56px cross-
-// path (it is barely wider than the 32px player).
-global.garden_cx  = 380;    // garden centre  (== fountain centre)
-global.garden_cy  = 1317;
-global.garden_hw  = 220;    // half width  (outer paving edge)
-global.garden_hh  = 190;    // half height
-global.garden_wt  = 32;     // outer paving ring thickness
-global.garden_cph = 28;     // cross-path half width
-// ── Florence props + collision (built here; rebuilt by Step on every re-entry) ─────
-// This manager is PERSISTENT (its Create runs once), and a room change destroys
-// Florence's code-spawned props + collision — so Step calls scr_florence_build() again
-// whenever we return to Florence. Build the first time now.
-global.__florence_built = false;
-if (room == Room_florence) { scr_florence_build(); global.__florence_built = true; }
-
-// ── Street dressing ───────────────────────────────────────────────────────────
-// Spawn the persistent Florence street scene (paved road + market props) at a
-// low depth so it sits over the cobble floor but under characters/buildings.
-// It draws only in Florence (room guard in its Draw event).
-if (!instance_exists(obj_street_scene)) {
-    instance_create_depth(0, 0, 160, obj_street_scene);
-}
-
-// (Mercato market collision is built by the room-builder loader — it lays an
-//  obj_wall footprint under each "solid" obj_mercato_prop. See scr_room_builder.)
+// ── OLD ROOM_FLORENCE WIPED (2026-06-10, David: "the new one is a 100% upgrade")
+// The v1 city, its Arno/garden geometry globals, scr_florence_build and
+// obj_street_scene are gone — Room_florence_v2 IS Florence and builds itself
+// (obj_florence_v2_scene Create → scr_fv2_build). Old map recoverable at git
+// tag pre-wipe-old-florence. The Giardino delle Rose awaits a v2 rebuild
+// (see the Notion wipe ticket).
 
 // NOTE: obj_journal and obj_vision_manager are placed directly in Florence (see the
 // room's instance list), so they are NOT spawned here — doing both would create
@@ -339,13 +300,14 @@ scr_npc_system_init();
 // out the south door to Florence does NOT bounce you back here. The player spawns at
 // Room_duomo's instance position (the south doorway, 640,1252).
 // Flip DUOMO_LOAD_POINT (scr_duomo) to false to restore the normal Florence start.
-if (FLORENCE_V2_LOAD_POINT && room == Room_florence) {
-    room_goto(Room_florence_v2);           // TEMP boot for testing the v2 city (flip FLORENCE_V2_LOAD_POINT to false)
-} else if (STABLE_LOAD_POINT && room == Room_florence) {
-    room_goto(Room_fiorentine_stable);     // TEMP boot for testing the stable (flip STABLE_LOAD_POINT to false)
-} else if (INN_LOAD_POINT && room == Room_florence) {
-    room_goto(Room_locanda_rosa_camuna);   // TEMP boot for testing the inn (flip INN_LOAD_POINT to false)
-} else if (DUOMO_LOAD_POINT && room == Room_florence) {
+// Room_florence_v2 IS the boot room now (old map wiped 2026-06-10) — no
+// redirect needed for normal play. The TEMP load points still work for
+// room-testing: flip one true to boot straight into that interior.
+if (STABLE_LOAD_POINT && room == Room_florence_v2) {
+    room_goto(Room_fiorentine_stable);     // TEMP boot for testing the stable
+} else if (INN_LOAD_POINT && room == Room_florence_v2) {
+    room_goto(Room_locanda_rosa_camuna);   // TEMP boot for testing the inn
+} else if (DUOMO_LOAD_POINT && room == Room_florence_v2) {
     room_goto(Room_duomo);
 }
 

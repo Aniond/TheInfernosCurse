@@ -277,19 +277,8 @@ function scr_debug_world_overworld() {
         draw_set_alpha(1);
     }
 
-    // River collision band (red) + bridge gaps (green) — faint fills
-    if (room == Room_florence && variable_global_exists("river_y1")) {
-        var _ry1 = global.river_y1, _ry2 = global.river_y2;
-        draw_set_alpha(0.12); draw_set_color(make_color_rgb(200, 40, 40));
-        draw_rectangle(56, _ry1, room_width - 56, _ry2, false);
-        if (variable_global_exists("river_bridges")) {
-            draw_set_alpha(0.22); draw_set_color(make_color_rgb(40, 200, 80));
-            var _brs = global.river_bridges;
-            for (var _b = 0; _b < array_length(_brs); _b++)
-                draw_rectangle(_brs[_b][0], _ry1, _brs[_b][1], _ry2, false);
-        }
-        draw_set_alpha(1);
-    }
+    // (Old-map river debug overlay removed 2026-06-10 with Room_florence —
+    //  v2's river is plain obj_wall collision, covered by the red outlines below.)
 
     // Solid objects — red outlines
     draw_set_color(make_color_rgb(220, 55, 55));

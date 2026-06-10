@@ -156,7 +156,6 @@
     {"id":{"name":"room_battle","path":"rooms/room_battle/room_battle.yy",},},
     {"id":{"name":"Room_duomo","path":"rooms/Room_duomo/Room_duomo.yy",},},
     {"id":{"name":"Room_fiorentine_stable","path":"rooms/Room_fiorentine_stable/Room_fiorentine_stable.yy",},},
-    {"id":{"name":"Room_florence","path":"rooms/Room_florence/Room_florence.yy",},},
     {"id":{"name":"Room_florence_v2","path":"rooms/Room_florence_v2/Room_florence_v2.yy",},},
     {"id":{"name":"obj_florence_v2_scene","path":"objects/obj_florence_v2_scene/obj_florence_v2_scene.yy",},},
     {"id":{"name":"scr_florence_v2","path":"scripts/scr_florence_v2/scr_florence_v2.yy",},},
@@ -394,7 +393,6 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"Room_florence","path":"rooms/Room_florence/Room_florence.yy",},},
     {"roomId":{"name":"Room_florence_v2","path":"rooms/Room_florence_v2/Room_florence_v2.yy",},},
     {"roomId":{"name":"Room_duomo","path":"rooms/Room_duomo/Room_duomo.yy",},},
     {"roomId":{"name":"Room_ponte_vecchio","path":"rooms/Room_ponte_vecchio/Room_ponte_vecchio.yy",},},

@@ -13,9 +13,9 @@
 #macro FV2_H_CELLS 32
 #macro FV2_GRID    64
 
-// TEMP: boot straight into the v2 city for testing (checked in obj_game_manager
-// Create's load-point chain). Flip to false to restore the normal start.
-#macro FLORENCE_V2_LOAD_POINT true
+// RETIRED 2026-06-10: Room_florence_v2 IS the boot room now (old map wiped,
+// v2 first in RoomOrder) - no redirect needed. Macro kept false for history.
+#macro FLORENCE_V2_LOAD_POINT false
 
 // ── ROAD NETWORK — the city skeleton, measured off the reference ──────────────
 /// Rects in CELLS [x0, y0, x1, y1, kind] · kind 0 = road · 1 = plaza field.

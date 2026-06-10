@@ -64,14 +64,8 @@ sluggish_sprites = [
 sprite_index = spr_benedetto_walk_south;
 image_speed  = 1;  // sprites use their own baked playback speed
 
-// Safety: if a saved position landed inside the river band, push to nearest bank.
-if (room == Room_florence && variable_global_exists("river_y1")) {
-    var _ry1 = global.river_y1;
-    var _ry2 = global.river_y2;
-    if (y > _ry1 && y < _ry2) {
-        y = (y - _ry1 < _ry2 - y) ? (_ry1 - 8) : (_ry2 + 8);
-    }
-}
+// (Old-map river spawn-safety removed 2026-06-10 with Room_florence — the v2
+//  river is sealed by obj_wall collision, no spawn rescue needed.)
 
 // ── One-shot arrival override ─────────────────────────────────────────────────
 // A room transition (obj_mercato_exit with arrive_x/arrive_y set) drops the player

@@ -104,7 +104,7 @@ function scr_load_world_state() {
         global.player_sin_affinity  = array_create(7, 0);
         global.save_player_x        = 1024;
         global.save_player_y        = 1024;
-        global.save_player_room     = "Room_florence";
+        global.save_player_room     = "Room_florence_v2";
         global.marco_met            = false;
         global.marco_recognition    = 100;
         global.marco_corruption_arc = 0;
@@ -144,9 +144,9 @@ function scr_load_world_state() {
     // Benedetto
     global.save_player_x   = _d[$ "player_x"]   ?? 1024;
     global.save_player_y   = _d[$ "player_y"]   ?? 1024;
-    global.save_player_room = _d[$ "player_room"] ?? "Room_florence";
-    // Legacy saves predate the Room1 -> Room_florence rename; remap so they resolve.
-    if (global.save_player_room == "Room1") global.save_player_room = "Room_florence";
+    global.save_player_room = _d[$ "player_room"] ?? "Room_florence_v2";
+    // Legacy saves remap: Room1 AND the wiped old Room_florence resolve to v2.
+    if (global.save_player_room == "Room1" || global.save_player_room == "Room_florence") global.save_player_room = "Room_florence_v2";
 
     // Marco
     global.marco_met            = _d[$ "marco_met"]            ?? false;

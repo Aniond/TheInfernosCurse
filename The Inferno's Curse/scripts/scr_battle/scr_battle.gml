@@ -779,7 +779,7 @@ function scr_battle_flee() {
 
     // ── Return to Florence ────────────────────────────────────────────────────
     scr_battle_globals_cleanup();
-    room_goto(Room_florence);
+    room_goto(Room_florence_v2);
 }
 
 /// Cleans up battle globals on exit. Called when battle room transitions away.

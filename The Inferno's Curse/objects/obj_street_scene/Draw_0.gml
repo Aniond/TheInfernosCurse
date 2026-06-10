@@ -17,7 +17,7 @@
 // Depth 160: behind the player/characters (depth 100). Roads, buildings, props
 // get layered on top of this from here. NOTHING else this step.
 // =============================================================================
-if (room != Room_florence) exit;
+if (room_get_name(room) != "Room_florence") exit;   // room WIPED 2026-06-10 - guard inert, object kept as asset
 
 var _rw = room_width;
 var _rh = room_height;
