@@ -51,11 +51,38 @@ function scr_room_builder_layout_version() {
     return ROOM_BUILDER_LAYOUT_VERSION;
 }
 
-/// TRUE when a saved layout exists AND its version matches the current room —
-/// the universal "is this save-folder layout safe to load?" check.
+/// TRUE when a saved layout exists. CHANGED 2026-06-10 (David): the player's
+/// F8 save ALWAYS WINS — a version mismatch no longer discards hand-dragged
+/// work (that fight cost real progress). A stale stamp just raises an on-screen
+/// notice; Shift+F8 resets to the new code defaults on demand. Loaders already
+/// skip retired sprites/objects gracefully, so old saves can't crash a build.
 function scr_room_builder_layout_current(_path) {
     if (!file_exists(_path)) return false;
-    return (scr_room_builder_file_version(_path) == scr_room_builder_layout_version());
+    var _fv = scr_room_builder_file_version(_path);
+    var _cv = scr_room_builder_layout_version();
+    if (_fv != _cv && variable_global_exists("save_indicator_text")) {
+        global.save_indicator_text  = "YOUR F8 LAYOUT LOADED (v" + string(_fv)
+            + "; defaults now v" + string(_cv) + ") — Shift+F8 resets to defaults";
+        global.save_indicator_timer = 300;
+    }
+    return true;
+}
+
+/// Shift+F8 — RESET the current room's layout to the code defaults: deletes
+/// the save-folder F8 file and restarts the room so the build re-seeds clean.
+function scr_room_builder_reset_layout() {
+    var _path = working_directory + "room1_layout.txt";
+    if (room_get_name(room) == "Room_ponte_vecchio")  _path = working_directory + "room_ponte_vecchio_layout.txt";
+    if (room == Room_duomo)               _path = working_directory + "room_duomo_layout.txt";
+    if (room == Room_locanda_rosa_camuna) _path = working_directory + "room_locanda_rosa_camuna_layout.txt";
+    if (room == Room_fiorentine_stable)   _path = working_directory + "room_fiorentine_stable_layout.txt";
+    if (room == Room_florence_v2)         _path = working_directory + "room_florence_v2_layout.txt";
+    if (file_exists(_path)) file_delete(_path);
+    if (variable_global_exists("save_indicator_text")) {
+        global.save_indicator_text  = "LAYOUT RESET TO DEFAULTS";
+        global.save_indicator_timer = 120;
+    }
+    room_restart();
 }
 
 

@@ -123,6 +123,21 @@ it in the report. Especially required after hand-editing a .yy event list or
 when an imported sprite isn't appearing (sign: compile log lists "Unused Assets
 found", or a unit draws nothing — no sprite AND no placeholder rectangle).
 
+## F8 LAYOUT SAVES — Player's save is SOURCE OF TRUTH (permanent, 2026-06-10)
+David's in-game F8 layout saves live in C:\Users\david\AppData\Local\The_Inferno_s_Curse\
+(room_florence_v2_layout.txt etc). TWO-WAY workflow:
+- The loader ALWAYS loads an existing F8 save, even with a stale version stamp
+  (scr_room_builder_layout_current never discards hand-dragged work anymore; a
+  stale stamp shows an on-screen notice). Shift+F8 in debug = reset the room to
+  code defaults (deletes the save, restarts the room).
+- BEFORE any layout-changing edit, Claude READS David's save-folder layout for
+  that room. If present, it is the BASE: apply additions/changes to David's
+  arrangement, write it back to the save folder re-stamped with the new version,
+  AND sync the same content into the code default + layouts/ repo mirror. His
+  drag work is never reset; Claude's work builds on top of his, and vice versa.
+- Version macros still get bumped per layout-changing commit — the stamp now
+  only drives the notice + fresh installs, not discarding.
+
 ## GLOBAL DEPTH RULE (permanent, set 2026-06-10)
 All world objects use Y-based depth sorting: depth = -bbox_bottom.
 Never set manual depth values. Never use depth = 0 or fixed depth.
@@ -171,14 +186,19 @@ For multi-frame ANIMATIONS, scale every frame UNIFORMLY (do NOT trim/re-centre p
 frame, or the motion breaks). (Standard set 2026-06-08.)
 
 ## PixelLab Isometric Rejection Rule (permanent)
-When any sprite generated via PixelLab MCP comes out at an isometric angle
-or 3/4 perspective, REJECT it and regenerate immediately with this addition
-appended to the prompt:
+When any sprite generated via PixelLab MCP comes out at an isometric angle,
+3/4 perspective, OR a sideways/front elevation (side-view art is a common
+failure for bridges and buildings), REJECT it and regenerate immediately
+with this addition appended to the prompt:
 
 "STRICT top down view, viewed directly from above, zero perspective angle,
-no isometric, no 3/4 view, flat 90 degree overhead only"
+no angles, no isometric, no 3/4 view, no side view, no front elevation,
+flat 90 degree overhead only"
 
-Do not ask — just regenerate automatically on isometric output.
+David's tip (2026-06-10): including "no angles" explicitly is what stops the
+weird sideways art. Rooftop-first phrasing also helps ("rooftops clearly
+visible from overhead").
+Do not ask — just regenerate automatically on any wrong-angle output.
 
 ## Reporting Style
 Report AFTER doing, not before.

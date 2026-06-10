@@ -72,7 +72,11 @@ if (keyboard_check_pressed(vk_f1)) {
 }
 
 // ── DEBUG: save the current room-builder layout to file (F8) ──────────────────
-if (global.debug_mode && keyboard_check_pressed(vk_f8)) scr_room_builder_save();
+//          Shift+F8 = RESET the room layout to the code defaults (deletes save)
+if (global.debug_mode && keyboard_check_pressed(vk_f8)) {
+    if (keyboard_check(vk_shift)) scr_room_builder_reset_layout();
+    else                          scr_room_builder_save();
+}
 
 // ── DEBUG: toggle event log panel (F10) ───────────────────────────────────────
 if (keyboard_check_pressed(vk_f10)) {
