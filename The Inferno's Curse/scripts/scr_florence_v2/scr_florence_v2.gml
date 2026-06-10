@@ -40,6 +40,8 @@ function scr_fv2_roads() {
         [28, 12, 30, 22, 0],   // Parish-Church lane south (touches the Ponte road at y12)
         [15,  5, 28,  7, 0],   // north lane: Duomo -> Palazzo (touches the plaza at y7)
         [33, 11, 35, 17, 0],   // east alley: breaks up the guild/apothecary block (GAP 5)
+        [25, 10, 27, 12, 0],   // market SE link: closes the gap between the main
+                               // street (x25) and the Ponte road (x27) — user fix 2
         // paved precincts LAST so they pave over any road beneath (GAP 2)
         [ 7,  4, 17, 11, 1],   // Piazza del Duomo — the cathedral's paved precinct
         [29, 10, 34, 12, 1],   // Piazza della Signoria — paved front of the palazzo
@@ -64,15 +66,25 @@ function scr_fv2_walls() {
     ];
 }
 
-/// THIN PRECINCT WALLS — the Duomo's walled yard (west + south edges, opening
-/// aligned to the cathedral doors and the Duomo lane). Same black-void +
-/// sprite-fill technique as the city walls, at 32px thickness. Single source
-/// for drawing AND collision.
+/// ALL THIN WALLS — VOID WALL + ART standard, single geometry source for
+/// drawing AND collision (32px bands). Covers the Duomo precinct yard AND
+/// every inner division-wall segment that used to be a spr_florence_low_wall
+/// prop (props had art but NO void band, and the rotated ones carried broken
+/// unrotated collision boxes — all replaced by these exact rects).
 function scr_fv2_precinct_walls() {
     return [
-        [448, 256, 480, 704],     // west edge of the Piazza del Duomo
-        [448, 672, 640, 704],     // south edge, west of the cathedral doors
-        [896, 672, 1088, 704],    // south edge, east of the lane
+        // Duomo precinct yard (opening aligned to the doors + the lane)
+        [448,  256,  480,  704],     // west edge of the Piazza del Duomo
+        [448,  672,  640,  704],     // south edge, west of the cathedral doors
+        [896,  672,  1088, 704],     // south edge, east of the lane
+        // inner division walls (former low-wall props, merged into runs)
+        [371,  870,  627,  902],     // Artisans district, north edge
+        [371,  1382, 627,  1414],    // Artisans district, south edge
+        [1888, 704,  2144, 736],     // Palazzo courtyard wall
+        [2080, 1395, 2208, 1427],    // Apothecary block, south
+        [1741, 371,  1869, 403],     // market piazza NE corner
+        [2483, 864,  2515, 1120],    // Arno terrace wall (vertical run)
+        [2266, 1184, 2298, 1312],    // Apothecary block, east (vertical)
     ];
 }
 
@@ -453,19 +465,9 @@ function scr_fv2_default_layout() {
     // LITTLE WALLS — the reference's internal low walls (a signature of the
     // Florentine fabric): Duomo precinct yard, district edges, courtyards,
     // Arno terraces. 2-cell segments; trailing 90 = vertical run.
-    // (Duomo precinct segments removed 2026-06-10 — replaced by the DRAWN thin
-    //  void precinct wall, scr_fv2_precinct_walls.)
-    var _lwH = [[5.8,13.6],[7.8,13.6],           // Artisans district, north edge
-                [5.8,21.6],[7.8,21.6],           // Artisans district, south edge
-                [29.5,11],[31.5,11],             // Palazzo courtyard wall
-                [32.5,21.8],                     // Apothecary block, south
-                [27.2,5.8]];                     // market piazza NE corner
-    for (var _lw = 0; _lw < array_length(_lwH); _lw++)
-        array_push(_L, ["obj_mercato_prop", _lwH[_lw][0], _lwH[_lw][1], 1, "spr_florence_low_wall", "solid"]);
-    var _lwV = [[38.8,13.5],[38.8,15.5],         // Arno terrace walls
-                [35.4,18.5]];                    // Apothecary block, east
-    for (var _lv = 0; _lv < array_length(_lwV); _lv++)
-        array_push(_L, ["obj_mercato_prop", _lwV[_lv][0], _lwV[_lv][1], 1, "spr_florence_low_wall", "solid", 90]);
+    // (ALL low-wall prop segments removed 2026-06-10 — every thin wall is now
+    //  CODE GEOMETRY in scr_fv2_precinct_walls: void band + inset art +
+    //  collision from one source, per the VOID WALL + ART standard.)
     return _L;
 }
 
@@ -552,7 +554,7 @@ function scr_fv2_build() {
         spr_mercato_fountain_piazza, spr_florence_street_shrine, spr_florence_wall_torch,
         spr_florence_stray_cat, spr_florence_pigeon_cluster, spr_florence_washing_line,
         spr_arno_stone_bank, spr_florence_olive_tree, spr_florence_flower_bed,
-        spr_inn_plant, spr_florence_low_wall, spr_florence_wall_band,
+        spr_inn_plant, spr_florence_wall_band,
         spr_florence_packed_earth, spr_arno_rowing_boat, spr_florence_thin_wall];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
