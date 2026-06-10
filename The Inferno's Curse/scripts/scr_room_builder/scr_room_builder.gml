@@ -467,8 +467,8 @@ function scr_room_builder_footprint(_o) {
             || string_pos("guild", _nm) > 0 || string_pos("workshop", _nm) > 0
             || string_pos("forge", _nm) > 0 || string_pos("apothecary", _nm) > 0
             || string_pos("campanile", _nm) > 0 || string_pos("locanda", _nm) > 0) {
-        if (_bh > 128) { _x0f = 0.12; _y0f = 0.70; _x1f = 0.88; _y1f = 0.94; }   // tall: bottom 25%
-        else           { _x0f = 0.12; _y0f = 0.55; _x1f = 0.88; _y1f = 0.94; }   // one-cell: bottom ~40%
+        if (_bh > 128) { _x0f = 0.18; _y0f = 0.84; _x1f = 0.82; _y1f = 0.94; }   // tall: doorstep band (~10%)
+        else           { _x0f = 0.18; _y0f = 0.78; _x1f = 0.82; _y1f = 0.94; }   // one-cell: bottom ~16%
     } else {
         // small ground prop (urn, pot, statue, crate, sack, cloth…)
         _x0f = 0.22; _y0f = 0.50; _x1f = 0.78; _y1f = 0.92;
