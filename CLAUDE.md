@@ -138,6 +138,19 @@ David's in-game F8 layout saves live in C:\Users\david\AppData\Local\The_Inferno
 - Version macros still get bumped per layout-changing commit — the stamp now
   only drives the notice + fresh installs, not discarding.
 
+## BOTTOM-ONLY COLLISION (permanent, set 2026-06-10)
+Tall sprites use bottom-portion collision only — the world reads 3D:
+- Trees: bottom 20%, trunk-width only (cypress, olive — all trees)
+- Buildings drawn taller than 128px: bottom 25%; one-cell buildings ~40%
+- Arches: two base columns only — the opening is walkable
+- Market stalls/awnings: NO collision — players walk under
+- Bridges/overhangs/gatehouses: ground level only (deck/gap stays free)
+- Squat objects (fountains, wells): full basin stays solid
+Implemented in scr_room_builder_footprint + the arch special case in
+scr_room_builder_build_collision — ONE place, every room. With the GLOBAL
+DEPTH RULE, players walk under canopies/arches and the sprite draws over
+them. Never give a tall sprite a full-body collision box.
+
 ## GLOBAL DEPTH RULE (permanent, set 2026-06-10)
 All world objects use Y-based depth sorting: depth = -bbox_bottom.
 Never set manual depth values. Never use depth = 0 or fixed depth.

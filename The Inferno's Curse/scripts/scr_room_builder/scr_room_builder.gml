@@ -428,34 +428,49 @@ function scr_room_builder_load() {
 /// by the collision builder AND the debug ORANGE footprint preview (scr_debug),
 /// so what the preview shows is exactly what the player collides with.
 function scr_room_builder_footprint(_o) {
-    if (!variable_instance_exists(_o, "builder_solid") || !_o.builder_solid) return undefined;
     if (_o.sprite_index == -1 || !sprite_exists(_o.sprite_index)) return undefined;
+
+    var _nm = (variable_instance_exists(_o, "builder_sprite") && _o.builder_sprite != "")
+        ? _o.builder_sprite : sprite_get_name(_o.sprite_index);
+
+    // trees collide at the trunk even when not flagged solid (obj_cypress_tree
+    // props carry builder_solid=false); everything else still requires the flag
+    var _is_tree = (string_pos("cypress", _nm) > 0 || string_pos("olive", _nm) > 0
+                 || string_pos("tree", _nm) > 0);
+    var _solid = variable_instance_exists(_o, "builder_solid") && _o.builder_solid;
+    if (!_solid && !_is_tree) return undefined;
 
     // on-screen extent (Full-Image bbox == the displayed sprite rectangle)
     var _L = _o.bbox_left, _T = _o.bbox_top, _R = _o.bbox_right, _B = _o.bbox_bottom;
     var _bw = _R - _L, _bh = _B - _T;
     if (_bw <= 0 || _bh <= 0) return undefined;
 
-    var _nm = (variable_instance_exists(_o, "builder_sprite") && _o.builder_sprite != "")
-        ? _o.builder_sprite : sprite_get_name(_o.sprite_index);
-
-    // category → inset fractions [x0,y0,x1,y1] of the bbox
+    // ── BOTTOM-ONLY COLLISION RULE (David, permanent — see CLAUDE.md) ──────────
+    // Tall sprites block only at their base: players walk under canopies,
+    // through arch openings, beneath overhangs. The world reads 3D.
     var _x0f, _y0f, _x1f, _y1f;
-    if (string_pos("stall", _nm) > 0) {
-        // BACK + SIDES: top band only, front (south) left open to shop from
-        _x0f = 0.05; _y0f = 0.05; _x1f = 0.95; _y1f = 0.58;
+    if (string_pos("stall", _nm) > 0 || string_pos("awning", _nm) > 0) {
+        return undefined;                          // market awnings: NO collision
+    } else if (string_pos("arch", _nm) > 0) {
+        return undefined;                          // arch columns spawn in the caller
+    } else if (_is_tree) {
+        _x0f = 0.36; _y0f = 0.80; _x1f = 0.64; _y1f = 0.96;   // trunk only (bottom 20%)
     } else if (string_pos("fountain", _nm) > 0) {
-        // solid central basin
-        _x0f = 0.18; _y0f = 0.24; _x1f = 0.82; _y1f = 0.90;
+        _x0f = 0.18; _y0f = 0.24; _x1f = 0.82; _y1f = 0.90;   // squat basin — full
     } else if (string_pos("building", _nm) > 0 || string_pos("loggia", _nm) > 0
             || string_pos("inn", _nm) > 0 || string_pos("church", _nm) > 0
             || string_pos("stable", _nm) > 0 || string_pos("cathedral", _nm) > 0
             || string_pos("tower", _nm) > 0 || string_pos("house", _nm) > 0
-            || string_pos("duomo", _nm) > 0 || string_pos("basilica", _nm) > 0) {
-        // building body — inset off the painted edges so no ghost in the cobble
-        _x0f = 0.12; _y0f = 0.10; _x1f = 0.88; _y1f = 0.94;
+            || string_pos("duomo", _nm) > 0 || string_pos("basilica", _nm) > 0
+            || string_pos("residence", _nm) > 0 || string_pos("row_block", _nm) > 0
+            || string_pos("cottage", _nm) > 0 || string_pos("palazzo", _nm) > 0
+            || string_pos("guild", _nm) > 0 || string_pos("workshop", _nm) > 0
+            || string_pos("forge", _nm) > 0 || string_pos("apothecary", _nm) > 0
+            || string_pos("campanile", _nm) > 0 || string_pos("locanda", _nm) > 0) {
+        if (_bh > 128) { _x0f = 0.12; _y0f = 0.70; _x1f = 0.88; _y1f = 0.94; }   // tall: bottom 25%
+        else           { _x0f = 0.12; _y0f = 0.55; _x1f = 0.88; _y1f = 0.94; }   // one-cell: bottom ~40%
     } else {
-        // small ground prop (urn, pot, herbs, bread, jugs, crate, sack, cloth…)
+        // small ground prop (urn, pot, statue, crate, sack, cloth…)
         _x0f = 0.22; _y0f = 0.50; _x1f = 0.78; _y1f = 0.92;
     }
 
@@ -488,10 +503,28 @@ function scr_room_builder_build_collision() {
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++) {
         var _o = global.room_builder_objects[_i];
         if (!instance_exists(_o)) continue;
-        if (!variable_instance_exists(_o, "builder_solid") || !_o.builder_solid) continue;
         if (_o.sprite_index == -1 || !sprite_exists(_o.sprite_index)) continue;
 
+        // ARCHES: base columns only — the opening stays walkable (David's
+        // bottom-only rule). Two thin walls at the pillar feet, nothing between.
+        var _anm = (variable_instance_exists(_o, "builder_sprite") && _o.builder_sprite != "")
+            ? _o.builder_sprite : sprite_get_name(_o.sprite_index);
+        if (string_pos("arch", _anm) > 0) {
+            var _aL = _o.bbox_left, _aT = _o.bbox_top, _aR = _o.bbox_right, _aB = _o.bbox_bottom;
+            var _acw = (_aR - _aL) * 0.20;
+            var _acy = _aT + (_aB - _aT) * 0.55;
+            var _wl2 = instance_create_depth(_aL, _acy, 500, obj_wall);
+            _wl2.wall_w = _acw; _wl2.wall_h = _aB - _acy; _wl2.visible = false;
+            array_push(global.__room_builder_collision, _wl2);
+            var _wr2 = instance_create_depth(_aR - _acw, _acy, 500, obj_wall);
+            _wr2.wall_w = _acw; _wr2.wall_h = _aB - _acy; _wr2.visible = false;
+            array_push(global.__room_builder_collision, _wr2);
+            _made += 2;
+            continue;
+        }
+
         // footprint geometry shared with the debug preview — see scr_room_builder_footprint
+        // (gating — solid flag, tree trunks, awning exemption — lives in there)
         var _fp = scr_room_builder_footprint(_o);
         if (is_undefined(_fp)) continue;
 
