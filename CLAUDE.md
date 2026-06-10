@@ -47,6 +47,15 @@ scr_room_builder), for existing props AND all future placements:
 Buildings stay 1.0. For an uncategorised prop, use the nearest category (default ~0.6)
 and never 1.0.
 
+NEW-GENERATION assets (2026-06-09 standard, set by David):
+- New Florence STREET PROPS: generate on a 64x64 canvas, prop fills 60% MAX;
+  place at 0.7 (stalls/carts) or 0.5 (small details).
+- BUILDING sprites target the ~128px class at 1.0. PixelLab buildings generated
+  larger than that get scaled DOWN in the layout: landmarks (duomo, campanile,
+  palazzo) 0.7 · standard buildings (church, guild, inn, apothecary, gates,
+  workshops, row houses) 0.65. "Buildings stay 1.0" applies to the legacy
+  mercato set, whose art was already sized for 1.0.
+
 ## Single System — Corruption IS Sanity (permanent)
 There is NO separate sanity stat. `global.circle_corruption[CIRCLE_LIMBO]` (0-100)
 is the one axis. Benedetto only THINKS he is going insane — it is the corruption

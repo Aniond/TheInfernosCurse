@@ -26,7 +26,7 @@
 // this number, so a structural relayout actually reaches the player. Bump this when
 // you change default_text(). F8 saves stamp the current version, so hand-dragged
 // layouts are preserved across launches and only a version bump clobbers them.
-#macro ROOM_BUILDER_LAYOUT_VERSION  11
+#macro ROOM_BUILDER_LAYOUT_VERSION  12
 
 // Per-room layout versions — the UNIVERSAL stale-layout guard. Every room's
 // loader ignores a save-folder layout whose "# VERSION n" stamp doesn't match
@@ -150,17 +150,17 @@ function scr_room_builder_default_text() {
     // citizens are NON-solid (walk-through). Scales per CLAUDE.md Room_florence rules.
     // Bump ROOM_BUILDER_LAYOUT_VERSION whenever this text changes (forces a re-seed).
     return
-        "# VERSION 11\n" +
+        "# VERSION 12\n" +
         "# Room_florence layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)\n" +
         "# FLORENCE 1300 AD overhaul per references/florence.png. Buildings solid,\n" +
         "# citizens walk-through. Garden/Arno/Ponte/walls untouched (code-driven).\n" +
         "\n" +
         "# --- NW: Santa Maria del Fiore + Campanile (Duomo entrance follows bbox) ---\n" +
-        "obj_mercato_prop        1.5       0.8       1     spr_duomo_exterior       solid\n" +
-        "obj_mercato_prop        8.1       1.8       1     spr_florence_campanile   solid\n" +
+        "obj_mercato_prop        1.5       0.8       0.7   spr_duomo_exterior       solid\n" +
+        "obj_mercato_prop        6.4       1.8       0.7   spr_florence_campanile   solid\n" +
         "\n" +
         "# --- NE: Palazzo della Signoria ---\n" +
-        "obj_mercato_prop        24.5      0.8       1     spr_palazzo_signoria     solid\n" +
+        "obj_mercato_prop        25        0.8       0.7   spr_palazzo_signoria     solid\n" +
         "obj_cypress_tree        23        1.2       0.7\n" +
         "\n" +
         "# --- CENTRE-NORTH: Piazza del Grande Mercato (relocated locked market set) ---\n" +
@@ -179,32 +179,32 @@ function scr_room_builder_default_text() {
         "obj_mercato_prop        21.5      6.5       0.4   spr_clay_pot_large       solid\n" +
         "\n" +
         "# --- EAST: Merchant Guild + row houses ---\n" +
-        "obj_mercato_prop        26.5      8.5       1     spr_merchant_guild       solid\n" +
-        "obj_mercato_prop        22.5      13        1     spr_row_house_a          solid\n" +
-        "obj_mercato_prop        26.5      13.5      1     spr_row_house_b          solid\n" +
+        "obj_mercato_prop        26.5      8.5       0.65  spr_merchant_guild       solid\n" +
+        "obj_mercato_prop        22.5      13        0.65  spr_row_house_a          solid\n" +
+        "obj_mercato_prop        26.5      13.5      0.65  spr_row_house_b          solid\n" +
         "obj_cypress_tree        30.5      13        0.7\n" +
         "\n" +
         "# --- CENTRE: Parish Church + houses ---\n" +
-        "obj_mercato_prop        17.5      10.5      1     spr_parish_church        solid\n" +
-        "obj_mercato_prop        11        11        1     spr_row_house_c          solid\n" +
+        "obj_mercato_prop        17.5      10.5      0.65  spr_parish_church        solid\n" +
+        "obj_mercato_prop        11        11        0.65  spr_row_house_c          solid\n" +
         "obj_mercato_prop        14.2      13.8      0.5   spr_crate_stack          solid\n" +
         "\n" +
         "# --- WEST: Artisans District ---\n" +
-        "obj_mercato_prop        1.5       9         1     spr_artisan_workshop_a   solid\n" +
-        "obj_mercato_prop        5.8       9.5       1     spr_artisan_forge        solid\n" +
-        "obj_mercato_prop        1.5       13.2      1     spr_artisan_workshop_b   solid\n" +
+        "obj_mercato_prop        1.5       9         0.65  spr_artisan_workshop_a   solid\n" +
+        "obj_mercato_prop        5.8       9.5       0.65  spr_artisan_forge        solid\n" +
+        "obj_mercato_prop        1.5       13.2      0.65  spr_artisan_workshop_b   solid\n" +
         "obj_mercato_prop        6         14        0.5   spr_barrel_stack         solid\n" +
         "obj_cart                7.5       13.5      0.6\n" +
         "\n" +
         "# --- CENTRE-SOUTH: the Inn (entrance follows bbox) + Public Well plaza ---\n" +
-        "obj_mercato_prop        15.5      18.2      1     spr_locanda_exterior     solid\n" +
+        "obj_mercato_prop        15.5      18.2      0.65  spr_locanda_exterior     solid\n" +
         "obj_well                13.5      20.5      0.7\n" +
         "obj_barrel              12.6      19.6      0.5\n" +
         "obj_cart                11.5      21.5      0.6\n" +
         "obj_cypress_tree        21.5      21.5      0.7\n" +
         "\n" +
         "# --- SE: Apothecary ---\n" +
-        "obj_mercato_prop        22.5      17.5      1     spr_apothecary           solid\n" +
+        "obj_mercato_prop        22.5      17.5      0.65  spr_apothecary           solid\n" +
         "obj_mercato_prop        28.5      17.5      1     spr_mercato_inn          solid\n" +
         "obj_cypress_tree        28        22        0.7\n" +
         "\n" +
@@ -214,13 +214,13 @@ function scr_room_builder_default_text() {
         "obj_cypress_tree        10        17.5      0.7\n" +
         "\n" +
         "# --- GATES (visual gatehouses over the drawn walls) ---\n" +
-        "obj_mercato_prop        0.15      10.5      1     spr_city_gate_west       solid\n" +
-        "obj_mercato_prop        14        28.7      1     spr_city_gate_south      solid\n" +
+        "obj_mercato_prop        0.15      10.5      0.65  spr_city_gate_west       solid\n" +
+        "obj_mercato_prop        14        28.7      0.65  spr_city_gate_south      solid\n" +
         "\n" +
         "# --- SOUTH BANK (across the Arno; bridge lands x10-14) ---\n" +
-        "obj_mercato_prop        4.5       28.5      1     spr_row_house_b          solid\n" +
-        "obj_mercato_prop        19.5      28.5      1     spr_row_house_a          solid\n" +
-        "obj_mercato_prop        27        28.5      1     spr_row_house_c          solid\n" +
+        "obj_mercato_prop        4.5       28.5      0.65  spr_row_house_b          solid\n" +
+        "obj_mercato_prop        19.5      28.5      0.65  spr_row_house_a          solid\n" +
+        "obj_mercato_prop        27        28.5      0.65  spr_row_house_c          solid\n" +
         "obj_shrine              24        28.8      1\n" +
         "\n" +
         "# --- CITIZENS (non-solid, walk-through street life) ---\n" +
