@@ -84,19 +84,55 @@ function scr_fv2_draw_walls(_corr01) {
         var _x0 = _s[0] + _inset, _y0 = _s[1] + _inset;
         var _x1 = _s[2] - _inset, _y1 = _s[3] - _inset;
         if (_x1 > _x0 && _y1 > _y0) {
-            var _course = 0;
-            for (var _ty = _y0; _ty < _y1; _ty += _bh) {
-                var _yb = min(_ty + _bh - 2, _y1);                     // 2px mortar seam
-                var _off = (_course mod 2) * (_bw div 2);              // running bond
-                for (var _tx = _x0 - _off; _tx < _x1; _tx += _bw) {
-                    var _xa = max(_tx, _x0);
-                    var _xb = min(_tx + _bw - 2, _x1);
-                    if (_xb <= _xa) continue;
-                    var _pick = (((_tx div 32) * 7) + (_course * 13) + _i * 3) mod 5;
-                    draw_set_color((_pick <= 1) ? _col_a : ((_pick <= 3) ? _col_b : _col_c));
-                    draw_rectangle(_xa, _ty, _xb, _yb, false);
+            // PREFERRED: the band-sized masonry tile (spr_florence_wall_band,
+            // 128x120 = the void's inner height) laid in ONE row down the band —
+            // horizontal bands as-is, the vertical left wall rotated 90.
+            var _band = asset_get_index("spr_florence_wall_band");
+            if (_band >= 0 && asset_get_type("spr_florence_wall_band") == asset_sprite) {
+                var _bw2 = sprite_get_width(_band);
+                var _bh2 = sprite_get_height(_band);
+                var _horiz = (_s[2] - _s[0]) >= (_s[3] - _s[1]);
+                if (_horiz) {
+                    for (var _tx = _x0; _tx < _x1; _tx += _bw2) {
+                        var _w = min(_bw2, _x1 - _tx);
+                        var _pick = (((_tx div 128) * 7) + _i * 3) mod 5;
+                        var _tone = (_pick <= 1) ? c_white
+                                  : ((_pick <= 3) ? merge_color(c_white, c_gray, 0.15)
+                                                  : merge_color(c_white, c_gray, 0.30));
+                        var _tint = merge_color(_tone, make_color_rgb(110, 112, 124), _corr01);
+                        draw_sprite_part_ext(_band, 0, 0, 0, _w, min(_bh2, _y1 - _y0),
+                            _tx, _y0, 1, 1, _tint, 1);
+                    }
+                } else {
+                    for (var _tyv = _y0; _tyv < _y1; _tyv += _bw2) {
+                        var _hseg = min(_bw2, _y1 - _tyv);
+                        var _pick2 = (((_tyv div 128) * 7) + _i * 3) mod 5;
+                        var _tone2 = (_pick2 <= 1) ? c_white
+                                   : ((_pick2 <= 3) ? merge_color(c_white, c_gray, 0.15)
+                                                    : merge_color(c_white, c_gray, 0.30));
+                        var _tint2 = merge_color(_tone2, make_color_rgb(110, 112, 124), _corr01);
+                        // rotated 90 CCW: a (w x 120) part drawn at (x0, ty+w)
+                        // covers x0..x0+120 by ty..ty+w
+                        draw_sprite_general(_band, 0, 0, 0, _hseg, min(_bh2, _x1 - _x0),
+                            _x0, _tyv + _hseg, 1, 1, 90, _tint2, _tint2, _tint2, _tint2, 1);
+                    }
                 }
-                _course++;
+            } else {
+                // FALLBACK: contiguous procedural running-bond blocks
+                var _course = 0;
+                for (var _ty = _y0; _ty < _y1; _ty += _bh) {
+                    var _yb = min(_ty + _bh - 2, _y1);
+                    var _off = (_course mod 2) * (_bw div 2);
+                    for (var _tx2 = _x0 - _off; _tx2 < _x1; _tx2 += _bw) {
+                        var _xa = max(_tx2, _x0);
+                        var _xb = min(_tx2 + _bw - 2, _x1);
+                        if (_xb <= _xa) continue;
+                        var _pick3 = (((_tx2 div 32) * 7) + (_course * 13) + _i * 3) mod 5;
+                        draw_set_color((_pick3 <= 1) ? _col_a : ((_pick3 <= 3) ? _col_b : _col_c));
+                        draw_rectangle(_xa, _ty, _xb, _yb, false);
+                    }
+                    _course++;
+                }
             }
             draw_set_color(_top);
             draw_rectangle(_x0, _y0, _x1, min(_y0 + 3, _y1), false);
@@ -391,7 +427,7 @@ function scr_fv2_build() {
         spr_mercato_fountain_piazza, spr_florence_street_shrine, spr_florence_wall_torch,
         spr_florence_stray_cat, spr_florence_pigeon_cluster, spr_florence_washing_line,
         spr_arno_stone_bank, spr_florence_olive_tree, spr_florence_flower_bed,
-        spr_inn_plant, spr_florence_low_wall];
+        spr_inn_plant, spr_florence_low_wall, spr_florence_wall_band];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
