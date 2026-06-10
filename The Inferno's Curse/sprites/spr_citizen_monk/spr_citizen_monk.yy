@@ -1,10 +1,10 @@
 {
   "$GMSprite":"v2",
-  "%Name":"spr_duomo_exterior",
+  "%Name":"spr_citizen_monk",
   "bboxMode":1,
-  "bbox_bottom":399,
+  "bbox_bottom":63,
   "bbox_left":0,
-  "bbox_right":399,
+  "bbox_right":63,
   "bbox_top":0,
   "collisionKind":1,
   "collisionTolerance":0,
@@ -12,16 +12,16 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"v1","%Name":"cc2bd538-49aa-4aad-9c19-4db84e7b2365","name":"cc2bd538-49aa-4aad-9c19-4db84e7b2365","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"d4eb63d0-bf39-43a3-a780-5de3bbe3a0b2","name":"d4eb63d0-bf39-43a3-a780-5de3bbe3a0b2","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,
-  "height":400,
+  "height":64,
   "HTile":false,
   "layers":[
-    {"$GMImageLayer":"","%Name":"1dc4b607-b1e2-4346-90b2-edfeb35a8795","blendMode":0,"displayName":"default","isLocked":false,"name":"1dc4b607-b1e2-4346-90b2-edfeb35a8795","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
+    {"$GMImageLayer":"","%Name":"333b62f4-18e9-46f2-9eb7-b688332f1aa9","blendMode":0,"displayName":"default","isLocked":false,"name":"333b62f4-18e9-46f2-9eb7-b688332f1aa9","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
   ],
-  "name":"spr_duomo_exterior",
+  "name":"spr_citizen_monk",
   "nineSlice":{
     "$GMNineSliceData":"",
     "bottom":0,
@@ -52,7 +52,7 @@
   "resourceVersion":"2.0",
   "sequence":{
     "$GMSequence":"v1",
-    "%Name":"spr_duomo_exterior",
+    "%Name":"spr_citizen_monk",
     "autoRecord":true,
     "backdropHeight":768,
     "backdropImageOpacity":0.5,
@@ -76,7 +76,7 @@
       "resourceType":"KeyframeStore<MomentsEventKeyframe>",
       "resourceVersion":"2.0",
     },
-    "name":"spr_duomo_exterior",
+    "name":"spr_citizen_monk",
     "playback":1,
     "playbackSpeed":30.0,
     "playbackSpeedType":0,
@@ -88,8 +88,8 @@
     "tracks":[
       {"$GMSpriteFramesTrack":"","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<SpriteFrameKeyframe>":"","Keyframes":[
             {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
-                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"cc2bd538-49aa-4aad-9c19-4db84e7b2365","path":"sprites/spr_duomo_exterior/spr_duomo_exterior.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
-              },"Disabled":false,"id":"8bb2cbde-ad89-4ef3-af82-f37259548e00","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"d4eb63d0-bf39-43a3-a780-5de3bbe3a0b2","path":"sprites/spr_citizen_monk/spr_citizen_monk.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+              },"Disabled":false,"id":"27594438-4f3a-4e7c-b09c-0c4edea16330","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
           ],"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"frames","resourceType":"GMSpriteFramesTrack","resourceVersion":"2.0","spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange":null,
@@ -105,5 +105,5 @@
   },
   "type":0,
   "VTile":false,
-  "width":400,
+  "width":64,
 }

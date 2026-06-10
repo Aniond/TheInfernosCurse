@@ -26,7 +26,7 @@
 // this number, so a structural relayout actually reaches the player. Bump this when
 // you change default_text(). F8 saves stamp the current version, so hand-dragged
 // layouts are preserved across launches and only a version bump clobbers them.
-#macro ROOM_BUILDER_LAYOUT_VERSION  10
+#macro ROOM_BUILDER_LAYOUT_VERSION  11
 
 // Per-room layout versions — the UNIVERSAL stale-layout guard. Every room's
 // loader ignores a save-folder layout whose "# VERSION n" stamp doesn't match
@@ -140,57 +140,96 @@ function scr_room_builder_seed_if_needed() {
 /// Default layout written to the save folder on first run (sandbox-safe seed).
 /// Mirrors layouts/room1.txt in the project tree. Unknown objects are skipped.
 function scr_room_builder_default_text() {
-    // FINALISED market square (locked 2026-06-07). Positions are the exact hand-
-    // curated save-folder layout; every obj_mercato_prop is SOLID. Collision boxes
-    // are built from these by scr_room_builder_build_collision() (stalls = back+sides
-    // only so the player shops from the front; buildings + fountain = full body).
+    // FLORENCE 1300 AD city plan (2026-06-09) — mirrors references/florence.png:
+    // Duomo+Campanile NW · Palazzo della Signoria NE · Piazza del Grande Mercato
+    // centre-north · Merchant Guild E · Parish Church centre · the Inn centre-south
+    // (entrance spawned in scr_florence_build off its bbox) · Artisans District W ·
+    // Apothecary SE · Public Well centre-south · West+South Gates · houses + citizens.
+    // PROTECTED zones honoured: Giardino delle Rose (x2.5-9.4, y17.6-23.5), Arno band
+    // (y24-27, Ponte crossing x10-14), drawn city-wall ring. Every building SOLID;
+    // citizens are NON-solid (walk-through). Scales per CLAUDE.md Room_florence rules.
     // Bump ROOM_BUILDER_LAYOUT_VERSION whenever this text changes (forces a re-seed).
     return
-        "# VERSION 10\n" +
+        "# VERSION 11\n" +
         "# Room_florence layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)\n" +
-        "# Market square FINALISED + collision LOCKED. All obj_mercato_prop are solid\n" +
-        "# (stalls: back+sides only; buildings + fountain: full body). Park/piazza props\n" +
-        "# scaled per CLAUDE.md Room_florence Prop Scale Rules.\n" +
+        "# FLORENCE 1300 AD overhaul per references/florence.png. Buildings solid,\n" +
+        "# citizens walk-through. Garden/Arno/Ponte/walls untouched (code-driven).\n" +
         "\n" +
-        "# --- Piazza + park ---\n" +
-        "obj_well                16        20        0.7\n" +
-        "obj_marco_stall         13        19        0.7\n" +
-        "obj_cart                19        21        0.6\n" +
-        "obj_barrel              11        19        0.5\n" +
-        "obj_barrel              21        20        0.5\n" +
-        "obj_garden_fountain     5         20        0.8\n" +
-        "obj_shrine              16        28        1\n" +
+        "# --- NW: Santa Maria del Fiore + Campanile (Duomo entrance follows bbox) ---\n" +
+        "obj_mercato_prop        1.5       0.8       1     spr_duomo_exterior       solid\n" +
+        "obj_mercato_prop        8.1       1.8       1     spr_florence_campanile   solid\n" +
         "\n" +
-        "# --- Cypress trees (park edges + market backdrop) ---\n" +
-        "obj_cypress_tree        3         18        0.7\n" +
-        "obj_cypress_tree        3         22        0.7\n" +
-        "obj_cypress_tree        28        18        0.7\n" +
+        "# --- NE: Palazzo della Signoria ---\n" +
+        "obj_mercato_prop        24.5      0.8       1     spr_palazzo_signoria     solid\n" +
+        "obj_cypress_tree        23        1.2       0.7\n" +
+        "\n" +
+        "# --- CENTRE-NORTH: Piazza del Grande Mercato (relocated locked market set) ---\n" +
+        "obj_mercato_prop        10.2      1         1     spr_mercato_building_a   solid\n" +
+        "obj_mercato_prop        13.5      1         1     spr_mercato_loggia       solid\n" +
+        "obj_mercato_prop        19        2.5       1     spr_florence_stable      solid\n" +
+        "obj_mercato_prop        11        5.5       0.8   spr_mercato_fountain     solid\n" +
+        "obj_mercato_prop        13        6.2       0.7   spr_stall_striped_cream  solid\n" +
+        "obj_mercato_prop        15.5      6.2       0.7   spr_stall_striped_blue   solid\n" +
+        "obj_mercato_prop        18        6.2       0.7   spr_stall_striped_green  solid\n" +
+        "obj_mercato_prop        14.2      8         0.7   spr_stall_herbalist      solid\n" +
+        "obj_marco_stall         16.8      8.2       0.7\n" +
+        "obj_mercato_prop        13.4      7.3       0.4   spr_bread_board          solid\n" +
+        "obj_mercato_prop        16.7      7.4       0.4   spr_clay_jugs            solid\n" +
+        "obj_mercato_prop        18.5      8.1       0.4   spr_hanging_herbs        solid\n" +
+        "obj_mercato_prop        21.5      6.5       0.4   spr_clay_pot_large       solid\n" +
+        "\n" +
+        "# --- EAST: Merchant Guild + row houses ---\n" +
+        "obj_mercato_prop        26.5      8.5       1     spr_merchant_guild       solid\n" +
+        "obj_mercato_prop        22.5      13        1     spr_row_house_a          solid\n" +
+        "obj_mercato_prop        26.5      13.5      1     spr_row_house_b          solid\n" +
+        "obj_cypress_tree        30.5      13        0.7\n" +
+        "\n" +
+        "# --- CENTRE: Parish Church + houses ---\n" +
+        "obj_mercato_prop        17.5      10.5      1     spr_parish_church        solid\n" +
+        "obj_mercato_prop        11        11        1     spr_row_house_c          solid\n" +
+        "obj_mercato_prop        14.2      13.8      0.5   spr_crate_stack          solid\n" +
+        "\n" +
+        "# --- WEST: Artisans District ---\n" +
+        "obj_mercato_prop        1.5       9         1     spr_artisan_workshop_a   solid\n" +
+        "obj_mercato_prop        5.8       9.5       1     spr_artisan_forge        solid\n" +
+        "obj_mercato_prop        1.5       13.2      1     spr_artisan_workshop_b   solid\n" +
+        "obj_mercato_prop        6         14        0.5   spr_barrel_stack         solid\n" +
+        "obj_cart                7.5       13.5      0.6\n" +
+        "\n" +
+        "# --- CENTRE-SOUTH: the Inn (entrance follows bbox) + Public Well plaza ---\n" +
+        "obj_mercato_prop        15.5      18.2      1     spr_locanda_exterior     solid\n" +
+        "obj_well                13.5      20.5      0.7\n" +
+        "obj_barrel              12.6      19.6      0.5\n" +
+        "obj_cart                11.5      21.5      0.6\n" +
+        "obj_cypress_tree        21.5      21.5      0.7\n" +
+        "\n" +
+        "# --- SE: Apothecary ---\n" +
+        "obj_mercato_prop        22.5      17.5      1     spr_apothecary           solid\n" +
+        "obj_mercato_prop        28.5      17.5      1     spr_mercato_inn          solid\n" +
         "obj_cypress_tree        28        22        0.7\n" +
-        "obj_cypress_tree        14        8         0.7\n" +
-        "obj_cypress_tree        16        3.6875    0.7\n" +
-        "obj_cypress_tree        11.25     3.4375    0.7\n" +
-        "obj_cypress_tree        19.625    3.5       0.7\n" +
-        "obj_cypress_tree        8.9375    3.5       0.7\n" +
         "\n" +
-        "# --- MERCATO VECCHIO market (north zone) — all SOLID ---\n" +
-        "obj_mercato_prop        1         1         1     spr_mercato_building_a   solid\n" +
-        "obj_mercato_prop        9         1         1     spr_mercato_inn          solid\n" +
-        "obj_mercato_prop        15.875    0.9375    1     spr_mercato_loggia       solid\n" +
-        "obj_mercato_prop        20.4375   1         1     spr_mercato_building_a   solid\n" +
-        "obj_mercato_prop        4.5625    2.3125    1     spr_florence_church      solid\n" +
-        "obj_mercato_prop        11.8125   2.6875    1     spr_florence_stable      solid\n" +
-        "obj_mercato_prop        11.62     7         0.7   spr_stall_striped_green  solid\n" +
-        "obj_mercato_prop        8.62      5.62      0.7   spr_stall_striped_cream  solid\n" +
-        "obj_mercato_prop        11.62     5.62      0.7   spr_stall_striped_blue   solid\n" +
-        "obj_mercato_prop        10        6         0.7   spr_stall_herbalist      solid\n" +
-        "obj_mercato_prop        10        5         0.8   spr_mercato_fountain     solid\n" +
-        "obj_mercato_prop        11.81     7.56      0.4   spr_hanging_herbs        solid\n" +
-        "obj_mercato_prop        9.125     5.875     0.4   spr_bread_board          solid\n" +
-        "obj_mercato_prop        12.4375   6.625     0.4   spr_clay_jugs            solid\n" +
-        "obj_mercato_prop        21        4         0.4   spr_clay_pot_large       solid\n" +
+        "# --- Giardino delle Rose (PROTECTED collision; fountain prop kept) ---\n" +
+        "obj_garden_fountain     5         20        0.8\n" +
+        "obj_cypress_tree        1         17        0.7\n" +
+        "obj_cypress_tree        10        17.5      0.7\n" +
         "\n" +
-        "# --- Landmark: Basilica di Santa Maria del Fiore (draggable; open area) ---\n" +
-        "obj_mercato_prop        24        10        1     spr_duomo_exterior       solid\n";
+        "# --- GATES (visual gatehouses over the drawn walls) ---\n" +
+        "obj_mercato_prop        0.15      10.5      1     spr_city_gate_west       solid\n" +
+        "obj_mercato_prop        14        28.7      1     spr_city_gate_south      solid\n" +
+        "\n" +
+        "# --- SOUTH BANK (across the Arno; bridge lands x10-14) ---\n" +
+        "obj_mercato_prop        4.5       28.5      1     spr_row_house_b          solid\n" +
+        "obj_mercato_prop        19.5      28.5      1     spr_row_house_a          solid\n" +
+        "obj_mercato_prop        27        28.5      1     spr_row_house_c          solid\n" +
+        "obj_shrine              24        28.8      1\n" +
+        "\n" +
+        "# --- CITIZENS (non-solid, walk-through street life) ---\n" +
+        "obj_mercato_prop        15.2      9.4       1     spr_citizen_man\n" +
+        "obj_mercato_prop        12.3      7.8       1     spr_citizen_woman\n" +
+        "obj_mercato_prop        19.8      16.8      1     spr_citizen_monk\n" +
+        "obj_mercato_prop        14.8      22.8      1     spr_citizen_woman\n" +
+        "obj_mercato_prop        16.2      30.2      1     spr_citizen_man\n" +
+        "obj_mercato_prop        24.8      21.8      1     spr_citizen_man\n";
 }
 
 
@@ -219,7 +258,13 @@ function scr_room_builder_load() {
         spr_barrel_stack, spr_crate_stack, spr_sack_pile, spr_clay_pot_large,
         spr_cart_loaded, spr_cart_covered, spr_hanging_cloth,
         spr_hanging_herbs, spr_bread_board, spr_clay_jugs,
-        spr_florence_church, spr_florence_stable, spr_duomo_exterior];
+        spr_florence_church, spr_florence_stable, spr_duomo_exterior,
+        spr_florence_campanile, spr_palazzo_signoria, spr_parish_church,
+        spr_merchant_guild, spr_apothecary, spr_locanda_exterior,
+        spr_city_gate_west, spr_city_gate_south,
+        spr_artisan_workshop_a, spr_artisan_workshop_b, spr_artisan_forge,
+        spr_row_house_a, spr_row_house_b, spr_row_house_c,
+        spr_citizen_man, spr_citizen_woman, spr_citizen_monk];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
 
@@ -927,6 +972,24 @@ function scr_florence_build() {
         }
     }
     instance_create_depth(_stx, _sty, 400, obj_stable_entrance);
+
+    // ── Locanda della Rosa Camuna entrance (walk-in transition at the inn door) ─
+    // Same bbox-following pattern as the Duomo/stable: the zone sits at the inn
+    // exterior's south face and follows the prop if it's dragged. Arrives at the
+    // inn room's south-door spawn (512,960). This is the FIRST Florence-side way
+    // into the inn — before this only the TEMP boot reached it.
+    var _inx = 1120, _iny = 1421;
+    for (var _ii = 0; _ii < array_length(global.room_builder_objects); _ii++) {
+        var _ip = global.room_builder_objects[_ii];
+        if (!instance_exists(_ip)) continue;
+        if (_ip.sprite_index == spr_locanda_exterior) {
+            _inx = (_ip.bbox_left + _ip.bbox_right) * 0.5;
+            _iny = _ip.bbox_bottom;
+            break;
+        }
+    }
+    scr_transition_spawn("florence_inn", _inx - 64, _iny + 8, 128, 56,
+        "Room_locanda_rosa_camuna", "Locanda della Rosa Camuna", 512, 960, "");
 
     // ── Arno river + bank collision ───────────────────────────────────────────
     // Solid water fills every gap BETWEEN the bridges (generic over any count). The
