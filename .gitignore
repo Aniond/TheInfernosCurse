@@ -98,3 +98,4 @@ watch_game.ps1
 instructions/watch_game.ps1
 scripts/capture_hotkey.ahk
 scripts/capture_screenshots.ps1
+_pixellab_staging/
