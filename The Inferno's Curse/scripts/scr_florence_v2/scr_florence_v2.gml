@@ -66,26 +66,77 @@ function scr_fv2_walls() {
     ];
 }
 
-/// ALL THIN WALLS — VOID WALL + ART standard, single geometry source for
-/// drawing AND collision (32px bands). Covers the Duomo precinct yard AND
-/// every inner division-wall segment that used to be a spr_florence_low_wall
-/// prop (props had art but NO void band, and the rotated ones carried broken
-/// unrotated collision boxes — all replaced by these exact rects).
+/// THIN PRECINCT WALLS — VOID WALL + ART standard, single geometry source for
+/// drawing AND collision (32px bands). ONLY the Duomo precinct yard lives
+/// here; the INNER CITY WALLS along the streets are scr_fv2_street_walls.
 function scr_fv2_precinct_walls() {
     return [
-        // Duomo precinct yard (opening aligned to the doors + the lane)
-        [448,  256,  480,  704],     // west edge of the Piazza del Duomo
-        [448,  672,  640,  704],     // south edge, west of the cathedral doors
-        [896,  672,  1088, 704],     // south edge, east of the lane
-        // inner division walls (former low-wall props, merged into runs)
-        [371,  870,  627,  902],     // Artisans district, north edge
-        [371,  1382, 627,  1414],    // Artisans district, south edge
-        [1888, 704,  2144, 736],     // Palazzo courtyard wall
-        [2080, 1395, 2208, 1427],    // Apothecary block, south
-        [1741, 371,  1869, 403],     // market piazza NE corner
-        [2483, 864,  2515, 1120],    // Arno terrace wall (vertical run)
-        [2266, 1184, 2298, 1312],    // Apothecary block, east (vertical)
+        [448, 256, 480, 704],     // west edge of the Piazza del Duomo
+        [448, 672, 640, 704],     // south edge, west of the cathedral doors
+        [896, 672, 1088, 704],    // south edge, east of the lane
     ];
+}
+
+/// TRUE if the point lies inside any road/plaza rect (used to keep junction
+/// mouths open in the street walls).
+function scr_fv2_on_ground(_px, _py) {
+    var _roads = scr_fv2_roads();
+    for (var _i = 0; _i < array_length(_roads); _i++) {
+        var _r = _roads[_i];
+        if (_px >= round(_r[0]) * 64 && _px < round(_r[2]) * 64
+         && _py >= round(_r[1]) * 64 && _py < round(_r[3]) * 64) return true;
+    }
+    return false;
+}
+
+/// INNER CITY STREET WALLS — the thin tan walls along every road's long
+/// edges, made REAL per David: each 64px segment is a 24px void+art band
+/// that is ALSO collision. Segments are SKIPPED wherever the ground just
+/// beyond the edge is another road or plaza (junction mouths stay open) or
+/// where a deliberate opening exists (the church door). Single source:
+/// drawn by the scene's road pass, collided in build + rebuild.
+function scr_fv2_street_walls() {
+    var _roads = scr_fv2_roads();
+    var _n = array_length(_roads);
+    // deliberate openings [x0,y0,x1,y1]: segments touching these are skipped
+    var _open = [
+        [1900, 820, 1980, 980],    // church lane east edge, at the church door
+    ];
+    var _out = [];
+    for (var _c = 0; _c < _n; _c++) {
+        var _cr = _roads[_c];
+        if (_cr[4] != 0) continue;
+        var _cx0 = round(_cr[0]) * 64, _cy0 = round(_cr[1]) * 64;
+        var _cx1 = round(_cr[2]) * 64, _cy1 = round(_cr[3]) * 64;
+        var _horiz = (_cx1 - _cx0) >= (_cy1 - _cy0);
+        if (_horiz) {
+            for (var _ex = _cx0; _ex < _cx1; _ex += 64) {
+                var _xe = min(_ex + 64, _cx1);
+                if (!scr_fv2_on_ground(_ex + 32, _cy0 - 32) && !scr_fv2_wall_open(_ex, _cy0 - 4, _xe, _cy0 + 20, _open))
+                    array_push(_out, [_ex, _cy0 - 4, _xe, _cy0 + 20]);
+                if (!scr_fv2_on_ground(_ex + 32, _cy1 + 32) && !scr_fv2_wall_open(_ex, _cy1 - 20, _xe, _cy1 + 4, _open))
+                    array_push(_out, [_ex, _cy1 - 20, _xe, _cy1 + 4]);
+            }
+        } else {
+            for (var _ey = _cy0; _ey < _cy1; _ey += 64) {
+                var _ye = min(_ey + 64, _cy1);
+                if (!scr_fv2_on_ground(_cx0 - 32, _ey + 32) && !scr_fv2_wall_open(_cx0 - 4, _ey, _cx0 + 20, _ye, _open))
+                    array_push(_out, [_cx0 - 4, _ey, _cx0 + 20, _ye]);
+                if (!scr_fv2_on_ground(_cx1 + 32, _ey + 32) && !scr_fv2_wall_open(_cx1 - 20, _ey, _cx1 + 4, _ye, _open))
+                    array_push(_out, [_cx1 - 20, _ey, _cx1 + 4, _ye]);
+            }
+        }
+    }
+    return _out;
+}
+
+/// TRUE if a candidate wall segment intersects any deliberate opening.
+function scr_fv2_wall_open(_x0, _y0, _x1, _y1, _open) {
+    for (var _i = 0; _i < array_length(_open); _i++) {
+        var _o = _open[_i];
+        if (_x0 < _o[2] && _x1 > _o[0] && _y0 < _o[3] && _y1 > _o[1]) return true;
+    }
+    return false;
 }
 
 /// Paint the walls STABLE-STYLE (the user's standing technique): each band is a
@@ -571,6 +622,8 @@ function scr_fv2_build() {
     var _solids = scr_fv2_walls();
     var _pwc = scr_fv2_precinct_walls();
     for (var _pc = 0; _pc < array_length(_pwc); _pc++) array_push(_solids, _pwc[_pc]);
+    var _swc = scr_fv2_street_walls();   // inner city walls are SOLID (David)
+    for (var _sc2 = 0; _sc2 < array_length(_swc); _sc2++) array_push(_solids, _swc[_sc2]);
     array_push(_solids, [0, 0, room_width, 8]);
     array_push(_solids, [0, room_height - 8, room_width, room_height]);
     array_push(_solids, [0, 0, 8, room_height]);
@@ -641,6 +694,8 @@ function scr_fv2_rebuild_collision() {
     var _solids = scr_fv2_walls();
     var _pwc = scr_fv2_precinct_walls();
     for (var _pc = 0; _pc < array_length(_pwc); _pc++) array_push(_solids, _pwc[_pc]);
+    var _swc = scr_fv2_street_walls();   // inner city walls are SOLID (David)
+    for (var _sc2 = 0; _sc2 < array_length(_swc); _sc2++) array_push(_solids, _swc[_sc2]);
     array_push(_solids, [0, 0, room_width, 8]);
     array_push(_solids, [0, room_height - 8, room_width, room_height]);
     array_push(_solids, [0, 0, 8, room_height]);

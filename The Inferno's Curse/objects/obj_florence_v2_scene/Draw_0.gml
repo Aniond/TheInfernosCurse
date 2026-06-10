@@ -96,34 +96,29 @@ for (var _a = 0; _a < _n; _a++) {
 // road's long edges get a CONTINUOUS thin wall: a black void underlay band
 // with the 128x32 thin-wall tile running unbroken at half scale (64x16) —
 // replaces the old per-tile curb slices that read as disconnected caps.
+// Drawn from the SAME geometry that collides (scr_fv2_street_walls): each
+// 24px segment = black void band + the 16px stone art inset 4px — and the
+// segments skipped for junction mouths / the church-door opening simply
+// don't exist, visually or physically.
 var _t_curb = asset_get_index("spr_florence_thin_wall");
 if (_t_curb >= 0 && asset_get_type("spr_florence_thin_wall") == asset_sprite) {
-    for (var _c = 0; _c < _n; _c++) {
-        var _cr  = _roads[_c];
-        if (_cr[4] != 0) continue;
-        var _cx0 = round(_cr[0]) * _g, _cy0 = round(_cr[1]) * _g;
-        var _cx1 = round(_cr[2]) * _g, _cy1 = round(_cr[3]) * _g;
-        var _horiz = (_cx1 - _cx0) >= (_cy1 - _cy0);
+    var _sw = scr_fv2_street_walls();
+    for (var _c = 0; _c < array_length(_sw); _c++) {
+        var _ws  = _sw[_c];
         draw_set_color(c_black);
-        if (_horiz) {
-            draw_rectangle(_cx0, _cy0 - 2, _cx1, _cy0 + 16, false);
-            draw_rectangle(_cx0, _cy1 - 16, _cx1, _cy1 + 2, false);
-            for (var _ex = _cx0; _ex < _cx1; _ex += 64) {
-                var _ew = min(128, (_cx1 - _ex) * 2);
-                draw_sprite_part_ext(_t_curb, 0, 0, 0, _ew, 32, _ex, _cy0,      0.5, 0.5, c_white, 1);
-                draw_sprite_part_ext(_t_curb, 0, 0, 0, _ew, 32, _ex, _cy1 - 16, 0.5, 0.5, c_white, 1);
-            }
+        draw_rectangle(_ws[0], _ws[1], _ws[2], _ws[3], false);
+        var _whoriz = (_ws[2] - _ws[0]) >= (_ws[3] - _ws[1]);
+        if (_whoriz) {
+            var _wlen = (_ws[2] - _ws[0]) * 2;
+            draw_sprite_part_ext(_t_curb, 0, 0, 0, min(128, _wlen), 32,
+                _ws[0], _ws[1] + 4, 0.5, 0.5, c_white, 1);
         } else {
-            draw_rectangle(_cx0 - 2, _cy0, _cx0 + 16, _cy1, false);
-            draw_rectangle(_cx1 - 16, _cy0, _cx1 + 2, _cy1, false);
-            for (var _ey = _cy0; _ey < _cy1; _ey += 64) {
-                var _eh = min(128, (_cy1 - _ey) * 2);
-                draw_sprite_general(_t_curb, 0, 0, 0, _eh, 32, _cx0,      _ey + _eh * 0.5, 0.5, 0.5, 90, c_white, c_white, c_white, c_white, 1);
-                draw_sprite_general(_t_curb, 0, 0, 0, _eh, 32, _cx1 - 16, _ey + _eh * 0.5, 0.5, 0.5, 90, c_white, c_white, c_white, c_white, 1);
-            }
+            var _wlen2 = (_ws[3] - _ws[1]) * 2;
+            draw_sprite_general(_t_curb, 0, 0, 0, min(128, _wlen2), 32,
+                _ws[0] + 4, _ws[3], 0.5, 0.5, 90, c_white, c_white, c_white, c_white, 1);
         }
-        draw_set_color(c_white);
     }
+    draw_set_color(c_white);
 }
 draw_set_color(c_white);
 
