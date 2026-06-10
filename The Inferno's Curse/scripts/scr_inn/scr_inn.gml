@@ -186,7 +186,8 @@ function scr_inn_build() {
     global.__inn_keep     = [obj_mercato_prop, obj_duomo_candelabra, obj_barrel, obj_npc_innkeeper, obj_npc_rosa, obj_inn_candle];
     global.__inn_keep_spr = [spr_inn_counter_corner, spr_inn_counter_empty, spr_inn_counter_food, spr_inn_keg_group, spr_inn_wine_shelf, spr_inn_table,
         spr_inn_stool, spr_inn_staircase, spr_inn_bar_counter,
-        spr_inn_plant, spr_inn_banner, spr_inn_meats, spr_inn_table_long, spr_inn_window,
+        spr_inn_plant, spr_inn_banner, spr_inn_meats, spr_inn_table_long,
+        spr_inn_window, spr_inn_window_open, spr_inn_window_dawn, spr_inn_window_dusk, spr_inn_window_night,
         spr_clay_pot_large, spr_crate_stack,
         spr_inn_chair_south, spr_inn_chair_north, spr_inn_chair_east, spr_inn_chair_west,
         spr_inn_fireplace, spr_inn_oven, spr_inn_oven_lit, spr_inn_oven_corrupt, spr_inn_oven_green, spr_inn_bed, spr_inn_stairs, spr_npc_innkeeper, spr_npc_rosa,
@@ -365,10 +366,33 @@ function scr_inn_window_glow() {
         case 4:  _a = 0; _r = 0; _col = c_black;                           break;
         default: _col = make_color_rgb(255, 255, 235); _a = 0.55; _r = 96; break;
     }
+    // WINDOW STAGE SYNC — ONE dedicated sprite per stage of the day, and the
+    // LYING light at full corruption picks its stage the same way (the shutters
+    // swing open under the false noon sun at midnight). Swaps sprite_index only
+    // (builder_sprite identity stays "spr_inn_window" for F8), mirroring the
+    // oven sync pattern.
+    //   dawn -> _dawn · day/harsh-noon -> _open · dusk -> _dusk ·
+    //   moon-night -> _night · unnatural dark -> base closed (dead slats)
+    var _wspr;
+    switch (_phase) {
+        case 0:  _wspr = spr_inn_window_dawn;  break;
+        case 1:  _wspr = spr_inn_window_open;  break;
+        case 2:  _wspr = spr_inn_window_dusk;  break;
+        case 3:  _wspr = spr_inn_window_night; break;
+        case 4:  _wspr = spr_inn_window;       break;
+        default: _wspr = spr_inn_window_open;  break;
+    }
+    var _objs = global.room_builder_objects;
+    for (var _i = 0; _i < array_length(_objs); _i++) {
+        var _o = _objs[_i];
+        if (!instance_exists(_o)) continue;
+        if (!variable_instance_exists(_o, "builder_sprite")) continue;
+        if (_o.builder_sprite != "spr_inn_window") continue;
+        if (_o.sprite_index != _wspr) _o.sprite_index = _wspr;
+    }
     if (_a <= 0) return;   // unnatural dark: the windows give NOTHING
     gpu_set_blendmode(bm_add);
     draw_set_color(_col);
-    var _objs = global.room_builder_objects;
     for (var _i = 0; _i < array_length(_objs); _i++) {
         var _o = _objs[_i];
         if (!instance_exists(_o)) continue;
