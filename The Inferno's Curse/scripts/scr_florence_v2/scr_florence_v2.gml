@@ -398,14 +398,14 @@ function scr_fv2_draw_arno(_corr) {
             for (var _dx = FV2_RIVER_X0 - _bankw; _dx < FV2_RIVER_X1 + _bankw; _dx += 32)
                 draw_sprite_ext(_t_deck, 0, _dx, _dy, 0.5, 0.5, 0, c_white, 1);
     }
-    // ONE bridge image across the crossing (David): the EW Ponte sprite drawn
-    // as a single piece, scaled UP 3x uniformly and positioned so its walkable
-    // deck band (rows 98-128 of the art, centre row 113) sits centred on the
-    // Ponte road band — the shop blocks overhang both banks like the reference.
-    var _bsc = 3;
-    var _brx = (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5 - sprite_get_width(spr_ponte_vecchio_ew) * _bsc * 0.5;
-    var _bry = (FV2_PONTE_Y0 + FV2_PONTE_Y1) * 0.5 - 113 * _bsc;
-    draw_sprite_ext(spr_ponte_vecchio_ew, 0, _brx, _bry, _bsc, _bsc, 0, c_white, 1);
+    // ONE bridge image across the crossing (David): spr_ponte_vecchio_exterior,
+    // COMPOSED from the city's own art (masonry platform + packed shop rows +
+    // real cobble deck + parapets) after seven PixelLab postcard failures.
+    // Drawn 1:1 — its deck band (y64-192 in the art) IS the road band 640-768,
+    // so alignment is exact by construction. The zone marker the player enters.
+    draw_sprite(spr_ponte_vecchio_exterior, 0,
+        (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5 - sprite_get_width(spr_ponte_vecchio_exterior) * 0.5,
+        FV2_PONTE_Y0 - 64);
     // ROWING BOATS adrift south of the Ponte (GAP 6) — the drift follows the
     // current, so at 75%+ corruption the boats crawl back UPSTREAM with it
     var _boat = asset_get_index("spr_arno_rowing_boat");
@@ -623,7 +623,7 @@ function scr_fv2_build() {
     global.__fv2_keep_spr = [spr_florence_road_cobble, spr_florence_road_intersection,
         spr_florence_grass, spr_florence_street,
         spr_florence_wall_section, spr_florence_wall_gate, spr_florence_wall_tower,
-        spr_florence_water, spr_river_stone, spr_ponte_vecchio_ew,
+        spr_florence_water, spr_river_stone, spr_ponte_vecchio_exterior,
         spr_florence_tower_house, spr_florence_row_block, spr_florence_cottage,
         spr_duomo_exterior, spr_florence_campanile, spr_palazzo_signoria,
         spr_merchant_guild, spr_parish_church, spr_locanda_exterior, spr_apothecary,

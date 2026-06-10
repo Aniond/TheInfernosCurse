@@ -1,10 +1,10 @@
 {
   "$GMSprite":"v2",
-  "%Name":"spr_ponte_vecchio_ew",
+  "%Name":"spr_ponte_vecchio_exterior",
   "bboxMode":1,
-  "bbox_bottom":223,
+  "bbox_bottom":255,
   "bbox_left":0,
-  "bbox_right":207,
+  "bbox_right":623,
   "bbox_top":0,
   "collisionKind":1,
   "collisionTolerance":0,
@@ -12,16 +12,16 @@
   "edgeFiltering":false,
   "For3D":false,
   "frames":[
-    {"$GMSpriteFrame":"v1","%Name":"4281fbc1-34f0-4d84-9501-8c60e6520c72","name":"4281fbc1-34f0-4d84-9501-8c60e6520c72","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"v1","%Name":"874520bc-1e8c-48a9-b38e-7a5cc92b5966","name":"874520bc-1e8c-48a9-b38e-7a5cc92b5966","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,
-  "height":224,
+  "height":256,
   "HTile":false,
   "layers":[
-    {"$GMImageLayer":"","%Name":"86d10180-c41c-4b3e-8eb8-78c09bcbfba1","blendMode":0,"displayName":"default","isLocked":false,"name":"86d10180-c41c-4b3e-8eb8-78c09bcbfba1","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
+    {"$GMImageLayer":"","%Name":"0d41cbb6-7c6e-4729-aba7-59f16fc2026a","blendMode":0,"displayName":"default","isLocked":false,"name":"0d41cbb6-7c6e-4729-aba7-59f16fc2026a","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
   ],
-  "name":"spr_ponte_vecchio_ew",
+  "name":"spr_ponte_vecchio_exterior",
   "nineSlice":{
     "$GMNineSliceData":"",
     "bottom":0,
@@ -52,7 +52,7 @@
   "resourceVersion":"2.0",
   "sequence":{
     "$GMSequence":"v1",
-    "%Name":"spr_ponte_vecchio_ew",
+    "%Name":"spr_ponte_vecchio_exterior",
     "autoRecord":true,
     "backdropHeight":768,
     "backdropImageOpacity":0.5,
@@ -76,7 +76,7 @@
       "resourceType":"KeyframeStore<MomentsEventKeyframe>",
       "resourceVersion":"2.0",
     },
-    "name":"spr_ponte_vecchio_ew",
+    "name":"spr_ponte_vecchio_exterior",
     "playback":1,
     "playbackSpeed":30.0,
     "playbackSpeedType":0,
@@ -88,8 +88,8 @@
     "tracks":[
       {"$GMSpriteFramesTrack":"","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"$KeyframeStore<SpriteFrameKeyframe>":"","Keyframes":[
             {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
-                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"4281fbc1-34f0-4d84-9501-8c60e6520c72","path":"sprites/spr_ponte_vecchio_ew/spr_ponte_vecchio_ew.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
-              },"Disabled":false,"id":"3215e8bf-07d9-46cf-841b-12f325b9de8f","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"874520bc-1e8c-48a9-b38e-7a5cc92b5966","path":"sprites/spr_ponte_vecchio_exterior/spr_ponte_vecchio_exterior.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+              },"Disabled":false,"id":"2acc99b1-260b-4c14-a52f-7aa742bdcd0f","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
           ],"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"frames","resourceType":"GMSpriteFramesTrack","resourceVersion":"2.0","spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange":null,
@@ -105,5 +105,5 @@
   },
   "type":0,
   "VTile":false,
-  "width":208,
+  "width":624,
 }
