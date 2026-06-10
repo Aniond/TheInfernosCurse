@@ -59,6 +59,7 @@
     {"id":{"name":"spr_ponte_lantern_post","path":"sprites/spr_ponte_lantern_post/spr_ponte_lantern_post.yy",},},
     {"id":{"name":"spr_ponte_seagull","path":"sprites/spr_ponte_seagull/spr_ponte_seagull.yy",},},
     {"id":{"name":"spr_ponte_roof_tile","path":"sprites/spr_ponte_roof_tile/spr_ponte_roof_tile.yy",},},
+    {"id":{"name":"spr_ponte_bench","path":"sprites/spr_ponte_bench/spr_ponte_bench.yy",},},
     {"id":{"name":"Room_ponte_vecchio","path":"rooms/Room_ponte_vecchio/Room_ponte_vecchio.yy",},},
     {"id":{"name":"spr_florence_arch","path":"sprites/spr_florence_arch/spr_florence_arch.yy",},},
     {"id":{"name":"spr_florence_statue_saint","path":"sprites/spr_florence_statue_saint/spr_florence_statue_saint.yy",},},

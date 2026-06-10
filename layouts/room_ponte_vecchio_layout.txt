@@ -1,4 +1,4 @@
-# VERSION 3
+# VERSION 4
 # Room_ponte_vecchio layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)
 # NARROW COVERED BRIDGE (1280x512, 20x8): water 0-1 · shops N 1-2.5 · WALKWAY
 # 2.5-5.5 · shops S 5.5-7 · water 7-8. Claustrophobic, like the real Ponte.
@@ -16,18 +16,25 @@ obj_mercato_prop        15.6      1         1     spr_ponte_shop_north      soli
 obj_mercato_prop        17.4      1         1     spr_ponte_shop_north      solid
 
 # --- SOUTH SHOP ROW (8 shops, faces north) ---
-obj_mercato_prop        1.4       5.5       1     spr_ponte_shop_south      solid
-obj_mercato_prop        3.2       5.5       1     spr_ponte_shop_south      solid
-obj_mercato_prop        5         5.5       1     spr_ponte_shop_south      solid
-obj_mercato_prop        6.8       5.5       1     spr_ponte_shop_south      solid
-obj_mercato_prop        12        5.5       1     spr_ponte_shop_south      solid
-obj_mercato_prop        13.8      5.5       1     spr_ponte_shop_south      solid
-obj_mercato_prop        15.6      5.5       1     spr_ponte_shop_south      solid
-obj_mercato_prop        17.4      5.5       1     spr_ponte_shop_south      solid
+obj_mercato_prop        1.4       5.5       0.9     spr_ponte_shop_south      solid
+obj_mercato_prop        3.2       5.5       0.9     spr_ponte_shop_south      solid
+obj_mercato_prop        5         5.5       0.9     spr_ponte_shop_south      solid
+obj_mercato_prop        6.8       5.5       0.9     spr_ponte_shop_south      solid
+obj_mercato_prop        12        5.5       0.9     spr_ponte_shop_south      solid
+obj_mercato_prop        13.8      5.5       0.9     spr_ponte_shop_south      solid
+obj_mercato_prop        15.6      5.5       0.9     spr_ponte_shop_south      solid
+obj_mercato_prop        17.4      5.5       0.9     spr_ponte_shop_south      solid
 
-# --- CENTRAL PLAZA (open to the sky): fountain + guild board ---
+# --- CENTRAL MEETING PLACE (open to the sky): fountain, guild board,
+#     marble benches ringing the piazza, greenery at the corners ---
 obj_mercato_prop        9         3.05      1     spr_ponte_fountain        solid
 obj_mercato_prop        11.4      3.35      1     spr_ponte_guild_board     solid
+obj_mercato_prop        8.6       2.55      1     spr_ponte_bench           solid
+obj_mercato_prop        10.5      2.55      1     spr_ponte_bench           solid
+obj_mercato_prop        8.6       4.95      1     spr_ponte_bench           solid
+obj_mercato_prop        10.5      4.95      1     spr_ponte_bench           solid
+obj_mercato_prop        8.05      3.7       1     spr_inn_plant
+obj_mercato_prop        10.55     3.9       1     spr_inn_plant
 
 # --- LANTERN POSTS along both walkway edges ---
 obj_mercato_prop        2         1.66      1     spr_ponte_lantern_post

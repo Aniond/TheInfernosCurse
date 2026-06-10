@@ -56,29 +56,24 @@ for (var _p = 0; _p < 4; _p++) {
 }
 draw_set_color(c_white);
 
-// ── 3. the deck — SOLID warm stone (FIX 2: no strips, no gaps) ─────────────────
-// shop bands get the plain foundation tone; the WALKWAY gets the worn-stone
-// fill with subtle deterministic joint lines (drawn flat — guaranteed seamless)
+// ── 3. the deck (FIX 2 final): shop bands = plain foundation tone; the
+//      WALKWAY = the seamless cobble tile (edge-crossfaded at import so the
+//      64px repeats cannot show seams). NO line overlays — nothing to strip.
 var _found = merge_color(make_color_rgb(146, 132, 110), make_color_rgb(70, 68, 74), _corr01 * 0.4);
 draw_set_color(_found);
 draw_rectangle(0, 64, room_width, 448, false);
-var _stone = merge_color(make_color_rgb(176, 160, 134), make_color_rgb(84, 80, 84), _corr01 * 0.4);
-draw_set_color(_stone);
-draw_rectangle(0, 160, room_width, 352, false);
-// faint joint lines + worn patches (deterministic, low alpha — texture, not strips)
-draw_set_alpha(0.08);
-draw_set_color(make_color_rgb(60, 52, 44));
-for (var _jx = 0; _jx < room_width; _jx += 32) draw_line(_jx, 160, _jx - 12, 352);
-for (var _jy = 176; _jy < 352; _jy += 24) draw_line(0, _jy, room_width, _jy);
-draw_set_alpha(0.05);
 draw_set_color(c_white);
-for (var _wp = 0; _wp < 26; _wp++) {
-    var _wpx = ((_wp * 97) mod 19) * 64 + ((_wp * 31) mod 48);
-    var _wpy = 176 + ((_wp * 53) mod 160);
-    draw_circle(_wpx, _wpy, 14 + (_wp mod 9), false);
+var _t_floor = asset_get_index("spr_ponte_floor_cobble");
+if (_t_floor >= 0 && asset_get_type("spr_ponte_floor_cobble") == asset_sprite) {
+    var _ftint = merge_color(c_white, make_color_rgb(96, 92, 100), _corr01 * 0.4);
+    for (var _fy = 160; _fy < 352; _fy += 64)
+        for (var _fx = 0; _fx < room_width; _fx += 64)
+            draw_sprite_ext(_t_floor, 0, _fx, _fy, 1, 1, 0, _ftint, 1);
+} else {
+    draw_set_color(merge_color(make_color_rgb(176, 160, 134), make_color_rgb(84, 80, 84), _corr01 * 0.4));
+    draw_rectangle(0, 160, room_width, 352, false);
+    draw_set_color(c_white);
 }
-draw_set_alpha(1);
-draw_set_color(c_white);
 
 // ── 4. parapets — VOID WALL + ART (same rects as the collision) ────────────────
 var _pw = scr_ponte_walls();

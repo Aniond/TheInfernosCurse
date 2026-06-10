@@ -37,7 +37,7 @@
 // already in save folders, so existing hand-tuned layouts stay valid.)
 #macro DUOMO_LAYOUT_VERSION   10
 #macro INN_LAYOUT_VERSION     16
-#macro PONTE_LAYOUT_VERSION   3
+#macro PONTE_LAYOUT_VERSION   4
 #macro STABLE_LAYOUT_VERSION  3
 #macro FLORENCE_V2_LAYOUT_VERSION 8
 
@@ -1180,7 +1180,8 @@ function scr_ponte_build() {
     global.__ponte_keep_spr = [spr_ponte_floor_cobble, spr_ponte_shop_north,
         spr_ponte_shop_south, spr_ponte_fountain, spr_ponte_guild_board,
         spr_ponte_lantern_post, spr_ponte_seagull, spr_arno_rowing_boat,
-        spr_florence_water, spr_florence_thin_wall, spr_ponte_roof_tile];
+        spr_florence_water, spr_florence_thin_wall, spr_ponte_roof_tile,
+        spr_ponte_bench, spr_inn_plant];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
@@ -1244,10 +1245,18 @@ function scr_ponte_default() {
     for (var _i = 0; _i < 8; _i++)
         scr_ponte_place(obj_mercato_prop, _sx[_i], 1.0, 1, "spr_ponte_shop_north", true, _layer);
     for (var _j = 0; _j < 8; _j++)
-        scr_ponte_place(obj_mercato_prop, _sx[_j], 5.5, 1, "spr_ponte_shop_south", true, _layer);
-    // central plaza: fountain centred on the walkway, guild board to its right
+        scr_ponte_place(obj_mercato_prop, _sx[_j], 5.5, 0.9, "spr_ponte_shop_south", true, _layer);   // scaled to match the north row
+    // CENTRAL MEETING PLACE (David, from the real bridge's mid-span terrace):
+    // fountain at the heart, guild board east, marble benches ringing the
+    // piazza with walk-through gaps, greenery at the corners
     scr_ponte_place(obj_mercato_prop, 9.0,  3.05, 1, "spr_ponte_fountain",    true,  _layer);
     scr_ponte_place(obj_mercato_prop, 11.4, 3.35, 1, "spr_ponte_guild_board", true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 8.6,  2.55, 1, "spr_ponte_bench",       true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 10.5, 2.55, 1, "spr_ponte_bench",       true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 8.6,  4.95, 1, "spr_ponte_bench",       true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 10.5, 4.95, 1, "spr_ponte_bench",       true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 8.05, 3.7,  1, "spr_inn_plant",         false, _layer);
+    scr_ponte_place(obj_mercato_prop, 10.55, 3.9, 1, "spr_inn_plant",         false, _layer);
     // lantern posts along both walkway edges (under the canopy they ARE the light)
     var _lx = [2, 5, 8, 12, 15, 17.9];
     for (var _l = 0; _l < array_length(_lx); _l++) {
