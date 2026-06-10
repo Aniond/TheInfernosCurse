@@ -2,9 +2,9 @@
   "$GMSprite":"v2",
   "%Name":"spr_arno_stone_bank",
   "bboxMode":1,
-  "bbox_bottom":63,
+  "bbox_bottom":39,
   "bbox_left":0,
-  "bbox_right":63,
+  "bbox_right":25,
   "bbox_top":0,
   "collisionKind":1,
   "collisionTolerance":0,
@@ -16,7 +16,7 @@
   ],
   "gridX":0,
   "gridY":0,
-  "height":64,
+  "height":40,
   "HTile":false,
   "layers":[
     {"$GMImageLayer":"","%Name":"e136f98a-ec3b-4cab-b41b-c29a5bd3ef1f","blendMode":0,"displayName":"default","isLocked":false,"name":"e136f98a-ec3b-4cab-b41b-c29a5bd3ef1f","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
@@ -105,5 +105,5 @@
   },
   "type":0,
   "VTile":false,
-  "width":64,
+  "width":26,
 }

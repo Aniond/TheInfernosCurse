@@ -822,39 +822,6 @@ function scr_fv2_corruption_sync() {
 //  crossing. The generic cam_zoom support remains in scr_camera for the real
 //  zone transition when the EW bridge interior is rebuilt.)
 
-/// Torch flames + shrine candles — additive glow pass (after the floor).
-function scr_fv2_torch_glow() {
-    if (!variable_global_exists("room_builder_objects")) return;
-    var _corr = global.circle_corruption[CIRCLE_LIMBO];
-    var _frac;                                  // fraction of torches still lit
-    if      (_corr >= 100) _frac = 0.15;        // green remnants only
-    else if (_corr >= 75)  _frac = 0.15;
-    else if (_corr >= 50)  _frac = 0.5;
-    else                   _frac = 1.0;
-    var _green = (_corr >= 100);
-    gpu_set_blendmode(bm_add);
-    var _objs = global.room_builder_objects;
-    var _ti = 0;
-    for (var _i = 0; _i < array_length(_objs); _i++) {
-        var _o = _objs[_i];
-        if (!instance_exists(_o)) continue;
-        if (!variable_instance_exists(_o, "builder_sprite")) continue;
-        var _is_torch  = (_o.builder_sprite == "spr_florence_wall_torch");
-        var _is_shrine = (_o.builder_sprite == "spr_florence_street_shrine");
-        if (!_is_torch && !_is_shrine) continue;
-        _ti++;
-        if (((_ti * 7) mod 100) / 100 >= _frac) continue;          // this one is dark
-        if (_is_shrine && _corr >= 100) continue;                  // no candle: she is gone
-        var _cx = _o.x + 16 * _o.image_xscale;
-        var _cy = _o.y + (_is_shrine ? 52 : 16) * _o.image_yscale;
-        var _flick = 1 + 0.08 * sin(current_time * 0.004 + _o.x * 0.13 + _o.y * 0.07);
-        var _r = (_is_shrine ? 22 : 34) * _flick;
-        if (_corr >= 50 && _corr < 75 && _is_shrine) _flick *= 0.7;   // uneasy flicker
-        draw_set_color(_green ? make_color_rgb(70, 235, 110) : make_color_rgb(255, 186, 96));
-        draw_set_alpha((_green ? 0.30 : 0.24) * _flick);
-        draw_circle(_cx, _cy, _r, false);
-    }
-    gpu_set_blendmode(bm_normal);
-    draw_set_alpha(1);
-    draw_set_color(c_white);
-}
+// (scr_fv2_torch_glow RETIRED 2026-06-10 — superseded by the GLOBAL day/night
+//  lighting system in obj_game_manager Draw GUI: same corruption snuffing and
+//  green remnant flames, now time-of-day gated and active in EVERY room.)

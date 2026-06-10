@@ -131,9 +131,10 @@ scr_fv2_draw_walls(_corr);
 //      forward → silty → slow → REVERSED at 75% → red and wrong at 100
 scr_fv2_draw_arno(_corr);
 
-// ── 5. street life + shrines react to corruption; torch/candle glow pass ───────
+// ── 5. street life + shrines react to corruption ───────────────────────────────
+//      (torch/candle GLOW moved to the GLOBAL lighting system in
+//       obj_game_manager Draw GUI — time-of-day + corruption gated, all rooms)
 scr_fv2_corruption_sync();
-scr_fv2_torch_glow();
 
 // ── 6. the city itself dirties as Limbo deepens (50%+) ─────────────────────────
 if (_corr >= 0.5) {
