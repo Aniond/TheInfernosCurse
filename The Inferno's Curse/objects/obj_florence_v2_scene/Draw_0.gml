@@ -91,3 +91,8 @@ if (_t_edge >= 0) {
     }
 }
 draw_set_color(c_white);
+
+// ── 3. CITY WALLS — stable-style black-void bands + stone texture + merlons,
+//      gatehouses and towers on top (geometry = scr_fv2_walls, also collision)
+var _corr = clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1);
+scr_fv2_draw_walls(_corr);
