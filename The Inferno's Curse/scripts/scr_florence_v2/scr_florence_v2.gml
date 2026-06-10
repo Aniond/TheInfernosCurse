@@ -65,19 +65,17 @@ function scr_fv2_walls() {
 /// gatehouses, corner towers and wall piers are dropped on top.
 function scr_fv2_draw_walls(_corr01) {
     var _segs = scr_fv2_walls();
-    var _tex  = asset_get_index("spr_florence_wall_tile");
-    var _scale = 1;
-    if (_tex < 0 || asset_get_type("spr_florence_wall_tile") != asset_sprite) {
-        _tex = spr_stable_wall_tile;   // timber fallback until the stone tile lands
-    }
-    // ALTERNATING masonry tones (user fix 3): real medieval walls were never
-    // uniform — each 32px block picks pale sandy / mid grey / deep charcoal
-    // from a deterministic hash, so sections connect with varied stonework.
-    var _col_a = merge_color(make_color_rgb(225, 214, 192), make_color_rgb(112, 114, 126), _corr01);
-    var _col_b = merge_color(make_color_rgb(158, 152, 142), make_color_rgb(84, 86, 98),    _corr01);
-    var _col_c = merge_color(make_color_rgb(110, 104, 98),  make_color_rgb(60, 62, 72),    _corr01);
+    // CONTIGUOUS procedural masonry on the black void body (the texture-tile
+    // approach read as disconnected dots — user feedback): each 32x16 block is
+    // a SOLID rectangle in one of three alternating tones, separated only by
+    // the 2px black mortar seams of the void beneath. Courses offset like real
+    // running-bond stonework. Fully connected, never uniform.
+    var _col_a = merge_color(make_color_rgb(196, 186, 166), make_color_rgb(104, 106, 118), _corr01);
+    var _col_b = merge_color(make_color_rgb(150, 144, 134), make_color_rgb(82, 84, 96),    _corr01);
+    var _col_c = merge_color(make_color_rgb(112, 106, 100), make_color_rgb(62, 64, 74),    _corr01);
     var _top  = merge_color(make_color_rgb(168, 162, 148), make_color_rgb(70, 70, 78),   _corr01);
-    var _ts   = 32;
+    var _bw   = 32;   // block width
+    var _bh   = 16;   // block (course) height
     var _inset = 4;
     for (var _i = 0; _i < array_length(_segs); _i++) {
         var _s = _segs[_i];
@@ -86,15 +84,19 @@ function scr_fv2_draw_walls(_corr01) {
         var _x0 = _s[0] + _inset, _y0 = _s[1] + _inset;
         var _x1 = _s[2] - _inset, _y1 = _s[3] - _inset;
         if (_x1 > _x0 && _y1 > _y0) {
-            for (var _ty = _y0; _ty < _y1; _ty += _ts) {
-                var _h = min(_ts, _y1 - _ty);
-                for (var _tx = _x0; _tx < _x1; _tx += _ts) {
-                    var _w = min(_ts, _x1 - _tx);
-                    var _pick = (((_tx div 32) * 7) + ((_ty div 32) * 13) + _i * 3) mod 5;
-                    var _col = (_pick <= 1) ? _col_a : ((_pick <= 3) ? _col_b : _col_c);
-                    draw_sprite_part_ext(_tex, 0, 0, 0, _w / _scale, _h / _scale,
-                        _tx, _ty, _scale, _scale, _col, 1);
+            var _course = 0;
+            for (var _ty = _y0; _ty < _y1; _ty += _bh) {
+                var _yb = min(_ty + _bh - 2, _y1);                     // 2px mortar seam
+                var _off = (_course mod 2) * (_bw div 2);              // running bond
+                for (var _tx = _x0 - _off; _tx < _x1; _tx += _bw) {
+                    var _xa = max(_tx, _x0);
+                    var _xb = min(_tx + _bw - 2, _x1);
+                    if (_xb <= _xa) continue;
+                    var _pick = (((_tx div 32) * 7) + (_course * 13) + _i * 3) mod 5;
+                    draw_set_color((_pick <= 1) ? _col_a : ((_pick <= 3) ? _col_b : _col_c));
+                    draw_rectangle(_xa, _ty, _xb, _yb, false);
                 }
+                _course++;
             }
             draw_set_color(_top);
             draw_rectangle(_x0, _y0, _x1, min(_y0 + 3, _y1), false);
