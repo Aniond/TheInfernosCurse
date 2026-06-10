@@ -136,6 +136,7 @@ function scr_inn_default_layout() {
     array_push(_L, ["obj_mercato_prop", 5.5, 4.8, 1, "spr_inn_table_long"]);
     array_push(_L, ["obj_inn_candle", 5.9, 4.95, 0.5]);
     array_push(_L, ["obj_inn_candle", 6.9, 4.95, 0.5]);
+    array_push(_L, ["obj_mercato_prop", 6.3, 5.1, 0.75, "spr_inn_mugs"]);   // ale on the long table
     // Loose stools near the bar (the drunks' corner)
     array_push(_L, ["obj_mercato_prop", 8.5, 3.8, 0.5, "spr_inn_stool"]);
     array_push(_L, ["obj_mercato_prop", 2.2, 4.4, 0.5, "spr_inn_stool"]);
@@ -156,6 +157,9 @@ function scr_inn_default_layout() {
     // One candle centred on each dining table — snuffs out ONE BY ONE at 50%+ corruption.
     for (var _cd = 0; _cd < array_length(_tables); _cd++)
         array_push(_L, ["obj_inn_candle", _tables[_cd][0] + 0.25, _tables[_cd][1] + 0.25, 0.5]);
+    // Half-drunk ale on a couple of the round tables (lived-in, not staged)
+    array_push(_L, ["obj_mercato_prop", 6.95,  8.0,  0.75, "spr_inn_mugs"]);
+    array_push(_L, ["obj_mercato_prop", 11.95, 10.3, 0.75, "spr_inn_mugs"]);
     // Bottom-left barrels (mirrors the reference corner clutter)
     array_push(_L, ["obj_barrel", 1,   10.8, 0.5]);
     array_push(_L, ["obj_barrel", 1.9, 11.4, 0.5]);
@@ -186,7 +190,7 @@ function scr_inn_build() {
     global.__inn_keep     = [obj_mercato_prop, obj_duomo_candelabra, obj_barrel, obj_npc_innkeeper, obj_npc_rosa, obj_inn_candle];
     global.__inn_keep_spr = [spr_inn_counter_corner, spr_inn_counter_empty, spr_inn_counter_food, spr_inn_keg_group, spr_inn_wine_shelf, spr_inn_table,
         spr_inn_stool, spr_inn_staircase, spr_inn_bar_counter,
-        spr_inn_plant, spr_inn_banner, spr_inn_meats, spr_inn_table_long,
+        spr_inn_plant, spr_inn_banner, spr_inn_meats, spr_inn_table_long, spr_inn_floor, spr_inn_rug, spr_inn_mugs,
         spr_inn_window, spr_inn_window_open, spr_inn_window_dawn, spr_inn_window_dusk, spr_inn_window_night,
         spr_clay_pot_large, spr_crate_stack,
         spr_inn_chair_south, spr_inn_chair_north, spr_inn_chair_east, spr_inn_chair_west,
