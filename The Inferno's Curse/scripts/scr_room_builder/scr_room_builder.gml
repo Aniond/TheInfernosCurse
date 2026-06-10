@@ -37,7 +37,7 @@
 // already in save folders, so existing hand-tuned layouts stay valid.)
 #macro DUOMO_LAYOUT_VERSION   10
 #macro INN_LAYOUT_VERSION     16
-#macro PONTE_LAYOUT_VERSION   2
+#macro PONTE_LAYOUT_VERSION   3
 #macro STABLE_LAYOUT_VERSION  3
 #macro FLORENCE_V2_LAYOUT_VERSION 8
 
@@ -1103,9 +1103,9 @@ function scr_florence_build() {
     var _pe_w    = (_pv[1] - _pv[0]) - _rthick * 2;
     var _deckmid = (_bdy0 + _bdy1) * 0.5;
     scr_transition_spawn("florence_ponte_n", _pe_x, _bdy0, _pe_w, _deckmid - _bdy0,
-        "Room_ponte_vecchio", "Ponte Vecchio", 96, 432, "Il Ponte Vecchio");
+        "Room_ponte_vecchio", "Ponte Vecchio", 96, 256, "Il Ponte Vecchio");
     scr_transition_spawn("florence_ponte_s", _pe_x, _deckmid, _pe_w, _bdy1 - _deckmid,
-        "Room_ponte_vecchio", "Ponte Vecchio", 96, 432, "Il Ponte Vecchio");
+        "Room_ponte_vecchio", "Ponte Vecchio", 96, 256, "Il Ponte Vecchio");
 
     // ── Giardino delle Rose hedge collision (four quadrants, open cross-path) ──
     var _gx0 = global.garden_cx - global.garden_hw, _gy0 = global.garden_cy - global.garden_hh;
@@ -1140,32 +1140,34 @@ function scr_florence_build() {
 
 /// Parapet bands — VOID WALL + ART standard, single source for draw AND
 /// collision. They run behind both shop rows and seal the deck from the water.
+/// NARROW BRIDGE (1280x512, 20x8): water 0-64 · shops N 64-160 · WALKWAY
+/// 160-352 · shops S 352-448 · water 448-512. Claustrophobic, like the real one.
 function scr_ponte_walls() {
     return [
-        [0, 168, 1280, 192],     // north parapet (behind the north shops)
-        [0, 672, 1280, 696],     // south parapet (behind the south shops)
+        [0, 40,  1280, 64],      // north parapet (water edge, behind the shops)
+        [0, 448, 1280, 472],     // south parapet (between shops and the water)
     ];
 }
 
 /// Geometry collision + exits — called by build AND the debug rebuild.
 function scr_ponte_spawn_geometry() {
     var _solids = scr_ponte_walls();
-    array_push(_solids, [0, 0, 1280, 168]);          // north water (sealed)
-    array_push(_solids, [0, 696, 1280, 896]);        // south water (sealed)
-    array_push(_solids, [0, 0, 8, 288]);             // west edge above walkway
-    array_push(_solids, [0, 576, 8, 896]);           // west edge below walkway
-    array_push(_solids, [1272, 0, 1280, 288]);       // east edge above walkway
-    array_push(_solids, [1272, 576, 1280, 896]);     // east edge below walkway
+    array_push(_solids, [0, 0, 1280, 40]);           // north water (sealed)
+    array_push(_solids, [0, 472, 1280, 512]);        // south water (sealed)
+    array_push(_solids, [0, 0, 8, 160]);             // west edge above walkway
+    array_push(_solids, [0, 352, 8, 512]);           // west edge below walkway
+    array_push(_solids, [1272, 0, 1280, 160]);       // east edge above walkway
+    array_push(_solids, [1272, 352, 1280, 512]);     // east edge below walkway
     for (var _w = 0; _w < array_length(_solids); _w++) {
         var _s = _solids[_w];
         var _wl = instance_create_depth(_s[0], _s[1], 500, obj_wall);
         _wl.wall_w = _s[2] - _s[0]; _wl.wall_h = _s[3] - _s[1]; _wl.visible = false;
     }
     // WEST: back to Florence — arrive on the v2 west bank beside the deck
-    scr_transition_spawn("ponte_w", 0, 288, 28, 288,
+    scr_transition_spawn("ponte_w", 0, 160, 28, 192,
         "Room_florence_v2", "Firenze", 2486, 704, "Firenze");
     // EAST: Santa Croce — not built yet (graceful coming-soon)
-    scr_transition_spawn("ponte_e", 1252, 288, 28, 288,
+    scr_transition_spawn("ponte_e", 1252, 160, 28, 192,
         "Room_santa_croce", "Verso il Quartiere di Santa Croce. Not yet.", 0, 0, "");
 }
 
@@ -1236,28 +1238,29 @@ function scr_ponte_default() {
     // 8 per row at near-touching pitch, two covered runs with the central
     // plaza OPEN to the sky (the Arno viewing point). Canopy segments over the
     // corridor are drawn by the scene's Draw End pass.
+    // NARROW BRIDGE (20x8): shops N gy1.0 (band 64-160), walkway 160-352,
+    // shops S gy5.5 (band 352-448) — pressed tight, corridor 3 cells.
     var _sx = [1.4, 3.2, 5.0, 6.8,   12.0, 13.8, 15.6, 17.4];
     for (var _i = 0; _i < 8; _i++)
-        scr_ponte_place(obj_mercato_prop, _sx[_i], 3.0, 1, "spr_ponte_shop_north", true, _layer);
+        scr_ponte_place(obj_mercato_prop, _sx[_i], 1.0, 1, "spr_ponte_shop_north", true, _layer);
     for (var _j = 0; _j < 8; _j++)
-        scr_ponte_place(obj_mercato_prop, _sx[_j], 9.0, 1, "spr_ponte_shop_south", true, _layer);
-    // central plaza: fountain centred, guild board to its right (per reference)
-    scr_ponte_place(obj_mercato_prop, 9.0,  5.6,  1, "spr_ponte_fountain",    true,  _layer);
-    scr_ponte_place(obj_mercato_prop, 11.4, 5.85, 1, "spr_ponte_guild_board", true,  _layer);
-    // lantern posts along the corridor (day/night reactive via the global
-    // lighting — under the canopy they ARE the light)
+        scr_ponte_place(obj_mercato_prop, _sx[_j], 5.5, 1, "spr_ponte_shop_south", true, _layer);
+    // central plaza: fountain centred on the walkway, guild board to its right
+    scr_ponte_place(obj_mercato_prop, 9.0,  3.05, 1, "spr_ponte_fountain",    true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 11.4, 3.35, 1, "spr_ponte_guild_board", true,  _layer);
+    // lantern posts along both walkway edges (under the canopy they ARE the light)
     var _lx = [2, 5, 8, 12, 15, 17.9];
     for (var _l = 0; _l < array_length(_lx); _l++) {
-        scr_ponte_place(obj_mercato_prop, _lx[_l], 4.55, 1, "spr_ponte_lantern_post", false, _layer);
-        scr_ponte_place(obj_mercato_prop, _lx[_l], 7.95, 1, "spr_ponte_lantern_post", false, _layer);
+        scr_ponte_place(obj_mercato_prop, _lx[_l], 1.66, 1, "spr_ponte_lantern_post", false, _layer);
+        scr_ponte_place(obj_mercato_prop, _lx[_l], 3.97, 1, "spr_ponte_lantern_post", false, _layer);
     }
-    // seagulls at the OPEN-air spots only: plaza + both landings
-    var _gull = [[9.7,2.5],[10.6,10.35],[0.7,2.5],[19.1,2.55],[0.8,10.3]];
+    // seagulls on the parapets at the OPEN-air spots: plaza + both landings
+    var _gull = [[9.7,0.55],[10.6,6.95],[0.7,0.55],[19.1,0.6],[0.8,6.9]];
     for (var _g = 0; _g < array_length(_gull); _g++)
         scr_ponte_place(obj_mercato_prop, _gull[_g][0], _gull[_g][1], 1, "spr_ponte_seagull", false, _layer);
     // MARCO THE BAKER at the Fornaio (2nd from west, north row) — placement
     // only, no dialogue yet (NPCs go live separately per David)
-    scr_ponte_place(obj_npc_marco, 3.9, 4.55, 1, "", false, _layer);
+    scr_ponte_place(obj_npc_marco, 3.9, 2.3, 1, "", false, _layer);
 }
 
 /// Place one ponte prop + register it for dragging. Solid only when flagged.

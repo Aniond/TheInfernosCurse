@@ -726,10 +726,10 @@ function scr_fv2_spawn_transitions() {
     var _deckmid = (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5;
     scr_transition_spawn("fv2_ponte_w", FV2_RIVER_X0 - 22, FV2_PONTE_Y0 + 16,
         _deckmid - (FV2_RIVER_X0 - 22), FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
-        "Room_ponte_vecchio", "Ponte Vecchio", 96, 432, "Il Ponte Vecchio");
+        "Room_ponte_vecchio", "Ponte Vecchio", 96, 256, "Il Ponte Vecchio");
     scr_transition_spawn("fv2_ponte_e", _deckmid, FV2_PONTE_Y0 + 16,
         (FV2_RIVER_X1 + 22) - _deckmid, FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
-        "Room_ponte_vecchio", "Ponte Vecchio", 1184, 432, "Il Ponte Vecchio");
+        "Room_ponte_vecchio", "Ponte Vecchio", 1184, 256, "Il Ponte Vecchio");
     // interior entrances, bbox-following like the old map
     var _dux = 704, _duy = 712;
     var _stx = 1216, _sty = 548;

@@ -10,9 +10,10 @@
 if (room_get_name(room) != "Room_ponte_vecchio") exit;
 
 // covered runs [x0, y0, x1, y1] — plaza x512-768 and landings stay open
+// (narrow bridge: canopy spans shop mid to shop mid, y100-420)
 var _segs = [
-    [96,  216, 512,  648],
-    [768, 216, 1184, 648],
+    [96,  100, 512,  420],
+    [768, 100, 1184, 420],
 ];
 
 var _corr = clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1);
