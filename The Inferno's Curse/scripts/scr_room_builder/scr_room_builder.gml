@@ -37,7 +37,7 @@
 // already in save folders, so existing hand-tuned layouts stay valid.)
 #macro DUOMO_LAYOUT_VERSION   10
 #macro INN_LAYOUT_VERSION     16
-#macro PONTE_LAYOUT_VERSION   1
+#macro PONTE_LAYOUT_VERSION   2
 #macro STABLE_LAYOUT_VERSION  3
 #macro FLORENCE_V2_LAYOUT_VERSION 8
 
@@ -1178,7 +1178,7 @@ function scr_ponte_build() {
     global.__ponte_keep_spr = [spr_ponte_floor_cobble, spr_ponte_shop_north,
         spr_ponte_shop_south, spr_ponte_fountain, spr_ponte_guild_board,
         spr_ponte_lantern_post, spr_ponte_seagull, spr_arno_rowing_boat,
-        spr_florence_water, spr_florence_thin_wall];
+        spr_florence_water, spr_florence_thin_wall, spr_ponte_roof_tile];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
@@ -1232,30 +1232,32 @@ function scr_ponte_load(_path) {
 /// seagulls on the parapets, and Marco the Baker at the Fornaio.
 function scr_ponte_default() {
     var _layer = layer_exists("Instances") ? "Instances" : "";
-    // north row (faces south): Fioraio · Fornaio · Tessitore | Orafo · Speziale · Libraio
-    var _sx = [2.5, 4.75, 7.0, 11.0, 13.25, 15.5];
-    for (var _i = 0; _i < 6; _i++)
+    // COVERED MERCHANT BRIDGE (David's design): tightly packed shops dominate —
+    // 8 per row at near-touching pitch, two covered runs with the central
+    // plaza OPEN to the sky (the Arno viewing point). Canopy segments over the
+    // corridor are drawn by the scene's Draw End pass.
+    var _sx = [1.4, 3.2, 5.0, 6.8,   12.0, 13.8, 15.6, 17.4];
+    for (var _i = 0; _i < 8; _i++)
         scr_ponte_place(obj_mercato_prop, _sx[_i], 3.0, 1, "spr_ponte_shop_north", true, _layer);
-    // south row (faces north): Calzolaio · Vetraio · Fabbro | Ufficio · Pergamene · Osteria
-    for (var _j = 0; _j < 6; _j++)
+    for (var _j = 0; _j < 8; _j++)
         scr_ponte_place(obj_mercato_prop, _sx[_j], 9.0, 1, "spr_ponte_shop_south", true, _layer);
     // central plaza: fountain centred, guild board to its right (per reference)
     scr_ponte_place(obj_mercato_prop, 9.0,  5.6,  1, "spr_ponte_fountain",    true,  _layer);
     scr_ponte_place(obj_mercato_prop, 11.4, 5.85, 1, "spr_ponte_guild_board", true,  _layer);
-    // lantern posts every 3 cells, both walkway edges (day/night reactive via
-    // the global lighting system — "lantern" name = 64px glow)
+    // lantern posts along the corridor (day/night reactive via the global
+    // lighting — under the canopy they ARE the light)
     var _lx = [2, 5, 8, 12, 15, 17.9];
     for (var _l = 0; _l < array_length(_lx); _l++) {
         scr_ponte_place(obj_mercato_prop, _lx[_l], 4.55, 1, "spr_ponte_lantern_post", false, _layer);
         scr_ponte_place(obj_mercato_prop, _lx[_l], 7.95, 1, "spr_ponte_lantern_post", false, _layer);
     }
-    // seagulls on the parapets (corruption thins them, 75+ none)
-    var _gull = [[3.4,2.5],[9.7,2.5],[16.2,2.5],[6.5,10.35],[13.8,10.35]];
+    // seagulls at the OPEN-air spots only: plaza + both landings
+    var _gull = [[9.7,2.5],[10.6,10.35],[0.7,2.5],[19.1,2.55],[0.8,10.3]];
     for (var _g = 0; _g < array_length(_gull); _g++)
         scr_ponte_place(obj_mercato_prop, _gull[_g][0], _gull[_g][1], 1, "spr_ponte_seagull", false, _layer);
     // MARCO THE BAKER at the Fornaio (2nd from west, north row) — placement
     // only, no dialogue yet (NPCs go live separately per David)
-    scr_ponte_place(obj_npc_marco, 5.55, 4.55, 1, "", false, _layer);
+    scr_ponte_place(obj_npc_marco, 3.9, 4.55, 1, "", false, _layer);
 }
 
 /// Place one ponte prop + register it for dragging. Solid only when flagged.

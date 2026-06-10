@@ -1,30 +1,35 @@
-# VERSION 1
+# VERSION 2
 # Room_ponte_vecchio layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)
-# The marketplace bridge (20x14 cells, ref: ponte_vecchio_interior_map.png).
-# All objects draggable in debug (drag / arrows / Delete), F8 saves to the save
-# folder. Water/deck/parapets/arches/boats are CODE-drawn (obj_ponte_scene).
+# COVERED MERCHANT BRIDGE (David's design): tightly packed shops dominate, two
+# covered runs (canopy drawn by the scene's Draw End), central plaza OPEN to
+# the sky as the Arno viewing point. Water/deck/parapets/arches/boats/canopy
+# are CODE-drawn. All objects draggable in debug; F8 saves to the save folder.
 
-# --- NORTH SHOP ROW (faces south): Fioraio Fornaio Tessitore | Orafo Speziale Libraio ---
-obj_mercato_prop        2.5       3         1     spr_ponte_shop_north      solid
-obj_mercato_prop        4.75      3         1     spr_ponte_shop_north      solid
-obj_mercato_prop        7         3         1     spr_ponte_shop_north      solid
-obj_mercato_prop        11        3         1     spr_ponte_shop_north      solid
-obj_mercato_prop        13.25     3         1     spr_ponte_shop_north      solid
-obj_mercato_prop        15.5      3         1     spr_ponte_shop_north      solid
+# --- NORTH SHOP ROW (8 shops, faces south; packed pitch 1.8) ---
+obj_mercato_prop        1.4       3         1     spr_ponte_shop_north      solid
+obj_mercato_prop        3.2       3         1     spr_ponte_shop_north      solid
+obj_mercato_prop        5         3         1     spr_ponte_shop_north      solid
+obj_mercato_prop        6.8       3         1     spr_ponte_shop_north      solid
+obj_mercato_prop        12        3         1     spr_ponte_shop_north      solid
+obj_mercato_prop        13.8      3         1     spr_ponte_shop_north      solid
+obj_mercato_prop        15.6      3         1     spr_ponte_shop_north      solid
+obj_mercato_prop        17.4      3         1     spr_ponte_shop_north      solid
 
-# --- SOUTH SHOP ROW (faces north): Calzolaio Vetraio Fabbro | Ufficio Pergamene Osteria ---
-obj_mercato_prop        2.5       9         1     spr_ponte_shop_south      solid
-obj_mercato_prop        4.75      9         1     spr_ponte_shop_south      solid
-obj_mercato_prop        7         9         1     spr_ponte_shop_south      solid
-obj_mercato_prop        11        9         1     spr_ponte_shop_south      solid
-obj_mercato_prop        13.25     9         1     spr_ponte_shop_south      solid
-obj_mercato_prop        15.5      9         1     spr_ponte_shop_south      solid
+# --- SOUTH SHOP ROW (8 shops, faces north) ---
+obj_mercato_prop        1.4       9         1     spr_ponte_shop_south      solid
+obj_mercato_prop        3.2       9         1     spr_ponte_shop_south      solid
+obj_mercato_prop        5         9         1     spr_ponte_shop_south      solid
+obj_mercato_prop        6.8       9         1     spr_ponte_shop_south      solid
+obj_mercato_prop        12        9         1     spr_ponte_shop_south      solid
+obj_mercato_prop        13.8      9         1     spr_ponte_shop_south      solid
+obj_mercato_prop        15.6      9         1     spr_ponte_shop_south      solid
+obj_mercato_prop        17.4      9         1     spr_ponte_shop_south      solid
 
-# --- CENTRAL PLAZA: fountain centred, guild board right (per reference) ---
+# --- CENTRAL PLAZA (open to the sky): fountain + guild board ---
 obj_mercato_prop        9         5.6       1     spr_ponte_fountain        solid
 obj_mercato_prop        11.4      5.85      1     spr_ponte_guild_board     solid
 
-# --- LANTERN POSTS every 3 cells, both walkway edges (day/night reactive) ---
+# --- LANTERN POSTS along the corridor (under the canopy they ARE the light) ---
 obj_mercato_prop        2         4.55      1     spr_ponte_lantern_post
 obj_mercato_prop        5         4.55      1     spr_ponte_lantern_post
 obj_mercato_prop        8         4.55      1     spr_ponte_lantern_post
@@ -38,12 +43,12 @@ obj_mercato_prop        12        7.95      1     spr_ponte_lantern_post
 obj_mercato_prop        15        7.95      1     spr_ponte_lantern_post
 obj_mercato_prop        17.9      7.95      1     spr_ponte_lantern_post
 
-# --- SEAGULLS on the parapets (corruption thins them; 75+ none) ---
-obj_mercato_prop        3.4       2.5       1     spr_ponte_seagull
+# --- SEAGULLS at the open-air spots: plaza + both landings ---
 obj_mercato_prop        9.7       2.5       1     spr_ponte_seagull
-obj_mercato_prop        16.2      2.5       1     spr_ponte_seagull
-obj_mercato_prop        6.5       10.35     1     spr_ponte_seagull
-obj_mercato_prop        13.8      10.35     1     spr_ponte_seagull
+obj_mercato_prop        10.6      10.35     1     spr_ponte_seagull
+obj_mercato_prop        0.7       2.5       1     spr_ponte_seagull
+obj_mercato_prop        19.1      2.55      1     spr_ponte_seagull
+obj_mercato_prop        0.8       10.3      1     spr_ponte_seagull
 
-# --- MARCO THE BAKER at the Fornaio (2nd from west, north row) — placement only ---
-obj_npc_marco           5.55      4.55      1
+# --- MARCO THE BAKER at the Fornaio (2nd from west, north row) ---
+obj_npc_marco           3.9       4.55      1

@@ -14,5 +14,8 @@ if (room_get_name(room) != "Room_ponte_vecchio") exit;
 // walkway sit in frame. Room_florence_v2's build restores 384 on return.
 global.cam_view_h = 448;
 
+// canopy cutaway alphas (one per covered run — see Draw End)
+canopy_a = [0.96, 0.96];
+
 scr_ponte_build();
 scr_banner_show("Ponte Vecchio");
