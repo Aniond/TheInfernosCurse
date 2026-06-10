@@ -13,7 +13,7 @@
 //   north landing   y[0,128]    cobble plaza  → NORTH exit (to Florence)
 //   south landing   y[768,896]  cobble plaza  → SOUTH exit (placeholder)
 // =============================================================================
-if (room != Room_ponte_vecchio) exit;
+if (room_get_name(room) != "Room_ponte_vecchio") exit;   // room archived 2026-06-10 (EW redo pending)
 
 var _rw = room_width;    // 576
 var _rh = room_height;   // 896

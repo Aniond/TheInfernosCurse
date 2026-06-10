@@ -12,7 +12,7 @@
 //   5) stone parapets at the water's edge + a few moored boats on the Arno
 //   6) NORTH / SOUTH landing plaques
 // =============================================================================
-if (room != Room_ponte_vecchio) exit;
+if (room_get_name(room) != "Room_ponte_vecchio") exit;   // room archived 2026-06-10 (EW redo pending)
 
 var _rw = room_width;    // 576
 var _rh = room_height;   // 896
