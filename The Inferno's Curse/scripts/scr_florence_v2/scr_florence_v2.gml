@@ -566,6 +566,12 @@ function scr_fv2_default_layout() {
     array_push(_L, ["obj_cypress_tree", 11.2, 11.1, 0.7]);
     array_push(_L, ["obj_mercato_prop", 9.8,  12.8, 1,   "spr_florence_flower_bed"]);
     array_push(_L, ["obj_mercato_prop", 11,   11.9, 1,   "spr_florence_flower_bed"]);
+    // ICONIC STATUARY: the Marzocco + David flank the Signoria piazza (their
+    // real home), Dante watches the cathedral green — the poet of the Inferno
+    // standing in the city that is becoming one. All fade with corruption.
+    array_push(_L, ["obj_mercato_prop", 31,   11.7, 1,   "spr_florence_statue_marzocco", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 32.8, 11.7, 1,   "spr_florence_statue_david",    "solid"]);
+    array_push(_L, ["obj_mercato_prop", 9.3,  13,   1,   "spr_florence_statue_dante",    "solid"]);
     // LITTLE WALLS — the reference's internal low walls (a signature of the
     // Florentine fabric): Duomo precinct yard, district edges, courtyards,
     // Arno terraces. 2-cell segments; trailing 90 = vertical run.
@@ -662,7 +668,8 @@ function scr_fv2_build() {
         spr_inn_plant, spr_florence_wall_band,
         spr_florence_packed_earth, spr_arno_rowing_boat, spr_florence_thin_wall,
         spr_florence_arch, spr_florence_statue_saint, spr_florence_guild_banner,
-        spr_mercato_loggia];
+        spr_mercato_loggia, spr_florence_statue_marzocco, spr_florence_statue_david,
+        spr_florence_statue_dante];
 
     if (variable_global_exists("cam_zoom_target")) global.cam_zoom_target = 1;   // fresh room = normal zoom
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
@@ -792,8 +799,9 @@ function scr_fv2_corruption_sync() {
             if (_corr >= 75)      _o.visible = false;
             else if (_corr >= 50) _o.visible = ((_ai mod 2) == 1);
             else                  _o.visible = true;
-        } else if (_s == "spr_florence_statue_saint") {
-            // the saints fade with the shrines — stone witnesses going quiet
+        } else if (string_pos("spr_florence_statue", _s) == 1) {
+            // ALL statuary fades with the shrines — saints, the Marzocco,
+            // David, Dante: stone witnesses going quiet as the city falls
             if (_corr >= 100)     _o.image_alpha = 0.25;
             else if (_corr >= 75) _o.image_alpha = 0.60;
             else                  _o.image_alpha = 1;
