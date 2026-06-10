@@ -539,7 +539,7 @@ function scr_fv2_build() {
     global.__fv2_keep     = [obj_mercato_prop, obj_marco_stall, obj_well, obj_cart,
         obj_barrel, obj_cypress_tree, obj_duomo_entrance, obj_stable_entrance];
     global.__fv2_keep_spr = [spr_florence_road_cobble, spr_florence_road_intersection,
-        spr_florence_road_edge, spr_florence_grass, spr_florence_street,
+        spr_florence_grass, spr_florence_street,
         spr_florence_wall_section, spr_florence_wall_gate, spr_florence_wall_tower,
         spr_florence_water, spr_river_stone, spr_ponte_vecchio_ew,
         spr_florence_tower_house, spr_florence_row_block, spr_florence_cottage,

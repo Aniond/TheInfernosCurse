@@ -5,8 +5,10 @@
 // Layer 2  THE ROAD NETWORK (scr_fv2_roads — roads before buildings, the city
 //          skeleton): authentic cobble (spr_florence_road_cobble, falls back to
 //          spr_florence_street until imported), plaza fields from the 16 plaza
-//          variations, intersection tiles wherever two roads cross, curb strips
-//          (spr_florence_road_edge) along every road's long edges.
+//          variations, intersection tiles wherever two roads cross, and INNER
+//          CITY WALLS — continuous void+art subwalls (spr_florence_thin_wall
+//          at half scale over a black band) dividing the quarters along every
+//          road's long edges (visual-only; collision is a future pass).
 if (room != Room_florence_v2) exit;
 
 var _g  = FV2_GRID;
@@ -34,8 +36,6 @@ var _t_road = asset_get_index("spr_florence_road_cobble");
 if (_t_road < 0 || asset_get_type("spr_florence_road_cobble") != asset_sprite) _t_road = spr_florence_street;
 var _t_ints = asset_get_index("spr_florence_road_intersection");
 if (_t_ints < 0 || asset_get_type("spr_florence_road_intersection") != asset_sprite) _t_ints = _t_road;
-var _t_edge = asset_get_index("spr_florence_road_edge");
-if (_t_edge >= 0 && asset_get_type("spr_florence_road_edge") != asset_sprite) _t_edge = -1;
 
 var _plaza = [spr_florence_plaza,     spr_florence_plaza_v2,  spr_florence_plaza_v3,  spr_florence_plaza_v4,
               spr_florence_plaza_v5,  spr_florence_plaza_v6,  spr_florence_plaza_v7,  spr_florence_plaza_v8,
@@ -92,25 +92,37 @@ for (var _a = 0; _a < _n; _a++) {
     }
 }
 
-// pass 3 — curb strips along each road's long edges (16px slice of the curb tile)
-if (_t_edge >= 0) {
+// pass 3 — STREET SUBWALLS: the void+art standard at street scale. Each
+// road's long edges get a CONTINUOUS thin wall: a black void underlay band
+// with the 128x32 thin-wall tile running unbroken at half scale (64x16) —
+// replaces the old per-tile curb slices that read as disconnected caps.
+var _t_curb = asset_get_index("spr_florence_thin_wall");
+if (_t_curb >= 0 && asset_get_type("spr_florence_thin_wall") == asset_sprite) {
     for (var _c = 0; _c < _n; _c++) {
         var _cr  = _roads[_c];
         if (_cr[4] != 0) continue;
         var _cx0 = round(_cr[0]) * _g, _cy0 = round(_cr[1]) * _g;
         var _cx1 = round(_cr[2]) * _g, _cy1 = round(_cr[3]) * _g;
         var _horiz = (_cx1 - _cx0) >= (_cy1 - _cy0);
+        draw_set_color(c_black);
         if (_horiz) {
-            for (var _ex = _cx0; _ex < _cx1; _ex += _g) {
-                draw_sprite_part(_t_edge, 0, 0, 0,  64, 16, _ex, _cy0);
-                draw_sprite_part(_t_edge, 0, 0, 48, 64, 16, _ex, _cy1 - 16);
+            draw_rectangle(_cx0, _cy0 - 2, _cx1, _cy0 + 16, false);
+            draw_rectangle(_cx0, _cy1 - 16, _cx1, _cy1 + 2, false);
+            for (var _ex = _cx0; _ex < _cx1; _ex += 64) {
+                var _ew = min(128, (_cx1 - _ex) * 2);
+                draw_sprite_part_ext(_t_curb, 0, 0, 0, _ew, 32, _ex, _cy0,      0.5, 0.5, c_white, 1);
+                draw_sprite_part_ext(_t_curb, 0, 0, 0, _ew, 32, _ex, _cy1 - 16, 0.5, 0.5, c_white, 1);
             }
         } else {
-            for (var _ey = _cy0; _ey < _cy1; _ey += _g) {
-                draw_sprite_part(_t_edge, 0, 0,  0, 16, 64, _cx0, _ey);
-                draw_sprite_part(_t_edge, 0, 48, 0, 16, 64, _cx1 - 16, _ey);
+            draw_rectangle(_cx0 - 2, _cy0, _cx0 + 16, _cy1, false);
+            draw_rectangle(_cx1 - 16, _cy0, _cx1 + 2, _cy1, false);
+            for (var _ey = _cy0; _ey < _cy1; _ey += 64) {
+                var _eh = min(128, (_cy1 - _ey) * 2);
+                draw_sprite_general(_t_curb, 0, 0, 0, _eh, 32, _cx0,      _ey + _eh * 0.5, 0.5, 0.5, 90, c_white, c_white, c_white, c_white, 1);
+                draw_sprite_general(_t_curb, 0, 0, 0, _eh, 32, _cx1 - 16, _ey + _eh * 0.5, 0.5, 0.5, 90, c_white, c_white, c_white, c_white, 1);
             }
         }
+        draw_set_color(c_white);
     }
 }
 draw_set_color(c_white);
