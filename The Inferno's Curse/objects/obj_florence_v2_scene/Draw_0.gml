@@ -41,13 +41,19 @@ for (var _i = 0; _i < _n; _i++) {
     var _r  = _roads[_i];
     var _x0 = round(_r[0]) * _g, _y0 = round(_r[1]) * _g;
     var _x1 = round(_r[2]) * _g, _y1 = round(_r[3]) * _g;
-    for (var _ty = _y0; _ty < _y1; _ty += _g) {
-        for (var _tx = _x0; _tx < _x1; _tx += _g) {
-            if (_r[4] == 1) {
+    if (_r[4] == 1) {
+        for (var _ty = _y0; _ty < _y1; _ty += _g) {
+            for (var _tx = _x0; _tx < _x1; _tx += _g) {
                 var _pi = (((_tx div 64) * 7) + ((_ty div 64) * 13)) mod 16;
                 draw_sprite(_plaza[_pi], 0, _tx, _ty);
-            } else {
-                draw_sprite(_t_road, 0, _tx, _ty);
+            }
+        }
+    } else {
+        // roads at HALF SCALE (32px cobbles) — twice as fine, so a 2-cell road
+        // reads as a narrow Florentine street, not a 3-stone highway (user fix 5)
+        for (var _ty = _y0; _ty < _y1; _ty += 32) {
+            for (var _tx = _x0; _tx < _x1; _tx += 32) {
+                draw_sprite_ext(_t_road, 0, _tx, _ty, 0.5, 0.5, 0, c_white, 1);
             }
         }
     }
@@ -63,9 +69,9 @@ for (var _a = 0; _a < _n; _a++) {
         var _ox1 = min(round(_roads[_a][2]), round(_roads[_b][2])) * _g;
         var _oy1 = min(round(_roads[_a][3]), round(_roads[_b][3])) * _g;
         if (_ox1 <= _ox0 || _oy1 <= _oy0) continue;
-        for (var _iy = _oy0; _iy < _oy1; _iy += _g)
-            for (var _ix = _ox0; _ix < _ox1; _ix += _g)
-                draw_sprite(_t_ints, 0, _ix, _iy);
+        for (var _iy = _oy0; _iy < _oy1; _iy += 32)
+            for (var _ix = _ox0; _ix < _ox1; _ix += 32)
+                draw_sprite_ext(_t_ints, 0, _ix, _iy, 0.5, 0.5, 0, c_white, 1);
     }
 }
 

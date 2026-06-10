@@ -70,7 +70,12 @@ function scr_fv2_draw_walls(_corr01) {
     if (_tex < 0 || asset_get_type("spr_florence_wall_tile") != asset_sprite) {
         _tex = spr_stable_wall_tile;   // timber fallback until the stone tile lands
     }
-    var _col  = merge_color(c_white,                      make_color_rgb(110, 112, 124), _corr01);
+    // ALTERNATING masonry tones (user fix 3): real medieval walls were never
+    // uniform — each 32px block picks pale sandy / mid grey / deep charcoal
+    // from a deterministic hash, so sections connect with varied stonework.
+    var _col_a = merge_color(make_color_rgb(225, 214, 192), make_color_rgb(112, 114, 126), _corr01);
+    var _col_b = merge_color(make_color_rgb(158, 152, 142), make_color_rgb(84, 86, 98),    _corr01);
+    var _col_c = merge_color(make_color_rgb(110, 104, 98),  make_color_rgb(60, 62, 72),    _corr01);
     var _top  = merge_color(make_color_rgb(168, 162, 148), make_color_rgb(70, 70, 78),   _corr01);
     var _ts   = 32;
     var _inset = 4;
@@ -85,6 +90,8 @@ function scr_fv2_draw_walls(_corr01) {
                 var _h = min(_ts, _y1 - _ty);
                 for (var _tx = _x0; _tx < _x1; _tx += _ts) {
                     var _w = min(_ts, _x1 - _tx);
+                    var _pick = (((_tx div 32) * 7) + ((_ty div 32) * 13) + _i * 3) mod 5;
+                    var _col = (_pick <= 1) ? _col_a : ((_pick <= 3) ? _col_b : _col_c);
                     draw_sprite_part_ext(_tex, 0, 0, 0, _w / _scale, _h / _scale,
                         _tx, _ty, _scale, _scale, _col, 1);
                 }
@@ -159,19 +166,23 @@ function scr_fv2_draw_arno(_corr) {
         draw_rectangle(FV2_RIVER_X0, 0, FV2_RIVER_X1, room_height, false);
         draw_set_alpha(1); draw_set_color(c_white);
     }
-    // stone banks (vertical strips; spr_arno_stone_bank tiles when imported)
+    // stone banks: plain stone strips, with the stepped bank tile placed
+    // SPARSELY (every 5 cells) so it reads as occasional river-access stairs —
+    // tiled continuously it read as endless ladders (user fix 4).
+    draw_set_color(make_color_rgb(150, 140, 118));
+    draw_rectangle(FV2_RIVER_X0 - _bankw, 0, FV2_RIVER_X0, room_height, false);
+    draw_rectangle(FV2_RIVER_X1, 0, FV2_RIVER_X1 + _bankw, room_height, false);
+    draw_set_color(make_color_rgb(108, 98, 80));
+    draw_rectangle(FV2_RIVER_X0 - 4, 0, FV2_RIVER_X0, room_height, false);
+    draw_rectangle(FV2_RIVER_X1, 0, FV2_RIVER_X1 + 4, room_height, false);
+    draw_set_color(c_white);
     var _bank = asset_get_index("spr_arno_stone_bank");
-    var _has  = (_bank >= 0 && asset_get_type("spr_arno_stone_bank") == asset_sprite);
-    if (_has) {
-        for (var _by = 0; _by < room_height; _by += 64) {
+    if (_bank >= 0 && asset_get_type("spr_arno_stone_bank") == asset_sprite) {
+        for (var _by = 160; _by < room_height - 64; _by += 320) {
+            if (_by + 64 > FV2_PONTE_Y0 - 32 && _by < FV2_PONTE_Y1 + 32) continue;   // not at the deck
             draw_sprite_ext(_bank, 0, FV2_RIVER_X0 - 42, _by, 0.66, 1, 0, c_white, 1);
             draw_sprite_ext(_bank, 0, FV2_RIVER_X1,      _by, 0.66, 1, 0, c_white, 1);
         }
-    } else {
-        draw_set_color(make_color_rgb(150, 140, 118));
-        draw_rectangle(FV2_RIVER_X0 - _bankw, 0, FV2_RIVER_X0, room_height, false);
-        draw_rectangle(FV2_RIVER_X1, 0, FV2_RIVER_X1 + _bankw, room_height, false);
-        draw_set_color(c_white);
     }
     // shingle pebbles just inside both waterlines (gap only at the deck)
     var _ss = 0.42;
@@ -181,10 +192,12 @@ function scr_fv2_draw_arno(_corr) {
         draw_sprite_ext(spr_river_stone, 0, FV2_RIVER_X0 - 8, _sy, _ss, _ss, 0, _col_stone, 1);
         draw_sprite_ext(spr_river_stone, 0, FV2_RIVER_X1 - 19, _sy, _ss, _ss, 0, _col_stone, 1);
     }
-    // the Ponte Vecchio deck across the band
-    draw_sprite_ext(spr_ponte_vecchio, 0, FV2_RIVER_X0 - _bankw, FV2_PONTE_Y0,
-        (FV2_RIVER_X1 - FV2_RIVER_X0 + _bankw * 2) / sprite_get_width(spr_ponte_vecchio),
-        (FV2_PONTE_Y1 - FV2_PONTE_Y0) / sprite_get_height(spr_ponte_vecchio), 0, c_white, 1);
+    // the Ponte Vecchio deck across the band — the EAST-WEST rotated sprite
+    // (spr_ponte_vecchio_ew, the original turned 90°), stretched to the river
+    // width exactly so the crossing runs west bank → east bank (user fix 1)
+    draw_sprite_ext(spr_ponte_vecchio_ew, 0, FV2_RIVER_X0 - _bankw, FV2_PONTE_Y0,
+        (FV2_RIVER_X1 - FV2_RIVER_X0 + _bankw * 2) / sprite_get_width(spr_ponte_vecchio_ew),
+        (FV2_PONTE_Y1 - FV2_PONTE_Y0) / sprite_get_height(spr_ponte_vecchio_ew), 0, c_white, 1);
 }
 
 // ── STEPS 5-8 — DEFAULT LAYOUT (all draggable obj_mercato_prop; F8 saves) ──────
@@ -345,7 +358,7 @@ function scr_fv2_build() {
     global.__fv2_keep_spr = [spr_florence_road_cobble, spr_florence_road_intersection,
         spr_florence_road_edge, spr_florence_grass, spr_florence_street,
         spr_florence_wall_section, spr_florence_wall_gate, spr_florence_wall_tower,
-        spr_florence_wall_tile, spr_florence_water, spr_river_stone, spr_ponte_vecchio,
+        spr_florence_wall_tile, spr_florence_water, spr_river_stone, spr_ponte_vecchio_ew,
         spr_florence_tower_house, spr_florence_row_block, spr_florence_cottage,
         spr_duomo_exterior, spr_florence_campanile, spr_palazzo_signoria,
         spr_merchant_guild, spr_parish_church, spr_locanda_exterior, spr_apothecary,
