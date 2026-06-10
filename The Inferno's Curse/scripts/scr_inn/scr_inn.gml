@@ -1,23 +1,24 @@
 // =============================================================================
 // scr_inn — Room_locanda_rosa_camuna (ground floor) — BLACK-VOID rectangular interior
 // =============================================================================
-// 16 x 17 cells (1024 x 1088) — maps references/inn_interior_map.png 1F 1:1 (one
-// reference tile = one 64px cell; interior 14x15). Walkable floor is an inset
-// rectangle; the 1-cell black-void border is the walls. A 2-cell gap in the SOUTH
-// wall (cols 7-8) is the entrance doorway. Props (obj_mercato_prop carrying a
-// sprite, draggable like the market/bridge) lay out the reference zones: kitchen
-// across the TOP wall, bar counter below it (modular run + corner, stools), storage
-// top-right, 2x4 staircase on the right wall, dining tables scattered on the rug.
-// INTERIOR room → black-void method (see CLAUDE.md). FF6 camera in the room.
+// 16 x 14 cells (1024 x 896) — CONDENSED packed-tavern cut (interior 14x12).
+// Walkable floor is an inset rectangle; the 1-cell black-void border is the
+// walls. A 2-cell gap in the SOUTH wall (cols 7-8) is the entrance doorway.
+// Props (obj_mercato_prop carrying a sprite, draggable like the market/bridge):
+// the one-piece bar ring backed against the room's own TOP wall, kitchen line
+// east of it on the same wall, storage top-right, 2x4 staircase right wall,
+// long communal table mid-floor, round tables on the rug, time-of-day-reactive
+// windows on the side walls (scr_inn_window_glow). INTERIOR room → black-void
+// method (see CLAUDE.md). FF6 camera in the room.
 // =============================================================================
 
 #macro INN_W_CELLS 16
-#macro INN_H_CELLS 17
+#macro INN_H_CELLS 14
 #macro INN_GRID_PX 64
 
 // South doorway centre — the entry gap + the return-to-Florence trigger.
 #macro INN_EXIT_X 512
-#macro INN_EXIT_Y 1056   // row 16.5
+#macro INN_EXIT_Y 864    // row 13.5
 
 // TEMP: boot straight into the inn for testing (takes precedence over DUOMO_LOAD_POINT
 // in obj_game_manager Create). Flip to false to restore the normal start.
@@ -34,8 +35,8 @@ function scr_inn_rep_tier() {
 
 // ── Cell predicates ─────────────────────────────────────────────────────────────
 function scr_inn_is_interior(_cx, _cy) {
-    var _main  = (_cx >= 1 && _cx <= 14 && _cy >= 1 && _cy <= 15);
-    var _entry = (_cy == 16 && _cx >= 7 && _cx <= 8);   // south doorway gap
+    var _main  = (_cx >= 1 && _cx <= 14 && _cy >= 1 && _cy <= 12);
+    var _entry = (_cy == 13 && _cx >= 7 && _cx <= 8);   // south doorway gap
     return _main || _entry;
 }
 
@@ -66,9 +67,12 @@ function scr_inn_is_corner(_cx, _cy) {
     return _h && _v;
 }
 
-/// Red/brown dining rug — centre of the common room (drawn in obj_inn_scene Draw).
+/// Red/brown dining rug — centre of the common room (drawn in obj_inn_scene Draw),
+/// plus a small side rug bottom-right (code-only, per the reference).
 function scr_inn_is_rug(_cx, _cy) {
-    return (_cx >= 3 && _cx <= 10 && _cy >= 9 && _cy <= 13);
+    if (_cx >= 3 && _cx <= 10 && _cy >= 7 && _cy <= 10) return true;    // main rug
+    if (_cx >= 12 && _cx <= 13 && _cy >= 11 && _cy <= 12) return true;  // side rug
+    return false;
 }
 
 // ── Default prop layout — [object, gx, gy, scale, (sprite)] ───────────────────────
@@ -103,29 +107,47 @@ function scr_inn_default_layout() {
     array_push(_L, ["obj_mercato_prop", 8.2,  2, 0.9, "spr_inn_table"]);
     // West-side clutter in the gap between the bar ring and the west wall
     array_push(_L, ["obj_barrel", 1, 2.2, 0.5]);
-    // Zone 5 — STORAGE / PANTRY (top-right): barrels + kegs
+    // Zone 5 — STORAGE / PANTRY (top-right): barrels + kegs + clay pots between
+    // the oven line and the storage corner (urns at 0.4 per the prop-scale rules)
     array_push(_L, ["obj_barrel", 11.5, 1.5, 0.5]);
     array_push(_L, ["obj_barrel", 12.5, 1.5, 0.5]);
     array_push(_L, ["obj_barrel", 12.5, 2.5, 0.5]);
     array_push(_L, ["obj_mercato_prop", 13.3, 1.3, 0.7, "spr_inn_keg_group"]);
-    // Zone 6 — STAIRS UP: 2x4-cell staircase on the right wall (x13-14, y5-8),
+    array_push(_L, ["obj_mercato_prop", 9.9,  2.1, 0.4, "spr_clay_pot_large"]);
+    array_push(_L, ["obj_mercato_prop", 11.1, 2.2, 0.4, "spr_clay_pot_large"]);
+    // Zone 6 — STAIRS UP: 2x4-cell staircase on the right wall (x13-14, y4-7),
     // non-solid — the player walks onto the bottom landing to trigger going up.
-    array_push(_L, ["obj_mercato_prop", 13, 5, 1, "spr_inn_staircase"]);
+    array_push(_L, ["obj_mercato_prop", 13, 4, 1, "spr_inn_staircase"]);
+    array_push(_L, ["obj_mercato_prop", 12.3, 4.3, 1, "spr_inn_plant"]);   // plant by the stairs
+    // Cellar corner under the stairs: kegs + barrels
+    array_push(_L, ["obj_mercato_prop", 12.6, 9, 0.7, "spr_inn_keg_group"]);
+    array_push(_L, ["obj_barrel", 13.6, 9.2, 0.5]);
+    array_push(_L, ["obj_barrel", 12.7, 10,  0.5]);
     // Hearths — LEFT-wall fireplace per the reference + the right-wall focal fire
-    array_push(_L, ["obj_mercato_prop", 1,    12, 1, "spr_inn_fireplace"]);
-    array_push(_L, ["obj_mercato_prop", 13.5, 11, 1, "spr_inn_fireplace"]);
-    // Centre DINING — the reference scatter: 3 tables on the rug + 2 off-rug east.
-    // Spacing 2-3.6 cells centre-to-centre (snug, not a grid).
-    var _tables = [[4, 10], [7.5, 11.5], [6, 13], [11.5, 10], [11.5, 13]];
+    array_push(_L, ["obj_mercato_prop", 1,    9.5, 1, "spr_inn_fireplace"]);
+    array_push(_L, ["obj_mercato_prop", 13.5, 11,  1, "spr_inn_fireplace"]);
+    // West-wall service strip: delivery barrels + crates
+    array_push(_L, ["obj_barrel", 1,   4.6, 0.5]);
+    array_push(_L, ["obj_barrel", 1.1, 5.6, 0.5]);
+    array_push(_L, ["obj_mercato_prop", 1, 7.2, 0.5, "spr_crate_stack"]);
+    // LONG COMMUNAL TABLE — the centerpiece, mid-floor between bar and rug.
+    // The PixelLab sprite has bench seating BAKED IN both sides, so no chair
+    // props here — just the two candles on the tabletop.
+    array_push(_L, ["obj_mercato_prop", 5.5, 4.8, 1, "spr_inn_table_long"]);
+    array_push(_L, ["obj_inn_candle", 5.9, 4.95, 0.5]);
+    array_push(_L, ["obj_inn_candle", 6.9, 4.95, 0.5]);
+    // Loose stools near the bar (the drunks' corner)
+    array_push(_L, ["obj_mercato_prop", 8.5, 3.8, 0.5, "spr_inn_stool"]);
+    array_push(_L, ["obj_mercato_prop", 2.2, 4.4, 0.5, "spr_inn_stool"]);
+    // Centre DINING — 5 seated round tables: 3 on the rug + 2 off-rug east.
+    var _tables = [[3.5, 7.5], [6.5, 7.5], [5, 9.5], [11.5, 7], [11.5, 9.8]];
     for (var _i = 0; _i < array_length(_tables); _i++)
         array_push(_L, ["obj_mercato_prop", _tables[_i][0], _tables[_i][1], 1, "spr_inn_table"]);
-    // Directional chairs HUG their tables (0.7 scale at 0.75-cell offset — the
-    // reference stools touch the table edge). Each faces INWARD: N-side=chair_south ·
-    // S-side=chair_north · W-side=chair_east · E-side=chair_west. Centre table is
-    // unseated. (Chairs don't rotate — distinct sprites.)
-    var _seat = [[4, 10], [6, 13], [11.5, 10], [11.5, 13]];
-    for (var _s = 0; _s < array_length(_seat); _s++) {
-        var _sx = _seat[_s][0], _sy = _seat[_s][1];
+    // Directional chairs HUG their tables (0.7 scale at 0.75-cell offset). Each
+    // faces INWARD: N-side=chair_south · S-side=chair_north · W-side=chair_east ·
+    // E-side=chair_west. (Chairs don't rotate — distinct sprites.)
+    for (var _s = 0; _s < array_length(_tables); _s++) {
+        var _sx = _tables[_s][0], _sy = _tables[_s][1];
         array_push(_L, ["obj_mercato_prop", _sx + 0.15, _sy - 0.75, 0.7, "spr_inn_chair_south"]);  // north seat
         array_push(_L, ["obj_mercato_prop", _sx + 0.15, _sy + 1.05, 0.7, "spr_inn_chair_north"]);  // south seat
         array_push(_L, ["obj_mercato_prop", _sx - 0.75, _sy + 0.15, 0.7, "spr_inn_chair_east"]);   // west seat
@@ -134,9 +156,25 @@ function scr_inn_default_layout() {
     // One candle centred on each dining table — snuffs out ONE BY ONE at 50%+ corruption.
     for (var _cd = 0; _cd < array_length(_tables); _cd++)
         array_push(_L, ["obj_inn_candle", _tables[_cd][0] + 0.25, _tables[_cd][1] + 0.25, 0.5]);
-    // Zone 1 — ENTRANCE: two candelabra flanking the south doorway (cols 7-8)
-    array_push(_L, ["obj_duomo_candelabra", 5.8, 14.5, 0.6]);
-    array_push(_L, ["obj_duomo_candelabra", 9.4, 14.5, 0.6]);
+    // Bottom-left barrels (mirrors the reference corner clutter)
+    array_push(_L, ["obj_barrel", 1,   10.8, 0.5]);
+    array_push(_L, ["obj_barrel", 1.9, 11.4, 0.5]);
+    array_push(_L, ["obj_barrel", 1.2, 12.1, 0.5]);
+    // WINDOWS — set into the void side walls; time-of-day light pools drawn by
+    // scr_inn_window_glow (and the light LIES at full corruption)
+    array_push(_L, ["obj_mercato_prop", 0.1,  4.5, 1, "spr_inn_window"]);
+    array_push(_L, ["obj_mercato_prop", 0.1,  9,   1, "spr_inn_window"]);
+    array_push(_L, ["obj_mercato_prop", 14.9, 6.5, 1, "spr_inn_window"]);
+    // WALL DRESSING on the void walls: banner over the bar's back counter, banner
+    // by the door, hanging meats over the kitchen oven
+    array_push(_L, ["obj_mercato_prop", 4.5, 0.1, 1, "spr_inn_banner"]);
+    array_push(_L, ["obj_mercato_prop", 9.6, 12.3, 1, "spr_inn_banner"]);
+    array_push(_L, ["obj_mercato_prop", 8.9, 0.1, 1, "spr_inn_meats"]);
+    // Zone 1 — ENTRANCE: candelabra + potted flowers flanking the south doorway
+    array_push(_L, ["obj_duomo_candelabra", 5.8, 11.5, 0.6]);
+    array_push(_L, ["obj_duomo_candelabra", 9.4, 11.5, 0.6]);
+    array_push(_L, ["obj_mercato_prop", 6.3, 12.2, 1, "spr_inn_plant"]);
+    array_push(_L, ["obj_mercato_prop", 8.6, 12.2, 1, "spr_inn_plant"]);
     return _L;
 }
 
@@ -148,6 +186,8 @@ function scr_inn_build() {
     global.__inn_keep     = [obj_mercato_prop, obj_duomo_candelabra, obj_barrel, obj_npc_innkeeper, obj_npc_rosa, obj_inn_candle];
     global.__inn_keep_spr = [spr_inn_counter_corner, spr_inn_counter_empty, spr_inn_counter_food, spr_inn_keg_group, spr_inn_wine_shelf, spr_inn_table,
         spr_inn_stool, spr_inn_staircase, spr_inn_bar_counter,
+        spr_inn_plant, spr_inn_banner, spr_inn_meats, spr_inn_table_long, spr_inn_window,
+        spr_clay_pot_large, spr_crate_stack,
         spr_inn_chair_south, spr_inn_chair_north, spr_inn_chair_east, spr_inn_chair_west,
         spr_inn_fireplace, spr_inn_oven, spr_inn_oven_lit, spr_inn_oven_corrupt, spr_inn_oven_green, spr_inn_bed, spr_inn_stairs, spr_npc_innkeeper, spr_npc_rosa,
         spr_inn_candle, spr_inn_candle_lit, spr_inn_candle_unlit, spr_inn_candle_green];
@@ -287,4 +327,63 @@ function scr_inn_rebuild_collision() {
     if (room != Room_locanda_rosa_camuna) return;
     with (obj_wall) instance_destroy();
     scr_inn_build_collision();
+}
+
+/// Time-of-day light through the WINDOWS (called from obj_inn_scene Draw, after
+/// the floor): a light pool spills inward from each spr_inn_window prop.
+///   Dawn 05-07  warm orange   ·  Day 08-17   bright white daylight
+///   Dusk 18-20  amber gold    ·  Night 21-04 faint cool moon glow
+/// At FULL corruption (100) the light LIES: dawn shows moonlight, day shows
+/// darkness, dusk goes dark too, night blazes with harsh noon sun — and the
+/// chronicle notes it ONCE, the first time Benedetto sees it.
+function scr_inn_window_glow() {
+    if (room != Room_locanda_rosa_camuna) return;
+    if (!variable_global_exists("room_builder_objects")) return;
+    var _hour = variable_global_exists("game_hour") ? global.game_hour : 12;
+    var _corrupted = (global.circle_corruption[CIRCLE_LIMBO] >= 100);
+    // phase: 0 dawn · 1 day · 2 dusk · 3 night · 4 unnatural dark · 5 harsh noon
+    var _phase;
+    if      (_hour >= 5  && _hour <= 7)  _phase = 0;
+    else if (_hour >= 8  && _hour <= 17) _phase = 1;
+    else if (_hour >= 18 && _hour <= 20) _phase = 2;
+    else                                 _phase = 3;
+    if (_corrupted) {
+        if      (_phase == 0) _phase = 3;   // dawn -> moonlight
+        else if (_phase == 3) _phase = 5;   // night -> harsh noon sun
+        else                  _phase = 4;   // day/dusk -> darkness
+        if (!variable_global_exists("inn_window_wrong_noted")) {
+            global.inn_window_wrong_noted = true;
+            scr_chronicle_add("The light through the window is wrong. It has been wrong for some time.");
+        }
+    }
+    var _col, _a, _r;
+    switch (_phase) {
+        case 0:  _col = make_color_rgb(255, 160, 80);  _a = 0.30; _r = 60; break;
+        case 1:  _col = make_color_rgb(255, 250, 230); _a = 0.34; _r = 72; break;
+        case 2:  _col = make_color_rgb(255, 196, 90);  _a = 0.30; _r = 60; break;
+        case 3:  _col = make_color_rgb(140, 170, 230); _a = 0.16; _r = 44; break;
+        case 4:  _a = 0; _r = 0; _col = c_black;                           break;
+        default: _col = make_color_rgb(255, 255, 235); _a = 0.55; _r = 96; break;
+    }
+    if (_a <= 0) return;   // unnatural dark: the windows give NOTHING
+    gpu_set_blendmode(bm_add);
+    draw_set_color(_col);
+    var _objs = global.room_builder_objects;
+    for (var _i = 0; _i < array_length(_objs); _i++) {
+        var _o = _objs[_i];
+        if (!instance_exists(_o)) continue;
+        if (!variable_instance_exists(_o, "builder_sprite")) continue;
+        if (_o.builder_sprite != "spr_inn_window") continue;
+        var _wx = _o.x + 32 * _o.image_xscale;
+        var _wy = _o.y + 32 * _o.image_yscale;
+        // pool spills INWARD from whichever side wall the window sits on
+        var _ix = (_o.x < room_width * 0.5) ? _wx + _r * 0.7 : _wx - _r * 0.7;
+        draw_set_alpha(_a);
+        draw_circle(_ix, _wy, _r, false);
+        draw_set_alpha(_a * 0.45);
+        draw_circle(_ix, _wy, _r * 1.6, false);
+    }
+    gpu_set_blendmode(bm_normal);
+    draw_set_alpha(1);
+    draw_set_color(c_white);
 }
