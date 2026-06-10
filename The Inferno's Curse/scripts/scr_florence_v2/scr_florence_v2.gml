@@ -317,8 +317,10 @@ function scr_fv2_draw_walls(_corr01) {
 // ── STEP 9 — THE ARNO (vertical east band, flows SOUTH) ────────────────────────
 #macro FV2_RIVER_X0  2560
 #macro FV2_RIVER_X1  2752
+// Ponte crossing = EXACTLY the Ponte road band (y10-12) — deck, rails,
+// transitions, river-collision gap and boat lane all align to the road.
 #macro FV2_PONTE_Y0  640
-#macro FV2_PONTE_Y1  896
+#macro FV2_PONTE_Y1  768
 
 /// Animated Arno — the SAME corruption water language as the old map, rotated
 /// to the reference's vertical course: murky forward current (south) → silty →
@@ -669,14 +671,10 @@ function scr_fv2_spawn_transitions() {
         "Room_overworld_tactics", "Tuscan Countryside", 0, 0, "");
     scr_transition_spawn("fv2_south_gate", 2304, 1654, 128, 100,
         "Room_overworld_tactics", "Tuscan Countryside", 0, 0, "");
-    // Ponte Vecchio entry zones — W/E half decides the bridge-room landing
-    var _deckmid = (FV2_RIVER_X0 + FV2_RIVER_X1) * 0.5;
-    scr_transition_spawn("fv2_ponte_w", FV2_RIVER_X0 - 22, FV2_PONTE_Y0 + 16,
-        _deckmid - (FV2_RIVER_X0 - 22), FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
-        "Room_ponte_vecchio", "Ponte Vecchio", 288, 200, "The Ponte Vecchio");
-    scr_transition_spawn("fv2_ponte_e", _deckmid, FV2_PONTE_Y0 + 16,
-        (FV2_RIVER_X1 + 22) - _deckmid, FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
-        "Room_ponte_vecchio", "Ponte Vecchio", 288, 700, "The Ponte Vecchio");
+    // Ponte Vecchio: NO transition (removed per David 2026-06-10) — the deck
+    // is a real walkable crossing in this room; players simply walk over the
+    // Arno between the rails. (The old N-S Room_ponte_vecchio interior no
+    // longer matches the EW crossing — see the ponte-room redo ticket.)
     // interior entrances, bbox-following like the old map
     var _dux = 704, _duy = 712;
     var _stx = 1216, _sty = 548;
