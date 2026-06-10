@@ -123,6 +123,17 @@ it in the report. Especially required after hand-editing a .yy event list or
 when an imported sprite isn't appearing (sign: compile log lists "Unused Assets
 found", or a unit draws nothing — no sprite AND no placeholder rectangle).
 
+## WALLS — Void Wall + Art (permanent standard, set 2026-06-10)
+EVERY wall in the game — city walls, interior partitions, precinct/courtyard
+walls, any future wall — is built as VOID WALL + ART: a solid BLACK void band
+(which is also the collision rect, single geometry source) with sprite/tile
+art filling it inset (black outline frame), plus a lit top edge where it fits.
+Established in the stable partitions, proven on the Florence v2 city walls and
+the Duomo precinct walls. Generate the fill tile AT THE BAND'S SIZE (e.g.
+128x120 city band, 128x32 thin wall) — never stretch a mismatched tile. David:
+"It looks better and it's professional." Procedural block masonry is the
+approved fallback when a tile is missing.
+
 ## Interior vs Exterior Rooms — Black Void (permanent)
 Rooms are one of two types, and the BLACK-VOID wall method applies to INTERIOR
 rooms ONLY:

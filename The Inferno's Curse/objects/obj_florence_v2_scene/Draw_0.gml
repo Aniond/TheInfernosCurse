@@ -51,10 +51,18 @@ for (var _i = 0; _i < _n; _i++) {
     var _x0 = round(_r[0]) * _g, _y0 = round(_r[1]) * _g;
     var _x1 = round(_r[2]) * _g, _y1 = round(_r[3]) * _g;
     if (_r[4] == 1) {
-        for (var _ty = _y0; _ty < _y1; _ty += _g) {
-            for (var _tx = _x0; _tx < _x1; _tx += _g) {
-                var _pi = (((_tx div 64) * 7) + ((_ty div 64) * 13)) mod 16;
-                draw_sprite(_plaza[_pi], 0, _tx, _ty);
+        // plazas: CONTINUOUS half-scale cobble base (the 16 medallion tiles
+        // each carry their own grey base, so tiling them wall-to-wall read as
+        // spaced dots) with a plaza medallion inset every few cells as a
+        // decorative pavement rosette
+        for (var _ty = _y0; _ty < _y1; _ty += 32)
+            for (var _tx = _x0; _tx < _x1; _tx += 32)
+                draw_sprite_ext(_t_road, 0, _tx, _ty, 0.5, 0.5, 0, c_white, 1);
+        for (var _py = _y0; _py < _y1; _py += _g) {
+            for (var _px = _x0; _px < _x1; _px += _g) {
+                var _pi = (((_px div 64) * 7) + ((_py div 64) * 13)) mod 16;
+                if ((((_px div 64) * 3) + ((_py div 64) * 5)) mod 7 == 0)
+                    draw_sprite(_plaza[_pi], 0, _px, _py);
             }
         }
     } else {

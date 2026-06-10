@@ -1,4 +1,4 @@
-# VERSION 4
+# VERSION 5
 # Room_florence_v2 layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)
 # Reference-exact Florence (references/florence.png, 48x32 cells). All objects
 # draggable in debug (drag / R-rotate / arrows / Delete), F8 saves to the save
@@ -159,9 +159,8 @@ obj_mercato_prop        32.2      20.2      1     spr_inn_plant
 obj_mercato_prop        23.1      10.9      1     spr_inn_plant
 obj_mercato_prop        34.9      10.9      1     spr_inn_plant
 
-# --- LITTLE WALLS (the reference's internal low walls; trailing 90 = vertical) ---
-obj_mercato_prop        8.5       10.6      1     spr_florence_low_wall     solid
-obj_mercato_prop        10.5      10.6      1     spr_florence_low_wall     solid
+# --- LITTLE WALLS (Duomo precinct segments replaced by the DRAWN thin void
+#     precinct wall in code; trailing 90 = vertical) ---
 obj_mercato_prop        5.8       13.6      1     spr_florence_low_wall     solid
 obj_mercato_prop        7.8       13.6      1     spr_florence_low_wall     solid
 obj_mercato_prop        5.8       21.6      1     spr_florence_low_wall     solid
@@ -170,8 +169,6 @@ obj_mercato_prop        29.5      11        1     spr_florence_low_wall     soli
 obj_mercato_prop        31.5      11        1     spr_florence_low_wall     solid
 obj_mercato_prop        32.5      21.8      1     spr_florence_low_wall     solid
 obj_mercato_prop        27.2      5.8       1     spr_florence_low_wall     solid
-obj_mercato_prop        6.8       5.5       1     spr_florence_low_wall     solid     90
-obj_mercato_prop        6.8       7.5       1     spr_florence_low_wall     solid     90
 obj_mercato_prop        38.8      13.5      1     spr_florence_low_wall     solid     90
 obj_mercato_prop        38.8      15.5      1     spr_florence_low_wall     solid     90
 obj_mercato_prop        35.4      18.5      1     spr_florence_low_wall     solid     90

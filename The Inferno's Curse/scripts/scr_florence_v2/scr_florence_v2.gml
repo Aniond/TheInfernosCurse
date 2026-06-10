@@ -64,6 +64,18 @@ function scr_fv2_walls() {
     ];
 }
 
+/// THIN PRECINCT WALLS — the Duomo's walled yard (west + south edges, opening
+/// aligned to the cathedral doors and the Duomo lane). Same black-void +
+/// sprite-fill technique as the city walls, at 32px thickness. Single source
+/// for drawing AND collision.
+function scr_fv2_precinct_walls() {
+    return [
+        [448, 256, 480, 704],     // west edge of the Piazza del Duomo
+        [448, 672, 640, 704],     // south edge, west of the cathedral doors
+        [896, 672, 1088, 704],    // south edge, east of the lane
+    ];
+}
+
 /// Paint the walls STABLE-STYLE (the user's standing technique): each band is a
 /// SOLID BLACK void block with stone texture tiles inset (black outline frame)
 /// and a lit top edge; crenellation merlons tooth the city-facing side; then the
@@ -180,6 +192,50 @@ function scr_fv2_draw_walls(_corr01) {
     draw_sprite(spr_florence_wall_section, 0, 1728, 1642);
     draw_sprite(spr_florence_wall_gate, 0, 448,  1630);   // West Gate
     draw_sprite(spr_florence_wall_gate, 0, 2304, 1630);   // South Gate
+    // THIN PRECINCT WALLS — void wall + art (the permanent standard): the
+    // PURPOSE-SIZED 128x32 thin tile fills the band; the city band tile is the
+    // squash fallback if it's ever missing
+    var _pw = scr_fv2_precinct_walls();
+    var _pband = asset_get_index("spr_florence_thin_wall");
+    if (_pband < 0 || asset_get_type("spr_florence_thin_wall") != asset_sprite)
+        _pband = asset_get_index("spr_florence_wall_band");
+    var _phas  = (_pband >= 0);
+    for (var _p = 0; _p < array_length(_pw); _p++) {
+        var _ps = _pw[_p];
+        draw_set_color(c_black);
+        draw_rectangle(_ps[0], _ps[1], _ps[2], _ps[3], false);
+        var _px0 = _ps[0] + 3, _py0 = _ps[1] + 3;
+        var _px1 = _ps[2] - 3, _py1 = _ps[3] - 3;
+        if (_px1 <= _px0 || _py1 <= _py0) continue;
+        if (_phas) {
+            var _pbw = sprite_get_width(_pband);
+            var _pvert = (_ps[3] - _ps[1]) > (_ps[2] - _ps[0]);
+            if (_pvert) {
+                var _psc = (_px1 - _px0) / sprite_get_height(_pband);
+                for (var _pty = _py0; _pty < _py1; _pty += _pbw * _psc) {
+                    var _pseg = min(_pbw * _psc, _py1 - _pty);
+                    draw_sprite_general(_pband, 0, 0, 0, _pseg / _psc, sprite_get_height(_pband),
+                        _px0, _pty + _pseg, _psc, _psc, 90,
+                        merge_color(c_white, make_color_rgb(110,112,124), _corr01),
+                        merge_color(c_white, make_color_rgb(110,112,124), _corr01),
+                        merge_color(c_white, make_color_rgb(110,112,124), _corr01),
+                        merge_color(c_white, make_color_rgb(110,112,124), _corr01), 1);
+                }
+            } else {
+                var _psc2 = (_py1 - _py0) / sprite_get_height(_pband);
+                for (var _ptx = _px0; _ptx < _px1; _ptx += _pbw * _psc2) {
+                    var _pw2 = min(_pbw * _psc2, _px1 - _ptx);
+                    draw_sprite_part_ext(_pband, 0, 0, 0, _pw2 / _psc2, sprite_get_height(_pband),
+                        _ptx, _py0, _psc2, _psc2,
+                        merge_color(c_white, make_color_rgb(110,112,124), _corr01), 1);
+                }
+            }
+        } else {
+            draw_set_color(merge_color(make_color_rgb(150,144,134), make_color_rgb(82,84,96), _corr01));
+            draw_rectangle(_px0, _py0, _px1, _py1, false);
+        }
+    }
+    draw_set_color(c_white);
 }
 
 // ── STEP 9 — THE ARNO (vertical east band, flows SOUTH) ────────────────────────
@@ -397,16 +453,16 @@ function scr_fv2_default_layout() {
     // LITTLE WALLS — the reference's internal low walls (a signature of the
     // Florentine fabric): Duomo precinct yard, district edges, courtyards,
     // Arno terraces. 2-cell segments; trailing 90 = vertical run.
-    var _lwH = [[8.5,10.6],[10.5,10.6],          // Duomo precinct, south edge
-                [5.8,13.6],[7.8,13.6],           // Artisans district, north edge
+    // (Duomo precinct segments removed 2026-06-10 — replaced by the DRAWN thin
+    //  void precinct wall, scr_fv2_precinct_walls.)
+    var _lwH = [[5.8,13.6],[7.8,13.6],           // Artisans district, north edge
                 [5.8,21.6],[7.8,21.6],           // Artisans district, south edge
                 [29.5,11],[31.5,11],             // Palazzo courtyard wall
                 [32.5,21.8],                     // Apothecary block, south
                 [27.2,5.8]];                     // market piazza NE corner
     for (var _lw = 0; _lw < array_length(_lwH); _lw++)
         array_push(_L, ["obj_mercato_prop", _lwH[_lw][0], _lwH[_lw][1], 1, "spr_florence_low_wall", "solid"]);
-    var _lwV = [[6.8,5.5],[6.8,7.5],             // Duomo precinct, west run
-                [38.8,13.5],[38.8,15.5],         // Arno terrace walls
+    var _lwV = [[38.8,13.5],[38.8,15.5],         // Arno terrace walls
                 [35.4,18.5]];                    // Apothecary block, east
     for (var _lv = 0; _lv < array_length(_lwV); _lv++)
         array_push(_L, ["obj_mercato_prop", _lwV[_lv][0], _lwV[_lv][1], 1, "spr_florence_low_wall", "solid", 90]);
@@ -497,7 +553,7 @@ function scr_fv2_build() {
         spr_florence_stray_cat, spr_florence_pigeon_cluster, spr_florence_washing_line,
         spr_arno_stone_bank, spr_florence_olive_tree, spr_florence_flower_bed,
         spr_inn_plant, spr_florence_low_wall, spr_florence_wall_band,
-        spr_florence_packed_earth, spr_arno_rowing_boat];
+        spr_florence_packed_earth, spr_arno_rowing_boat, spr_florence_thin_wall];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
@@ -511,6 +567,8 @@ function scr_fv2_build() {
 
     // walls + river + edge collision
     var _solids = scr_fv2_walls();
+    var _pwc = scr_fv2_precinct_walls();
+    for (var _pc = 0; _pc < array_length(_pwc); _pc++) array_push(_solids, _pwc[_pc]);
     array_push(_solids, [0, 0, room_width, 8]);
     array_push(_solids, [0, room_height - 8, room_width, room_height]);
     array_push(_solids, [0, 0, 8, room_height]);
@@ -579,6 +637,8 @@ function scr_fv2_rebuild_collision() {
     with (obj_duomo_entrance) instance_destroy();
     with (obj_stable_entrance) instance_destroy();
     var _solids = scr_fv2_walls();
+    var _pwc = scr_fv2_precinct_walls();
+    for (var _pc = 0; _pc < array_length(_pwc); _pc++) array_push(_solids, _pwc[_pc]);
     array_push(_solids, [0, 0, room_width, 8]);
     array_push(_solids, [0, room_height - 8, room_width, room_height]);
     array_push(_solids, [0, 0, 8, room_height]);

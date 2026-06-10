@@ -39,7 +39,7 @@
 #macro INN_LAYOUT_VERSION     16
 #macro PONTE_LAYOUT_VERSION   9
 #macro STABLE_LAYOUT_VERSION  3
-#macro FLORENCE_V2_LAYOUT_VERSION 4
+#macro FLORENCE_V2_LAYOUT_VERSION 5
 
 /// The CURRENT room's layout schema version (Room_florence = ROOM_BUILDER_LAYOUT_VERSION).
 function scr_room_builder_layout_version() {
