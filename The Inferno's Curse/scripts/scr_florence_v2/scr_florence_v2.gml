@@ -35,9 +35,9 @@ function scr_fv2_roads() {
         [12,  8, 21, 10, 0],   // Duomo approach -> market
         [12, 10, 14, 17, 0],   // Duomo -> Artisans vertical lane
         [ 6, 17, 18, 19, 0],   // Artisans lane -> the Inn
-        [27, 11, 40, 13, 0],   // Ponte Vecchio road (2 cells, feeds the crossing mid-deck)
-        [28, 13, 30, 22, 0],   // Parish-Church lane south
-        [15,  4, 28,  6, 0],   // north lane: Duomo -> Palazzo della Signoria
+        [27, 10, 40, 12, 0],   // Ponte Vecchio road (2 cells; touches the market plaza at y10)
+        [28, 12, 30, 22, 0],   // Parish-Church lane south (touches the Ponte road at y12)
+        [15,  5, 28,  7, 0],   // north lane: Duomo -> Palazzo (touches the plaza at y7)
     ];
 }
 
@@ -139,8 +139,8 @@ function scr_fv2_draw_walls(_corr01) {
         }
         // merlons — stone teeth on the CITY-facing edge of each band
         draw_set_color(c_black);
-        var _horiz = (_s[2] - _s[0]) >= (_s[3] - _s[1]);
-        if (_horiz) {
+        var _mer_horiz = (_s[2] - _s[0]) >= (_s[3] - _s[1]);
+        if (_mer_horiz) {
             var _city_south = (_s[1] < 1000);   // top bands face the city downward
             for (var _mx = _s[0] + 8; _mx < _s[2] - 24; _mx += 48) {
                 if (_city_south) draw_rectangle(_mx, _s[3], _mx + 24, _s[3] + 12, false);
@@ -272,7 +272,7 @@ function scr_fv2_default_layout() {
     array_push(_L, ["obj_mercato_prop", 18.5, 2,    0.7,  "spr_florence_tower_house", "solid"]);
     // STEP 7 — PIAZZA DEL GRANDE MERCATO: fountain centre, ring of awning stalls
     array_push(_L, ["obj_mercato_prop", 23.5, 7.8,  1,    "spr_mercato_fountain_piazza", "solid"]);
-    var _stl = [[21.8,7.3],[25.6,7.3],[21.8,9.4],[25.6,9.4],[23.6,6.3],[23.6,10.3]];
+    var _stl = [[21.8,7.3],[25.6,7.3],[21.8,9.4],[25.6,9.4],[23.6,6.3],[26.1,9.7]];
     for (var _s = 0; _s < array_length(_stl); _s++)
         array_push(_L, ["obj_mercato_prop", _stl[_s][0], _stl[_s][1], 0.7, "spr_mercato_stall_awning", "solid"]);
     array_push(_L, ["obj_marco_stall",  22,   10.6, 0.7]);
@@ -458,6 +458,13 @@ function scr_fv2_build() {
     }
     scr_room_builder_build_collision();   // tight per-prop footprints
 
+    scr_fv2_spawn_transitions();
+}
+
+/// All v2 transitions + interior entrances in ONE place — called by build AND
+/// by the debug collision rebuild (which destroys them first), so an F8 drag
+/// pass can never leave the city with dead doors.
+function scr_fv2_spawn_transitions() {
     // gate transitions → future FF-Tactics overworld (coming soon until built)
     scr_transition_spawn("fv2_west_gate",  448,  1654, 128, 100,
         "Room_overworld_tactics", "Tuscan Countryside", 0, 0, "");
@@ -471,8 +478,7 @@ function scr_fv2_build() {
     scr_transition_spawn("fv2_ponte_e", _deckmid, FV2_PONTE_Y0 + 16,
         (FV2_RIVER_X1 + 22) - _deckmid, FV2_PONTE_Y1 - FV2_PONTE_Y0 - 32,
         "Room_ponte_vecchio", "Ponte Vecchio", 288, 700, "The Ponte Vecchio");
-
-    // STEP 10 — interior entrances, bbox-following like the old map
+    // interior entrances, bbox-following like the old map
     var _dux = 704, _duy = 712;
     var _stx = 1216, _sty = 548;
     var _inx = 1331, _iny = 1170;
@@ -493,16 +499,14 @@ function scr_fv2_build() {
         "Room_parish_church", "Parish Church", 0, 0, "");
 }
 
-/// Rebuild v2 collision after debug drag/nudge/delete.
+/// Rebuild v2 collision after debug drag/nudge/delete — clears walls AND
+/// transitions/entrances, then respawns BOTH around the current prop positions.
 function scr_fv2_rebuild_collision() {
     if (room != Room_florence_v2) return;
     with (obj_wall) instance_destroy();
     with (obj_mercato_exit) instance_destroy();
     with (obj_duomo_entrance) instance_destroy();
     with (obj_stable_entrance) instance_destroy();
-    var _keep = global.room_builder_objects;   // rebuild walls/transitions only
-    // cheap full rebuild: clear walls + transitions then respawn them around the
-    // CURRENT prop positions (props themselves are untouched)
     var _solids = scr_fv2_walls();
     array_push(_solids, [0, 0, room_width, 8]);
     array_push(_solids, [0, room_height - 8, room_width, room_height]);
@@ -518,6 +522,7 @@ function scr_fv2_rebuild_collision() {
         _wl.wall_w = _s[2] - _s[0]; _wl.wall_h = _s[3] - _s[1]; _wl.visible = false;
     }
     scr_room_builder_build_collision();
+    scr_fv2_spawn_transitions();
 }
 
 // ── STEP 11 — CORRUPTION STATES ────────────────────────────────────────────────

@@ -51,9 +51,9 @@ for (var _i = 0; _i < _n; _i++) {
     } else {
         // roads at HALF SCALE (32px cobbles) — twice as fine, so a 2-cell road
         // reads as a narrow Florentine street, not a 3-stone highway (user fix 5)
-        for (var _ty = _y0; _ty < _y1; _ty += 32) {
-            for (var _tx = _x0; _tx < _x1; _tx += 32) {
-                draw_sprite_ext(_t_road, 0, _tx, _ty, 0.5, 0.5, 0, c_white, 1);
+        for (var _rty = _y0; _rty < _y1; _rty += 32) {
+            for (var _rtx = _x0; _rtx < _x1; _rtx += 32) {
+                draw_sprite_ext(_t_road, 0, _rtx, _rty, 0.5, 0.5, 0, c_white, 1);
             }
         }
     }
@@ -78,20 +78,20 @@ for (var _a = 0; _a < _n; _a++) {
 // pass 3 — curb strips along each road's long edges (16px slice of the curb tile)
 if (_t_edge >= 0) {
     for (var _c = 0; _c < _n; _c++) {
-        var _r  = _roads[_c];
-        if (_r[4] != 0) continue;
-        var _x0 = round(_r[0]) * _g, _y0 = round(_r[1]) * _g;
-        var _x1 = round(_r[2]) * _g, _y1 = round(_r[3]) * _g;
-        var _horiz = (_x1 - _x0) >= (_y1 - _y0);
+        var _cr  = _roads[_c];
+        if (_cr[4] != 0) continue;
+        var _cx0 = round(_cr[0]) * _g, _cy0 = round(_cr[1]) * _g;
+        var _cx1 = round(_cr[2]) * _g, _cy1 = round(_cr[3]) * _g;
+        var _horiz = (_cx1 - _cx0) >= (_cy1 - _cy0);
         if (_horiz) {
-            for (var _ex = _x0; _ex < _x1; _ex += _g) {
-                draw_sprite_part(_t_edge, 0, 0, 0,  64, 16, _ex, _y0);
-                draw_sprite_part(_t_edge, 0, 0, 48, 64, 16, _ex, _y1 - 16);
+            for (var _ex = _cx0; _ex < _cx1; _ex += _g) {
+                draw_sprite_part(_t_edge, 0, 0, 0,  64, 16, _ex, _cy0);
+                draw_sprite_part(_t_edge, 0, 0, 48, 64, 16, _ex, _cy1 - 16);
             }
         } else {
-            for (var _ey = _y0; _ey < _y1; _ey += _g) {
-                draw_sprite_part(_t_edge, 0, 0,  0, 16, 64, _x0, _ey);
-                draw_sprite_part(_t_edge, 0, 48, 0, 16, 64, _x1 - 16, _ey);
+            for (var _ey = _cy0; _ey < _cy1; _ey += _g) {
+                draw_sprite_part(_t_edge, 0, 0,  0, 16, 64, _cx0, _ey);
+                draw_sprite_part(_t_edge, 0, 48, 0, 16, 64, _cx1 - 16, _ey);
             }
         }
     }
