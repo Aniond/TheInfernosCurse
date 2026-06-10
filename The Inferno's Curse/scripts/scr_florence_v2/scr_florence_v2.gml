@@ -287,6 +287,22 @@ function scr_fv2_default_layout() {
     var _pot = [[19.4,17.9],[32.2,20.2],[23.1,10.9],[34.9,10.9]];
     for (var _q = 0; _q < array_length(_pot); _q++)
         array_push(_L, ["obj_mercato_prop", _pot[_q][0], _pot[_q][1], 1, "spr_inn_plant"]);
+    // LITTLE WALLS — the reference's internal low walls (a signature of the
+    // Florentine fabric): Duomo precinct yard, district edges, courtyards,
+    // Arno terraces. 2-cell segments; trailing 90 = vertical run.
+    var _lwH = [[8.5,10.6],[10.5,10.6],          // Duomo precinct, south edge
+                [5.8,13.6],[7.8,13.6],           // Artisans district, north edge
+                [5.8,21.6],[7.8,21.6],           // Artisans district, south edge
+                [29.5,11],[31.5,11],             // Palazzo courtyard wall
+                [32.5,21.8],                     // Apothecary block, south
+                [27.2,5.8]];                     // market piazza NE corner
+    for (var _lw = 0; _lw < array_length(_lwH); _lw++)
+        array_push(_L, ["obj_mercato_prop", _lwH[_lw][0], _lwH[_lw][1], 1, "spr_florence_low_wall", "solid"]);
+    var _lwV = [[6.8,5.5],[6.8,7.5],             // Duomo precinct, west run
+                [38.8,13.5],[38.8,15.5],         // Arno terrace walls
+                [35.4,18.5]];                    // Apothecary block, east
+    for (var _lv = 0; _lv < array_length(_lwV); _lv++)
+        array_push(_L, ["obj_mercato_prop", _lwV[_lv][0], _lwV[_lv][1], 1, "spr_florence_low_wall", "solid", 90]);
     return _L;
 }
 
@@ -318,7 +334,11 @@ function scr_fv2_default_place() {
         var _e = _L[_i];
         var _spr   = (array_length(_e) >= 5) ? _e[4] : "";
         var _solid = (array_length(_e) >= 6 && _e[5] == "solid");
-        scr_fv2_place(_e[0], _e[1], _e[2], _e[3], _spr, _solid, _layer);
+        var _inst  = scr_fv2_place(_e[0], _e[1], _e[2], _e[3], _spr, _solid, _layer);
+        // optional trailing ANGLE (deg CW, centre-pivot) — used by vertical
+        // low-wall runs; drawn via scr_room_builder_draw_rotated
+        if (_inst != noone && array_length(_e) >= 7 && is_real(_e[6]))
+            _inst.builder_angle = _e[6];
     }
 }
 
@@ -369,7 +389,7 @@ function scr_fv2_build() {
         spr_mercato_fountain_piazza, spr_florence_street_shrine, spr_florence_wall_torch,
         spr_florence_stray_cat, spr_florence_pigeon_cluster, spr_florence_washing_line,
         spr_arno_stone_bank, spr_florence_olive_tree, spr_florence_flower_bed,
-        spr_inn_plant];
+        spr_inn_plant, spr_florence_low_wall];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
