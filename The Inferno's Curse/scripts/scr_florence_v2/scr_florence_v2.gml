@@ -545,6 +545,27 @@ function scr_fv2_default_layout() {
     var _pot = [[19.4,17.9],[32.2,20.2],[23.1,10.9],[34.9,10.9]];
     for (var _q = 0; _q < array_length(_pot); _q++)
         array_push(_L, ["obj_mercato_prop", _pot[_q][0], _pot[_q][1], 1, "spr_inn_plant"]);
+    // FINISHING TOUCHES (2026-06-10, David's design rules): every district
+    // answers "where am I?" by sight — loggia at the Mercato (walk-through
+    // arcade over the north lane), arches at district street mouths, saints
+    // at the holy places + St John at the Ponte approach, guild crests at the
+    // trades, a shrine for the bare SE, and the cathedral green (the park).
+    array_push(_L, ["obj_mercato_prop", 21.9, 4.6,  0.7, "spr_mercato_loggia"]);
+    array_push(_L, ["obj_mercato_prop", 23,   9.5,  1.5, "spr_florence_arch"]);
+    array_push(_L, ["obj_mercato_prop", 12,   16.5, 1.5, "spr_florence_arch"]);
+    array_push(_L, ["obj_mercato_prop", 28,   11.4, 1.5, "spr_florence_arch"]);
+    array_push(_L, ["obj_mercato_prop", 10.3, 10.2, 1,   "spr_florence_statue_saint", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 29.4, 12.2, 1,   "spr_florence_statue_saint", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 38.9, 9.6,  1,   "spr_florence_statue_saint", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 35.3, 11.1, 1,   "spr_florence_guild_banner"]);
+    array_push(_L, ["obj_mercato_prop", 7.3,  14.3, 1,   "spr_florence_guild_banner"]);
+    array_push(_L, ["obj_mercato_prop", 32.4, 17.7, 1,   "spr_florence_guild_banner"]);
+    array_push(_L, ["obj_mercato_prop", 38.2, 15.4, 1,   "spr_florence_street_shrine"]);
+    array_push(_L, ["obj_mercato_prop", 9.7,  11.2, 1,   "spr_florence_olive_tree", "solid"]);
+    array_push(_L, ["obj_mercato_prop", 10.4, 12.3, 1,   "spr_florence_olive_tree", "solid"]);
+    array_push(_L, ["obj_cypress_tree", 11.2, 11.1, 0.7]);
+    array_push(_L, ["obj_mercato_prop", 9.8,  12.8, 1,   "spr_florence_flower_bed"]);
+    array_push(_L, ["obj_mercato_prop", 11,   11.9, 1,   "spr_florence_flower_bed"]);
     // LITTLE WALLS — the reference's internal low walls (a signature of the
     // Florentine fabric): Duomo precinct yard, district edges, courtyards,
     // Arno terraces. 2-cell segments; trailing 90 = vertical run.
@@ -639,7 +660,9 @@ function scr_fv2_build() {
         spr_florence_stray_cat, spr_florence_pigeon_cluster, spr_florence_washing_line,
         spr_arno_stone_bank, spr_florence_olive_tree, spr_florence_flower_bed,
         spr_inn_plant, spr_florence_wall_band,
-        spr_florence_packed_earth, spr_arno_rowing_boat, spr_florence_thin_wall];
+        spr_florence_packed_earth, spr_arno_rowing_boat, spr_florence_thin_wall,
+        spr_florence_arch, spr_florence_statue_saint, spr_florence_guild_banner,
+        spr_mercato_loggia];
 
     if (variable_global_exists("cam_zoom_target")) global.cam_zoom_target = 1;   // fresh room = normal zoom
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
@@ -769,6 +792,11 @@ function scr_fv2_corruption_sync() {
             if (_corr >= 75)      _o.visible = false;
             else if (_corr >= 50) _o.visible = ((_ai mod 2) == 1);
             else                  _o.visible = true;
+        } else if (_s == "spr_florence_statue_saint") {
+            // the saints fade with the shrines — stone witnesses going quiet
+            if (_corr >= 100)     _o.image_alpha = 0.25;
+            else if (_corr >= 75) _o.image_alpha = 0.60;
+            else                  _o.image_alpha = 1;
         } else if (_s == "spr_florence_street_shrine") {
             if (_corr >= 100) {
                 _o.image_alpha = 0.20;   // the alcove, almost empty
