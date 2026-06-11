@@ -5,6 +5,8 @@ description: The NPC creation standard for The Inferno's Curse — three tiers (
 
 # NPC Creation Standard
 
+> Canonical: this file
+
 ## Three Tiers
 
 ### Tier 1 — Key NPCs

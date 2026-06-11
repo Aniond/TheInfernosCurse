@@ -56,6 +56,8 @@ NEW-GENERATION assets (2026-06-09 standard, set by David):
   workshops, row houses) 0.65. "Buildings stay 1.0" applies to the legacy
   mercato set, whose art was already sized for 1.0.
 
+> See also: .claude/skills/pixellab-sprite/SKILL.md
+
 ## Single System — Corruption IS Sanity (permanent)
 There is NO separate sanity stat. `global.circle_corruption[CIRCLE_LIMBO]` (0-100)
 is the one axis. Benedetto only THINKS he is going insane — it is the corruption
@@ -64,6 +66,8 @@ tainting him. Anything that needs a "high = lucid" value uses the derived
 `scr_corruption_taint(amount)` raises it (fires 25/50/75 thresholds + game over at
 100); `scr_corruption_relieve(amount, deep)` lowers it but never below a floor
 (15 normal / 10 deep). Do NOT reintroduce `global.sanity`.
+
+> See also: .claude/skills/corruption-states/SKILL.md
 
 ## Battle Rules (permanent)
 - Player can always flee with ESC — costs +8% Limbo corruption (the old +3% +
@@ -138,6 +142,8 @@ David's in-game F8 layout saves live in C:\Users\david\AppData\Local\The_Inferno
 - Version macros still get bumped per layout-changing commit — the stamp now
   only drives the notice + fresh installs, not discarding.
 
+> See also: .claude/skills/room-build/SKILL.md
+
 ## BOTTOM-ONLY COLLISION (permanent, set 2026-06-10)
 Tall sprites use bottom-portion collision only — the world reads 3D:
 - Trees: bottom 20%, trunk-width only (cypress, olive — all trees)
@@ -150,6 +156,8 @@ Implemented in scr_room_builder_footprint + the arch special case in
 scr_room_builder_build_collision — ONE place, every room. With the GLOBAL
 DEPTH RULE, players walk under canopies/arches and the sprite draws over
 them. Never give a tall sprite a full-body collision box.
+
+> See also: .claude/skills/room-build/SKILL.md
 
 ## GLOBAL DEPTH RULE (permanent, set 2026-06-10)
 All world objects use Y-based depth sorting: depth = -bbox_bottom.
@@ -164,6 +172,8 @@ objects, UI (obj_dialogue_box, obj_journal, obj_save_indicator),
 obj_manifestation, invisible walls/exit zones, and room_battle entirely.
 New objects need NO manual depth — the global sort handles them.
 
+> See also: .claude/skills/room-build/SKILL.md
+
 ## WALLS — Void Wall + Art (permanent standard, set 2026-06-10)
 EVERY wall in the game — city walls, interior partitions, precinct/courtyard
 walls, any future wall — is built as VOID WALL + ART: a solid BLACK void band
@@ -174,6 +184,13 @@ the Duomo precinct walls. Generate the fill tile AT THE BAND'S SIZE (e.g.
 128x120 city band, 128x32 thin wall) — never stretch a mismatched tile. David:
 "It looks better and it's professional." Procedural block masonry is the
 approved fallback when a tile is missing.
+obj_wall is the internal implementation
+of the void band collision rect.
+Room-builder places these automatically.
+Never add obj_wall manually outside
+the void band system.
+
+> See also: .claude/skills/void-wall/SKILL.md
 
 ## Interior vs Exterior Rooms — Black Void (permanent)
 Rooms are one of two types, and the BLACK-VOID wall method applies to INTERIOR
@@ -190,6 +207,8 @@ boundary," and that is ALREADY guaranteed by the global FF6 camera (scr_camera),
 which clamps the view to the room so nothing past the edge is ever shown — so NO
 art change is needed in exterior rooms to satisfy it. (Decision: 2026-06-08.)
 
+> See also: .claude/skills/room-build/SKILL.md
+
 ## Character Sprite Standard (permanent)
 All CHARACTER / NPC sprites use a 64px canvas, and the character FIGURE occupies at
 most ~60% of the canvas — significant transparent PADDING on all sides. NEVER fill the
@@ -198,6 +217,8 @@ or rotated in engine. Generate the figure SMALL within the canvas, or pad after:
 trim to the figure → scale it to ~60% → centre it in a fresh 64px transparent canvas.
 For multi-frame ANIMATIONS, scale every frame UNIFORMLY (do NOT trim/re-centre per
 frame, or the motion breaks). (Standard set 2026-06-08.)
+
+> See also: .claude/skills/pixellab-sprite/SKILL.md · .claude/skills/npc-create/SKILL.md
 
 ## PixelLab Isometric Rejection Rule (permanent)
 When any sprite generated via PixelLab MCP comes out at an isometric angle,
@@ -213,6 +234,8 @@ David's tip (2026-06-10): including "no angles" explicitly is what stops the
 weird sideways art. Rooftop-first phrasing also helps ("rooftops clearly
 visible from overhead").
 Do not ask — just regenerate automatically on any wrong-angle output.
+
+> See also: .claude/skills/pixellab-sprite/SKILL.md
 
 ## UI THEME RULE (permanent, set 2026-06-10)
 Never hardcode UI colors.

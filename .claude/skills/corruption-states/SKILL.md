@@ -5,6 +5,8 @@ description: The corruption state standard for The Inferno's Curse — the four 
 
 # Corruption State Standard
 
+> Canonical: this file
+
 ## The Four Thresholds
 Every interactive object and NPC
 must respond to global.circle_corruption[0].

@@ -5,6 +5,9 @@ description: The permanent VOID WALL + ART standard for The Inferno's Curse — 
 
 # Void Wall + Art Standard
 
+> Canonical: this file
+> CLAUDE.md §WALLS references this skill.
+
 ## The Rule
 EVERY wall in the game uses VOID WALL + ART.
 No exceptions. Established 2026-06-09.
@@ -46,7 +49,12 @@ Use deterministic procedural masonry:
 
 ## Collision Rule
 The void band IS the collision rect.
-Never add separate obj_wall instances.
+The void band collision is implemented
+as obj_wall internally by the room-builder.
+This is correct — obj_wall IS the void band.
+Never add EXTRA obj_wall instances
+beyond what the room-builder places
+as part of the void band system.
 Never place invisible collision objects.
 The black void stops the player.
 That's it.

@@ -17,6 +17,8 @@ rooftops clearly visible from overhead,
 facing [north/south/east/west as appropriate]"
 
 ## Rejection Criteria
+> Canonical: CLAUDE.md §PixelLab Isometric Rejection Rule
+
 Reject immediately if sprite returns:
 - Any angled or isometric view
 - Side elevation or front elevation
@@ -29,6 +31,8 @@ On rejection: tighten prompt with
 overhead looking straight down" and regenerate.
 
 ## Canvas Rules
+> Canonical: CLAUDE.md §Character Sprite Standard (for character/NPC canvases)
+
 - Characters: 64px canvas, figure 60% max
 - Props: 64px canvas, object 60% max
 - Buildings small: 128x128px

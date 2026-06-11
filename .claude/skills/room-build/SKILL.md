@@ -36,6 +36,8 @@ Inside city walls = packed earth or cobblestone.
 Never grass inside Florence.
 
 ## Collision Mask Rules
+> Canonical: CLAUDE.md §BOTTOM-ONLY COLLISION
+
 Tall sprites use bottom-only collision:
 - Trees: bottom 20% — trunk only
 - Buildings over 128px: bottom 25%
@@ -45,6 +47,8 @@ Tall sprites use bottom-only collision:
 - Players walk under canopies naturally
 
 ## Depth Sorting
+> Canonical: CLAUDE.md §GLOBAL DEPTH RULE
+
 All objects: depth = -bbox_bottom
 Never use fixed depth values.
 Applied globally from obj_game_manager.
