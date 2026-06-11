@@ -1,3 +1,8 @@
+---
+name: npc-create
+description: The NPC creation standard for The Inferno's Curse — three tiers (key/named/ambient), npc_data.json structure, emotion states and icons, corruption memory erasure, sprite rules, and interaction rules. Use whenever creating or modifying any NPC. Describes target architecture, not just current code.
+---
+
 # NPC Creation Standard
 
 ## Three Tiers

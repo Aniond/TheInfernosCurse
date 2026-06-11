@@ -1,3 +1,8 @@
+---
+name: corruption-states
+description: The corruption state standard for The Inferno's Curse — the four thresholds (0-49/50-74/75-99/100) and how lighting, water, shrines, animals, moon, NPCs, Chronicle entries, and sin bleed respond at each. Use whenever adding corruption reactions to any room, object, or NPC. Describes target architecture, not just current code.
+---
+
 # Corruption State Standard
 
 ## The Four Thresholds
@@ -45,7 +50,7 @@ Blood red at 100%
 Stars: 40 at 0-49%, 14 at 75%+, 0 at 100%
 
 ## NPC Rules
-See npc-create.md for emotion overrides.
+See the npc-create skill for emotion overrides.
 All NPCs fear Benedetto at 75%+.
 All NPCs terrified and jittering at 100%.
 

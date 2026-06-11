@@ -1,3 +1,8 @@
+---
+name: room-build
+description: The room construction standard for The Inferno's Curse — build order (reference analysis → sprites → structure → transitions → corruption states → layout file), dimensions, floor types, collision masks, depth sorting, camera, interior void vs exterior art, and entry banners. Use whenever building or rebuilding any room.
+---
+
 # Room Build Standard
 
 ## Before Building Any Room

@@ -1,3 +1,8 @@
+---
+name: void-wall
+description: The permanent VOID WALL + ART standard for The Inferno's Curse — every wall is a black void band (which IS the collision rect) with tile art inset at exact band size, plus lit top edge. Use whenever building or modifying any wall in any room.
+---
+
 # Void Wall + Art Standard
 
 ## The Rule

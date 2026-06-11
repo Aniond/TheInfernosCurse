@@ -1,3 +1,8 @@
+---
+name: pixellab-sprite
+description: PixelLab sprite generation rules for The Inferno's Curse — mandatory top-down view enforcement, rejection criteria, canvas sizes, in-engine scales, and seamless tile rules. Use whenever generating, regenerating, or importing any sprite via PixelLab MCP.
+---
+
 # PixelLab Sprite Generation Rules
 
 ## Mandatory View Enforcement
