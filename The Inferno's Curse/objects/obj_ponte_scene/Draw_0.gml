@@ -67,58 +67,13 @@ var _t_floor = asset_get_index("spr_ponte_floor_cobble");
 if (_t_floor >= 0 && asset_get_type("spr_ponte_floor_cobble") == asset_sprite) {
     var _ftint = merge_color(c_white, make_color_rgb(96, 92, 100), _corr01 * 0.4);
 
-    // ── NORMAL-MAPPED DYNAMIC LIGHTING (POC, 2026-06-10) ──────────────────────
-    // shd_ponte_floor lights the walkway from the lantern posts: normal map
-    // derived from the cobble albedo, light colour = time of day x corruption
-    // (scr_ponte_light_color), ambient = scr_ponte_ambient_color. Falls back
-    // to the plain tint loop if shaders are unavailable.
-    var _use_shader = shaders_are_supported() && shader_is_compiled(shd_ponte_floor);
-    if (_use_shader) {
-        // gather lantern lights (max 8 — shader MAX_LIGHTS)
-        var _lights = array_create(24, 0);
-        var _lc = 0;
-        if (variable_global_exists("room_builder_objects")) {
-            var _objs = global.room_builder_objects;
-            for (var _li = 0; _li < array_length(_objs) && _lc < 8; _li++) {
-                var _lo = _objs[_li];
-                if (!instance_exists(_lo)) continue;
-                if (!variable_instance_exists(_lo, "builder_sprite")) continue;
-                if (_lo.builder_sprite != "spr_ponte_lantern_post") continue;
-                _lights[_lc * 3]     = _lo.x + sprite_get_width(spr_ponte_lantern_post) * 0.5 * _lo.image_xscale;
-                _lights[_lc * 3 + 1] = _lo.y + 12;   // the lamp head, not the post base
-                _lights[_lc * 3 + 2] = 170;          // pool radius in px
-                _lc++;
-            }
-        }
-        var _lcol = scr_ponte_light_color();
-        var _amb  = scr_ponte_ambient_color();
-        var _auv  = sprite_get_uvs(_t_floor, 0);
-        var _nuv  = sprite_get_uvs(spr_ponte_floor_normal, 0);
-
-        shader_set(shd_ponte_floor);
-        texture_set_stage(shader_get_sampler_index(shd_ponte_floor, "u_normal_tex"),
-                          sprite_get_texture(spr_ponte_floor_normal, 0));
-        shader_set_uniform_f(shader_get_uniform(shd_ponte_floor, "u_albedo_uvs"),
-                             _auv[0], _auv[1], _auv[2] - _auv[0], _auv[3] - _auv[1]);
-        shader_set_uniform_f(shader_get_uniform(shd_ponte_floor, "u_normal_uvs"),
-                             _nuv[0], _nuv[1], _nuv[2] - _nuv[0], _nuv[3] - _nuv[1]);
-        shader_set_uniform_f(shader_get_uniform(shd_ponte_floor, "u_light_count"), _lc);
-        shader_set_uniform_f_array(shader_get_uniform(shd_ponte_floor, "u_lights"), _lights);
-        shader_set_uniform_f(shader_get_uniform(shd_ponte_floor, "u_light_color"),
-                             color_get_red(_lcol) / 255, color_get_green(_lcol) / 255, color_get_blue(_lcol) / 255);
-        shader_set_uniform_f(shader_get_uniform(shd_ponte_floor, "u_ambient"),
-                             color_get_red(_amb) / 255, color_get_green(_amb) / 255, color_get_blue(_amb) / 255);
-
-        for (var _fy = 160; _fy < 352; _fy += 64)
-            for (var _fx = 0; _fx < room_width; _fx += 64)
-                draw_sprite_ext(_t_floor, 0, _fx, _fy, 1, 1, 0, _ftint, 1);
-
-        shader_reset();
-    } else {
-        for (var _fy = 160; _fy < 352; _fy += 64)
-            for (var _fx = 0; _fx < room_width; _fx += 64)
-                draw_sprite_ext(_t_floor, 0, _fx, _fy, 1, 1, 0, _ftint, 1);
-    }
+    // ── walkway tile loop ─────────────────────────────────────────────────────
+    // Lighting comes from the GLOBAL light map (scr_lightmap). The bridge floor
+    // shader POC was retired 2026-06-10 in favour of the global normal-mapped
+    // lighting system (scr_lightmap_normal) — one system, every room.
+    for (var _fy = 160; _fy < 352; _fy += 64)
+        for (var _fx = 0; _fx < room_width; _fx += 64)
+            draw_sprite_ext(_t_floor, 0, _fx, _fy, 1, 1, 0, _ftint, 1);
 } else {
     draw_set_color(merge_color(make_color_rgb(176, 160, 134), make_color_rgb(84, 80, 84), _corr01 * 0.4));
     draw_rectangle(0, 160, room_width, 352, false);
