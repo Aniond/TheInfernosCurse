@@ -2,10 +2,13 @@
 // scr_relief — GLOBAL normal-mapped floor relief (shd_floor_relief)
 // =============================================================================
 // The global system that replaced the dropped shd_ponte_floor POC (4845d20).
-// Any room's floor drawer wraps its tile loop:
+// SELF-CONTAINED: normal maps are DERIVED AT RUNTIME from the albedo sprite
+// (luminance -> wrapped 3x3 blur -> wrapped Sobel -> OpenGL encode), cached
+// per sprite — NO per-floor asset, no python step, no PixelLab (which cannot
+// make normal maps). Any room's floor drawer wraps its tile loop in ONE call:
 //
-//     var _relief = scr_relief_begin(spr_my_floor, spr_my_floor_normal);
-//     ... draw_sprite_ext tile loop (one albedo sprite, frame 0) ...
+//     var _relief = scr_relief_begin(spr_my_floor);
+//     ... draw_sprite_ext / draw_sprite_part_ext tile loop (frame 0) ...
 //     if (_relief) scr_relief_end();
 //
 // DIVISION OF LABOUR with the global light map (scr_lightmap):
@@ -17,28 +20,121 @@
 // hash, so the relief pools sit exactly under the light-map glow pools.
 //
 // Daylight (glow <= 0): no point lights -> ambient-only -> the shader is a
-// near-passthrough, so the daytime floor looks unchanged.
+// near-passthrough, so daytime floors look unchanged.
 //
-// Normal maps are DERIVED from the albedo (PixelLab cannot make them):
-// tools/regen_floor_normal.py — luminance -> wrapped Sobel -> OpenGL encode.
+// NOT for procedural floors (flagstone rects etc.) — there is no albedo
+// texture to derive relief from; those stay on the light map alone.
 // =============================================================================
 
-#macro RELIEF_MAX_LIGHTS 8
+#macro RELIEF_MAX_LIGHTS     8
+#macro RELIEF_NORMAL_STRENGTH 4.0
 
 /// Returns true when the relief shader can run this frame.
 function scr_relief_supported() {
     return shaders_are_supported() && shader_is_compiled(shd_floor_relief);
 }
 
+/// Byte index of the RED channel in buffer_get_surface data (BGRA on the DX
+/// renderer, RGBA elsewhere) — detected ONCE with a 1x1 pure-red surface so
+/// the encoded normal channels can never silently swap.
+function scr_relief_red_index() {
+    if (variable_global_exists("__relief_red_idx")) return global.__relief_red_idx;
+    var _s = surface_create(1, 1);
+    surface_set_target(_s);
+    draw_clear(make_color_rgb(255, 0, 0));
+    surface_reset_target();
+    var _b = buffer_create(4, buffer_fixed, 1);
+    buffer_get_surface(_b, _s, 0);
+    global.__relief_red_idx = (buffer_peek(_b, 0, buffer_u8) >= 128) ? 0 : 2;
+    buffer_delete(_b);
+    surface_free(_s);
+    return global.__relief_red_idx;
+}
+
+/// Derive (and cache) a tangent-space normal map sprite for an albedo sprite.
+/// Same algorithm as tools/regen_floor_normal.py: luminance height, wrapped
+/// 3x3 blur, wrapped Sobel, OpenGL +Y-up encode (mortar reads recessed).
+/// One-time cost per sprite (~75k ops for 64x64), cached for the session.
+function scr_relief_normal_for(_spr) {
+    if (!variable_global_exists("__relief_normals")) global.__relief_normals = {};
+    var _key = sprite_get_name(_spr);
+    if (variable_struct_exists(global.__relief_normals, _key))
+        return global.__relief_normals[$ _key];
+
+    var _w = sprite_get_width(_spr), _h = sprite_get_height(_spr);
+    var _n = _w * _h;
+
+    // grab the albedo pixels (part-draw ignores the sprite origin)
+    var _surf = surface_create(_w, _h);
+    surface_set_target(_surf);
+    draw_clear_alpha(c_black, 0);
+    gpu_set_blendenable(false);
+    draw_sprite_part_ext(_spr, 0, 0, 0, _w, _h, 0, 0, 1, 1, c_white, 1);
+    gpu_set_blendenable(true);
+    surface_reset_target();
+    var _buf = buffer_create(_n * 4, buffer_fixed, 1);
+    buffer_get_surface(_buf, _surf, 0);
+
+    // luminance height field (plain average — channel-order agnostic)
+    var _hgt = array_create(_n);
+    for (var _i = 0; _i < _n; _i++) {
+        var _o = _i * 4;
+        _hgt[_i] = (buffer_peek(_buf, _o,     buffer_u8)
+                  + buffer_peek(_buf, _o + 1, buffer_u8)
+                  + buffer_peek(_buf, _o + 2, buffer_u8)) / 765;
+    }
+    // wrapped 3x3 box blur (tile-safe) to soften pixel noise
+    var _bl = array_create(_n);
+    for (var _y = 0; _y < _h; _y++) {
+        var _ym = ((_y - 1) + _h) mod _h, _yp = (_y + 1) mod _h;
+        for (var _x = 0; _x < _w; _x++) {
+            var _xm = ((_x - 1) + _w) mod _w, _xp = (_x + 1) mod _w;
+            _bl[_y * _w + _x] =
+                ( _hgt[_ym * _w + _xm] + _hgt[_ym * _w + _x] + _hgt[_ym * _w + _xp]
+                + _hgt[_y  * _w + _xm] + _hgt[_y  * _w + _x] + _hgt[_y  * _w + _xp]
+                + _hgt[_yp * _w + _xm] + _hgt[_yp * _w + _x] + _hgt[_yp * _w + _xp]) / 9;
+        }
+    }
+    // wrapped Sobel -> normal -> encode into the same buffer
+    var _ri = scr_relief_red_index();      // red byte index (0 or 2)
+    var _bi = 2 - _ri;                     // blue is the mirror
+    for (var _y = 0; _y < _h; _y++) {
+        var _ym = ((_y - 1) + _h) mod _h, _yp = (_y + 1) mod _h;
+        for (var _x = 0; _x < _w; _x++) {
+            var _xm = ((_x - 1) + _w) mod _w, _xp = (_x + 1) mod _w;
+            var _gx = _bl[_ym * _w + _xm] + 2 * _bl[_y * _w + _xm] + _bl[_yp * _w + _xm]
+                    - _bl[_ym * _w + _xp] - 2 * _bl[_y * _w + _xp] - _bl[_yp * _w + _xp];
+            var _gy = _bl[_ym * _w + _xm] + 2 * _bl[_ym * _w + _x] + _bl[_ym * _w + _xp]
+                    - _bl[_yp * _w + _xm] - 2 * _bl[_yp * _w + _x] - _bl[_yp * _w + _xp];
+            var _nx =  _gx * RELIEF_NORMAL_STRENGTH;
+            var _ny = -_gy * RELIEF_NORMAL_STRENGTH;   // screen y down -> GL green up
+            var _ln = sqrt(_nx * _nx + _ny * _ny + 1);
+            var _o  = (_y * _w + _x) * 4;
+            buffer_poke(_buf, _o + _ri, buffer_u8, round((_nx / _ln + 1) * 127.5));
+            buffer_poke(_buf, _o + 1,   buffer_u8, round((_ny / _ln + 1) * 127.5));
+            buffer_poke(_buf, _o + _bi, buffer_u8, round((1   / _ln + 1) * 127.5));
+            buffer_poke(_buf, _o + 3,   buffer_u8, 255);
+        }
+    }
+    buffer_set_surface(_buf, _surf, 0);
+    var _nrm = sprite_create_from_surface(_surf, 0, 0, _w, _h, false, false, 0, 0);
+    buffer_delete(_buf);
+    surface_free(_surf);
+    global.__relief_normals[$ _key] = _nrm;
+    return _nrm;
+}
+
 /// Begin the relief pass for one floor. Returns true when the shader is set
 /// (caller MUST call scr_relief_end() after the tile loop), false to fall
 /// back to the plain loop (no shader set — drawing proceeds untouched).
 /// _albedo_spr: the tile sprite the loop draws (frame 0).
-/// _normal_spr: its derived normal map (same texel layout).
-function scr_relief_begin(_albedo_spr, _normal_spr) {
+/// _normal_spr: OPTIONAL hand-made normal map; omit to auto-derive (cached).
+function scr_relief_begin(_albedo_spr, _normal_spr = -1) {
     if (!scr_relief_supported()) return false;
-    if (!sprite_exists(_albedo_spr) || !sprite_exists(_normal_spr)) return false;
+    if (!sprite_exists(_albedo_spr)) return false;
     if (!variable_global_exists("game_hour")) return false;
+    if (_normal_spr == -1) _normal_spr = scr_relief_normal_for(_albedo_spr);
+    if (!sprite_exists(_normal_spr)) return false;
 
     var _L = scr_time_lighting();
 

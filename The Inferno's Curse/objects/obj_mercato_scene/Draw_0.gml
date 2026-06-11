@@ -20,11 +20,14 @@ draw_set_color(c_white);
 var _cw  = sprite_get_width(spr_florence_street);          // 64
 var _ch  = sprite_get_height(spr_florence_street);         // 64
 var _cob = make_color_rgb(150, 140, 126);                  // multiply tint -> worn, dusty
+// GLOBAL relief shader (scr_relief): night lantern relief, daytime passthrough
+var _relief = scr_relief_begin(spr_florence_street);
 for (var _gy = 0; _gy < _rh; _gy += _ch) {
     for (var _gx = 0; _gx < _rw; _gx += _cw) {
         draw_sprite_ext(spr_florence_street, 0, _gx, _gy, 1, 1, 0, _cob, 1);
     }
 }
+if (_relief) scr_relief_end();
 
 // ── Arno river along the SOUTH edge ───────────────────────────────────────────
 var _ry1   = _rh - 192;          // river top  (stone bank sits here)

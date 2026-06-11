@@ -237,6 +237,21 @@ Do not ask — just regenerate automatically on any wrong-angle output.
 
 > See also: .claude/skills/pixellab-sprite/SKILL.md
 
+## GLOBAL FLOOR RELIEF (permanent, set 2026-06-11)
+Every SPRITE-TILED floor in every room gets normal-mapped relief lighting via
+the GLOBAL system — wrap the tile loop in ONE call pair, nothing else:
+    var _relief = scr_relief_begin(spr_my_floor);
+    ... tile loop (draw_sprite_ext / draw_sprite_part_ext, frame 0) ...
+    if (_relief) scr_relief_end();
+Normal maps are AUTO-DERIVED at runtime from the albedo and cached — never
+generate normal-map assets per floor (PixelLab cannot make them anyway).
+Division of labour: scr_lightmap owns room darkness + glow pools; the relief
+shader (shd_floor_relief) NEVER darkens — it only adds relief under the same
+lights. Keep plain draw_rectangle geometry OUTSIDE the begin/end (no albedo
+to remap). Procedural floors (flagstone rects) stay on the light map alone.
+Wired everywhere as of 2026-06-11: ponte deck, Florence v2 cobble + plazas,
+mercato, inn planks + rug, stable timber.
+
 ## UI THEME RULE (permanent, set 2026-06-10)
 Never hardcode UI colors.
 Always use scr_ui_theme_get(COLOR_KEY).

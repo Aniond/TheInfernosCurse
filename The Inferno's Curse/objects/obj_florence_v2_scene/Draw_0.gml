@@ -30,11 +30,15 @@ for (var _gy = 0; _gy < _rh; _gy += 64)
 //        a DIFFERENT surface on purpose (warm flagstone, §2) — "the purpose
 //        of the change was to keep roads different style than the rest".
 var _cob_tint = make_color_rgb(150, 140, 126);
+// GLOBAL relief shader (scr_relief): night lantern relief on the cobble,
+// daytime passthrough, plain loop when shaders unavailable
+var _relief1b = scr_relief_begin(spr_florence_street);
 for (var _ey2 = 128; _ey2 < 1638; _ey2 += 64)
     for (var _ex2 = 320; _ex2 < 2538; _ex2 += 64)
         draw_sprite_part_ext(spr_florence_street, 0, 0, 0,
             min(64, 2538 - _ex2), min(64, 1638 - _ey2),
             _ex2, _ey2, 1, 1, _cob_tint, 1);
+if (_relief1b) scr_relief_end();
 
 // ── 2. roads ────────────────────────────────────────────────────────────────────
 var _roads = scr_fv2_roads();
@@ -55,9 +59,11 @@ for (var _i = 0; _i < _n; _i++) {
         // plazas: part of "the rest" — same mercato worn cobble as the base,
         // drawn HERE too so a plaza repaves any road beneath it (the Signoria
         // piazza sits across the Ponte road)...
+        var _relief_pl = scr_relief_begin(spr_florence_street);
         for (var _ty = _y0; _ty < _y1; _ty += 64)
             for (var _tx = _x0; _tx < _x1; _tx += 64)
                 draw_sprite_ext(spr_florence_street, 0, _tx, _ty, 1, 1, 0, _cob_tint, 1);
+        if (_relief_pl) scr_relief_end();
         // ...dressed with a herringbone (spina di pesce) brick motif in a
         // hash-picked subset of cells — only ~10% darker than the tinted
         // cobble and half-alpha, so it reads as pavement variation, never as

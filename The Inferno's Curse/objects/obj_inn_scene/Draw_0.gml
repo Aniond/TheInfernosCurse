@@ -27,23 +27,34 @@ draw_set_color(c_white);
 var _amb      = merge_color(make_color_rgb(235, 224, 210), make_color_rgb(140, 138, 146), _corr);
 var _bord     = merge_color(make_color_rgb(150, 130, 108), make_color_rgb(76, 76, 84),    _corr);
 var _darkbase = merge_color(make_color_rgb(40, 30, 22),    make_color_rgb(22, 24, 30),    _corr);
+// pass 1: the dark underlay rects (kept OUTSIDE the relief shader — plain
+// geometry has no albedo texture for the normal remap)
+draw_set_color(_darkbase);
+for (var _cy = 0; _cy < INN_H_CELLS; _cy++)
+    for (var _cx = 0; _cx < INN_W_CELLS; _cx++)
+        if (scr_inn_is_interior(_cx, _cy))
+            draw_rectangle(_cx * _g, _cy * _g, _cx * _g + _g, _cy * _g + _g, false);
+draw_set_color(c_white);
+// pass 2: the plank tiles — GLOBAL relief shader (scr_relief): candle/lantern
+// relief on the wood grain at night, daytime passthrough
+var _relief = scr_relief_begin(spr_inn_floor);
 for (var _cy = 0; _cy < INN_H_CELLS; _cy++)
     for (var _cx = 0; _cx < INN_W_CELLS; _cx++) {
         if (!scr_inn_is_interior(_cx, _cy)) continue;
-        var _px = _cx * _g, _py = _cy * _g;
-        draw_set_color(_darkbase); draw_rectangle(_px, _py, _px + _g, _py + _g, false);
-        draw_set_color(c_white);
         var _tint = (scr_inn_is_border(_cx, _cy) || scr_inn_is_corner(_cx, _cy)) ? _bord : _amb;
-        draw_sprite_ext(spr_inn_floor, 0, _px, _py, 1, 1, 0, _tint, 1);
+        draw_sprite_ext(spr_inn_floor, 0, _cx * _g, _cy * _g, 1, 1, 0, _tint, 1);
     }
+if (_relief) scr_relief_end();
 
 // Florentine woven rug (centre + side rug) — real crimson/gold rug texture
 // tiled per cell (spr_inn_rug), cooling with corruption like everything else
 var _rugt = merge_color(c_white, make_color_rgb(110, 105, 115), _corr);
+var _relief_rug = scr_relief_begin(spr_inn_rug);
 for (var _ry = 0; _ry < INN_H_CELLS; _ry++)
     for (var _rx = 0; _rx < INN_W_CELLS; _rx++)
         if (scr_inn_is_rug(_rx, _ry) && scr_inn_is_interior(_rx, _ry))
             draw_sprite_ext(spr_inn_rug, 0, _rx * _g, _ry * _g, 1, 1, 0, _rugt, 1);
+if (_relief_rug) scr_relief_end();
 // gold trim around the MAIN rug only (the side rug stays plain)
 var _rx0 = 3 * _g, _ry0 = 7 * _g, _rx1 = 11 * _g, _ry1 = 11 * _g;
 draw_set_color(merge_color(make_color_rgb(196, 160, 86), make_color_rgb(96, 84, 70), _corr));

@@ -26,6 +26,10 @@ var _amb    = merge_color(make_color_rgb(216, 188, 140), make_color_rgb(122, 120
 var _border = merge_color(make_color_rgb(132, 108, 76),  make_color_rgb(62, 62, 70),    _corr);
 var _floor  = asset_get_index("spr_stable_floor");
 var _has    = (_floor >= 0 && asset_get_type("spr_stable_floor") == asset_sprite);
+// GLOBAL relief shader (scr_relief): lantern relief on the timber at night,
+// daytime passthrough; the rect fallback only runs when the sprite is
+// missing, and then _relief is false anyway (begin rejects a bad sprite)
+var _relief = _has ? scr_relief_begin(_floor) : false;
 for (var _cy = 0; _cy < STABLE_H_CELLS; _cy++)
     for (var _cx = 0; _cx < STABLE_W_CELLS; _cx++) {
         if (!scr_stable_is_interior(_cx, _cy)) continue;
@@ -34,6 +38,7 @@ for (var _cy = 0; _cy < STABLE_H_CELLS; _cy++)
         if (_has) draw_sprite_ext(_floor, 0, _px, _py, 1, 1, 0, _tint, 1);
         else { draw_set_color(_tint); draw_rectangle(_px, _py, _px + _g, _py + _g, false); draw_set_color(c_white); }
     }
+if (_relief) scr_relief_end();
 
 // South entrance threshold — a lighter doorstep in the 2-cell gap (cols 4-5, row 14)
 var _thr = merge_color(_amb, c_white, 0.28);
