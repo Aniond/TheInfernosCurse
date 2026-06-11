@@ -22,8 +22,6 @@ var _accent = scr_ui_theme_get(UI_ACCENT);
 var _high   = scr_ui_theme_get(UI_HIGHLIGHT);
 var _border = scr_ui_theme_get(UI_BORDER);
 var _glow   = scr_ui_theme_get(UI_CANDLE_GLOW);
-// MP purple: one base hue bent toward the theme accent so it tracks corruption
-var _mp_col = merge_color(make_color_rgb(122, 84, 196), _accent, 0.22);
 
 // ── dark overlay ──────────────────────────────────────────────────────────────
 draw_set_alpha(0.82 * fade);
@@ -138,8 +136,8 @@ draw_line(_rx, _y0 + 70, _rx + _rw, _y0 + 70);
 var _hp     = instance_exists(obj_player) ? obj_player.hp     : 0;
 var _hp_max = instance_exists(obj_player) ? obj_player.max_hp : 100;
 var _st     = variable_global_exists("player_stats") ? global.player_stats : undefined;
-var _mp     = (_st != undefined) ? _st.mp     : 0;
-var _mp_max = (_st != undefined) ? _st.mp_max : 1;
+var _sp     = (_st != undefined) ? _st.sp     : 0;
+var _sp_max = (_st != undefined) ? _st.sp_max : 1;
 
 var _bar_w = 250, _bar_h = 12;
 var _by = _y0 + 88;
@@ -155,18 +153,23 @@ draw_rectangle(_rx + 40, _by, _rx + 40 + _bar_w * clamp(_hp / max(_hp_max, 1), 0
 draw_set_color(_border);
 draw_rectangle(_rx + 40, _by, _rx + 40 + _bar_w, _by + _bar_h, true);
 
+// ── skill points (Punti Abilità) — discrete pips, not a bar ───────────────────
 _by += 34;
 draw_set_color(_ink);
-draw_text(_rx, _by - 4, "MP");
+draw_text(_rx, _by - 4, "PA");
 draw_set_halign(fa_right);
-draw_text(_rx + _bar_w + 110, _by - 4, string(round(_mp)) + " / " + string(round(_mp_max)));
+draw_text(_rx + _bar_w + 110, _by - 4, string(round(_sp)) + " / " + string(round(_sp_max)));
 draw_set_halign(fa_left);
-draw_set_color(merge_color(_parch, _bg, 0.35));
-draw_rectangle(_rx + 40, _by, _rx + 40 + _bar_w, _by + _bar_h, false);
-draw_set_color(_mp_col);
-draw_rectangle(_rx + 40, _by, _rx + 40 + _bar_w * clamp(_mp / max(_mp_max, 1), 0, 1), _by + _bar_h, false);
-draw_set_color(_border);
-draw_rectangle(_rx + 40, _by, _rx + 40 + _bar_w, _by + _bar_h, true);
+var _sp_col   = merge_color(_glow, _high, 0.30);                       // ember tone, theme-derived
+var _sp_empty = merge_color(_parch, _bg, 0.40);
+var _sp_n     = clamp(round(_sp_max), 1, 12);
+for (var _spi = 0; _spi < _sp_n; _spi++) {
+    var _spx = _rx + 44 + _spi * 22;
+    draw_set_color((_spi < _sp) ? _sp_col : _sp_empty);
+    draw_rectangle(_spx, _by, _spx + 14, _by + _bar_h, false);
+    draw_set_color(_border);
+    draw_rectangle(_spx, _by, _spx + 14, _by + _bar_h, true);
+}
 
 // ── reputation block (right half) ─────────────────────────────────────────────
 var _rep = variable_global_exists("reputation") ? global.reputation

@@ -216,7 +216,7 @@ if (!instance_exists(obj_character_sheet)) {
 // Starting values for a parish cleric — battle/quest systems will mutate these.
 global.player_stats = {
     level: 1,
-    mp: 24,        mp_max: 24,
+    sp: 5,         sp_max: 5,     // Punti Abilità — skill points (MP discarded, David 2026-06-10)
     forza: 8,      vitalita: 11,  saggezza: 14,
     agilita: 9,    fede: 16,
     movimento: 4,  salto: 2,
