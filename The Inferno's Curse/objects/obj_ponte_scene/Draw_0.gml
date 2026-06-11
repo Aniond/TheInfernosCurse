@@ -77,10 +77,15 @@ if (_t_floor >= 0 && asset_get_type(_floor_name) == asset_sprite) {
     var _ftint = merge_color(c_white, make_color_rgb(96, 92, 100), _corr01 * 0.4);
 
     // ── full-deck stone tiling (y64-448, edge to edge) ────────────────────────
-    // Lighting comes from the GLOBAL light map (scr_lightmap). Seamless tile.
+    // Room darkness + glow pools come from the GLOBAL light map (scr_lightmap);
+    // the GLOBAL relief shader (scr_relief / shd_floor_relief, 2026-06-11) adds
+    // normal-mapped stone relief under the lantern pools at night. Falls back
+    // to the plain loop untouched when shaders are unavailable.
+    var _relief = scr_relief_begin(_t_floor, spr_ponte_floor_normal);
     for (var _fy = 64; _fy < 448; _fy += 64)
         for (var _fx = 0; _fx < room_width; _fx += 64)
             draw_sprite_ext(_t_floor, 0, _fx, _fy, 1, 1, 0, _ftint, 1);
+    if (_relief) scr_relief_end();
 } else {
     draw_set_color(merge_color(make_color_rgb(176, 160, 134), make_color_rgb(84, 80, 84), _corr01 * 0.4));
     draw_rectangle(0, 64, room_width, 448, false);
