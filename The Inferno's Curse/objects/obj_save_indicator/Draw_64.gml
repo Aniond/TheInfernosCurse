@@ -6,6 +6,8 @@
 
 if (global.save_indicator_timer <= 0) exit;
 
+draw_set_font(FONT_BODY);   // pixel body font (scr_fonts)
+
 var _t     = global.save_indicator_timer;
 var _alpha = clamp(_t / 30, 0, 1);   // full opacity until last 30 steps, then fade
 var _gw    = display_get_gui_width();

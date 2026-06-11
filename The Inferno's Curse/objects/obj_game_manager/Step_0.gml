@@ -12,6 +12,7 @@
 scr_camera_update();
 scr_banner_step();   // count down the location banner (drawn in obj_player Draw GUI)
 scr_ui_theme_apply(); // advance the corruption-reactive UI palette (60-frame lerp)
+scr_fonts_default();  // re-assert the body font (debug overlays reset it to -1)
 
 // ── Day/night clock ───────────────────────────────────────────────────────────
 scr_time_step();

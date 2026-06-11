@@ -2,10 +2,10 @@
 // obj_game_manager — Draw GUI: GLOBAL DAY/NIGHT LIGHTING (David's spec)
 // =============================================================================
 // Works in EVERY room with zero room-specific code:
-//   1. full-screen time-of-day tint (smooth 30-min eases, corruption-darkened)
-//   2. street-light glows — every torch/lantern/candle/shrine instance gets a
-//      warm circle at dusk/night, world→screen transformed; corruption snuffs
-//      them out (15% at 50+, 50% at 75+, ~90% at 100 with GREEN remnant flames)
+//   1+2. TRUE MULTIPLY LIGHT MAP (scr_lightmap, 2026-06-10) — ambient from the
+//      time-of-day phase + soft radial pools at every torch/lantern/candle/
+//      shrine, multiplied over the frame in one call; corruption snuffs lights
+//      (15% at 50+, 50% at 75+, ~90% at 100 with GREEN remnant flames)
 //   3. the moon — drifts across the top of the sky through the night; red-
 //      tinted at corruption 75+, blood red at 100
 //   4. stars — twinkling dots in the sky band; fewer at 75+, NONE at 100.
@@ -17,62 +17,16 @@ var _L  = scr_time_lighting();
 var _gw = display_get_gui_width();
 var _gh = display_get_gui_height();
 
-// ── 1. time-of-day tint ────────────────────────────────────────────────────────
-if (_L.alpha > 0) {
-    draw_set_alpha(_L.alpha);
-    draw_set_color(_L.col);
-    draw_rectangle(0, 0, _gw, _gh, false);
-    draw_set_alpha(1);
-    draw_set_color(c_white);
-}
+// ── 1 + 2. GLOBAL LIGHT MAP (upgraded 2026-06-10, see scr_lightmap) ───────────
+// The old "darken tint + additive glow circles" became a true multiply light
+// map: ambient + soft radial light pools rendered to a surface, multiplied
+// over the frame in one call. Same staging (phases, snuff, flicker, green
+// remnants, the shrine going dark) — but light now genuinely restores local
+// colour out of the darkness. Battle gets ambient only.
+scr_lightmap_draw();
 
 // world-space effects stay out of the battle screen (own staging/UI)
 if (room == room_battle) exit;
-
-// ── 2. street-light glows (dusk in → night full → dawn out) ───────────────────
-if (_L.glow > 0.01) {
-    // world→GUI transform from the active camera
-    var _cam = view_camera[0];
-    var _cx  = camera_get_view_x(_cam),     _cy = camera_get_view_y(_cam);
-    var _cw  = camera_get_view_width(_cam), _ch = camera_get_view_height(_cam);
-    if (_cw > 0 && _ch > 0) {
-        var _sx = _gw / _cw, _sy = _gh / _ch;
-        // corruption snuffs torches: fraction of lights that stay DARK
-        var _dark_frac = 0;
-        if (_L.corr >= 1.0)       _dark_frac = 0.90;
-        else if (_L.corr >= 0.75) _dark_frac = 0.50;
-        else if (_L.corr >= 0.50) _dark_frac = 0.15;
-        var _green = (_L.corr >= 1.0);     // the remnants burn wrong
-        gpu_set_blendmode(bm_add);
-        with (all) {
-            if (sprite_index == -1 || !visible) continue;
-            var _nm = sprite_get_name(sprite_index);
-            var _r = 0;
-            if (string_pos("torch", _nm) > 0)        _r = 96;
-            else if (string_pos("lantern", _nm) > 0) _r = 64;
-            else if (string_pos("candle", _nm) > 0)  _r = 32;
-            else if (string_pos("shrine", _nm) > 0)  _r = 28;
-            if (_r == 0) continue;
-            if (string_pos("shrine", _nm) > 0 && _L.corr >= 1) continue;   // she is gone
-            // deterministic per-light snuff (stable across frames)
-            var _hash = (((x div 16) * 73 + (y div 16) * 151) mod 100) / 100;
-            if (_hash < _dark_frac) continue;
-            var _lx = ((bbox_left + bbox_right) * 0.5 - _cx) * _sx;
-            var _ly = (bbox_top + (bbox_bottom - bbox_top) * 0.30 - _cy) * _sy;
-            if (_lx < -120 || _ly < -120 || _lx > _gw + 120 || _ly > _gh + 120) continue;
-            var _flick = 1 + 0.08 * sin(current_time * 0.004 + x * 0.13 + y * 0.07);
-            draw_set_color(_green ? make_color_rgb(70, 235, 110)
-                                  : make_color_rgb(255, 200, 100));
-            draw_set_alpha(0.314 * _L.glow * _flick);                // rgba(...,80)
-            draw_circle(_lx, _ly, _r * _sx * _flick, false);
-            draw_set_alpha(0.12 * _L.glow);
-            draw_circle(_lx, _ly, _r * _sx * 0.45, false);           // hot core
-        }
-        gpu_set_blendmode(bm_normal);
-        draw_set_alpha(1);
-        draw_set_color(c_white);
-    }
-}
 
 // ── 3 + 4. the moon and the stars ─────────────────────────────────────────────
 if (_L.night > 0.05) {

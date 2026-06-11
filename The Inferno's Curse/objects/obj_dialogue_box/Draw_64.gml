@@ -14,6 +14,8 @@
 
 if (!is_active) exit;
 
+draw_set_font(FONT_BODY);   // pixel body font (scr_fonts) — debug may have reset it
+
 // ── Layout constants ──────────────────────────────────────────────────────────
 var _gw = display_get_gui_width();
 var _gh = display_get_gui_height();

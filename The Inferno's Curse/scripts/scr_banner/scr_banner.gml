@@ -35,7 +35,8 @@ function scr_banner_draw() {
 
     var _gw  = display_get_gui_width();
     var _txt = global.banner_text;
-    var _sc  = 2;                                   // text scale (pixel font)
+    draw_set_font(FONT_TITLE);                      // Alagard medieval display (scr_fonts)
+    var _sc  = 1;                                   // native size — integer scale keeps pixels crisp
     draw_set_halign(fa_center);
     draw_set_valign(fa_middle);
 
@@ -64,4 +65,5 @@ function scr_banner_draw() {
     draw_set_color(c_white);
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
+    draw_set_font(FONT_BODY);
 }

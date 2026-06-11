@@ -1,5 +1,7 @@
 if (!is_open) exit;
 
+draw_set_font(FONT_BODY);   // pixel body font (scr_fonts)
+
 var _gw = display_get_gui_width();
 var _gh = display_get_gui_height();
 
@@ -39,13 +41,15 @@ draw_set_alpha(1);
 draw_set_color(_th_border);
 draw_rectangle(_x, _y, _x + _w, _y + _h, true);
 
-// Title
+// Title — medieval display face (Alagard), body font resumes after
+draw_set_font(FONT_TITLE);
 draw_set_color(_th_accent);
 draw_set_halign(fa_center);
 draw_set_valign(fa_top);
-draw_text(_gw / 2, _y + 16, "CODEX OF FATHER BENEDETTO");
+draw_text(_gw / 2, _y + 12, "CODEX OF FATHER BENEDETTO");
+draw_set_font(FONT_BODY);
 draw_set_color(_th_dim);
-draw_text(_gw / 2, _y + 34, "Priest of Florence  ·  Anno Domini 1300");
+draw_text(_gw / 2, _y + 36, "Priest of Florence  ·  Anno Domini 1300");
 
 // Separator line under title
 draw_set_color(_th_border);

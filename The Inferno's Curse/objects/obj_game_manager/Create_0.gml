@@ -203,6 +203,9 @@ global.input_lock_timer = 0;
 global.vision_cooldown = 300;
 
 
+// ── Fonts (runtime TTFs from Included Files — see scr_fonts) ──────────────────
+scr_fonts_init();
+
 // ── Debug mode ────────────────────────────────────────────────────────────────
 // true  = placeholder rectangles visible (dev/testing mode)
 // false = all placeholders hidden (player-facing build)

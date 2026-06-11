@@ -72,6 +72,8 @@ if (variable_instance_exists(id, "npc_data") && variable_struct_exists(npc_data,
 var _name_label_y   = (npc_sprite != noone) ? (y - 96 * _s) : (y - 58);
 var _prompt_label_y = (npc_sprite != noone) ? (y - 80 * _s) : (y - 48);
 
+draw_set_font(FONT_BODY);   // pixel body font (scr_fonts) for labels/prompts
+
 // Pulsing interact prompt above the NPC when the player is close
 if (near_player && !is_talking) {
     var _pulse = 0.5 + 0.5 * sin(current_time * 0.006);

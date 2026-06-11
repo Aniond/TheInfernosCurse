@@ -964,8 +964,12 @@ function scr_ponte_light_color() {
 function scr_ponte_ambient_color() {
     var _h = variable_global_exists("time_of_day") ? global.time_of_day
            : (variable_global_exists("game_hour") ? global.game_hour : 12);
+    // NOTE: the GLOBAL light map (scr_lightmap, 2026-06-10) multiplies the
+    // whole frame with room darkness — this shader ambient stays bright and
+    // carries only the floor RELIEF + lantern pools, or night would darken
+    // the walkway twice.
     var _day_amb   = make_color_rgb(236, 230, 218);
-    var _night_amb = make_color_rgb(64, 72, 104);
+    var _night_amb = make_color_rgb(168, 170, 184);
     var _a;
     if      (_h < 5)   _a = _night_amb;
     else if (_h < 8)   _a = merge_color(_night_amb, _day_amb, (_h - 5) / 3);
@@ -973,7 +977,7 @@ function scr_ponte_ambient_color() {
     else if (_h < 21)  _a = merge_color(_day_amb, _night_amb, (_h - 17) / 4);
     else               _a = _night_amb;
     var _corr01 = clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1);
-    return merge_color(_a, make_color_rgb(16, 14, 18), _corr01 * 0.55);
+    return merge_color(_a, make_color_rgb(40, 38, 44), _corr01 * 0.35);
 }
 
 // =============================================================================
