@@ -23,22 +23,20 @@ for (var _gy = 0; _gy < _rh; _gy += 64)
     for (var _gx = 0; _gx < _rw; _gx += 64)
         draw_sprite(spr_florence_grass, 0, _gx, _gy);
 
-// ── 1b. COBBLE PAVING over the whole CITY INTERIOR (David 2026-06-10: the
-//        plaza's seamless cobble citywide — packed earth retired inside the
-//        walls; grass lives only outside). Same tile, same half scale, same
-//        32px snap as the road/plaza passes, so every join is invisible.
-var _t_pave = asset_get_index("spr_florence_road_cobble");
-if (_t_pave < 0 || asset_get_type("spr_florence_road_cobble") != asset_sprite) _t_pave = spr_florence_street;
-for (var _ey2 = 128; _ey2 < 1638; _ey2 += 32)
-    for (var _ex2 = 320; _ex2 < 2538; _ex2 += 32)
-        draw_sprite_part_ext(_t_pave, 0, 0, 0,
-            min(64, (2538 - _ex2) * 2), min(64, (1638 - _ey2) * 2),
-            _ex2, _ey2, 0.5, 0.5, c_white, 1);
+// ── 1b. WORN COBBLE over the whole CITY INTERIOR — the MERCATO ground recipe
+//        (David 2026-06-10: the look he approved in Room_mercato_vecchio):
+//        spr_florence_street at FULL scale with the warm dusty multiply tint,
+//        packed earth retired inside the walls, grass only outside. ROADS get
+//        a DIFFERENT surface on purpose (warm flagstone, §2) — "the purpose
+//        of the change was to keep roads different style than the rest".
+var _cob_tint = make_color_rgb(150, 140, 126);
+for (var _ey2 = 128; _ey2 < 1638; _ey2 += 64)
+    for (var _ex2 = 320; _ex2 < 2538; _ex2 += 64)
+        draw_sprite_part_ext(spr_florence_street, 0, 0, 0,
+            min(64, 2538 - _ex2), min(64, 1638 - _ey2),
+            _ex2, _ey2, 1, 1, _cob_tint, 1);
 
 // ── 2. roads ────────────────────────────────────────────────────────────────────
-var _t_road = asset_get_index("spr_florence_road_cobble");
-if (_t_road < 0 || asset_get_type("spr_florence_road_cobble") != asset_sprite) _t_road = spr_florence_street;
-
 var _roads = scr_fv2_roads();
 var _n = array_length(_roads);
 
@@ -54,16 +52,18 @@ for (var _i = 0; _i < _n; _i++) {
         // Piazza del Duomo — warm pietra forte flagstone, drawn procedurally
         scr_fv2_draw_flagstone(_x0, _y0, _x1, _y1);
     } else if (_r[4] == 1) {
-        // plazas: CONTINUOUS half-scale cobble base...
-        for (var _ty = _y0; _ty < _y1; _ty += 32)
-            for (var _tx = _x0; _tx < _x1; _tx += 32)
-                draw_sprite_ext(_t_road, 0, _tx, _ty, 0.5, 0.5, 0, c_white, 1);
-        // ...with a herringbone (spina di pesce) brick motif in a hash-picked
-        // subset of cells — only ~10% darker than the cobble and half-alpha,
-        // so it reads as pavement variation, never as an object. Pure
-        // procedural rects, deterministic, clamped to the plaza.
+        // plazas: part of "the rest" — same mercato worn cobble as the base,
+        // drawn HERE too so a plaza repaves any road beneath it (the Signoria
+        // piazza sits across the Ponte road)...
+        for (var _ty = _y0; _ty < _y1; _ty += 64)
+            for (var _tx = _x0; _tx < _x1; _tx += 64)
+                draw_sprite_ext(spr_florence_street, 0, _tx, _ty, 1, 1, 0, _cob_tint, 1);
+        // ...dressed with a herringbone (spina di pesce) brick motif in a
+        // hash-picked subset of cells — only ~10% darker than the tinted
+        // cobble and half-alpha, so it reads as pavement variation, never as
+        // an object. Pure procedural rects, deterministic, clamped.
         draw_set_alpha(0.5);
-        draw_set_color(make_color_rgb(132, 128, 124));   // cobble grey, -10%
+        draw_set_color(make_color_rgb(118, 110, 98));    // worn cobble, -10%
         for (var _py = _y0; _py < _y1; _py += _g) {
             for (var _px = _x0; _px < _x1; _px += _g) {
                 if ((((_px div 64) * 3) + ((_py div 64) * 5)) mod 6 != 0) continue;
