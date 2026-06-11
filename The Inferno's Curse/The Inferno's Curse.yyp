@@ -55,6 +55,8 @@
     {"id":{"name":"spr_ponte_vecchio_exterior","path":"sprites/spr_ponte_vecchio_exterior/spr_ponte_vecchio_exterior.yy",},},
     {"id":{"name":"spr_ponte_floor_cobble","path":"sprites/spr_ponte_floor_cobble/spr_ponte_floor_cobble.yy",},},
     {"id":{"name":"spr_ponte_floor_normal","path":"sprites/spr_ponte_floor_normal/spr_ponte_floor_normal.yy",},},
+    {"id":{"name":"spr_benedetto_portrait","path":"sprites/spr_benedetto_portrait/spr_benedetto_portrait.yy",},},
+    {"id":{"name":"obj_character_sheet","path":"objects/obj_character_sheet/obj_character_sheet.yy",},},
     {"id":{"name":"spr_ponte_floor_pietra","path":"sprites/spr_ponte_floor_pietra/spr_ponte_floor_pietra.yy",},},
     {"id":{"name":"spr_ponte_border_serena","path":"sprites/spr_ponte_border_serena/spr_ponte_border_serena.yy",},},
     {"id":{"name":"spr_ponte_shop_north","path":"sprites/spr_ponte_shop_north/spr_ponte_shop_north.yy",},},

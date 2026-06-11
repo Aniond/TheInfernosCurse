@@ -206,6 +206,28 @@ global.vision_cooldown = 300;
 // ── Fonts (runtime TTFs from Included Files — see scr_fonts) ──────────────────
 scr_fonts_init();
 
+// ── Character sheet (C key / Shift+C in debug) ────────────────────────────────
+// Persistent singleton — drawn entirely procedurally over the theme palette.
+if (!instance_exists(obj_character_sheet)) {
+    instance_create_depth(0, 0, 0, obj_character_sheet);
+}
+
+// ── Player RPG stats + reputations (read by the character sheet) ──────────────
+// Starting values for a parish cleric — battle/quest systems will mutate these.
+global.player_stats = {
+    level: 1,
+    mp: 24,        mp_max: 24,
+    forza: 8,      vitalita: 11,  saggezza: 14,
+    agilita: 9,    fede: 16,
+    movimento: 4,  salto: 2,
+};
+global.reputation = {
+    gilda:  0,     // merchants — Rispettato / Neutrale / Disprezzato
+    chiesa: 35,    // the Church knows its own — starts Devoto
+    comune: 10,    // common folk
+    nobile: -5,    // the nobility has no use for a parish priest yet
+};
+
 // ── Debug mode ────────────────────────────────────────────────────────────────
 // true  = placeholder rectangles visible (dev/testing mode)
 // false = all placeholders hidden (player-facing build)
