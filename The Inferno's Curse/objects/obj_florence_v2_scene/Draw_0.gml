@@ -4,8 +4,9 @@
 // Layer 1  grass base over the whole 48x32 world.
 // Layer 2  THE ROAD NETWORK (scr_fv2_roads — roads before buildings, the city
 //          skeleton): authentic cobble (spr_florence_road_cobble, falls back to
-//          spr_florence_street until imported), plaza fields from the 16 plaza
-//          variations, intersection tiles wherever two roads cross, and INNER
+//          spr_florence_street until imported), plaza fields = cobble + subtle
+//          procedural herringbone accents, the Duomo precinct = procedural
+//          flagstone, intersection tiles wherever two roads cross, and INNER
 //          CITY WALLS — continuous void+art subwalls (spr_florence_thin_wall
 //          at half scale over a black band) dividing the quarters along every
 //          road's long edges (visual-only; collision is a future pass).
@@ -37,34 +38,52 @@ if (_t_road < 0 || asset_get_type("spr_florence_road_cobble") != asset_sprite) _
 var _t_ints = asset_get_index("spr_florence_road_intersection");
 if (_t_ints < 0 || asset_get_type("spr_florence_road_intersection") != asset_sprite) _t_ints = _t_road;
 
-var _plaza = [spr_florence_plaza,     spr_florence_plaza_v2,  spr_florence_plaza_v3,  spr_florence_plaza_v4,
-              spr_florence_plaza_v5,  spr_florence_plaza_v6,  spr_florence_plaza_v7,  spr_florence_plaza_v8,
-              spr_florence_plaza_v9,  spr_florence_plaza_v10, spr_florence_plaza_v11, spr_florence_plaza_v12,
-              spr_florence_plaza_v13, spr_florence_plaza_v14, spr_florence_plaza_v15, spr_florence_plaza_v16];
-
 var _roads = scr_fv2_roads();
 var _n = array_length(_roads);
 
-// pass 1 — fill every rect, tile-snapped (plaza = deterministic variation pick)
+// pass 1 — fill every rect, tile-snapped. kind 1 plazas = continuous cobble
+// + a SUBTLE procedural herringbone accent (the old dark medallion sprites
+// read as pasted-on boulders — David); kind 2 = the Duomo's procedural
+// flagstone precinct (scr_fv2_draw_flagstone, no sprite tile at all).
 for (var _i = 0; _i < _n; _i++) {
     var _r  = _roads[_i];
     var _x0 = round(_r[0]) * _g, _y0 = round(_r[1]) * _g;
     var _x1 = round(_r[2]) * _g, _y1 = round(_r[3]) * _g;
-    if (_r[4] == 1) {
-        // plazas: CONTINUOUS half-scale cobble base (the 16 medallion tiles
-        // each carry their own grey base, so tiling them wall-to-wall read as
-        // spaced dots) with a plaza medallion inset every few cells as a
-        // decorative pavement rosette
+    if (_r[4] == 2) {
+        // Piazza del Duomo — warm pietra forte flagstone, drawn procedurally
+        scr_fv2_draw_flagstone(_x0, _y0, _x1, _y1);
+    } else if (_r[4] == 1) {
+        // plazas: CONTINUOUS half-scale cobble base...
         for (var _ty = _y0; _ty < _y1; _ty += 32)
             for (var _tx = _x0; _tx < _x1; _tx += 32)
                 draw_sprite_ext(_t_road, 0, _tx, _ty, 0.5, 0.5, 0, c_white, 1);
+        // ...with a herringbone (spina di pesce) brick motif in a hash-picked
+        // subset of cells — only ~10% darker than the cobble and half-alpha,
+        // so it reads as pavement variation, never as an object. Pure
+        // procedural rects, deterministic, clamped to the plaza.
+        draw_set_alpha(0.5);
+        draw_set_color(make_color_rgb(132, 128, 124));   // cobble grey, -10%
         for (var _py = _y0; _py < _y1; _py += _g) {
             for (var _px = _x0; _px < _x1; _px += _g) {
-                var _pi = (((_px div 64) * 7) + ((_py div 64) * 13)) mod 16;
-                if ((((_px div 64) * 3) + ((_py div 64) * 5)) mod 7 == 0)
-                    draw_sprite(_plaza[_pi], 0, _px, _py);
+                if ((((_px div 64) * 3) + ((_py div 64) * 5)) mod 6 != 0) continue;
+                // classic zig-zag: 4 courses of paired bricks per 64px cell,
+                // alternating horizontal / vertical lay, 16x6 bricks inset 8px
+                for (var _hr = 0; _hr < 4; _hr++) {
+                    for (var _hc = 0; _hc < 3; _hc++) {
+                        var _hx = _px + 8 + _hc * 16, _hy = _py + 8 + _hr * 12;
+                        if ((_hr + _hc) mod 2 == 0) {
+                            draw_rectangle(min(_hx, _x1 - 1),      min(_hy, _y1 - 1),
+                                           min(_hx + 14, _x1 - 1), min(_hy + 5, _y1 - 1), false);
+                        } else {
+                            draw_rectangle(min(_hx + 4, _x1 - 1),  min(_hy - 4, _y1 - 1),
+                                           min(_hx + 9, _x1 - 1),  min(_hy + 9, _y1 - 1), false);
+                        }
+                    }
+                }
             }
         }
+        draw_set_alpha(1);
+        draw_set_color(c_white);
     } else {
         // roads at HALF SCALE (32px cobbles) — twice as fine, so a 2-cell road
         // reads as a narrow Florentine street, not a 3-stone highway (user fix 5)
@@ -122,7 +141,7 @@ if (_t_curb >= 0 && asset_get_type("spr_florence_thin_wall") == asset_sprite) {
 }
 draw_set_color(c_white);
 
-// ── 3. CITY WALLS — stable-style black-void bands + stone texture + merlons,
+// ── 3. CITY WALLS — stable-style black-void bands + stone texture, with
 //      gatehouses and towers on top (geometry = scr_fv2_walls, also collision)
 var _corr = clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1);
 scr_fv2_draw_walls(_corr);

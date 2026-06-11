@@ -182,6 +182,11 @@ function scr_room_builder_footprint(_o) {
         return undefined;                          // arch columns spawn in the caller
     } else if (_is_tree) {
         _x0f = 0.36; _y0f = 0.80; _x1f = 0.64; _y1f = 0.96;   // trunk only (bottom 20%)
+    } else if (string_pos("duomo_exterior", _nm) > 0) {
+        // THE DUOMO (David directive 2026-06-10): invisible boundary spanning
+        // the cathedral's width, bottom 25% solid / top 75% walkable — the
+        // player can never walk through the building itself.
+        _x0f = 0.10; _y0f = 0.75; _x1f = 0.90; _y1f = 0.95;
     } else if (string_pos("fountain", _nm) > 0) {
         _x0f = 0.18; _y0f = 0.24; _x1f = 0.82; _y1f = 0.90;   // squat basin — full
     } else if (string_pos("building", _nm) > 0 || string_pos("loggia", _nm) > 0

@@ -18,7 +18,8 @@
 #macro FLORENCE_V2_LOAD_POINT false
 
 // ── ROAD NETWORK — the city skeleton, measured off the reference ──────────────
-/// Rects in CELLS [x0, y0, x1, y1, kind] · kind 0 = road · 1 = plaza field.
+/// Rects in CELLS [x0, y0, x1, y1, kind] · kind 0 = road · 1 = plaza field
+/// · 2 = FLAGSTONE precinct (procedural warm pietra forte — the Duomo).
 /// Main roads 2-2.4 cells wide, side lanes 1.5-2 — the reference's measured
 /// widths. Rects are snapped to whole tiles at draw time.
 function scr_fv2_roads() {
@@ -43,7 +44,7 @@ function scr_fv2_roads() {
         [25, 10, 27, 12, 0],   // market SE link: closes the gap between the main
                                // street (x25) and the Ponte road (x27) — user fix 2
         // paved precincts LAST so they pave over any road beneath (GAP 2)
-        [ 7,  4, 17, 11, 1],   // Piazza del Duomo — the cathedral's paved precinct
+        [ 7,  4, 17, 11, 2],   // Piazza del Duomo — procedural flagstone precinct
         [29, 10, 34, 12, 1],   // Piazza della Signoria — paved front of the palazzo
     ];
 }
@@ -154,8 +155,8 @@ function scr_fv2_wall_open(_x0, _y0, _x1, _y1, _open) {
 
 /// Paint the walls STABLE-STYLE (the user's standing technique): each band is a
 /// SOLID BLACK void block with stone texture tiles inset (black outline frame)
-/// and a lit top edge; crenellation merlons tooth the city-facing side; then the
-/// gatehouses, corner towers and wall piers are dropped on top.
+/// and a lit top edge; then the gatehouses, corner towers and wall piers are
+/// dropped on top.
 function scr_fv2_draw_walls(_corr01) {
     var _segs = scr_fv2_walls();
     // CONTIGUOUS procedural masonry on the black void body (the texture-tile
@@ -230,20 +231,8 @@ function scr_fv2_draw_walls(_corr01) {
             draw_set_color(_top);
             draw_rectangle(_x0, _y0, _x1, min(_y0 + 3, _y1), false);
         }
-        // merlons — stone teeth on the CITY-facing edge of each band
-        draw_set_color(c_black);
-        var _mer_horiz = (_s[2] - _s[0]) >= (_s[3] - _s[1]);
-        if (_mer_horiz) {
-            var _city_south = (_s[1] < 1000);   // top bands face the city downward
-            for (var _mx = _s[0] + 8; _mx < _s[2] - 24; _mx += 48) {
-                if (_city_south) draw_rectangle(_mx, _s[3], _mx + 24, _s[3] + 12, false);
-                else             draw_rectangle(_mx, _s[1] - 12, _mx + 24, _s[1], false);
-            }
-        } else {
-            for (var _my = _s[1] + 8; _my < _s[3] - 24; _my += 48) {
-                draw_rectangle(_s[2], _my, _s[2] + 12, _my + 24, false);   // left band faces east
-            }
-        }
+        // (merlons removed 2026-06-10 — the black teeth read as floating
+        // blocks on the ground per David; bands stay clean void+art)
     }
     draw_set_color(c_white);
     // dressing: corner + curtain towers (12 total, every ~8-10 cells per the
@@ -310,6 +299,55 @@ function scr_fv2_draw_walls(_corr01) {
             draw_set_color(merge_color(make_color_rgb(150,144,134), make_color_rgb(82,84,96), _corr01));
             draw_rectangle(_px0, _py0, _px1, _py1, false);
         }
+    }
+    draw_set_color(c_white);
+}
+
+/// Procedural Florentine flagstone — warm pietra forte paving drawn entirely
+/// in code (no sprite tile, no PixelLab): a darker mortar base with large
+/// irregular running-bond slabs over it, every row height / slab width /
+/// offset / tone picked by a DETERMINISTIC hash (stable every frame — same
+/// idiom as the wall masonry fallback, no random()). All geometry is clamped
+/// to the rect: no bleeding, no gaps (the mortar base guarantees full cover).
+/// Used for the Piazza del Duomo (road kind 2).
+function scr_fv2_draw_flagstone(_x0, _y0, _x1, _y1) {
+    // mortar = the darker ground showing through the 2px seams between slabs
+    draw_set_color(make_color_rgb(139, 131, 116));   // 0.75x the slab base
+    draw_rectangle(_x0, _y0, _x1 - 1, _y1 - 1, false);
+    // slab tones around the warm beige-grey base (±~10% value, warm/cool drift)
+    var _tones = [
+        make_color_rgb(185, 175, 155),   // the base tone (David's spec)
+        make_color_rgb(197, 188, 167),   // sun-bleached light
+        make_color_rgb(173, 162, 142),   // worn dark
+        make_color_rgb(189, 176, 150),   // warmer ochre cast
+    ];
+    var _row = 0;
+    var _ty  = _y0;
+    while (_ty < _y1) {
+        var _hpick = ((_row * 13) + ((_x0 div 64) * 7)) mod 3;
+        var _rh = 40 + _hpick * 8;                       // row height 40/48/56
+        var _yb = min(_ty + _rh - 2, _y1 - 1);           // 2px mortar seam below
+        var _off  = (_row * 37) mod 64;                  // running-bond offset
+        var _tx   = _x0 - _off;
+        var _coli = 0;
+        while (_tx < _x1) {
+            var _wpick = ((_coli * 11) + (_row * 5)) mod 5;
+            var _sw = 56 + _wpick * 8;                   // slab width 56..88
+            var _xa = max(_tx, _x0);
+            var _xb = min(_tx + _sw - 2, _x1 - 1);       // 2px mortar seam right
+            if (_xb > _xa && _yb > _ty) {
+                var _tpick = ((_coli * 7) + (_row * 13) + _wpick) mod 4;
+                draw_set_color(_tones[_tpick]);
+                draw_rectangle(_xa, _ty, _xb, _yb, false);
+                // 1px lighter top edge so each slab reads as cut stone
+                draw_set_color(merge_color(_tones[_tpick], c_white, 0.12));
+                draw_rectangle(_xa, _ty, _xb, min(_ty + 1, _yb), false);
+            }
+            _tx += _sw;
+            _coli++;
+        }
+        _ty += _rh;
+        _row++;
     }
     draw_set_color(c_white);
 }
