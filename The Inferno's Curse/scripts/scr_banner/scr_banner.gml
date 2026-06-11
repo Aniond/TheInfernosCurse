@@ -44,19 +44,20 @@ function scr_banner_draw() {
     var _cx = _gw * 0.5;
     var _cy = 70;
 
+    // UI THEME RULE: colors via scr_ui_theme_get (see .claude/skills/ui-theme).
     // dark plaque
     draw_set_alpha(_a * 0.82);
-    draw_set_color(make_color_rgb(18, 14, 10));
+    draw_set_color(scr_ui_theme_get(UI_BACKGROUND));
     draw_roundrect_ext(_cx - _tw * 0.5, _cy - _bh * 0.5, _cx + _tw * 0.5, _cy + _bh * 0.5, 10, 10, false);
-    // gold double border
+    // gold double border (theme accent)
     draw_set_alpha(_a);
-    draw_set_color(make_color_rgb(206, 172, 84));
+    draw_set_color(scr_ui_theme_get(UI_ACCENT));
     draw_roundrect_ext(_cx - _tw * 0.5,     _cy - _bh * 0.5,     _cx + _tw * 0.5,     _cy + _bh * 0.5,     10, 10, true);
     draw_roundrect_ext(_cx - _tw * 0.5 + 4, _cy - _bh * 0.5 + 4, _cx + _tw * 0.5 - 4, _cy + _bh * 0.5 - 4, 8,  8,  true);
-    // gold text (shadow + main)
-    draw_set_color(make_color_rgb(20, 14, 8));
+    // gold text (shadow + main) — accent lifted with parchment for the face
+    draw_set_color(scr_ui_theme_get(UI_BACKGROUND));
     draw_text_transformed(_cx + 2, _cy + 2, _txt, _sc, _sc, 0);
-    draw_set_color(make_color_rgb(236, 204, 116));
+    draw_set_color(merge_color(scr_ui_theme_get(UI_ACCENT), scr_ui_theme_get(UI_PARCHMENT), 0.35));
     draw_text_transformed(_cx, _cy, _txt, _sc, _sc, 0);
 
     draw_set_alpha(1);

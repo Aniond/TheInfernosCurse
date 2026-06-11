@@ -62,7 +62,7 @@ var _cf = clamp(corruption_level / 100, 0, 1);
 var _frame_blend = c_white;
 if (_cf > 0.5) {
     var _dark = (_cf - 0.5) / 0.5;          // 0..1 across 50%-100% corruption
-    _frame_blend = merge_color(c_white, make_color_rgb(40, 0, 0), _dark * 0.2);
+    _frame_blend = merge_color(c_white, scr_ui_theme_get(UI_HIGHLIGHT), _dark * 0.2);
 }
 draw_sprite_stretched_ext(
     spr_ui_dialogue_frame, 0,
@@ -73,30 +73,14 @@ draw_sprite_stretched_ext(
 // =============================================================================
 // NPC NAME
 // =============================================================================
-// Name colour: deep brown at low corruption, bleeding toward blood-red as
-// the NPC loses themselves. Both readable on parchment.
-var _name_col;
-if (_cf <= 0.25) {
-    _name_col = merge_color(
-        make_color_rgb(60, 30, 10),
-        make_color_rgb(80, 40, 20),
-        _cf / 0.25
-    );
-} else if (_cf <= 0.50) {
-    _name_col = merge_color(
-        make_color_rgb(80, 40, 20),
-        make_color_rgb(120, 40, 20),
-        (_cf - 0.25) / 0.25
-    );
-} else if (_cf <= 0.75) {
-    _name_col = merge_color(
-        make_color_rgb(120, 40, 20),
-        make_color_rgb(140, 20, 10),
-        (_cf - 0.50) / 0.25
-    );
-} else {
-    _name_col = make_color_rgb(140, 20, 10);
-}
+// Name colour: themed secondary text at low corruption, bleeding toward the
+// theme highlight (blood) as the NPC loses themselves. UI THEME RULE: colors
+// come from scr_ui_theme_get — the bleed rides whichever theme is active.
+var _name_col = merge_color(
+    scr_ui_theme_get(UI_TEXT_SECONDARY),
+    scr_ui_theme_get(UI_HIGHLIGHT),
+    _cf
+);
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
@@ -108,7 +92,7 @@ draw_text(_name_x, _name_y, npc_name_display);
 // =============================================================================
 if (is_loading) {
     // ── Loading state — waiting for Claude ───────────────────────────────────
-    draw_set_color(make_color_rgb(80, 50, 20));
+    draw_set_color(scr_ui_theme_get(UI_TEXT_SECONDARY));
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_text(_text_x, _text_y, "Benedetto listens" + dot_string);
@@ -132,7 +116,7 @@ if (is_loading) {
         }
     }
 
-    draw_set_color(make_color_rgb(50, 25, 8));
+    draw_set_color(scr_ui_theme_get(UI_TEXT_PRIMARY));
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
     draw_text_ext(
@@ -153,7 +137,7 @@ if (is_complete && !is_loading) {
     // Blinks every 30 steps so the player knows to press a key.
     var _blink = (floor(current_time / (30 * (1000 / game_get_speed(gamespeed_fps)))) & 1) == 0;
     if (_blink) {
-        draw_set_color(make_color_rgb(80, 50, 20));
+        draw_set_color(scr_ui_theme_get(UI_TEXT_SECONDARY));
         draw_set_halign(fa_right);
         draw_set_valign(fa_middle);
         draw_text(_prompt_x, _prompt_y, "[ E / SPACE ] Continue");

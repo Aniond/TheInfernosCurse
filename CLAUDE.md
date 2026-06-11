@@ -214,6 +214,13 @@ weird sideways art. Rooftop-first phrasing also helps ("rooftops clearly
 visible from overhead").
 Do not ask — just regenerate automatically on any wrong-angle output.
 
+## UI THEME RULE (permanent, set 2026-06-10)
+Never hardcode UI colors.
+Always use scr_ui_theme_get(COLOR_KEY).
+See .claude/skills/ui-theme/SKILL.md
+(Four corruption-reactive palettes; obj_game_manager Step runs
+scr_ui_theme_apply() each frame; 60-frame lerp between themes.)
+
 ## Reporting Style
 Report AFTER doing, not before.
 No confirmation prompts.
