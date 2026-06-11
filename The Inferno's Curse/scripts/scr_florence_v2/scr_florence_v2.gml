@@ -427,15 +427,11 @@ function scr_fv2_draw_arno(_corr) {
     }
     // the Ponte Vecchio crossing — COMPOSED from proven parts (every whole-
     // bridge generation came back as a side-view postcard): the deck is the
-    // REAL road cobble continuing over the water at road width (y640-768,
-    // aligned + sized to the Ponte road), with FF6 shop rows lining the
-    // north and south edges — Florence's bridge of shops.
-    var _t_deck = asset_get_index("spr_florence_road_cobble");
-    if (_t_deck >= 0 && asset_get_type("spr_florence_road_cobble") == asset_sprite) {
-        for (var _dy = FV2_PONTE_Y0; _dy < FV2_PONTE_Y1; _dy += 32)
-            for (var _dx = FV2_RIVER_X0 - _bankw; _dx < FV2_RIVER_X1 + _bankw; _dx += 32)
-                draw_sprite_ext(_t_deck, 0, _dx, _dy, 0.5, 0.5, 0, c_white, 1);
-    }
+    // REAL road surface continuing over the water at road width (y640-768,
+    // aligned + sized to the Ponte road — warm flagstone like every road),
+    // with FF6 shop rows lining the north and south edges.
+    scr_fv2_draw_flagstone(FV2_RIVER_X0 - _bankw, FV2_PONTE_Y0,
+                           FV2_RIVER_X1 + _bankw, FV2_PONTE_Y1);
     // ONE bridge image across the crossing (David): spr_ponte_vecchio_exterior —
     // the STUNNING Ponte Vecchio elevation (the FF6 world-map-icon principle:
     // a beautiful representation of the zone, not walkable geometry). Baked

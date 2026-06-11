@@ -3,10 +3,10 @@
 // =============================================================================
 // Layer 1  grass base over the whole 48x32 world.
 // Layer 2  THE ROAD NETWORK (scr_fv2_roads — roads before buildings, the city
-//          skeleton): authentic cobble (spr_florence_road_cobble, falls back to
-//          spr_florence_street until imported), plaza fields = cobble + subtle
-//          procedural herringbone accents, the Duomo precinct = procedural
-//          flagstone, intersection tiles wherever two roads cross, and INNER
+//          skeleton): ROADS = procedural warm pietra forte flagstone over the
+//          citywide grey cobble base (the road SYSTEM reads warm-on-grey),
+//          plaza fields = cobble + subtle procedural herringbone accents,
+//          the Duomo precinct = the same flagstone, and INNER
 //          CITY WALLS — continuous void+art subwalls (spr_florence_thin_wall
 //          at half scale over a black band) dividing the quarters along every
 //          road's long edges (visual-only; collision is a future pass).
@@ -38,8 +38,6 @@ for (var _ey2 = 128; _ey2 < 1638; _ey2 += 32)
 // ── 2. roads ────────────────────────────────────────────────────────────────────
 var _t_road = asset_get_index("spr_florence_road_cobble");
 if (_t_road < 0 || asset_get_type("spr_florence_road_cobble") != asset_sprite) _t_road = spr_florence_street;
-var _t_ints = asset_get_index("spr_florence_road_intersection");
-if (_t_ints < 0 || asset_get_type("spr_florence_road_intersection") != asset_sprite) _t_ints = _t_road;
 
 var _roads = scr_fv2_roads();
 var _n = array_length(_roads);
@@ -88,31 +86,16 @@ for (var _i = 0; _i < _n; _i++) {
         draw_set_alpha(1);
         draw_set_color(c_white);
     } else {
-        // roads at HALF SCALE (32px cobbles) — twice as fine, so a 2-cell road
-        // reads as a narrow Florentine street, not a 3-stone highway (user fix 5)
-        for (var _rty = _y0; _rty < _y1; _rty += 32) {
-            for (var _rtx = _x0; _rtx < _x1; _rtx += 32) {
-                draw_sprite_ext(_t_road, 0, _rtx, _rty, 0.5, 0.5, 0, c_white, 1);
-            }
-        }
+        // ROADS = the warm pietra forte flagstone over the grey cobble base
+        // (David 2026-06-10: "the idea is to create a road system" — warm-on-
+        // grey reads as the road network). Same procedural language as the
+        // Duomo precinct. Junction overlaps self-resolve: the later road's
+        // full-cover mortar base simply repaves the shared cells.
+        scr_fv2_draw_flagstone(_x0, _y0, _x1, _y1);
     }
 }
-
-// pass 2 — intersection tiles wherever two ROAD rects overlap
-for (var _a = 0; _a < _n; _a++) {
-    if (_roads[_a][4] != 0) continue;
-    for (var _b = _a + 1; _b < _n; _b++) {
-        if (_roads[_b][4] != 0) continue;
-        var _ox0 = max(round(_roads[_a][0]), round(_roads[_b][0])) * _g;
-        var _oy0 = max(round(_roads[_a][1]), round(_roads[_b][1])) * _g;
-        var _ox1 = min(round(_roads[_a][2]), round(_roads[_b][2])) * _g;
-        var _oy1 = min(round(_roads[_a][3]), round(_roads[_b][3])) * _g;
-        if (_ox1 <= _ox0 || _oy1 <= _oy0) continue;
-        for (var _iy = _oy0; _iy < _oy1; _iy += 32)
-            for (var _ix = _ox0; _ix < _ox1; _ix += 32)
-                draw_sprite_ext(_t_ints, 0, _ix, _iy, 0.5, 0.5, 0, c_white, 1);
-    }
-}
+// (the old pass 2 — cobble intersection tiles — is retired: flagstone roads
+//  resolve their own junctions, and cobble squares would read as holes)
 
 // pass 3 — STREET SUBWALLS: the void+art standard at street scale. Each
 // road's long edges get a CONTINUOUS thin wall: a black void underlay band
