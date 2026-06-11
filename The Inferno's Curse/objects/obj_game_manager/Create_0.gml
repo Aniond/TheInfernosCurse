@@ -334,6 +334,8 @@ if (STABLE_LOAD_POINT && room == Room_florence_v2) {
     room_goto(Room_locanda_rosa_camuna);   // TEMP boot for testing the inn
 } else if (DUOMO_LOAD_POINT && room == Room_florence_v2) {
     room_goto(Room_duomo);
+} else if (PONTE_LOAD_POINT && room == Room_florence_v2) {
+    room_goto(Room_ponte_vecchio);         // TEMP boot for testing the bridge
 }
 
 // GLOBAL DEPTH RULE (David, 2026-06-10): world objects layer by their feet —

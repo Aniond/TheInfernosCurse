@@ -351,6 +351,7 @@
     {"id":{"name":"spr_ponte_border_serena","path":"sprites/spr_ponte_border_serena/spr_ponte_border_serena.yy",},},
     {"id":{"name":"spr_ponte_floor_cobble","path":"sprites/spr_ponte_floor_cobble/spr_ponte_floor_cobble.yy",},},
     {"id":{"name":"spr_ponte_floor_normal","path":"sprites/spr_ponte_floor_normal/spr_ponte_floor_normal.yy",},},
+    {"id":{"name":"spr_ponte_canopy","path":"sprites/spr_ponte_canopy/spr_ponte_canopy.yy",},},
     {"id":{"name":"spr_ponte_floor_pietra","path":"sprites/spr_ponte_floor_pietra/spr_ponte_floor_pietra.yy",},},
     {"id":{"name":"spr_ponte_fountain","path":"sprites/spr_ponte_fountain/spr_ponte_fountain.yy",},},
     {"id":{"name":"spr_ponte_guild_board","path":"sprites/spr_ponte_guild_board/spr_ponte_guild_board.yy",},},

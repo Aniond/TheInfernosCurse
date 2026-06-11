@@ -56,27 +56,34 @@ for (var _p = 0; _p < 4; _p++) {
 }
 draw_set_color(c_white);
 
-// ── 3. the deck (FIX 2 final): shop bands = plain foundation tone; the
-//      WALKWAY = the seamless cobble tile (edge-crossfaded at import so the
-//      64px repeats cannot show seams). NO line overlays — nothing to strip.
+// ── 3. the deck: ONE continuous cobble floor across the WHOLE deck (y64-448).
+//      Previously only the centre strip (y160-352) was tiled and the shop
+//      bands were a flat foundation colour — so the shop/bench props sat on
+//      bare colour and every gap between them showed through (the "tiles not
+//      back to back" seams). Now the cobble fills edge to edge under every
+//      prop; the foundation colour is just the fallback floor beneath.
 var _found = merge_color(make_color_rgb(146, 132, 110), make_color_rgb(70, 68, 74), _corr01 * 0.4);
 draw_set_color(_found);
 draw_rectangle(0, 64, room_width, 448, false);
 draw_set_color(c_white);
-var _t_floor = asset_get_index("spr_ponte_floor_cobble");
-if (_t_floor >= 0 && asset_get_type("spr_ponte_floor_cobble") == asset_sprite) {
+// Floor = Pietra Forte sandstone (spr_ponte_floor_cobble, regenerated
+// 2026-06-10). Procedurally synthesized fine irregular packed stones with
+// TRUE toroidal wrap — no grid, no rows, no stripes, tiles with zero seams
+// ("stretches without gaps", David). PixelLab couldn't make a full-bleed
+// seamless ground tile; procedural is the proven path (same as packed earth).
+var _floor_name = "spr_ponte_floor_cobble";
+var _t_floor = asset_get_index(_floor_name);
+if (_t_floor >= 0 && asset_get_type(_floor_name) == asset_sprite) {
     var _ftint = merge_color(c_white, make_color_rgb(96, 92, 100), _corr01 * 0.4);
 
-    // ── walkway tile loop ─────────────────────────────────────────────────────
-    // Lighting comes from the GLOBAL light map (scr_lightmap). The bridge floor
-    // shader POC was retired 2026-06-10 in favour of the global normal-mapped
-    // lighting system (scr_lightmap_normal) — one system, every room.
-    for (var _fy = 160; _fy < 352; _fy += 64)
+    // ── full-deck stone tiling (y64-448, edge to edge) ────────────────────────
+    // Lighting comes from the GLOBAL light map (scr_lightmap). Seamless tile.
+    for (var _fy = 64; _fy < 448; _fy += 64)
         for (var _fx = 0; _fx < room_width; _fx += 64)
             draw_sprite_ext(_t_floor, 0, _fx, _fy, 1, 1, 0, _ftint, 1);
 } else {
     draw_set_color(merge_color(make_color_rgb(176, 160, 134), make_color_rgb(84, 80, 84), _corr01 * 0.4));
-    draw_rectangle(0, 160, room_width, 352, false);
+    draw_rectangle(0, 64, room_width, 448, false);
     draw_set_color(c_white);
 }
 

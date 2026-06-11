@@ -1,61 +1,44 @@
-# VERSION 4
-# Room_ponte_vecchio layout — OBJECT  GRID_X  GRID_Y  SCALE  [SPRITE]  [solid]   (1 cell = 64 px)
-# NARROW COVERED BRIDGE (1280x512, 20x8): water 0-1 · shops N 1-2.5 · WALKWAY
-# 2.5-5.5 · shops S 5.5-7 · water 7-8. Claustrophobic, like the real Ponte.
-# Canopy/water/deck/parapets/arches/boats are CODE-drawn (obj_ponte_scene).
-# All objects draggable in debug; F8 saves to the save folder.
-
-# --- NORTH SHOP ROW (8 shops, faces south; packed pitch 1.8) ---
-obj_mercato_prop        1.4       1         1     spr_ponte_shop_north      solid
-obj_mercato_prop        3.2       1         1     spr_ponte_shop_north      solid
-obj_mercato_prop        5         1         1     spr_ponte_shop_north      solid
-obj_mercato_prop        6.8       1         1     spr_ponte_shop_north      solid
-obj_mercato_prop        12        1         1     spr_ponte_shop_north      solid
-obj_mercato_prop        13.8      1         1     spr_ponte_shop_north      solid
-obj_mercato_prop        15.6      1         1     spr_ponte_shop_north      solid
-obj_mercato_prop        17.4      1         1     spr_ponte_shop_north      solid
-
-# --- SOUTH SHOP ROW (8 shops, faces north) ---
-obj_mercato_prop        1.4       5.5       0.9     spr_ponte_shop_south      solid
-obj_mercato_prop        3.2       5.5       0.9     spr_ponte_shop_south      solid
-obj_mercato_prop        5         5.5       0.9     spr_ponte_shop_south      solid
-obj_mercato_prop        6.8       5.5       0.9     spr_ponte_shop_south      solid
-obj_mercato_prop        12        5.5       0.9     spr_ponte_shop_south      solid
-obj_mercato_prop        13.8      5.5       0.9     spr_ponte_shop_south      solid
-obj_mercato_prop        15.6      5.5       0.9     spr_ponte_shop_south      solid
-obj_mercato_prop        17.4      5.5       0.9     spr_ponte_shop_south      solid
-
-# --- CENTRAL MEETING PLACE (open to the sky): fountain, guild board,
-#     marble benches ringing the piazza, greenery at the corners ---
-obj_mercato_prop        9         3.05      1     spr_ponte_fountain        solid
-obj_mercato_prop        11.4      3.35      1     spr_ponte_guild_board     solid
-obj_mercato_prop        8.6       2.55      1     spr_ponte_bench           solid
-obj_mercato_prop        10.5      2.55      1     spr_ponte_bench           solid
-obj_mercato_prop        8.6       4.95      1     spr_ponte_bench           solid
-obj_mercato_prop        10.5      4.95      1     spr_ponte_bench           solid
-obj_mercato_prop        8.05      3.7       1     spr_inn_plant
-obj_mercato_prop        10.55     3.9       1     spr_inn_plant
-
-# --- LANTERN POSTS along both walkway edges ---
-obj_mercato_prop        2         1.66      1     spr_ponte_lantern_post
-obj_mercato_prop        5         1.66      1     spr_ponte_lantern_post
-obj_mercato_prop        8         1.66      1     spr_ponte_lantern_post
-obj_mercato_prop        12        1.66      1     spr_ponte_lantern_post
-obj_mercato_prop        15        1.66      1     spr_ponte_lantern_post
-obj_mercato_prop        17.9      1.66      1     spr_ponte_lantern_post
-obj_mercato_prop        2         3.97      1     spr_ponte_lantern_post
-obj_mercato_prop        5         3.97      1     spr_ponte_lantern_post
-obj_mercato_prop        8         3.97      1     spr_ponte_lantern_post
-obj_mercato_prop        12        3.97      1     spr_ponte_lantern_post
-obj_mercato_prop        15        3.97      1     spr_ponte_lantern_post
-obj_mercato_prop        17.9      3.97      1     spr_ponte_lantern_post
-
-# --- SEAGULLS on the parapets at the open-air spots ---
-obj_mercato_prop        9.7       0.55      1     spr_ponte_seagull
-obj_mercato_prop        10.6      6.95      1     spr_ponte_seagull
-obj_mercato_prop        0.7       0.55      1     spr_ponte_seagull
-obj_mercato_prop        19.1      0.6       1     spr_ponte_seagull
-obj_mercato_prop        0.8       6.9       1     spr_ponte_seagull
-
-# --- MARCO THE BAKER at the Fornaio (2nd from west, north row) ---
-obj_npc_marco           3.9       2.3       1
+# VERSION 5
+# Room layout — OBJECT_NAME  GRID_X  GRID_Y  SCALE   (1 cell = 64 px)
+obj_mercato_prop        1.4000     1          1      spr_ponte_shop_north  solid
+obj_mercato_prop        3.2000     1          1      spr_ponte_shop_north  solid
+obj_mercato_prop        5          1          1      spr_ponte_shop_north  solid
+obj_mercato_prop        6.8000     1          1      spr_ponte_shop_north  solid
+obj_mercato_prop        12         1          1      spr_ponte_shop_north  solid
+obj_mercato_prop        13.8000    1          1      spr_ponte_shop_north  solid
+obj_mercato_prop        15.6000    1          1      spr_ponte_shop_north  solid
+obj_mercato_prop        17.4000    1          1      spr_ponte_shop_north  solid
+obj_mercato_prop        1.4000     5.5000     0.90   spr_ponte_shop_south  solid
+obj_mercato_prop        3.2000     5.5000     0.90   spr_ponte_shop_south  solid
+obj_mercato_prop        5          5.5000     0.90   spr_ponte_shop_south  solid
+obj_mercato_prop        6.8000     5.5000     0.90   spr_ponte_shop_south  solid
+obj_mercato_prop        12         5.5000     0.90   spr_ponte_shop_south  solid
+obj_mercato_prop        13.8000    5.5000     0.90   spr_ponte_shop_south  solid
+obj_mercato_prop        15.6000    5.5000     0.90   spr_ponte_shop_south  solid
+obj_mercato_prop        17.4000    5.5000     0.90   spr_ponte_shop_south  solid
+obj_mercato_prop        9          3.0500     1      spr_ponte_fountain  solid
+obj_mercato_prop        11.4000    3.3500     1      spr_ponte_guild_board  solid
+obj_mercato_prop        9          1          1      spr_ponte_bench  solid
+obj_mercato_prop        10.4375    0.9875     1      spr_ponte_bench  solid
+obj_mercato_prop        8.6000     6.7000     1      spr_ponte_bench  solid
+obj_mercato_prop        10.1875    6.6875     1      spr_ponte_bench  solid
+obj_mercato_prop        8.5625     4.3125     1      spr_inn_plant
+obj_mercato_prop        10.3000    4.3375     1      spr_inn_plant
+obj_mercato_prop        2          1.6600     1      spr_ponte_lantern_post
+obj_mercato_prop        2          3.9700     1      spr_ponte_lantern_post
+obj_mercato_prop        5          1.6600     1      spr_ponte_lantern_post
+obj_mercato_prop        5          3.9700     1      spr_ponte_lantern_post
+obj_mercato_prop        8          1.6600     1      spr_ponte_lantern_post
+obj_mercato_prop        8          3.9700     1      spr_ponte_lantern_post
+obj_mercato_prop        12         1.6600     1      spr_ponte_lantern_post
+obj_mercato_prop        12         3.9700     1      spr_ponte_lantern_post
+obj_mercato_prop        15         1.6600     1      spr_ponte_lantern_post
+obj_mercato_prop        15         3.9700     1      spr_ponte_lantern_post
+obj_mercato_prop        17.9000    1.6600     1      spr_ponte_lantern_post
+obj_mercato_prop        17.9000    3.9700     1      spr_ponte_lantern_post
+obj_mercato_prop        9.7000     0.5500     1      spr_ponte_seagull
+obj_mercato_prop        10.6000    6.9500     1      spr_ponte_seagull
+obj_mercato_prop        0.7000     0.5500     1      spr_ponte_seagull
+obj_mercato_prop        19.1000    0.6000     1      spr_ponte_seagull
+obj_mercato_prop        0.8000     6.9000     1      spr_ponte_seagull
+obj_npc_marco           3.9000     2.3000     1    

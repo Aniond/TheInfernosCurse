@@ -37,7 +37,7 @@
 // already in save folders, so existing hand-tuned layouts stay valid.)
 #macro DUOMO_LAYOUT_VERSION   10
 #macro INN_LAYOUT_VERSION     16
-#macro PONTE_LAYOUT_VERSION   4
+#macro PONTE_LAYOUT_VERSION   5
 #macro STABLE_LAYOUT_VERSION  3
 #macro FLORENCE_V2_LAYOUT_VERSION 8
 
@@ -375,7 +375,7 @@ function scr_room_builder_point_in(_inst, _mx, _my) {
 /// Called every step from obj_game_manager. F8 then writes the new positions.
 function scr_room_builder_drag_update() {
     if (!global.debug_mode) return;
-    if (room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2) return;   // draggable in all built rooms
+    if (room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2 && room != Room_ponte_vecchio) return;   // draggable in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_objects")) return;
     if (!variable_global_exists("room_builder_drag")) global.room_builder_drag = noone;
@@ -482,7 +482,7 @@ function scr_room_builder_delete_selected() {
 /// F8 then saves the exact fractional position (the save no longer rounds to grid).
 function scr_room_builder_nudge_update() {
     if (!global.debug_mode) return;
-    if (room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2) return;   // nudge in all built rooms
+    if (room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2 && room != Room_ponte_vecchio) return;   // nudge in all built rooms
     if (variable_global_exists("input_locked") && global.input_locked) return;
     if (!variable_global_exists("room_builder_selected")) return;
     var _sel = global.room_builder_selected;
@@ -651,7 +651,7 @@ function scr_room_builder_duplicate_selected() {
 ///   held (obj_player Step) so chords never also walk Benedetto.
 function scr_room_builder_edit_update() {
     if (!global.debug_mode) return;
-    if (room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2) return;
+    if (room != Room_duomo && room != Room_locanda_rosa_camuna && room != Room_fiorentine_stable && room != Room_florence_v2 && room != Room_ponte_vecchio) return;
     if (variable_global_exists("input_locked") && global.input_locked) return;
 
     var _ctrl = keyboard_check(vk_control);
@@ -765,6 +765,11 @@ function scr_ponte_spawn_geometry() {
         "Room_santa_croce", "Verso il Quartiere di Santa Croce. Not yet.", 0, 0, "");
 }
 
+// TEMP debug boot: flip true to launch straight onto the Ponte Vecchio for
+// testing (mirrors STABLE/INN/DUOMO_LOAD_POINT). obj_game_manager Create reads
+// it. Flip back to false for the normal Florence start.
+#macro PONTE_LOAD_POINT false
+
 /// Build the bridge marketplace: David's F8 layout if present (SOURCE OF
 /// TRUTH), else the reference default. Called from obj_ponte_scene Create.
 function scr_ponte_build() {
@@ -776,7 +781,8 @@ function scr_ponte_build() {
         spr_ponte_lantern_post, spr_ponte_seagull, spr_arno_rowing_boat,
         spr_florence_water, spr_florence_thin_wall, spr_ponte_roof_tile,
         spr_ponte_bench, spr_inn_plant,
-        spr_ponte_floor_normal, spr_ponte_floor_pietra, spr_ponte_border_serena];
+        spr_ponte_floor_normal, spr_ponte_floor_pietra, spr_ponte_border_serena,
+        spr_ponte_canopy];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
@@ -846,10 +852,11 @@ function scr_ponte_default() {
     // piazza with walk-through gaps, greenery at the corners
     scr_ponte_place(obj_mercato_prop, 9.0,  3.05, 1, "spr_ponte_fountain",    true,  _layer);
     scr_ponte_place(obj_mercato_prop, 11.4, 3.35, 1, "spr_ponte_guild_board", true,  _layer);
-    scr_ponte_place(obj_mercato_prop, 8.6,  2.55, 1, "spr_ponte_bench",       true,  _layer);
-    scr_ponte_place(obj_mercato_prop, 10.5, 2.55, 1, "spr_ponte_bench",       true,  _layer);
-    scr_ponte_place(obj_mercato_prop, 8.6,  4.95, 1, "spr_ponte_bench",       true,  _layer);
-    scr_ponte_place(obj_mercato_prop, 10.5, 4.95, 1, "spr_ponte_bench",       true,  _layer);
+    // benches against the shop bands (David's F8 arrangement, synced 2026-06-10)
+    scr_ponte_place(obj_mercato_prop, 9.0,    1.0,   1, "spr_ponte_bench",     true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 10.4375, 0.9875, 1, "spr_ponte_bench",   true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 8.6,    6.7,   1, "spr_ponte_bench",     true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 10.1875, 6.6875, 1, "spr_ponte_bench",   true,  _layer);
     scr_ponte_place(obj_mercato_prop, 8.05, 3.7,  1, "spr_inn_plant",         false, _layer);
     scr_ponte_place(obj_mercato_prop, 10.55, 3.9, 1, "spr_inn_plant",         false, _layer);
     // lantern posts along both walkway edges (under the canopy they ARE the light)
