@@ -11,8 +11,8 @@
 npc_data = scr_npc_create(
     "marco",
     "Marco",
-    "baker and father of three, market district near the Arno",
-    "The market district near the Arno, Florence, 1300 AD",
+    "baker and father of three, keeps the Fornaio on the Ponte Vecchio",
+    "The Fornaio bakery on the Ponte Vecchio bridge market, Florence, 1300 AD",
     CIRCLE_LIMBO,
     "Warm, generous, proud of his bread, devoted to his family, simple faith. " +
     "Laughs easily. Remembers everyone by name. Always has bread to offer. " +
@@ -40,18 +40,17 @@ scr_npc_add_memory(
 event_inherited();
 
 // ── Sprites ───────────────────────────────────────────────────────────────────
-// Marco stands at his stall facing the street (south). The stall draws behind
-// him; a loaf sits on the counter in front.
+// Marco lives at the Fornaio on the Ponte Vecchio: the bridge's shop front IS
+// his bakery, so no stall backdrop there — just Marco and his bread. Anywhere
+// else (fallback placements) the freestanding stall assembly returns.
 npc_sprite  = spr_npc_marco_south;
-bg_sprite   = spr_marco_stall;
+bg_sprite   = (room_get_name(room) == "Room_ponte_vecchio") ? noone : spr_marco_stall;
 prop_sprite = spr_item_bread;
-npc_scale   = 0.75;   // shrink the whole bakery assembly to sit cleanly on the street
+npc_scale   = 0.75;   // matches bridge shopkeeper scale; sits cleanly on the walkway
 
-// Relocate to the east side of the piazza (the market square is now in the park,
-// between the street and the Arno). Done in code so no Florence.yy edit is needed;
-// reconcile in the room editor later. (Was 1720,1640 — that spot is now river.)
-x = 1340;
-y = 1300;
+// Position comes from placement (scr_ponte_place at the Fornaio / F8 layout) —
+// the old hardcoded relocation to the wiped Room_florence was removed 2026-06-10;
+// it was teleporting him off the 1280px bridge to x=1340.
 
 // ── Restore from saved world state ───────────────────────────────────────────
 // scr_load_world_state() runs before room instances are created, so globals

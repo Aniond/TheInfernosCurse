@@ -861,8 +861,8 @@ function scr_ponte_default() {
     var _gull = [[9.7,0.55],[10.6,6.95],[0.7,0.55],[19.1,0.6],[0.8,6.9]];
     for (var _g = 0; _g < array_length(_gull); _g++)
         scr_ponte_place(obj_mercato_prop, _gull[_g][0], _gull[_g][1], 1, "spr_ponte_seagull", false, _layer);
-    // MARCO THE BAKER at the Fornaio (2nd from west, north row) — placement
-    // only, no dialogue yet (NPCs go live separately per David)
+    // MARCO THE BAKER at the Fornaio (2nd from west, north row) — full live
+    // NPC: E to talk, Claude-driven dialogue, corruption arc (wired 2026-06-10)
     scr_ponte_place(obj_npc_marco, 3.9, 2.3, 1, "", false, _layer);
 }
 
