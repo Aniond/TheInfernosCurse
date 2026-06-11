@@ -775,7 +775,8 @@ function scr_ponte_build() {
         spr_ponte_shop_south, spr_ponte_fountain, spr_ponte_guild_board,
         spr_ponte_lantern_post, spr_ponte_seagull, spr_arno_rowing_boat,
         spr_florence_water, spr_florence_thin_wall, spr_ponte_roof_tile,
-        spr_ponte_bench, spr_inn_plant];
+        spr_ponte_bench, spr_inn_plant,
+        spr_ponte_floor_normal, spr_ponte_floor_pietra, spr_ponte_border_serena];
 
     if (!variable_global_exists("room_builder_objects")) global.room_builder_objects = [];
     for (var _i = 0; _i < array_length(global.room_builder_objects); _i++)
@@ -925,6 +926,54 @@ function scr_ponte_corruption_sync() {
         global.ponte_quiet_noted = true;
         scr_chronicle_add("The bridge is quiet. It was never quiet before. I cannot remember when it changed.");
     }
+}
+
+/// Lantern light colour for the bridge floor shader — time of day blended
+/// across hour boundaries, then bent by corruption. (shd_ponte_floor POC)
+///   Dawn 5-8 #FF9B3D · Day 8-17 #FFF5E0 · Dusk 17-21 #FF7B1D · Night #3D5080
+///   50%+ slightly sickly · 75%+ clearly wrong · 100% surviving lights GREEN
+function scr_ponte_light_color() {
+    var _h = variable_global_exists("time_of_day") ? global.time_of_day
+           : (variable_global_exists("game_hour") ? global.game_hour : 12);
+    var _dawn  = make_color_rgb(0xFF, 0x9B, 0x3D);
+    var _day   = make_color_rgb(0xFF, 0xF5, 0xE0);
+    var _dusk  = make_color_rgb(0xFF, 0x7B, 0x1D);
+    var _night = make_color_rgb(0x3D, 0x50, 0x80);
+    var _c;
+    if      (_h <  4)  _c = _night;
+    else if (_h <  5)  _c = merge_color(_night, _dawn, _h - 4);          // night→dawn
+    else if (_h <  8)  _c = _dawn;
+    else if (_h <  9)  _c = merge_color(_dawn,  _day,  _h - 8);          // dawn→day
+    else if (_h < 17)  _c = _day;
+    else if (_h < 18)  _c = merge_color(_day,   _dusk, _h - 17);         // day→dusk
+    else if (_h < 21)  _c = _dusk;
+    else if (_h < 22)  _c = merge_color(_dusk,  _night, _h - 21);        // dusk→night
+    else               _c = _night;
+    // corruption bends the light
+    var _corr = clamp(global.circle_corruption[CIRCLE_LIMBO], 0, 100);
+    var _green = make_color_rgb(0x1A, 0x4A, 0x0A);
+    if      (_corr >= 100) _c = _green;                                          // survivors burn green
+    else if (_corr >= 75)  _c = merge_color(_c, make_color_rgb(0x50, 0x6B, 0x14), 0.55); // clearly wrong
+    else if (_corr >= 50)  _c = merge_color(_c, make_color_rgb(0x8F, 0xA0, 0x60), 0.30); // slightly sickly
+    return _c;
+}
+
+/// Ambient floor for the bridge shader — bright by day (lanterns barely
+/// matter), dark blue at night (lantern pools carry the scene), dimmed by
+/// corruption so the Forgotten bridge sits near-black between lights.
+function scr_ponte_ambient_color() {
+    var _h = variable_global_exists("time_of_day") ? global.time_of_day
+           : (variable_global_exists("game_hour") ? global.game_hour : 12);
+    var _day_amb   = make_color_rgb(236, 230, 218);
+    var _night_amb = make_color_rgb(64, 72, 104);
+    var _a;
+    if      (_h < 5)   _a = _night_amb;
+    else if (_h < 8)   _a = merge_color(_night_amb, _day_amb, (_h - 5) / 3);
+    else if (_h < 17)  _a = _day_amb;
+    else if (_h < 21)  _a = merge_color(_day_amb, _night_amb, (_h - 17) / 4);
+    else               _a = _night_amb;
+    var _corr01 = clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1);
+    return merge_color(_a, make_color_rgb(16, 14, 18), _corr01 * 0.55);
 }
 
 // =============================================================================
