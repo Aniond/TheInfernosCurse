@@ -1,7 +1,7 @@
-/// @description AI integration layer (real Claude API only — no mock fallback)
+/// @description AI integration layer (real Gemini API only — no mock fallback)
 ///
-/// All NPC dialogue and journal text comes from live Claude calls.
-///   global.claude_api_key is loaded by scr_config_load() from config.ini ([API] key=...).
+/// All NPC dialogue and journal text comes from live Gemini calls.
+///   global.gemini_api_key is loaded by scr_config_load() from config.ini ([API] key=...).
 ///   scr_ai_call() fires an async http_request; the response is parsed in
 ///   obj_npc_base's Async-HTTP event (Async_62.gml) and written to
 ///   npc_data.last_response, then handed to scr_open_dialogue().
@@ -14,15 +14,13 @@
 // ── Real API ─────────────────────────────────────────────────────────────────
 //
 // MODEL STRATEGY:
-//   Haiku — NPC dialogue (fast, frequent, cheap — best for real-time interaction)
-//   Sonnet — Journal entries, lore summaries, world state (richer, less frequent)
-//   Opus — Architecture & design decisions only (not called at runtime)
+//   Gemini 1.5 Flash — NPC dialogue (fast, frequent, cheap — best for real-time interaction)
+//   Gemini 1.5 Pro   — Architecture & design decisions only
 //
-// This script uses Haiku for scr_ai_call() — NPC responses must be quick
-// to keep dialogue flowing. Other scripts reserve Sonnet/Opus for
-// async generation tasks outside the play loop.
+// This script uses Flash for scr_ai_call() — NPC responses must be quick
+// to keep dialogue flowing.
 
-/// Fires an async POST to the Claude API.
+/// Fires an async POST to the Gemini API.
 /// Returns the request ID so the Async-HTTP event can match responses.
 /// Returns -1 if no API key is set (caller surfaces a visible error).
 ///
@@ -35,9 +33,9 @@ function scr_ai_call(prompt, system_prompt) {
         show_debug_message("[scr_ai_call] AI disabled (debug F11) — no request sent, no tokens spent.");
         return -1;
     }
-    if (global.claude_api_key == "") {
+    if (global.gemini_api_key == "") {
         show_debug_message(
-            "[scr_ai_call] No API key — cannot reach Claude. " +
+            "[scr_ai_call] No API key — cannot reach Gemini. " +
             "Ensure config.ini ([API] key=...) is an Included File so it reaches " +
             "the runtime working directory."
         );
@@ -46,34 +44,27 @@ function scr_ai_call(prompt, system_prompt) {
 
     var _headers = ds_map_create();
     ds_map_add(_headers, "Content-Type",      "application/json");
-    ds_map_add(_headers, "x-api-key",         global.claude_api_key);
-    ds_map_add(_headers, "anthropic-version", "2023-06-01");
 
-    // The Anthropic API rejects an empty user message ("messages.0: user
-    // messages must have non-empty content"). For a greeting (no player input
+    // The API rejects an empty user message. For a greeting (no player input
     // yet) send a neutral stage-direction so the NPC opens in character — all
     // the personality/context lives in the system prompt.
     var _user = (string_trim(prompt) == "") ? "*Benedetto approaches you.*" : prompt;
 
-    // Build the body manually so max_tokens is a true JSON integer. GML has no
-    // integer type — json_stringify() would emit 150.0, which the Anthropic API
-    // rejects ("max_tokens: Input should be a valid integer"). json_stringify()
-    // is still used on the string fields to get correct JSON escaping.
+    // Build the body manually so max_tokens is a true JSON integer.
+    // json_stringify() is still used on the string fields to get correct JSON escaping.
     var _body = "{"
-        + "\"model\":\"claude-haiku-4-5-20251001\","
-        + "\"max_tokens\":150,"
-        + "\"system\":"   + json_stringify(system_prompt) + ","
-        + "\"messages\":[{\"role\":\"user\",\"content\":" + json_stringify(_user) + "}]"
+        + "\"systemInstruction\":{\"parts\":[{\"text\":" + json_stringify(system_prompt) + "}]},"
+        + "\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":" + json_stringify(_user) + "}]}],"
+        + "\"generationConfig\":{\"maxOutputTokens\":150}"
         + "}";
 
     // debug overlay metrics + event log
     if (!variable_global_exists("api_call_count")) global.api_call_count = 0;
     global.api_call_count++;
-    if (variable_global_exists("world_event_log")) scr_world_event_log("API -> Claude (Haiku)");
+    if (variable_global_exists("world_event_log")) scr_world_event_log("API -> Gemini (Flash)");
 
-    var _req_id = http_request(
-        "https://api.anthropic.com/v1/messages", "POST", _headers, _body
-    );
+    var _url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + global.gemini_api_key;
+    var _req_id = http_request(_url, "POST", _headers, _body);
 
     ds_map_destroy(_headers);
     return _req_id;

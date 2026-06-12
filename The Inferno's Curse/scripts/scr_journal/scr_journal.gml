@@ -80,7 +80,7 @@ function scr_generate_journal_entry(_mock = false) {
             ds_list_add(obj_journal.journal_entries, json_stringify(_entry));
             obj_journal.last_entry_day = _entry.day;
         }
-    } else if (global.claude_api_key != "") {
+    } else if (global.gemini_api_key != "") {
         scr_ai_call("Write today's journal entry.", _system);
         // Response is routed through Async_62.gml — caller sets obj_journal.generating = true
     } else {

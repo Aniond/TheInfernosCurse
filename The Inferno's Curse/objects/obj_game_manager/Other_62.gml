@@ -1,7 +1,7 @@
 // =============================================================================
 // obj_game_manager — Async HTTP Event
 // =============================================================================
-// Authoritative handler for Claude API responses. obj_game_manager is a single
+// Authoritative handler for Gemini API responses. obj_game_manager is a single
 // persistent instance, so (unlike a per-NPC *inherited* async event) it is
 // guaranteed to be alive and to receive this event when any http_request
 // completes. It finds the NPC whose request_id matches and routes the response.
@@ -34,7 +34,7 @@ if (_status < 0) {
     _npc.api_pending              = false;
     _npc.request_id               = -1;
     _npc.npc_data.pending_request = -1;
-    var _err = "[ Network error reaching Claude (status " + string(_status) + "). ]";
+    var _err = "[ Network error reaching Gemini (status " + string(_status) + "). ]";
     _npc.api_response           = _err;
     _npc.npc_data.last_response = _err;
     scr_open_dialogue(_npc, _err);
@@ -55,7 +55,7 @@ _npc.npc_data.pending_request = -1;
 
 // Non-2xx — surface the code so it's visible on screen and in the log.
 if (_http < 200 || _http >= 300) {
-    var _msg = "[ Claude API error " + string(_http) + " — see Output log. ]";
+    var _msg = "[ Gemini API error " + string(_http) + " — see Output log. ]";
     _npc.api_response           = _msg;
     _npc.npc_data.last_response = _msg;
     scr_open_dialogue(_npc, _msg);
@@ -63,20 +63,24 @@ if (_http < 200 || _http >= 300) {
 }
 
 // ── Parse the success body defensively ────────────────────────────────────────
-// Expected shape: { "content": [ { "type": "text", "text": "..." }, ... ] }
+// Expected shape Gemini: { "candidates": [ { "content": { "parts": [ { "text": "..." } ] } } ] }
 var _text = "";
 try {
     var _parsed = json_parse(_raw);
-    if (is_struct(_parsed) && variable_struct_exists(_parsed, "content")) {
-        var _content = _parsed.content;
-        if (is_array(_content)) {
-            for (var _i = 0; _i < array_length(_content); _i++) {
-                var _block = _content[_i];
-                if (is_struct(_block)
-                 && variable_struct_exists(_block, "type")
-                 && _block.type == "text") {
-                    _text = _block.text;
-                    break;
+    if (is_struct(_parsed) && variable_struct_exists(_parsed, "candidates")) {
+        var _cands = _parsed.candidates;
+        if (is_array(_cands) && array_length(_cands) > 0) {
+            var _cand0 = _cands[0];
+            if (is_struct(_cand0) && variable_struct_exists(_cand0, "content")) {
+                var _content = _cand0.content;
+                if (is_struct(_content) && variable_struct_exists(_content, "parts")) {
+                    var _parts = _content.parts;
+                    if (is_array(_parts) && array_length(_parts) > 0) {
+                        var _part0 = _parts[0];
+                        if (is_struct(_part0) && variable_struct_exists(_part0, "text")) {
+                            _text = _part0.text;
+                        }
+                    }
                 }
             }
         }
@@ -86,7 +90,7 @@ try {
 }
 
 if (_text == "") {
-    _text = "[ Claude returned no readable text — see Output log. ]";
+    _text = "[ Gemini returned no readable text — see Output log. ]";
 }
 
 // ── Store + display ───────────────────────────────────────────────────────────
