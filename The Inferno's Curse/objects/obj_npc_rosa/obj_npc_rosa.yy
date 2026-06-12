@@ -14,7 +14,10 @@
     "name":"The Inferno's Curse",
     "path":"The Inferno's Curse.yyp",
   },
-  "parentObjectId":null,
+  "parentObjectId":{
+    "name":"obj_npc_base",
+    "path":"objects/obj_npc_base/obj_npc_base.yy",
+  },
   "persistent":false,
   "physicsAngularDamping":0.1,
   "physicsDensity":0.5,

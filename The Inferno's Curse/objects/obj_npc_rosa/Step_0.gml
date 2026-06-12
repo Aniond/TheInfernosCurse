@@ -5,6 +5,8 @@ if (say_timer > 0) say_timer--;
 if (msg_timer > 0) msg_timer--;
 if (!instance_exists(obj_player)) exit;
 
+npc_memory_corruption = clamp(global.circle_corruption[npc_data.circle], 0, 100);
+
 // In debug she's a draggable builder object — don't auto-greet, and never hold the
 // input lock (so the room-builder drag isn't bailed by line 487).
 if (variable_global_exists("debug_mode") && global.debug_mode) { visible = true; on_shift = true; greeted = false; menu_open = false; global.input_locked = false; exit; }

@@ -11,6 +11,10 @@ greeted          = false;
 say_text         = "";
 say_timer        = 0;
 
+npc_data = scr_npc_get(npc_id);
+event_inherited();
+npc_memory_corruption = 0;
+
 // Division of roles: Rosa handles drinks/food/conversation ONLY (rooms are Aldo's).
 // E opens her bar menu (Draw_64); off-shift (outside 14-22) the counter is empty
 // and a small "Back later." sign is drawn in her place (on_shift, Draw_0).
@@ -19,6 +23,7 @@ menu_sel  = 0;       // 0 wine · 1 stew · 2 just talk · 3 nothing
 msg_text  = "";
 msg_timer = 0;
 on_shift  = true;
+
 
 // Relationship wiring: every order/chat is LOGGED (she remembers), but the
 // relationship delta only applies the FIRST time each game day — grind-proof.
