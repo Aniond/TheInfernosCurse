@@ -63,16 +63,33 @@ function scr_npc_add_memory(npc_data, event, detail, emotional_impact) {
 /// @param {struct} npc_data
 /// @returns {string}
 function scr_npc_memory_to_string(npc_data) {
-    var _len = array_length(npc_data.memory);
-    if (_len == 0) return "No prior interactions.";
     var _out = "";
-    var _max = min(3, _len);
-    for (var _i = 0; _i < _max; _i++) {
-        var _m = npc_data.memory[_i];
-        _out += "[" + _m.event + ": " + _m.detail +
-                " — felt " + _m.emotional_impact + "] ";
+    
+    // New system (event_log)
+    if (variable_struct_exists(npc_data, "event_log")) {
+        var _len = array_length(npc_data.event_log);
+        if (_len == 0) return "No prior interactions.";
+        var _max = min(3, _len);
+        for (var _i = 0; _i < _max; _i++) {
+            var _m = npc_data.event_log[_i];
+            _out += "[Behavior: " + _m.player_behavior + " | Outcome: " + _m.outcome + "] ";
+        }
+        return string_trim(_out);
     }
-    return string_trim(_out);
+    
+    // Old system (memory)
+    if (variable_struct_exists(npc_data, "memory")) {
+        var _len = array_length(npc_data.memory);
+        if (_len == 0) return "No prior interactions.";
+        var _max = min(3, _len);
+        for (var _i = 0; _i < _max; _i++) {
+            var _m = npc_data.memory[_i];
+            _out += "[" + _m.event + ": " + _m.detail + " — felt " + _m.emotional_impact + "] ";
+        }
+        return string_trim(_out);
+    }
+    
+    return "No prior interactions.";
 }
 
 // =============================================================================
