@@ -181,14 +181,12 @@ function scr_room_builder_footprint(_o) {
     } else if (string_pos("arch", _nm) > 0) {
         return undefined;                          // arch columns spawn in the caller
     } else if (_is_tree) {
-        _x0f = 0.36; _y0f = 0.80; _x1f = 0.64; _y1f = 0.96;   // trunk only (bottom 20%)
+        _x0f = 0.40; _y0f = 0.85; _x1f = 0.60; _y1f = 0.95;   // trunk only (tighter)
     } else if (string_pos("duomo_exterior", _nm) > 0) {
-        // THE DUOMO (David directive 2026-06-10): invisible boundary spanning
-        // the cathedral's width, bottom 25% solid / top 75% walkable — the
-        // player can never walk through the building itself.
-        _x0f = 0.10; _y0f = 0.75; _x1f = 0.90; _y1f = 0.95;
+        // THE DUOMO: tighter boundary so player can walk closer to the walls
+        _x0f = 0.15; _y0f = 0.82; _x1f = 0.85; _y1f = 0.93;
     } else if (string_pos("fountain", _nm) > 0) {
-        _x0f = 0.18; _y0f = 0.24; _x1f = 0.82; _y1f = 0.90;   // squat basin — full
+        _x0f = 0.25; _y0f = 0.35; _x1f = 0.75; _y1f = 0.85;   // squat basin — tighter
     } else if (string_pos("building", _nm) > 0 || string_pos("loggia", _nm) > 0
             || string_pos("inn", _nm) > 0 || string_pos("church", _nm) > 0
             || string_pos("stable", _nm) > 0 || string_pos("cathedral", _nm) > 0
@@ -199,11 +197,11 @@ function scr_room_builder_footprint(_o) {
             || string_pos("guild", _nm) > 0 || string_pos("shop", _nm) > 0
             || string_pos("forge", _nm) > 0 || string_pos("apothecary", _nm) > 0
             || string_pos("campanile", _nm) > 0 || string_pos("locanda", _nm) > 0) {
-        if (_bh > 128) { _x0f = 0.18; _y0f = 0.84; _x1f = 0.82; _y1f = 0.94; }   // tall: doorstep band (~10%)
-        else           { _x0f = 0.18; _y0f = 0.78; _x1f = 0.82; _y1f = 0.94; }   // one-cell: bottom ~16%
+        if (_bh > 128) { _x0f = 0.25; _y0f = 0.86; _x1f = 0.75; _y1f = 0.93; }   // tall: doorstep band (tighter)
+        else           { _x0f = 0.25; _y0f = 0.82; _x1f = 0.75; _y1f = 0.93; }   // one-cell: bottom (tighter)
     } else {
         // small ground prop (urn, pot, statue, crate, sack, cloth…)
-        _x0f = 0.22; _y0f = 0.50; _x1f = 0.78; _y1f = 0.92;
+        _x0f = 0.30; _y0f = 0.60; _x1f = 0.70; _y1f = 0.90;
     }
 
     return [_L + _bw * _x0f, _T + _bh * _y0f, _L + _bw * _x1f, _T + _bh * _y1f];
