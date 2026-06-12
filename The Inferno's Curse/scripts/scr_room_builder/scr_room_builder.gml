@@ -306,6 +306,8 @@ function scr_room_builder_save() {
     file_text_writeln(_f);
 
     var _count = 0;
+    var _gml = "// === F8 SAVED LAYOUT ===\n// Paste this into your room's default layout array:\n";
+    
     if (variable_global_exists("room_builder_objects")) {
         for (var _i = 0; _i < array_length(global.room_builder_objects); _i++) {
             var _inst = global.room_builder_objects[_i];
@@ -327,23 +329,40 @@ function scr_room_builder_save() {
                         scr_room_builder_pad(_gxs, 9) + "  " +
                         scr_room_builder_pad(_gys, 9) + "  " +
                         scr_room_builder_pad(string(_sc), 5);
+            
+            var _gml_line = "array_push(_L, [\"" + _name + "\", " + _gxs + ", " + _gys + ", " + string(_sc);
+
             // generic placeables carry their sprite (+ solid flag) so F8 round-trips them
             if (_name == "obj_mercato_prop") {
                 var _sn = (variable_instance_exists(_inst, "builder_sprite") && _inst.builder_sprite != "")
                     ? _inst.builder_sprite : sprite_get_name(_inst.sprite_index);
                 _line += "  " + _sn;
-                if (variable_instance_exists(_inst, "builder_solid") && _inst.builder_solid) _line += "  solid";
+                _gml_line += ", \"" + _sn + "\"";
+                
+                if (variable_instance_exists(_inst, "builder_solid") && _inst.builder_solid) {
+                    _line += "  solid";
+                    _gml_line += ", \"solid\"";
+                }
             }
             // ROTATION — appended as the last column only when non-zero, so unrotated
             // lines stay clean and both loaders read it as the trailing integer.
-            if (variable_instance_exists(_inst, "builder_angle") && _inst.builder_angle != 0)
+            if (variable_instance_exists(_inst, "builder_angle") && _inst.builder_angle != 0) {
                 _line += "  " + string(_inst.builder_angle);
+                _gml_line += ", " + string(_inst.builder_angle);
+            }
+            
+            _gml_line += "]);\n";
+            _gml += _gml_line;
+
             file_text_write_string(_f, _line);
             file_text_writeln(_f);
             _count++;
         }
     }
     file_text_close(_f);
+    
+    if (clipboard_has_text()) clipboard_set_text("");
+    clipboard_set_text(_gml);
 
     // Transitions persist to their own override file (drag in debug, F8 saves here).
     scr_transition_save_overrides();
@@ -842,38 +861,55 @@ function scr_ponte_load(_path) {
 function scr_ponte_default() {
     var _layer = layer_exists("Instances") ? "Instances" : "";
     // COVERED MERCHANT BRIDGE (David's design): tightly packed shops dominate —
-    // 8 per row at near-touching pitch, two covered runs with the central
+    // 6 per row at near-touching pitch, two covered runs with the central
     // plaza OPEN to the sky (the Arno viewing point). Canopy segments over the
     // corridor are drawn by the scene's Draw End pass.
     // NARROW BRIDGE (20x8): shops N gy1.0 (band 64-160), walkway 160-352,
     // shops S gy5.5 (band 352-448) — pressed tight, corridor 3 cells.
-    var _sx = [1.4, 3.2, 5.0, 6.8,   12.0, 13.8, 15.6, 17.4];
-    for (var _i = 0; _i < 8; _i++)
+    var _sx = [1.4, 3.2, 5.0,   13.8, 15.6, 17.4];
+    for (var _i = 0; _i < 6; _i++)
         scr_ponte_place(obj_mercato_prop, _sx[_i], 1.0, 1, "spr_ponte_shop_north", true, _layer);
-    for (var _j = 0; _j < 8; _j++)
+    for (var _j = 0; _j < 6; _j++)
         scr_ponte_place(obj_mercato_prop, _sx[_j], 5.5, 0.9, "spr_ponte_shop_south", true, _layer);   // scaled to match the north row
+        
+    // TRADE SIGNS (12 unique crests, one per shop stall)
+    var _signs_n = ["spr_sign_calzolaio", "spr_sign_fornaio", "spr_sign_fabbro", "spr_sign_fioraio", "spr_sign_gilda", "spr_sign_libraio"];
+    var _signs_s = ["spr_sign_orafo", "spr_sign_osteria", "spr_sign_pergamene", "spr_sign_speziere", "spr_sign_tessitore", "spr_sign_vetraio"];
+    for (var _i = 0; _i < 6; _i++) {
+        scr_ponte_place(obj_mercato_prop, _sx[_i] + 0.5, 1.8, 0.7, _signs_n[_i], false, _layer);
+        scr_ponte_place(obj_mercato_prop, _sx[_i] + 0.5, 5.2, 0.7, _signs_s[_i], false, _layer);
+    }
+
+    // ARCHWAYS at both entrances (West and East)
+    scr_ponte_place(obj_mercato_prop, 0.0, 2.5, 1, "spr_ponte_archway", false, _layer);
+    scr_ponte_place(obj_mercato_prop, 19.5, 2.5, 1, "spr_ponte_archway", false, _layer);
+
     // CENTRAL MEETING PLACE (David, from the real bridge's mid-span terrace):
-    // fountain at the heart, guild board east, marble benches ringing the
+    // Grand statue at the heart, guild board east, marble benches ringing the
     // piazza with walk-through gaps, greenery at the corners
-    scr_ponte_place(obj_mercato_prop, 9.0,  3.05, 1, "spr_ponte_fountain",    true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 9.5, 3.5,  1, "spr_ponte_statue",    true,  _layer);
     scr_ponte_place(obj_mercato_prop, 11.4, 3.35, 1, "spr_ponte_guild_board", true,  _layer);
+    
     // benches against the shop bands (David's F8 arrangement, synced 2026-06-10)
-    scr_ponte_place(obj_mercato_prop, 9.0,    1.0,   1, "spr_ponte_bench",     true,  _layer);
-    scr_ponte_place(obj_mercato_prop, 10.4375, 0.9875, 1, "spr_ponte_bench",   true,  _layer);
-    scr_ponte_place(obj_mercato_prop, 8.6,    6.7,   1, "spr_ponte_bench",     true,  _layer);
-    scr_ponte_place(obj_mercato_prop, 10.1875, 6.6875, 1, "spr_ponte_bench",   true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 8.0,    1.0,   1, "spr_ponte_bench",     true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 11.4375, 0.9875, 1, "spr_ponte_bench",   true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 7.6,    6.7,   1, "spr_ponte_bench",     true,  _layer);
+    scr_ponte_place(obj_mercato_prop, 11.1875, 6.6875, 1, "spr_ponte_bench",   true,  _layer);
     scr_ponte_place(obj_mercato_prop, 8.05, 3.7,  1, "spr_inn_plant",         false, _layer);
     scr_ponte_place(obj_mercato_prop, 10.55, 3.9, 1, "spr_inn_plant",         false, _layer);
+    
     // lantern posts along both walkway edges (under the canopy they ARE the light)
     var _lx = [2, 5, 8, 12, 15, 17.9];
     for (var _l = 0; _l < array_length(_lx); _l++) {
         scr_ponte_place(obj_mercato_prop, _lx[_l], 1.66, 1, "spr_ponte_lantern_post", false, _layer);
         scr_ponte_place(obj_mercato_prop, _lx[_l], 3.97, 1, "spr_ponte_lantern_post", false, _layer);
     }
+    
     // seagulls on the parapets at the OPEN-air spots: plaza + both landings
     var _gull = [[9.7,0.55],[10.6,6.95],[0.7,0.55],[19.1,0.6],[0.8,6.9]];
     for (var _g = 0; _g < array_length(_gull); _g++)
         scr_ponte_place(obj_mercato_prop, _gull[_g][0], _gull[_g][1], 1, "spr_ponte_seagull", false, _layer);
+        
     // MARCO THE BAKER at the Fornaio (2nd from west, north row) — full live
     // NPC: E to talk, Claude-driven dialogue, corruption arc (wired 2026-06-10)
     scr_ponte_place(obj_npc_marco, 3.9, 2.3, 1, "", false, _layer);

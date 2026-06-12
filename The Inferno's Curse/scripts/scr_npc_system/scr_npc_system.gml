@@ -24,7 +24,7 @@ function scr_npc_default_data() {
     return {
         npcs: {
             // Division of roles (no crossover): Aldo = lodging ONLY, Rosa = bar ONLY.
-            barmaid:   { tier: 1, name: "Rosa", role: "barmaid",   handles: ["drinks", "food", "conversation"], location: "locanda_rosa_camuna", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
+            barmaid:   { tier: 1, name: "Rosa", role: "barmaid",   handles: ["drinks", "food", "conversation"], location: "locanda_rosa_camuna", personality: "Sharp-witted, observant, and deeply religious. She has noticed the walls of the Locanda 'pulsing' and is terrified, but hides it with a mask of professional Florentine toughness. She is protective of her regulars and holds a heavy wooden rosary in her apron pocket.", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
             innkeeper: { tier: 1, name: "Aldo", role: "innkeeper", handles: ["lodging", "rooms", "keys"],       location: "locanda_rosa_camuna", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
             marco:     { tier: 1, name: "Marco",          role: "baker",     handles: ["bread", "gossip", "forgetting"],      location: "ponte_vecchio",      relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
             priest:    { tier: 1, name: "Father Anselmo", role: "priest",    handles: ["confession", "blessings", "skills"],  location: "santa_lucia_church", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
@@ -74,6 +74,7 @@ function scr_npc_backfill_fields() {
         var _src = _d.npcs[$ _k], _dst = global.npc_data.npcs[$ _k];
         if (variable_struct_exists(_src, "role")    && !variable_struct_exists(_dst, "role"))    _dst.role    = _src.role;
         if (variable_struct_exists(_src, "handles") && !variable_struct_exists(_dst, "handles")) _dst.handles = _src.handles;
+        if (variable_struct_exists(_src, "personality") && !variable_struct_exists(_dst, "personality")) _dst.personality = _src.personality;
     }
 }
 

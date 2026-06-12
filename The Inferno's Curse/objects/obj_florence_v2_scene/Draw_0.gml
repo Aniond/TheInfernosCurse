@@ -100,8 +100,37 @@ for (var _i = 0; _i < _n; _i++) {
         scr_fv2_draw_flagstone(_x0, _y0, _x1, _y1);
     }
 }
-// (the old pass 2 — cobble intersection tiles — is retired: flagstone roads
-//  resolve their own junctions, and cobble squares would read as holes)
+
+// ── 2b. ragged transition blending ──────────────────────────────────────────────
+// Breaks the razor-sharp pixel lines between the warm flagstone roads (kind 0)
+// and the dark cobblestone plazas (kind 1) with an organic, ragged spillover.
+var _relief_rag = scr_relief_begin(spr_florence_street);
+for (var _i = 0; _i < _n; _i++) {
+    var _r  = _roads[_i];
+    if (_r[4] == 1) { // Only process Plazas
+        var _x0 = round(_r[0]) * _g, _y0 = round(_r[1]) * _g;
+        var _x1 = round(_r[2]) * _g, _y1 = round(_r[3]) * _g;
+        
+        // Draw ragged cobblestone spilling OUTSIDE the plaza bounds
+        for (var _ty = _y0; _ty < _y1; _ty += 32) {
+            // Left edge spill
+            var _wL = 16 + ((_ty * 13) mod 32);
+            draw_sprite_part_ext(spr_florence_street, 0, 64 - _wL, 0, _wL, 32, _x0 - _wL, _ty, 1, 1, _cob_tint, 0.85);
+            // Right edge spill
+            var _wR = 16 + ((_ty * 17) mod 32);
+            draw_sprite_part_ext(spr_florence_street, 0, 0, 0, _wR, 32, _x1, _ty, 1, 1, _cob_tint, 0.85);
+        }
+        for (var _tx = _x0; _tx < _x1; _tx += 32) {
+            // Top edge spill
+            var _hT = 16 + ((_tx * 13) mod 32);
+            draw_sprite_part_ext(spr_florence_street, 0, 0, 64 - _hT, 32, _hT, _tx, _y0 - _hT, 1, 1, _cob_tint, 0.85);
+            // Bottom edge spill
+            var _hB = 16 + ((_tx * 17) mod 32);
+            draw_sprite_part_ext(spr_florence_street, 0, 0, 0, 32, _hB, _tx, _y1, 1, 1, _cob_tint, 0.85);
+        }
+    }
+}
+if (_relief_rag) scr_relief_end();
 
 // pass 3 — STREET SUBWALLS: the void+art standard at street scale. Each
 // road's long edges get a CONTINUOUS thin wall: a black void underlay band

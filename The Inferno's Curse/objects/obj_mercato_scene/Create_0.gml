@@ -135,19 +135,20 @@ _mk_wall(_step_x1, _ry1 - _bankh, room_width - _step_x1, room_height - (_ry1 - _
 
 // ── EXIT TRIGGERS ─────────────────────────────────────────────────────────────
 // obj_mercato_exit reads exit_target (room name) + its zone (x,y + zone_w/zone_h).
-var _mk_exit = function(_x, _y, _w, _h, _target, _label) {
+var _mk_exit = function(_x, _y, _w, _h, _target, _label, _dir) {
     var _e = instance_create_depth(_x, _y, 400, obj_mercato_exit);
     _e.zone_w      = _w;
     _e.zone_h      = _h;
     _e.exit_target = _target;
     _e.exit_label  = _label;
+    if (!is_undefined(_dir)) _e.trigger_dir = _dir;
     array_push(global.mercato_objects, _e);
     return _e;
 };
 // North — through the loggia's central arch -> Piazza della Signoria (not built yet)
-_mk_exit(room_width * 0.5 - 96, 0, 192, 96, "Room_piazza_signoria", "To Piazza della Signoria");
+_mk_exit(room_width * 0.5 - 96, 0, 192, 96, "Room_piazza_signoria", "To Piazza della Signoria", "north");
 // East — right edge, mid -> back to Florence (Florence) — Benedetto enters from here
-_mk_exit(room_width - 72, room_height * 0.5 - 96, 72, 192, "Room_florence_v2", "To Florence");
+_mk_exit(room_width - 72, room_height * 0.5 - 96, 72, 192, "Room_florence_v2", "To Florence", "east");
 // South — central steps -> Ponte Vecchio (RESTORED 2026-06-10: the rebuilt
 // marketplace bridge; lands at the west end)
-_mk_exit(_step_x0, _ry1 - _bankh - 24, _step_w, 48, "Room_ponte_vecchio", "To Ponte Vecchio");
+_mk_exit(_step_x0, _ry1 - _bankh - 24, _step_w, 48, "Room_ponte_vecchio", "To Ponte Vecchio", "south");

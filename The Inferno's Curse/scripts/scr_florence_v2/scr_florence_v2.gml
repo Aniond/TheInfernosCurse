@@ -37,10 +37,10 @@ function scr_fv2_roads() {
         [12, 10, 14, 17, 0],   // Duomo -> Artisans vertical lane
         [ 6, 17, 18, 19, 0],   // Artisans lane -> the Inn
         [ 7, 19,  9, 21, 0],   // connector: Artisans lane down to the west road
-        [27, 10, 40, 12, 0],   // Ponte Vecchio road (2 cells; touches the market plaza at y10)
+        [27, 10, 41, 15, 0],   // Ponte Vecchio road + wider plaza connect (covers David void)
         [28, 12, 30, 22, 0],   // Parish-Church lane south (touches the Ponte road at y12)
         [15,  5, 28,  7, 0],   // north lane: Duomo -> Palazzo (touches the plaza at y7)
-        [33, 11, 35, 17, 0],   // east alley: breaks up the guild/apothecary block (GAP 5)
+        [33, 12, 36, 17, 0],   // east alley extended under statues
         [25, 10, 27, 12, 0],   // market SE link: closes the gap between the main
                                // street (x25) and the Ponte road (x27) — user fix 2
         // paved precincts LAST so they pave over any road beneath (GAP 2)
@@ -587,7 +587,7 @@ function scr_fv2_default_layout() {
     array_push(_L, ["obj_mercato_prop", 21.9, 4.6,  0.7, "spr_mercato_loggia"]);
     array_push(_L, ["obj_mercato_prop", 23,   9.5,  1.5, "spr_florence_arch"]);
     array_push(_L, ["obj_mercato_prop", 12,   16.5, 1.5, "spr_florence_arch"]);
-    array_push(_L, ["obj_mercato_prop", 28,   11.4, 1.5, "spr_florence_arch"]);
+    array_push(_L, ["obj_mercato_prop", 40.5, 11.5, 1.5, "spr_florence_arch"]);
     array_push(_L, ["obj_mercato_prop", 10.3, 10.2, 1,   "spr_florence_statue_saint", "solid"]);
     array_push(_L, ["obj_mercato_prop", 29.4, 12.2, 1,   "spr_florence_statue_saint", "solid"]);
     array_push(_L, ["obj_mercato_prop", 38.9, 9.6,  1,   "spr_florence_statue_saint", "solid"]);

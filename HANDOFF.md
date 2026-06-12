@@ -13,7 +13,7 @@ imposing buildings, packed town feel.
 - Project: `C:\TheInfernoCurse\The Inferno's Curse\` (the .yyp lives there)
 - GitHub: github.com/Aniond/TheInfernosCurse — active branch `mercato-vecchio`, main is `master`
 - Python: `py` launcher (3.14) · Sprite art: PixelLab (MCP) — David has a subscription
-- Task board: Notion — "🔥 The Inferno's Curse — Project Hub", Todo db `db696f92-3ffc-43bc-ab15-579b9fb0e64e`
+- Task board: Local `PROJECT_TASKS.md` (Source of Truth)
 - David's in-game F8 layout saves: `C:\Users\david\AppData\Local\The_Inferno_s_Curse\`
 
 ## STATE AS OF 2026-06-11 (commit f02aaaa)
@@ -152,6 +152,11 @@ async events, manual JSON, and Included Files still apply identically.
 - File deletion under the project root is blocked in some tools — bash `rm` works.
 - GM's .yy "JSON" has trailing commas — standard JSON parsers need a `,\s*[}\]]` strip.
 
+## GameMaker 2026 Engine Quirks (Discovered 2026-06-11)
+- **Downgrade Warning Bug**: GM 2026.0 throws a "Project is later than this release" false-positive if the `.yyp` IDEVersion exactly matches its own `2026.0.0.16`. Setting it to `2026.0.0.0` bypasses this check.
+- **Shader Record Version Panic**: GM 2026 expects `"$GMShader":""` for shaders (version 0). Setting it to `"v1"` inside a `.yy` file causes GameMaker to abort the entire project load upon hitting it during a deep scan.
+- **Em-Dash UTF-8 Corruption**: Manually editing string literals containing em-dashes (`—`) outside of GM via scripts can cause them to be encoded as `?"`, which contains a literal `"` that prematurely terminates the string and causes cascading "newline within string" compilation errors. Use standard hyphens (`-`) for safety when editing `.gml` externally.
+
 ---
 
 # OPEN ITEMS / PENDING DECISIONS
@@ -167,7 +172,7 @@ async events, manual JSON, and Included Files still apply identically.
 7. Dead code kept on purpose: scr_ponte_light_color / scr_ponte_ambient_color,
    spr_ponte_floor_normal/_pietra/_serena assets, the Notion "dead-code decision" task.
 8. PARKED: water-perception NPC chat (docs/design_water_perception_npc.md) — wait for town.
-9. Notion board stays the organizational backbone — mark Done after work, file follow-ups.
+9. `PROJECT_TASKS.md` is the organizational backbone — move to [DONE] after work, file follow-ups.
 
 # LOCAL-ONLY FILES (gitignored, in docs/local/) 
 story_bible, core_systems, dev_setup, ai_integration — never commit them.

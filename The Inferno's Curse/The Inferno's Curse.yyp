@@ -1,4 +1,4 @@
-{
+﻿{
   "$GMProject":"v1",
   "%Name":"The Inferno's Curse",
   "AudioGroups":[
@@ -21,10 +21,24 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2026.0.0.16",
+    "IDEVersion":"2026.0.0.0",
   },
   "name":"The Inferno's Curse",
   "resources":[
+    {"id":{"name":"spr_ponte_archway","path":"sprites/spr_ponte_archway/spr_ponte_archway.yy",},},
+    {"id":{"name":"spr_ponte_statue","path":"sprites/spr_ponte_statue/spr_ponte_statue.yy",},},
+    {"id":{"name":"spr_sign_calzolaio","path":"sprites/spr_sign_calzolaio/spr_sign_calzolaio.yy",},},
+    {"id":{"name":"spr_sign_fabbro","path":"sprites/spr_sign_fabbro/spr_sign_fabbro.yy",},},
+    {"id":{"name":"spr_sign_fioraio","path":"sprites/spr_sign_fioraio/spr_sign_fioraio.yy",},},
+    {"id":{"name":"spr_sign_fornaio","path":"sprites/spr_sign_fornaio/spr_sign_fornaio.yy",},},
+    {"id":{"name":"spr_sign_gilda","path":"sprites/spr_sign_gilda/spr_sign_gilda.yy",},},
+    {"id":{"name":"spr_sign_libraio","path":"sprites/spr_sign_libraio/spr_sign_libraio.yy",},},
+    {"id":{"name":"spr_sign_orafo","path":"sprites/spr_sign_orafo/spr_sign_orafo.yy",},},
+    {"id":{"name":"spr_sign_osteria","path":"sprites/spr_sign_osteria/spr_sign_osteria.yy",},},
+    {"id":{"name":"spr_sign_pergamene","path":"sprites/spr_sign_pergamene/spr_sign_pergamene.yy",},},
+    {"id":{"name":"spr_sign_speziere","path":"sprites/spr_sign_speziere/spr_sign_speziere.yy",},},
+    {"id":{"name":"spr_sign_tessitore","path":"sprites/spr_sign_tessitore/spr_sign_tessitore.yy",},},
+    {"id":{"name":"spr_sign_vetraio","path":"sprites/spr_sign_vetraio/spr_sign_vetraio.yy",},},
     {"id":{"name":"obj_barrel","path":"objects/obj_barrel/obj_barrel.yy",},},
     {"id":{"name":"obj_battle_manager","path":"objects/obj_battle_manager/obj_battle_manager.yy",},},
     {"id":{"name":"obj_cart","path":"objects/obj_cart/obj_cart.yy",},},

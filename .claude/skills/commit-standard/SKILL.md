@@ -1,16 +1,16 @@
 ---
 name: commit-standard
-description: The commit checklist for The Inferno's Curse — Notion sync, MEMORY.md update, layout version bump, clean build, meaningful message format, and always push. Use on every commit to this project.
+description: The commit checklist for The Inferno's Curse — Task sync, MEMORY.md update, layout version bump, clean build, meaningful message format, and always push. Use on every commit to this project.
 ---
 
 # Commit Standard
 
 ## Every Commit Must Include
 
-### 1. Notion Sync
-Before committing check Notion Todo board.
-Mark any completed tasks as Done.
-Add any newly discovered issues as Todo
+### 1. Task Sync
+Before committing check PROJECT_TASKS.md.
+Move any completed tasks to the [DONE] section.
+Add any newly discovered issues to the [TODO] section
 with context body and commit hash.
 
 ### 2. MEMORY.md Update

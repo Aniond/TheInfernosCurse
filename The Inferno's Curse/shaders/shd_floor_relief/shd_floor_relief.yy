@@ -1,5 +1,5 @@
 {
-  "$GMShader":"v1",
+  "$GMShader":"",
   "%Name":"shd_floor_relief",
   "name":"shd_floor_relief",
   "parent":{
