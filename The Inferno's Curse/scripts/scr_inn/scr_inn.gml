@@ -22,7 +22,7 @@
 
 // TEMP: boot straight into the inn for testing (takes precedence over DUOMO_LOAD_POINT
 // in obj_game_manager Create). Flip to false to restore the normal start.
-#macro INN_LOAD_POINT false
+#macro INN_LOAD_POINT true
 
 /// Player's guild-reputation TIER → which inn room the innkeeper offers.
 /// <34 = low · 34-66 = medium · >66 = high. (global.guild_reputation, 0-100.)
