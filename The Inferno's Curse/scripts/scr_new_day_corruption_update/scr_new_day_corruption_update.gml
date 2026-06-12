@@ -41,6 +41,23 @@ function scr_new_day_corruption_update() {
     for (var _i = 0; _i < CIRCLE_COUNT; _i++) {
         global.circle_corruption[_i] = clamp(global.circle_corruption[_i], 0, 100);
     }
+    
+    // ── NPC Personal Corruption Advance ───────────────────────────────────────
+    // The environment decays, and so do the minds of the citizens. We slowly raise
+    // each NPC's personal corruption. Those with higher faith/sin_awareness might resist.
+    if (variable_global_exists("npc_data") && variable_struct_exists(global.npc_data, "npcs")) {
+        var _names = struct_get_names(global.npc_data.npcs);
+        for (var _j = 0; _j < array_length(_names); _j++) {
+            var _npc = global.npc_data.npcs[$ _names[_j]];
+            if (variable_struct_exists(_npc, "personal_corruption")) {
+                var _awareness = variable_struct_exists(_npc, "sin_awareness") ? _npc.sin_awareness : 0;
+                // Base gain of 5, reduced by awareness (priests resist, peasants succumb)
+                var _gain = max(1, 5 - (_awareness * 2));
+                _npc.personal_corruption = clamp(_npc.personal_corruption + _gain, 0, 100);
+            }
+        }
+        scr_npc_save(); // Save the new corruption states
+    }
 
     // ── World event log ───────────────────────────────────────────────────────
     // Record the day transition so the Claude API has narrative context.

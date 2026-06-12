@@ -20,21 +20,48 @@
 #macro CIRCLE_COUNT    7  // total number of circles; valid indices are 0..(CIRCLE_COUNT-1)
 
 // ── Lucidity — the single madness axis ───────────────────────────────────────
-// There is NO sanity stat. Limbo corruption IS Benedetto's grip on reality; he
-// only THINKS he is going insane — it is the corruption tainting him. Anything
-// that needs a "high = lucid" value (0-100) reads this view of corruption:
-//   lucidity = 100 - clamp(Limbo corruption, 0, 100)
+// Lucidity is Benedetto's grip on reality; he only THINKS he is going insane — 
+// it is the corruption tainting him. Anything that needs a "high = lucid" value 
+// (0-100) reads this view of his personal corruption:
+//   lucidity = 100 - clamp(global.player_corruption, 0, 100)
 // So 0 corruption = 100 lucid, 100 corruption = 0 = lost.
 function scr_lucidity() {
-    return 100 - clamp(global.circle_corruption[CIRCLE_LIMBO], 0, 100);
+    return 100 - clamp(global.player_corruption, 0, 100);
 }
 
-/// Raises Limbo corruption by `amount` (was "drain sanity"). Fires the narrative
-/// thresholds as it climbs and the lost-state at 100.
+/// Raises Limbo corruption by `amount`. Fires the narrative thresholds.
 function scr_corruption_taint(amount) {
     var _prev = global.circle_corruption[CIRCLE_LIMBO];
     global.circle_corruption[CIRCLE_LIMBO] = clamp(_prev + amount, 0, 100);
     var _new  = global.circle_corruption[CIRCLE_LIMBO];
+
+    if (_prev < 25 && _new >= 25)
+        scr_world_event_log("[limbo_25] The visions begin to mislead. Benedetto can no longer trust what he sees.");
+    if (_prev < 50 && _new >= 50)
+        scr_world_event_log("[limbo_50] The corruption bleeds into things not yet corrupted. Benedetto sees what will be.");
+    if (_prev < 75 && _new >= 75)
+        scr_world_event_log("[limbo_75] The edges of the world have stopped holding. No clear boundary between seeing and dreaming.");
+    if (_prev < 100 && _new >= 100)
+        scr_game_over("corruption");
+}
+
+/// Lowers Limbo corruption by `amount`.
+function scr_corruption_relieve(amount, deep) {
+    if (is_undefined(deep)) deep = false;
+    var _floor = deep ? 10 : 15;
+    var _cur   = global.circle_corruption[CIRCLE_LIMBO];
+    if (_cur > _floor) global.circle_corruption[CIRCLE_LIMBO] = max(_floor, _cur - amount);
+}
+
+// =============================================================================
+// Player Corruption (Sanity)
+// =============================================================================
+
+/// Raises the player's personal corruption, potentially triggering madness
+function scr_player_taint(amount) {
+    var _prev = global.player_corruption;
+    global.player_corruption = clamp(_prev + amount, 0, 100);
+    var _new  = global.player_corruption;
 
     // ── BOUT OF MADNESS (Temporary Insanity) ──
     if (amount >= 5) {
@@ -51,28 +78,17 @@ function scr_corruption_taint(amount) {
         scr_sanity_trigger_phobia();
     }
 
-    if (_prev < 25 && _new >= 25)
-        scr_world_event_log("[limbo_25] The visions begin to mislead. Benedetto can no longer trust what he sees.");
-    if (_prev < 50 && _new >= 50)
-        scr_world_event_log("[limbo_50] The corruption bleeds into things not yet corrupted. Benedetto sees what will be.");
-    if (_prev < 75 && _new >= 75)
-        scr_world_event_log("[limbo_75] The edges of the world have stopped holding. No clear boundary between seeing and dreaming.");
     if (_prev < 100 && _new >= 100)
-        scr_game_over("corruption");
+        scr_game_over("corruption"); // Mind completely shattered
 }
 
-/// Lowers Limbo corruption by `amount` (was "restore sanity"). The scars never
-/// fully heal — a floor remains (15 normally, 10 when `deep`, e.g. a solved
-/// circle). Never raises corruption.
-function scr_corruption_relieve(amount, deep) {
-    if (is_undefined(deep)) deep = false;
-    var _floor = deep ? 10 : 15;
-    var _cur   = global.circle_corruption[CIRCLE_LIMBO];
-    if (_cur > _floor) global.circle_corruption[CIRCLE_LIMBO] = max(_floor, _cur - amount);
+/// Lowers the player's personal corruption (e.g. through prayer)
+function scr_player_relieve(amount) {
+    global.player_corruption = max(0, global.player_corruption - amount);
     
     // Praying or deep healing clears Indefinite Insanity
     if (variable_global_exists("has_indefinite_insanity") && global.has_indefinite_insanity) {
-        if (amount >= 10 || deep) {
+        if (amount >= 10) {
             global.has_indefinite_insanity = false;
             global.current_phobia = "";
             scr_world_event_log("[sanity_cured] His faith grounds him. The madness recedes.");

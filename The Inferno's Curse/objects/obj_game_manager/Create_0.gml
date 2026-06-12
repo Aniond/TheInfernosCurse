@@ -221,6 +221,7 @@ global.player_stats = {
     agilita: 9,    fede: 16,
     movimento: 4,  salto: 2,
 };
+global.player_corruption = 0;   // The player's personal sanity/madness axis
 global.reputation = {
     gilda:  0,     // merchants — Rispettato / Neutrale / Disprezzato
     chiesa: 35,    // the Church knows its own — starts Devoto

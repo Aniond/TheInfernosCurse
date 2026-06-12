@@ -26,6 +26,7 @@ if (instance_exists(obj_player)) {
             if (shrine_active && global.circle_corruption[0] < 50) {
                 // The shrine answers.
                 scr_corruption_relieve(10);
+                scr_player_relieve(10);
                 scr_time_advance_hours(2);   // prayer takes time — advance 2 hours (scr_time_system)
                 shrine_active = false;
                 cooldown      = cooldown_max;

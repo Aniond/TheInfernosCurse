@@ -24,11 +24,11 @@ function scr_npc_default_data() {
     return {
         npcs: {
             // Division of roles (no crossover): Aldo = lodging ONLY, Rosa = bar ONLY.
-            barmaid:   { tier: 1, name: "Rosa", role: "barmaid",   handles: ["drinks", "food", "conversation"], location: "locanda_rosa_camuna", personality: "Sharp-witted, observant, and deeply religious. She has noticed the walls of the Locanda 'pulsing' and is terrified, but hides it with a mask of professional Florentine toughness. She is protective of her regulars and holds a heavy wooden rosary in her apron pocket.", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
-            innkeeper: { tier: 1, name: "Aldo", role: "innkeeper", handles: ["lodging", "rooms", "keys"],       location: "locanda_rosa_camuna", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
-            marco:     { tier: 1, name: "Marco",          role: "baker",     handles: ["bread", "gossip", "forgetting"],      location: "ponte_vecchio",      relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
-            priest:    { tier: 1, name: "Father Anselmo", role: "priest",    handles: ["confession", "blessings", "skills"],  location: "santa_lucia_church", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
-            stableboy: { tier: 2, name: "Pietro",         role: "stableboy", handles: ["horses", "lodging", "rumors"],        location: "fiorentine_stable",  relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, event_log: [] },
+            barmaid:   { tier: 1, name: "Rosa", role: "barmaid",   handles: ["drinks", "food", "conversation"], location: "locanda_rosa_camuna", personality: "Sharp-witted, observant, and deeply religious. She has noticed the walls of the Locanda 'pulsing' and is terrified, but hides it with a mask of professional Florentine toughness. She is protective of her regulars and holds a heavy wooden rosary in her apron pocket.", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, personal_corruption: 0, event_log: [] },
+            innkeeper: { tier: 1, name: "Aldo", role: "innkeeper", handles: ["lodging", "rooms", "keys"],       location: "locanda_rosa_camuna", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, personal_corruption: 0, event_log: [] },
+            marco:     { tier: 1, name: "Marco",          role: "baker",     handles: ["bread", "gossip", "forgetting"],      location: "ponte_vecchio",      relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, personal_corruption: 0, event_log: [] },
+            priest:    { tier: 1, name: "Father Anselmo", role: "priest",    handles: ["confession", "blessings", "skills"],  location: "santa_lucia_church", relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, personal_corruption: 0, event_log: [] },
+            stableboy: { tier: 2, name: "Pietro",         role: "stableboy", handles: ["horses", "lodging", "rumors"],        location: "fiorentine_stable",  relationship_score: 0, emotion_state: "neutral", sin_awareness: 0, personal_corruption: 0, event_log: [] },
         }
     };
 }
@@ -75,6 +75,7 @@ function scr_npc_backfill_fields() {
         if (variable_struct_exists(_src, "role")    && !variable_struct_exists(_dst, "role"))    _dst.role    = _src.role;
         if (variable_struct_exists(_src, "handles") && !variable_struct_exists(_dst, "handles")) _dst.handles = _src.handles;
         if (variable_struct_exists(_src, "personality") && !variable_struct_exists(_dst, "personality")) _dst.personality = _src.personality;
+        if (variable_struct_exists(_src, "personal_corruption") && !variable_struct_exists(_dst, "personal_corruption")) _dst.personal_corruption = _src.personal_corruption;
     }
 }
 
@@ -130,7 +131,7 @@ function scr_npc_log_event(_npc_id, _behavior, _outcome, _delta) {
         player_behavior:    _behavior,
         outcome:            _outcome,
         relationship_delta: _delta,
-        corruption_at_time: global.circle_corruption[CIRCLE_LIMBO],
+        corruption_at_time: variable_struct_exists(_npc, "personal_corruption") ? _npc.personal_corruption : 0,
         day:                scr_npc_current_day()
     });
     _npc.relationship_score += _delta;
@@ -144,14 +145,15 @@ function scr_npc_log_event(_npc_id, _behavior, _outcome, _delta) {
 /// last 2 events, drift 10. 100%: wipe everything — the NPC has no memory of him.
 function scr_npc_apply_corruption_erasure() {
     if (!variable_global_exists("npc_data")) return;
-    var _corr = global.circle_corruption[CIRCLE_LIMBO];
-    if (_corr < 50) return;
     var _day   = scr_npc_current_day();
     var _names = struct_get_names(global.npc_data.npcs);
 
     for (var _i = 0; _i < array_length(_names); _i++) {
         var _id  = _names[_i];
         var _npc = global.npc_data.npcs[$ _id];
+        var _corr = variable_struct_exists(_npc, "personal_corruption") ? _npc.personal_corruption : 0;
+        
+        if (_corr < 50) continue;
 
         if (_corr >= 100) {
             _npc.event_log          = [];
@@ -196,7 +198,7 @@ function scr_npc_mock_response(_npc_id, _player_input) {
     if (is_undefined(_npc)) return "...";
     var _name = _npc.name;
     var _e    = _npc.emotion_state;
-    var _corr = global.circle_corruption[CIRCLE_LIMBO];
+    var _corr = variable_struct_exists(_npc, "personal_corruption") ? _npc.personal_corruption : 0;
 
     // Corruption erases their memory of him (the taint, not his madness).
     if (_corr >= 100) return _name + " stares blankly. \"I'll be with you in a moment, traveler.\"";
@@ -223,7 +225,7 @@ function scr_npc_build_context(_npc_id, _player_input) {
         emotion_state:      _npc.emotion_state,
         relationship_score: _npc.relationship_score,
         sin_awareness:      variable_struct_exists(_npc, "sin_awareness") ? _npc.sin_awareness : 0,
-        corruption:         global.circle_corruption[CIRCLE_LIMBO],
+        personal_corruption: variable_struct_exists(_npc, "personal_corruption") ? _npc.personal_corruption : 0,
         day:                scr_npc_current_day(),
         event_log:          _npc.event_log,
         player_input:       _player_input
