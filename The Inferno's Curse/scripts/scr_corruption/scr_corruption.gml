@@ -36,6 +36,21 @@ function scr_corruption_taint(amount) {
     global.circle_corruption[CIRCLE_LIMBO] = clamp(_prev + amount, 0, 100);
     var _new  = global.circle_corruption[CIRCLE_LIMBO];
 
+    // ── BOUT OF MADNESS (Temporary Insanity) ──
+    if (amount >= 5) {
+        scr_world_event_log("[sanity_bout] The horror of it shatters his immediate resolve. A bout of madness takes him.");
+        scr_sanity_trigger_bout();
+    }
+    
+    // ── INDEFINITE INSANITY (Phobias / Manias) ──
+    if (!variable_global_exists("daily_sanity_loss")) global.daily_sanity_loss = 0;
+    global.daily_sanity_loss += amount;
+    if (global.daily_sanity_loss >= 20 && (!variable_global_exists("has_indefinite_insanity") || !global.has_indefinite_insanity)) {
+        global.has_indefinite_insanity = true;
+        scr_world_event_log("[sanity_indefinite] His mind snaps. A lasting phobia sets in.");
+        scr_sanity_trigger_phobia();
+    }
+
     if (_prev < 25 && _new >= 25)
         scr_world_event_log("[limbo_25] The visions begin to mislead. Benedetto can no longer trust what he sees.");
     if (_prev < 50 && _new >= 50)
@@ -54,6 +69,15 @@ function scr_corruption_relieve(amount, deep) {
     var _floor = deep ? 10 : 15;
     var _cur   = global.circle_corruption[CIRCLE_LIMBO];
     if (_cur > _floor) global.circle_corruption[CIRCLE_LIMBO] = max(_floor, _cur - amount);
+    
+    // Praying or deep healing clears Indefinite Insanity
+    if (variable_global_exists("has_indefinite_insanity") && global.has_indefinite_insanity) {
+        if (amount >= 10 || deep) {
+            global.has_indefinite_insanity = false;
+            global.current_phobia = "";
+            scr_world_event_log("[sanity_cured] His faith grounds him. The madness recedes.");
+        }
+    }
 }
 
 
@@ -529,4 +553,28 @@ function scr_solve_circle(circle_index) {
         show_debug_message("[ending] All circles solved.");
         // room_goto(rm_ending);
     }
+}
+
+// =============================================================================
+// Sanity System (Call of Cthulhu Inspired)
+// =============================================================================
+
+/// Triggers a temporary Bout of Madness (e.g., visual hallucinations, loss of control)
+/// Called automatically by scr_corruption_taint if the single hit is >= 5.
+function scr_sanity_trigger_bout() {
+    // Heavy vision intensity spike.
+    global.vision_intensity = max(global.vision_intensity, 5.0);
+    global.last_vision_type = "madness_bout";
+    
+    // Lock input for a brief moment out of pure shock
+    global.input_locked = true;
+    global.input_lock_timer = 120; // 2 seconds at 60fps
+}
+
+/// Triggers a lasting Phobia or Mania (Indefinite Insanity)
+/// Called automatically when daily sanity loss hits 20.
+function scr_sanity_trigger_phobia() {
+    // Pick a random phobia to afflict the player with
+    var _phobias = ["Achluophobia", "Hagiophobia", "Paranoia"];
+    global.current_phobia = _phobias[irandom(array_length(_phobias) - 1)];
 }

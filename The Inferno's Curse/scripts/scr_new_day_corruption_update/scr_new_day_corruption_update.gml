@@ -19,6 +19,9 @@ function scr_new_day_corruption_update() {
     if (global.circle_enabled[CIRCLE_LIMBO]) {
         global.circle_corruption[CIRCLE_LIMBO] += 8;
     }
+    
+    // Reset daily sanity loss for Indefinite Insanity checks
+    global.daily_sanity_loss = 0;
 
     // ── Cascade bleed: only lands on ENABLED circles ──────────────────────────
     // While a target circle is disabled (locked until its city), no bleed reaches
