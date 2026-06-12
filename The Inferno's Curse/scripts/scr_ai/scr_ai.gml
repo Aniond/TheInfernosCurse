@@ -55,7 +55,7 @@ function scr_ai_call(prompt, system_prompt) {
     var _body = "{"
         + "\"systemInstruction\":{\"parts\":[{\"text\":" + json_stringify(system_prompt) + "}]},"
         + "\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":" + json_stringify(_user) + "}]}],"
-        + "\"generationConfig\":{\"maxOutputTokens\":150}"
+        + "\"generationConfig\":{\"maxOutputTokens\":250, \"responseMimeType\":\"application/json\"}"
         + "}";
 
     // debug overlay metrics + event log
@@ -105,7 +105,14 @@ function scr_build_npc_system_prompt(npc_data) {
         "Recent world events: " + scr_world_events_to_string(3) + ".\n" +
         "Player sin profile: " + scr_sin_profile_to_string() + ".\n" +
         "Rules: stay in character always. Max 2-3 sentences. " +
-        "Reference the corruption naturally. " + _tone;
+        "Reference the corruption naturally. " + _tone + "\n\n" +
+        "You must return a raw JSON object exactly matching this structure:\n" +
+        "{\n" +
+        "  \"dialogue\": \"Your spoken response.\",\n" +
+        "  \"suggested_prompts\": [\"Short player reply 1\", \"Reply 2\", \"Reply 3\", \"Reply 4\"],\n" +
+        "  \"relationship_delta\": 0\n" +
+        "}\n" +
+        "relationship_delta must be an integer (e.g. -1, 0, or 1) based on how the player's last message affected you.";
 }
 
 
@@ -158,7 +165,15 @@ function scr_npc_build_system_prompt(npc_id) {
         "\n\nATMOSPHERE:\n" + _sin_fx +
         "\n\nYOUR CURRENT STATE:\n" + _corruption_behavior +
         "\n\nYOUR MEMORIES OF THIS PERSON:\n" + _memories +
-        "\n\nBENEDETTO'S SIN PROFILE:\n" + _sin_prof +
+        "\n\nTHEIR SINS (Use subtly):\n" + _sin_prof +
+        "\n\nCRITICAL INSTRUCTION: You must respond with a raw JSON object exactly matching this structure:\n" +
+        "{\n" +
+        "  \"dialogue\": \"Your spoken response, in-character.\",\n" +
+        "  \"suggested_prompts\": [\"Short player reply 1\", \"Reply 2\", \"Reply 3\", \"Reply 4\"],\n" +
+        "  \"relationship_delta\": 0\n" +
+        "}\n" +
+        "The `suggested_prompts` must be 4 distinct, short actions or dialogue options the player could say back to you. " +
+        "The `relationship_delta` must be an integer (-1, 0, or 1) reflecting how the player's message affected your disposition towards them." +
         "\n\nHISTORICAL SETTING:\n" +
         "Italy, 1300 AD. Medieval Catholic society.\n" +
         "Political tension between Guelphs and Ghibellines tears the city apart.\n" +

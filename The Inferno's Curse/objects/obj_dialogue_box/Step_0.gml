@@ -54,25 +54,68 @@ if (!is_complete && dialogue_text != "") {
         display_text = string_copy(dialogue_text, 1, char_index);
         if (char_index >= string_length(dialogue_text)) {
             is_complete  = true;
-            // Keep aliases in sync so any legacy code reading them still works.
             finished     = true;
+            if (array_length(suggested_prompts) > 0) {
+                input_active = true;
+                keyboard_string = "";
+                typed_input = "";
+            }
         }
     }
 }
 
-// ── Input: skip or close ──────────────────────────────────────────────────────
-var _interact = keyboard_check_pressed(vk_space)
-             || keyboard_check_pressed(ord("E"));
+// ── Input: prompts and custom text ────────────────────────────────────────────
+if (input_active) {
+    // 1. Capture keyboard
+    typed_input = keyboard_string;
+    
+    // 2. Mouse selection for suggested prompts (handled in Draw/Step implicitly, but we'll check clicks here)
+    var _mx = device_mouse_x_to_gui(0);
+    var _my = device_mouse_y_to_gui(0);
+    
+    var _click = mouse_check_button_pressed(mb_left);
+    var _submit = "";
+    
+    if (keyboard_check_pressed(vk_enter) && typed_input != "") {
+        _submit = typed_input;
+    } else if (_click && selected_prompt != -1 && selected_prompt < array_length(suggested_prompts)) {
+        _submit = suggested_prompts[selected_prompt];
+    }
+    
+    if (_submit != "") {
+        // Send to AI
+        if (instance_exists(source_npc_id)) {
+            source_npc_id.api_pending = true;
+            source_npc_id.request_id = scr_ai_call(_submit, scr_npc_build_system_prompt(source_npc_id));
+            is_loading = true;
+            is_complete = false;
+            input_active = false;
+            dialogue_text = "";
+            display_text = "";
+            suggested_prompts = [];
+            typed_input = "";
+        } else {
+            scr_close_dialogue();
+        }
+    }
+    
+} else {
+    // Legacy dismiss logic for when there are no prompts (or not input_active)
+    var _interact = keyboard_check_pressed(vk_space) || keyboard_check_pressed(ord("E"));
 
-if (_interact) {
-    if (!is_complete) {
-        // Skip typewriter — reveal the full line instantly.
-        char_index   = string_length(dialogue_text);
-        display_text = dialogue_text;
-        is_complete  = true;
-        finished     = true;
-    } else {
-        // Line fully revealed — player dismisses.
-        scr_close_dialogue();
+    if (_interact) {
+        if (!is_complete) {
+            char_index   = string_length(dialogue_text);
+            display_text = dialogue_text;
+            is_complete  = true;
+            finished     = true;
+            if (array_length(suggested_prompts) > 0) {
+                input_active = true;
+                keyboard_string = "";
+                typed_input = "";
+            }
+        } else if (!is_loading) {
+            scr_close_dialogue();
+        }
     }
 }

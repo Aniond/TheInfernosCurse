@@ -36,7 +36,11 @@ var _name_height     = 25;
 var _continue_height = 20;
 
 var _total_height = _padding_top + _name_height + _text_height + _continue_height + _padding_bottom;
-_total_height = clamp(_total_height, 150, 300);
+if (input_active) {
+    var _prompt_count = array_length(suggested_prompts);
+    _total_height += 30 + (_prompt_count * 20); // 30 for input box, 20 per prompt
+}
+_total_height = clamp(_total_height, 150, 600);
 
 // Smoothly expand/contract toward the target height (lerp every Draw).
 bar_height_current = lerp(bar_height_current, _total_height, 0.15);
@@ -133,16 +137,53 @@ if (is_loading) {
 }
 
 // =============================================================================
-// CONTINUE PROMPT
+// CONTINUE OR INPUT PROMPT
 // =============================================================================
 if (is_complete && !is_loading) {
-    // Blinks every 30 steps so the player knows to press a key.
-    var _blink = (floor(current_time / (30 * (1000 / game_get_speed(gamespeed_fps)))) & 1) == 0;
-    if (_blink) {
-        draw_set_color(scr_ui_theme_get(UI_TEXT_SECONDARY));
-        draw_set_halign(fa_right);
-        draw_set_valign(fa_middle);
-        draw_text(_prompt_x, _prompt_y, "[ E / SPACE ] Continue");
+    if (input_active) {
+        // Draw 4 suggested prompts
+        draw_set_font(FONT_BODY);
+        draw_set_halign(fa_left);
+        draw_set_valign(fa_top);
+        
+        var _prompt_start_y = _text_y + _text_height + 20;
+        var _mx = device_mouse_x_to_gui(0);
+        var _my = device_mouse_y_to_gui(0);
+        selected_prompt = -1;
+        
+        for (var _i = 0; _i < array_length(suggested_prompts); _i++) {
+            var _py = _prompt_start_y + (_i * 20);
+            var _pstr = "> " + suggested_prompts[_i];
+            
+            var _pw = string_width(_pstr);
+            var _ph = string_height(_pstr);
+            
+            var _col = scr_ui_theme_get(UI_TEXT_SECONDARY);
+            if (_mx >= _text_x && _mx <= _text_x + _pw && _my >= _py && _my <= _py + _ph) {
+                _col = scr_ui_theme_get(UI_HIGHLIGHT);
+                selected_prompt = _i;
+            }
+            
+            draw_set_color(_col);
+            draw_text(_text_x, _py, _pstr);
+        }
+        
+        // Draw Text Input Box
+        var _input_y = _prompt_start_y + (array_length(suggested_prompts) * 20) + 10;
+        draw_set_color(scr_ui_theme_get(UI_TEXT_PRIMARY));
+        var _disp_input = typed_input;
+        if (floor(current_time / 500) mod 2 == 0) _disp_input += "_";
+        draw_text(_text_x, _input_y, "Say: " + _disp_input);
+        
+    } else {
+        // Blinks every 30 steps so the player knows to press a key.
+        var _blink = (floor(current_time / (30 * (1000 / game_get_speed(gamespeed_fps)))) & 1) == 0;
+        if (_blink) {
+            draw_set_color(scr_ui_theme_get(UI_TEXT_SECONDARY));
+            draw_set_halign(fa_right);
+            draw_set_valign(fa_middle);
+            draw_text(_prompt_x, _prompt_y, "[ E / SPACE ] Continue");
+        }
     }
 }
 

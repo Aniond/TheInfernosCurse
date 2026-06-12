@@ -25,6 +25,12 @@ is_active    = false;   // master gate — nothing draws or updates when false
 source_npc_id   = noone; // instance ID of the NPC speaking; used for cleanup
 corruption_level = 0;    // copy of source NPC's npc_memory_corruption (0-100)
 
+// ── Interactive Input ─────────────────────────────────────────────────────────
+suggested_prompts = [];  // array of 4 strings from the AI
+typed_input      = "";   // keyboard_string buffer
+input_active     = false; // true when player is allowed to type/click
+selected_prompt  = -1;   // hover index for mouse
+
 // ── Loading animation ─────────────────────────────────────────────────────────
 dot_string = ".";       // animated "..." string shown while waiting
 dot_timer  = 0;         // steps since last dot cycle update

@@ -89,17 +89,44 @@ try {
     show_debug_message("[GameMgr] parse error: " + string(_e));
 }
 
-if (_text == "") {
-    _text = "[ Gemini returned no readable text — see Output log. ]";
+var _dialogue_str = _text;
+var _suggested = [];
+var _delta = 0;
+
+if (_text != "") {
+    try {
+        var _inner = json_parse(_text);
+        if (is_struct(_inner)) {
+            if (variable_struct_exists(_inner, "dialogue")) _dialogue_str = _inner.dialogue;
+            if (variable_struct_exists(_inner, "suggested_prompts")) _suggested = _inner.suggested_prompts;
+            if (variable_struct_exists(_inner, "relationship_delta")) _delta = _inner.relationship_delta;
+        }
+    } catch (_e) {
+        show_debug_message("[GameMgr] inner JSON parse error: " + string(_e));
+    }
 }
 
+if (_dialogue_str == "") {
+    _dialogue_str = "[ Gemini returned no readable text — see Output log. ]";
+}
+
+// ── Apply relationship delta ──────────────────────────────────────────────────
+if (!variable_struct_exists(_npc.npc_data, "relationship_score")) {
+    _npc.npc_data.relationship_score = 50; // default middle
+}
+_npc.npc_data.relationship_score = clamp(_npc.npc_data.relationship_score + _delta, 0, 100);
+
 // ── Store + display ───────────────────────────────────────────────────────────
-_npc.api_response           = _text;
-_npc.npc_data.last_response = _text;
-scr_npc_update_memory(_npc, "Benedetto spoke", _text);
-scr_open_dialogue(_npc, _text);
+_npc.api_response           = _dialogue_str;
+_npc.npc_data.last_response = _dialogue_str;
+scr_npc_update_memory(_npc, "Benedetto spoke", _dialogue_str);
+scr_open_dialogue(_npc, _dialogue_str);
+
+if (instance_exists(obj_dialogue_box)) {
+    obj_dialogue_box.suggested_prompts = _suggested;
+}
 
 show_debug_message(
-    "[GameMgr] Response shown for " + _npc.npc_name + ": " +
-    string_copy(_text, 1, 60) + "..."
+    "[GameMgr] Response shown for " + _npc.npc_name + " (Rel: " + string(_npc.npc_data.relationship_score) + "): " +
+    string_copy(_dialogue_str, 1, 60) + "..."
 );
