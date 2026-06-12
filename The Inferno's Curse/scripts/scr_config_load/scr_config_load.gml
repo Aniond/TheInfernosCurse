@@ -27,6 +27,7 @@ function scr_config_load() {
     // value returned if the key or section doesn't exist — empty string here
     // so the missing-key check below catches both cases.
     global.gemini_api_key = ini_read_string("API", "key", "");
+    global.gemini_model   = ini_read_string("API", "model", "gemini-1.5-flash");
 
     // Always close the INI handle, even if the read failed.
     ini_close();

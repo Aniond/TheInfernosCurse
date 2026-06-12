@@ -63,7 +63,7 @@ function scr_ai_call(prompt, system_prompt) {
     global.api_call_count++;
     if (variable_global_exists("world_event_log")) scr_world_event_log("API -> Gemini (Flash)");
 
-    var _url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + global.gemini_api_key;
+    var _url = "https://generativelanguage.googleapis.com/v1beta/models/" + global.gemini_model + ":generateContent?key=" + global.gemini_api_key;
     var _req_id = http_request(_url, "POST", _headers, _body);
 
     ds_map_destroy(_headers);
