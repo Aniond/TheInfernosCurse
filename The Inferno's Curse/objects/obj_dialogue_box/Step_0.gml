@@ -32,7 +32,7 @@ if (is_loading) {
 
     if (loading_timer >= 1200) {
         is_loading    = false;
-        dialogue_text = "[ No response from Claude (timed out after 20s). Check the Output log. Press E. ]";
+        dialogue_text = "[ No response from Gemini (timed out after 20s). Check the Output log. Press E. ]";
         display_text  = "";
         char_index    = 0;
         is_complete   = false;

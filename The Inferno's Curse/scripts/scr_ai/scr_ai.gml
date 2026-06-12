@@ -230,7 +230,7 @@ function scr_npc_call_api(npc_id, player_input) {
     if (_req_id == -1) {
         var _msg = (variable_global_exists("ai_disabled") && global.ai_disabled)
             ? "[ AI disabled for testing (F11) — no tokens spent. Press F11 to go live. ]"
-            : "[ No connection to Claude — check config.ini API key. ]";
+            : "[ No connection to Gemini — check config.ini API key. ]";
         scr_open_dialogue(npc_id, _msg);
     }
 }

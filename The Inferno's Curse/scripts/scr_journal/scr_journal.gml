@@ -88,7 +88,7 @@ function scr_generate_journal_entry(_mock = false) {
         show_debug_message(
             "[Journal] No API key — cannot generate entry. Check config.ini ([API] key=...)."
         );
-        _entry.text = "[ The page stays blank — Claude is unreachable. ]";
+        _entry.text = "[ The page stays blank — Gemini is unreachable. ]";
     }
 
     // Auto-save after codex entry so journal progress survives a crash

@@ -19,7 +19,8 @@
 // ── API / AI ──────────────────────────────────────────────────────────────────
 // Populated by scr_config_load() at the end of this event.
 // Never hardcode a key here.
-global.claude_api_key = "";
+global.gemini_api_key = "";
+global.gemini_model   = "";
 
 // Instance ID of the NPC currently speaking in a dialogue box.
 // noone = no active conversation.

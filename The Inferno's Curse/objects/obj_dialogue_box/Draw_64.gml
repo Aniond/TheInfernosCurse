@@ -97,7 +97,7 @@ draw_text(_name_x, _name_y, npc_name_display);
 // BODY TEXT
 // =============================================================================
 if (is_loading) {
-    // ── Loading state — waiting for Claude ───────────────────────────────────
+    // ── Loading state — waiting for Gemini ───────────────────────────────────
     draw_set_color(scr_ui_theme_get(UI_TEXT_SECONDARY));
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
