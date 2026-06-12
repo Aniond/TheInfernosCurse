@@ -34,7 +34,7 @@ if (!_near) {
 if (!greeted && !global.input_locked) {
     greeted = true;
     api_pending = true;
-    request_id = scr_ai_call("The player just approached the bar. Greet them and ask them what they want to drink or eat.", scr_npc_build_system_prompt(npc_id));
+    request_id = scr_ai_call("The player just approached the bar. Greet them and ask them what they want to drink or eat.", scr_npc_build_system_prompt(id));
     
     scr_open_dialogue(id, " ");
     if (instance_exists(obj_dialogue_box)) {
