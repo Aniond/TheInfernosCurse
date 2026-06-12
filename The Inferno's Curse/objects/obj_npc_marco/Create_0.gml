@@ -8,17 +8,8 @@
 // Set npc_data BEFORE event_inherited() so obj_npc_base can reference it safely.
 // =============================================================================
 
-npc_data = scr_npc_create(
-    "marco",
-    "Marco",
-    "baker and father of three, keeps the Fornaio on the Ponte Vecchio",
-    "The Fornaio bakery on the Ponte Vecchio bridge market, Florence, 1300 AD",
-    CIRCLE_LIMBO,
-    "Warm, generous, proud of his bread, devoted to his family, simple faith. " +
-    "Laughs easily. Remembers everyone by name. Always has bread to offer. " +
-    "Worried about Guelph and Ghibelline tensions but tries to stay neutral. " +
-    "Genuinely good man — the kind Florence is full of and never notices until they are gone."
-);
+npc_id = "marco";
+npc_data = scr_npc_get(npc_id);
 
 // ── Marco-specific state ──────────────────────────────────────────────────────
 marco_met           = false;  // has Benedetto spoken to him before
@@ -29,12 +20,11 @@ marco_corruption_arc = 0;     // 0-4 — which arc Marco is currently in (see St
 bread_offering_made = false;  // true once Marco has offered bread this run
 
 // Pre-seed memory so the API always has context on first interaction
-scr_npc_add_memory(
-    npc_data,
-    "first_seen",
-    "A priest from another parish passed by the stall near the Arno bridge.",
-    "neutral"
-);
+// If event_log is empty, seed it once.
+if (array_length(npc_data.event_log) == 0) {
+    scr_npc_log_event(npc_id, "neutral", "A priest from another parish passed by the stall near the Arno bridge.", 0);
+}
+
 
 // Inherit shared NPC state from obj_npc_base
 event_inherited();

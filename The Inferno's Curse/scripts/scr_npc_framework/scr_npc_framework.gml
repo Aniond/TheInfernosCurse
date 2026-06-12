@@ -1,71 +1,12 @@
 /// @description NPC data structures, memory system, and dialogue dispatch
 
-/// Creates and returns a new NPC data struct with empty memory.
-/// @param {string} id            Unique identifier, e.g. "elder_01"
-/// @param {string} name          Display name shown in the dialogue box
-/// @param {string} role          One-word role, e.g. "elder", "merchant"
-/// @param {string} location      Location string fed into the system prompt
-/// @param {real}   circle        Circle index 0-6 (use CIRCLE_* macros)
-/// @param {string} personality   Short descriptor fed into the system prompt
-/// @returns {struct}
-function scr_npc_create(id, name, role, location, circle, personality) {
-    return {
-        id:              id,
-        name:            name,
-        role:            role,
-        location:        location,
-        circle:          circle,
-        personality:     personality,
-        memory:          [],        // array of {event, detail, emotional_impact}
-        disposition:     "neutral", // neutral | friendly | fearful | hostile
-        knows_about:     [],        // array of rumour strings
-        pending_request: -1,        // async HTTP request ID (-1 = none in flight)
-        last_response:   ""         // most recent dialogue line from Claude
-    };
-}
-
-/// Records a player interaction in the NPC's memory and shifts their disposition.
-/// Newest entries are kept at the front; the list is capped at 10 entries.
-/// @param {struct} npc_data
-/// @param {string} event             Short event tag, e.g. "player_helped"
-/// @param {string} detail            Human-readable description
-/// @param {string} emotional_impact  e.g. "grateful" | "fearful" | "angry" | "neutral"
-function scr_npc_add_memory(npc_data, event, detail, emotional_impact) {
-    array_insert(npc_data.memory, 0, {
-        event:            event,
-        detail:           detail,
-        emotional_impact: emotional_impact
-    });
-    if (array_length(npc_data.memory) > 10) {
-        array_delete(npc_data.memory, 10, 1);
-    }
-
-    // Shift disposition based on the strongest emotional signal
-    switch (emotional_impact) {
-        case "grateful":
-        case "relieved":
-            if (npc_data.disposition == "neutral" || npc_data.disposition == "fearful") {
-                npc_data.disposition = "friendly";
-            }
-            break;
-        case "angry":
-        case "betrayed":
-            npc_data.disposition = "hostile";
-            break;
-        case "fearful":
-            if (npc_data.disposition == "neutral") npc_data.disposition = "fearful";
-            break;
-    }
-}
-
-/// Converts the NPC's memory array into a compact string for API context.
+/// Converts the NPC's event_log array into a compact string for API context.
 /// Only the 3 most recent memories are included to keep prompts short.
 /// @param {struct} npc_data
 /// @returns {string}
 function scr_npc_memory_to_string(npc_data) {
     var _out = "";
     
-    // New system (event_log)
     if (variable_struct_exists(npc_data, "event_log")) {
         var _len = array_length(npc_data.event_log);
         if (_len == 0) return "No prior interactions.";
@@ -73,18 +14,6 @@ function scr_npc_memory_to_string(npc_data) {
         for (var _i = 0; _i < _max; _i++) {
             var _m = npc_data.event_log[_i];
             _out += "[Behavior: " + _m.player_behavior + " | Outcome: " + _m.outcome + "] ";
-        }
-        return string_trim(_out);
-    }
-    
-    // Old system (memory)
-    if (variable_struct_exists(npc_data, "memory")) {
-        var _len = array_length(npc_data.memory);
-        if (_len == 0) return "No prior interactions.";
-        var _max = min(3, _len);
-        for (var _i = 0; _i < _max; _i++) {
-            var _m = npc_data.memory[_i];
-            _out += "[" + _m.event + ": " + _m.detail + " — felt " + _m.emotional_impact + "] ";
         }
         return string_trim(_out);
     }
@@ -106,15 +35,7 @@ function scr_npc_get_memory_string(npc_id) {
     return scr_npc_memory_to_string(npc_id.npc_data);
 }
 
-/// Records an interaction in the NPC's memory.
-/// Wraps scr_npc_add_memory() with a simplified signature for the async handler.
-/// @param {Id.Instance} npc_id   Instance of any obj_npc_base child
-/// @param {string}      event    Short event tag, e.g. "Benedetto spoke"
-/// @param {string}      text     The dialogue or event description
-function scr_npc_update_memory(npc_id, event, text) {
-    if (!instance_exists(npc_id)) exit;
-    scr_npc_add_memory(npc_id.npc_data, event, text, "neutral");
-}
+
 
 /// Handles the full flow of starting an NPC conversation:
 /// locks the NPC, fires the Claude API call, and opens the box.

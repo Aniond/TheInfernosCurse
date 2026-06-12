@@ -55,7 +55,15 @@ _npc.npc_data.pending_request = -1;
 
 // Non-2xx — surface the code so it's visible on screen and in the log.
 if (_http < 200 || _http >= 300) {
-    var _msg = "[ Gemini API error " + string(_http) + " — see Output log. ]";
+    var _msg = "";
+    if (_http == 429) {
+        _msg = "The city is so loud today, I cannot hear myself think... give me a moment.";
+    } else if (_http >= 500) {
+        _msg = "The heavens are silent right now... I need a moment to collect myself.";
+    } else {
+        _msg = "[ Gemini API error " + string(_http) + " — see Output log. ]";
+    }
+    
     _npc.api_response           = _msg;
     _npc.npc_data.last_response = _msg;
     scr_open_dialogue(_npc, _msg);
@@ -119,7 +127,9 @@ _npc.npc_data.relationship_score = clamp(_npc.npc_data.relationship_score + _del
 // ── Store + display ───────────────────────────────────────────────────────────
 _npc.api_response           = _dialogue_str;
 _npc.npc_data.last_response = _dialogue_str;
-scr_npc_update_memory(_npc, "Benedetto spoke", _dialogue_str);
+// Log the interaction with the exact delta
+var _behavior = (_delta > 0) ? "friendly" : (_delta < 0 ? "rude" : "neutral");
+scr_npc_log_event(_npc.npc_id, _behavior, _dialogue_str, _delta);
 scr_open_dialogue(_npc, _dialogue_str);
 
 if (instance_exists(obj_dialogue_box)) {
