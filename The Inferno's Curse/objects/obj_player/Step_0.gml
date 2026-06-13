@@ -1,5 +1,10 @@
 // ── Player: Step ────────────────────────────────────────────────────────────
 
+// Debug Map Warp
+if (keyboard_check_pressed(ord("M"))) {
+    room_goto(asset_get_index("rm_world_map"));
+}
+
 // Freeze the player while a menu or dialogue has taken input (journal, dialogue
 // box, sin-induced dissociation). Movement and collision are skipped entirely.
 if (global.input_locked) exit;

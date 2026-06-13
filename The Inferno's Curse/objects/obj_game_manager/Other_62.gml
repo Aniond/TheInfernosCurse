@@ -83,10 +83,12 @@ try {
                 var _content = _cand0.content;
                 if (is_struct(_content) && variable_struct_exists(_content, "parts")) {
                     var _parts = _content.parts;
-                    if (is_array(_parts) && array_length(_parts) > 0) {
-                        var _part0 = _parts[0];
-                        if (is_struct(_part0) && variable_struct_exists(_part0, "text")) {
-                            _text = _part0.text;
+                    if (is_array(_parts)) {
+                        for (var _p = 0; _p < array_length(_parts); _p++) {
+                            var _part = _parts[_p];
+                            if (is_struct(_part) && variable_struct_exists(_part, "text")) {
+                                _text += _part.text;
+                            }
                         }
                     }
                 }
@@ -102,15 +104,25 @@ var _suggested = [];
 var _delta = 0;
 
 if (_text != "") {
-    try {
-        var _inner = json_parse(_text);
-        if (is_struct(_inner)) {
-            if (variable_struct_exists(_inner, "dialogue")) _dialogue_str = _inner.dialogue;
-            if (variable_struct_exists(_inner, "suggested_prompts")) _suggested = _inner.suggested_prompts;
-            if (variable_struct_exists(_inner, "relationship_delta")) _delta = _inner.relationship_delta;
+    // Some Gemini models wrap output in ```json ... ``` despite mime types.
+    // We strip it by finding the first { and last }.
+    var _clean = _text;
+    var _first = string_pos("{", _clean);
+    var _last  = string_last_pos("}", _clean);
+    if (_first > 0 && _last >= _first) {
+        _clean = string_copy(_clean, _first, _last - _first + 1);
+        try {
+            var _inner = json_parse(_clean);
+            if (is_struct(_inner)) {
+                if (variable_struct_exists(_inner, "dialogue")) _dialogue_str = _inner.dialogue;
+                if (variable_struct_exists(_inner, "suggested_prompts")) _suggested = _inner.suggested_prompts;
+                if (variable_struct_exists(_inner, "relationship_delta")) _delta = _inner.relationship_delta;
+            }
+        } catch (_e) {
+            show_debug_message("[GameMgr] inner JSON parse error: " + string(_e));
         }
-    } catch (_e) {
-        show_debug_message("[GameMgr] inner JSON parse error: " + string(_e));
+    } else {
+        show_debug_message("[GameMgr] Could not find { } in Gemini response. Text was: " + _text);
     }
 }
 

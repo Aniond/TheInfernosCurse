@@ -39,6 +39,7 @@ obj_duomo_pew           14.6  28    1
 obj_duomo_pew           14.6  35    1
 
 # --- Transepts (5,6) + Chapels (3,4) ---
+obj_room_occluder       2     2     6
 obj_duomo_candelabra    3     12    0.6
 obj_duomo_candelabra    24    12    0.6
 obj_duomo_candelabra    4     3     0.6

@@ -55,7 +55,7 @@ function scr_ai_call(prompt, system_prompt) {
     var _body = "{"
         + "\"systemInstruction\":{\"parts\":[{\"text\":" + json_stringify(system_prompt) + "}]},"
         + "\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":" + json_stringify(_user) + "}]}],"
-        + "\"generationConfig\":{\"maxOutputTokens\":250, \"responseMimeType\":\"application/json\"}"
+        + "\"generationConfig\":{\"maxOutputTokens\":1024, \"responseMimeType\":\"application/json\"}"
         + "}";
 
     // debug overlay metrics + event log

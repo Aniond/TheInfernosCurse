@@ -23,8 +23,10 @@ global.duomo_exit = scr_transition_spawn("duomo_south",
 // ── Entry chronicle, keyed to how far the corruption has taken the church ────────
 var _corr = global.circle_corruption[CIRCLE_LIMBO];
 if (_corr >= 100) {
+    global.cam_zoom_target = 1.4; // Zoom out to show the massive cathedral scale
     scr_chronicle_add("The cathedral is cold and dark. The church has forgotten what it was.");
 } else if (_corr >= 75) {
+    global.cam_zoom_target = 1.4; // Same zoom for now, but can be dynamic
     scr_chronicle_add("Something is wrong with this place. Something has been wrong for a while.");
 }
 

@@ -1,435 +1,2534 @@
-﻿{
-  "$GMProject":"v1",
-  "%Name":"The Inferno's Curse",
-  "AudioGroups":[
-    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+{
+  "$GMProject": "v1",
+  "%Name": "The Inferno's Curse",
+  "AudioGroups": [
+    {
+      "$GMAudioGroup": "v1",
+      "%Name": "audiogroup_default",
+      "exportDir": "",
+      "name": "audiogroup_default",
+      "resourceType": "GMAudioGroup",
+      "resourceVersion": "2.0",
+      "targets": -1
+    }
   ],
-  "configs":{
-    "children":[],
-    "name":"Default",
+  "configs": {
+    "children": [],
+    "name": "Default"
   },
-  "defaultScriptType":0,
-  "Folders":[
-    {"$GMFolder":"","%Name":"SnowState","folderPath":"folders/SnowState.yy","name":"SnowState","resourceType":"GMFolder","resourceVersion":"2.0",},
+  "defaultScriptType": 0,
+  "Folders": [
+    {
+      "$GMFolder": "",
+      "%Name": "SnowState",
+      "folderPath": "folders/SnowState.yy",
+      "name": "SnowState",
+      "resourceType": "GMFolder",
+      "resourceVersion": "2.0"
+    }
   ],
-  "ForcedPrefabProjectReferences":[],
-  "IncludedFiles":[
-    {"$GMIncludedFile":"","%Name":"config.ini","CopyToMask":-1,"filePath":"datafiles","name":"config.ini","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
-    {"$GMIncludedFile":"","%Name":"alagard.ttf","CopyToMask":-1,"filePath":"datafiles/fonts","name":"alagard.ttf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
-    {"$GMIncludedFile":"","%Name":"PixelifySans-Regular.ttf","CopyToMask":-1,"filePath":"datafiles/fonts","name":"PixelifySans-Regular.ttf","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+  "ForcedPrefabProjectReferences": [],
+  "IncludedFiles": [
+    {
+      "$GMIncludedFile": "",
+      "%Name": "config.ini",
+      "CopyToMask": -1,
+      "filePath": "datafiles",
+      "name": "config.ini",
+      "resourceType": "GMIncludedFile",
+      "resourceVersion": "2.0"
+    },
+    {
+      "$GMIncludedFile": "",
+      "%Name": "alagard.ttf",
+      "CopyToMask": -1,
+      "filePath": "datafiles/fonts",
+      "name": "alagard.ttf",
+      "resourceType": "GMIncludedFile",
+      "resourceVersion": "2.0"
+    },
+    {
+      "$GMIncludedFile": "",
+      "%Name": "PixelifySans-Regular.ttf",
+      "CopyToMask": -1,
+      "filePath": "datafiles/fonts",
+      "name": "PixelifySans-Regular.ttf",
+      "resourceType": "GMIncludedFile",
+      "resourceVersion": "2.0"
+    }
   ],
-  "isEcma":false,
-  "LibraryEmitters":[],
-  "MetaData":{
-    "IDEVersion":"2026.0.0.0",
+  "isEcma": false,
+  "LibraryEmitters": [],
+  "MetaData": {
+    "IDEVersion": "2026.0.0.0"
   },
-  "name":"The Inferno's Curse",
-  "resources":[
-    {"id":{"name":"spr_ponte_archway","path":"sprites/spr_ponte_archway/spr_ponte_archway.yy",},},
-    {"id":{"name":"spr_ponte_statue","path":"sprites/spr_ponte_statue/spr_ponte_statue.yy",},},
-    {"id":{"name":"spr_sign_calzolaio","path":"sprites/spr_sign_calzolaio/spr_sign_calzolaio.yy",},},
-    {"id":{"name":"spr_sign_fabbro","path":"sprites/spr_sign_fabbro/spr_sign_fabbro.yy",},},
-    {"id":{"name":"spr_sign_fioraio","path":"sprites/spr_sign_fioraio/spr_sign_fioraio.yy",},},
-    {"id":{"name":"spr_sign_fornaio","path":"sprites/spr_sign_fornaio/spr_sign_fornaio.yy",},},
-    {"id":{"name":"spr_sign_gilda","path":"sprites/spr_sign_gilda/spr_sign_gilda.yy",},},
-    {"id":{"name":"spr_sign_libraio","path":"sprites/spr_sign_libraio/spr_sign_libraio.yy",},},
-    {"id":{"name":"spr_sign_orafo","path":"sprites/spr_sign_orafo/spr_sign_orafo.yy",},},
-    {"id":{"name":"spr_sign_osteria","path":"sprites/spr_sign_osteria/spr_sign_osteria.yy",},},
-    {"id":{"name":"spr_sign_pergamene","path":"sprites/spr_sign_pergamene/spr_sign_pergamene.yy",},},
-    {"id":{"name":"spr_sign_speziere","path":"sprites/spr_sign_speziere/spr_sign_speziere.yy",},},
-    {"id":{"name":"spr_sign_tessitore","path":"sprites/spr_sign_tessitore/spr_sign_tessitore.yy",},},
-    {"id":{"name":"spr_sign_vetraio","path":"sprites/spr_sign_vetraio/spr_sign_vetraio.yy",},},
-    {"id":{"name":"obj_barrel","path":"objects/obj_barrel/obj_barrel.yy",},},
-    {"id":{"name":"obj_battle_manager","path":"objects/obj_battle_manager/obj_battle_manager.yy",},},
-    {"id":{"name":"obj_cart","path":"objects/obj_cart/obj_cart.yy",},},
-    {"id":{"name":"obj_character_sheet","path":"objects/obj_character_sheet/obj_character_sheet.yy",},},
-    {"id":{"name":"obj_cypress_tree","path":"objects/obj_cypress_tree/obj_cypress_tree.yy",},},
-    {"id":{"name":"obj_dialogue_box","path":"objects/obj_dialogue_box/obj_dialogue_box.yy",},},
-    {"id":{"name":"obj_door_placeholder","path":"objects/obj_door_placeholder/obj_door_placeholder.yy",},},
-    {"id":{"name":"obj_duomo_altar","path":"objects/obj_duomo_altar/obj_duomo_altar.yy",},},
-    {"id":{"name":"obj_duomo_candelabra","path":"objects/obj_duomo_candelabra/obj_duomo_candelabra.yy",},},
-    {"id":{"name":"obj_duomo_confessional","path":"objects/obj_duomo_confessional/obj_duomo_confessional.yy",},},
-    {"id":{"name":"obj_duomo_entrance","path":"objects/obj_duomo_entrance/obj_duomo_entrance.yy",},},
-    {"id":{"name":"obj_duomo_pew","path":"objects/obj_duomo_pew/obj_duomo_pew.yy",},},
-    {"id":{"name":"obj_duomo_pillar","path":"objects/obj_duomo_pillar/obj_duomo_pillar.yy",},},
-    {"id":{"name":"obj_duomo_priest","path":"objects/obj_duomo_priest/obj_duomo_priest.yy",},},
-    {"id":{"name":"obj_duomo_save_point","path":"objects/obj_duomo_save_point/obj_duomo_save_point.yy",},},
-    {"id":{"name":"obj_duomo_scene","path":"objects/obj_duomo_scene/obj_duomo_scene.yy",},},
-    {"id":{"name":"obj_duomo_stairs","path":"objects/obj_duomo_stairs/obj_duomo_stairs.yy",},},
-    {"id":{"name":"obj_duomo_statue","path":"objects/obj_duomo_statue/obj_duomo_statue.yy",},},
-    {"id":{"name":"obj_florence_building","path":"objects/obj_florence_building/obj_florence_building.yy",},},
-    {"id":{"name":"obj_florence_cathedral","path":"objects/obj_florence_cathedral/obj_florence_cathedral.yy",},},
-    {"id":{"name":"obj_florence_house","path":"objects/obj_florence_house/obj_florence_house.yy",},},
-    {"id":{"name":"obj_florence_tower","path":"objects/obj_florence_tower/obj_florence_tower.yy",},},
-    {"id":{"name":"obj_florence_v2_scene","path":"objects/obj_florence_v2_scene/obj_florence_v2_scene.yy",},},
-    {"id":{"name":"obj_game_manager","path":"objects/obj_game_manager/obj_game_manager.yy",},},
-    {"id":{"name":"obj_garden_archway","path":"objects/obj_garden_archway/obj_garden_archway.yy",},},
-    {"id":{"name":"obj_garden_bench","path":"objects/obj_garden_bench/obj_garden_bench.yy",},},
-    {"id":{"name":"obj_garden_cypress","path":"objects/obj_garden_cypress/obj_garden_cypress.yy",},},
-    {"id":{"name":"obj_garden_fountain","path":"objects/obj_garden_fountain/obj_garden_fountain.yy",},},
-    {"id":{"name":"obj_garden_tree_flowering","path":"objects/obj_garden_tree_flowering/obj_garden_tree_flowering.yy",},},
-    {"id":{"name":"obj_garden_tree_olive","path":"objects/obj_garden_tree_olive/obj_garden_tree_olive.yy",},},
-    {"id":{"name":"obj_garden_urn","path":"objects/obj_garden_urn/obj_garden_urn.yy",},},
-    {"id":{"name":"obj_inn_candle","path":"objects/obj_inn_candle/obj_inn_candle.yy",},},
-    {"id":{"name":"obj_inn_scene","path":"objects/obj_inn_scene/obj_inn_scene.yy",},},
-    {"id":{"name":"obj_journal","path":"objects/obj_journal/obj_journal.yy",},},
-    {"id":{"name":"obj_limbo_tile","path":"objects/obj_limbo_tile/obj_limbo_tile.yy",},},
-    {"id":{"name":"obj_manifestation","path":"objects/obj_manifestation/obj_manifestation.yy",},},
-    {"id":{"name":"obj_marco_stall","path":"objects/obj_marco_stall/obj_marco_stall.yy",},},
-    {"id":{"name":"obj_mercato_exit","path":"objects/obj_mercato_exit/obj_mercato_exit.yy",},},
-    {"id":{"name":"obj_mercato_prop","path":"objects/obj_mercato_prop/obj_mercato_prop.yy",},},
-    {"id":{"name":"obj_mercato_scene","path":"objects/obj_mercato_scene/obj_mercato_scene.yy",},},
-    {"id":{"name":"obj_npc_base","path":"objects/obj_npc_base/obj_npc_base.yy",},},
-    {"id":{"name":"obj_npc_innkeeper","path":"objects/obj_npc_innkeeper/obj_npc_innkeeper.yy",},},
-    {"id":{"name":"obj_npc_marco","path":"objects/obj_npc_marco/obj_npc_marco.yy",},},
-    {"id":{"name":"obj_npc_rosa","path":"objects/obj_npc_rosa/obj_npc_rosa.yy",},},
-    {"id":{"name":"obj_npc_stableboy","path":"objects/obj_npc_stableboy/obj_npc_stableboy.yy",},},
-    {"id":{"name":"obj_player","path":"objects/obj_player/obj_player.yy",},},
-    {"id":{"name":"obj_ponte_scene","path":"objects/obj_ponte_scene/obj_ponte_scene.yy",},},
-    {"id":{"name":"obj_safe_house","path":"objects/obj_safe_house/obj_safe_house.yy",},},
-    {"id":{"name":"obj_save_indicator","path":"objects/obj_save_indicator/obj_save_indicator.yy",},},
-    {"id":{"name":"obj_shrine","path":"objects/obj_shrine/obj_shrine.yy",},},
-    {"id":{"name":"obj_stable_entrance","path":"objects/obj_stable_entrance/obj_stable_entrance.yy",},},
-    {"id":{"name":"obj_stable_rest","path":"objects/obj_stable_rest/obj_stable_rest.yy",},},
-    {"id":{"name":"obj_stable_scene","path":"objects/obj_stable_scene/obj_stable_scene.yy",},},
-    {"id":{"name":"obj_street_scene","path":"objects/obj_street_scene/obj_street_scene.yy",},},
-    {"id":{"name":"obj_time_manager","path":"objects/obj_time_manager/obj_time_manager.yy",},},
-    {"id":{"name":"obj_unit_base","path":"objects/obj_unit_base/obj_unit_base.yy",},},
-    {"id":{"name":"obj_unit_benedetto","path":"objects/obj_unit_benedetto/obj_unit_benedetto.yy",},},
-    {"id":{"name":"obj_unit_hollow","path":"objects/obj_unit_hollow/obj_unit_hollow.yy",},},
-    {"id":{"name":"obj_unit_shambler","path":"objects/obj_unit_shambler/obj_unit_shambler.yy",},},
-    {"id":{"name":"obj_vision_manager","path":"objects/obj_vision_manager/obj_vision_manager.yy",},},
-    {"id":{"name":"obj_wall_stone","path":"objects/obj_wall_stone/obj_wall_stone.yy",},},
-    {"id":{"name":"obj_wall","path":"objects/obj_wall/obj_wall.yy",},},
-    {"id":{"name":"obj_well","path":"objects/obj_well/obj_well.yy",},},
-    {"id":{"name":"room_battle","path":"rooms/room_battle/room_battle.yy",},},
-    {"id":{"name":"Room_duomo","path":"rooms/Room_duomo/Room_duomo.yy",},},
-    {"id":{"name":"Room_fiorentine_stable","path":"rooms/Room_fiorentine_stable/Room_fiorentine_stable.yy",},},
-    {"id":{"name":"Room_florence_v2","path":"rooms/Room_florence_v2/Room_florence_v2.yy",},},
-    {"id":{"name":"Room_locanda_rosa_camuna","path":"rooms/Room_locanda_rosa_camuna/Room_locanda_rosa_camuna.yy",},},
-    {"id":{"name":"Room_mercato_vecchio","path":"rooms/Room_mercato_vecchio/Room_mercato_vecchio.yy",},},
-    {"id":{"name":"Room_ponte_vecchio","path":"rooms/Room_ponte_vecchio/Room_ponte_vecchio.yy",},},
-    {"id":{"name":"__snowstate_config","path":"scripts/__snowstate_config/__snowstate_config.yy",},},
-    {"id":{"name":"scr_ai","path":"scripts/scr_ai/scr_ai.yy",},},
-    {"id":{"name":"scr_banner","path":"scripts/scr_banner/scr_banner.yy",},},
-    {"id":{"name":"scr_battle","path":"scripts/scr_battle/scr_battle.yy",},},
-    {"id":{"name":"scr_camera","path":"scripts/scr_camera/scr_camera.yy",},},
-    {"id":{"name":"scr_config_load","path":"scripts/scr_config_load/scr_config_load.yy",},},
-    {"id":{"name":"scr_corruption","path":"scripts/scr_corruption/scr_corruption.yy",},},
-    {"id":{"name":"scr_debug","path":"scripts/scr_debug/scr_debug.yy",},},
-    {"id":{"name":"scr_duomo","path":"scripts/scr_duomo/scr_duomo.yy",},},
-    {"id":{"name":"scr_florence_v2","path":"scripts/scr_florence_v2/scr_florence_v2.yy",},},
-    {"id":{"name":"scr_fonts","path":"scripts/scr_fonts/scr_fonts.yy",},},
-    {"id":{"name":"scr_get_sky_color","path":"scripts/scr_get_sky_color/scr_get_sky_color.yy",},},
-    {"id":{"name":"scr_inn","path":"scripts/scr_inn/scr_inn.yy",},},
-    {"id":{"name":"scr_journal","path":"scripts/scr_journal/scr_journal.yy",},},
-    {"id":{"name":"scr_lightmap","path":"scripts/scr_lightmap/scr_lightmap.yy",},},
-    {"id":{"name":"scr_new_day_corruption_update","path":"scripts/scr_new_day_corruption_update/scr_new_day_corruption_update.yy",},},
-    {"id":{"name":"scr_npc_framework","path":"scripts/scr_npc_framework/scr_npc_framework.yy",},},
-    {"id":{"name":"scr_npc_system","path":"scripts/scr_npc_system/scr_npc_system.yy",},},
-    {"id":{"name":"scr_relief","path":"scripts/scr_relief/scr_relief.yy",},},
-    {"id":{"name":"scr_room_builder","path":"scripts/scr_room_builder/scr_room_builder.yy",},},
-    {"id":{"name":"scr_stable","path":"scripts/scr_stable/scr_stable.yy",},},
-    {"id":{"name":"scr_time_system","path":"scripts/scr_time_system/scr_time_system.yy",},},
-    {"id":{"name":"scr_transition","path":"scripts/scr_transition/scr_transition.yy",},},
-    {"id":{"name":"scr_ui_theme","path":"scripts/scr_ui_theme/scr_ui_theme.yy",},},
-    {"id":{"name":"shd_floor_relief","path":"shaders/shd_floor_relief/shd_floor_relief.yy",},},
-    {"id":{"name":"scr_update_city_state","path":"scripts/scr_update_city_state/scr_update_city_state.yy",},},
-    {"id":{"name":"scr_vision","path":"scripts/scr_vision/scr_vision.yy",},},
-    {"id":{"name":"scr_world_state","path":"scripts/scr_world_state/scr_world_state.yy",},},
-    {"id":{"name":"SnowState","path":"scripts/SnowState/SnowState.yy",},},
-    {"id":{"name":"spr_apothecary","path":"sprites/spr_apothecary/spr_apothecary.yy",},},
-    {"id":{"name":"spr_arno_rowing_boat","path":"sprites/spr_arno_rowing_boat/spr_arno_rowing_boat.yy",},},
-    {"id":{"name":"spr_arno_stone_bank","path":"sprites/spr_arno_stone_bank/spr_arno_stone_bank.yy",},},
-    {"id":{"name":"spr_artisan_forge","path":"sprites/spr_artisan_forge/spr_artisan_forge.yy",},},
-    {"id":{"name":"spr_artisan_workshop_a","path":"sprites/spr_artisan_workshop_a/spr_artisan_workshop_a.yy",},},
-    {"id":{"name":"spr_artisan_workshop_b","path":"sprites/spr_artisan_workshop_b/spr_artisan_workshop_b.yy",},},
-    {"id":{"name":"spr_barrel_stack","path":"sprites/spr_barrel_stack/spr_barrel_stack.yy",},},
-    {"id":{"name":"spr_benedetto_east","path":"sprites/spr_benedetto_east/spr_benedetto_east.yy",},},
-    {"id":{"name":"spr_benedetto_idle_east","path":"sprites/spr_benedetto_idle_east/spr_benedetto_idle_east.yy",},},
-    {"id":{"name":"spr_benedetto_idle_north_east","path":"sprites/spr_benedetto_idle_north_east/spr_benedetto_idle_north_east.yy",},},
-    {"id":{"name":"spr_benedetto_idle_north_west","path":"sprites/spr_benedetto_idle_north_west/spr_benedetto_idle_north_west.yy",},},
-    {"id":{"name":"spr_benedetto_idle_north","path":"sprites/spr_benedetto_idle_north/spr_benedetto_idle_north.yy",},},
-    {"id":{"name":"spr_benedetto_idle_south_east","path":"sprites/spr_benedetto_idle_south_east/spr_benedetto_idle_south_east.yy",},},
-    {"id":{"name":"spr_benedetto_idle_south_west","path":"sprites/spr_benedetto_idle_south_west/spr_benedetto_idle_south_west.yy",},},
-    {"id":{"name":"spr_benedetto_idle_south","path":"sprites/spr_benedetto_idle_south/spr_benedetto_idle_south.yy",},},
-    {"id":{"name":"spr_benedetto_idle_west","path":"sprites/spr_benedetto_idle_west/spr_benedetto_idle_west.yy",},},
-    {"id":{"name":"spr_benedetto_jump_east","path":"sprites/spr_benedetto_jump_east/spr_benedetto_jump_east.yy",},},
-    {"id":{"name":"spr_benedetto_jump_south_west","path":"sprites/spr_benedetto_jump_south_west/spr_benedetto_jump_south_west.yy",},},
-    {"id":{"name":"spr_benedetto_jump_south","path":"sprites/spr_benedetto_jump_south/spr_benedetto_jump_south.yy",},},
-    {"id":{"name":"spr_benedetto_jump_west","path":"sprites/spr_benedetto_jump_west/spr_benedetto_jump_west.yy",},},
-    {"id":{"name":"spr_benedetto_north_east","path":"sprites/spr_benedetto_north_east/spr_benedetto_north_east.yy",},},
-    {"id":{"name":"spr_benedetto_north_west","path":"sprites/spr_benedetto_north_west/spr_benedetto_north_west.yy",},},
-    {"id":{"name":"spr_benedetto_north","path":"sprites/spr_benedetto_north/spr_benedetto_north.yy",},},
-    {"id":{"name":"spr_benedetto_portrait","path":"sprites/spr_benedetto_portrait/spr_benedetto_portrait.yy",},},
-    {"id":{"name":"spr_benedetto_run_east","path":"sprites/spr_benedetto_run_east/spr_benedetto_run_east.yy",},},
-    {"id":{"name":"spr_benedetto_run_north_east","path":"sprites/spr_benedetto_run_north_east/spr_benedetto_run_north_east.yy",},},
-    {"id":{"name":"spr_benedetto_run_north_west","path":"sprites/spr_benedetto_run_north_west/spr_benedetto_run_north_west.yy",},},
-    {"id":{"name":"spr_benedetto_run_north","path":"sprites/spr_benedetto_run_north/spr_benedetto_run_north.yy",},},
-    {"id":{"name":"spr_benedetto_run_south_east","path":"sprites/spr_benedetto_run_south_east/spr_benedetto_run_south_east.yy",},},
-    {"id":{"name":"spr_benedetto_run_south_west","path":"sprites/spr_benedetto_run_south_west/spr_benedetto_run_south_west.yy",},},
-    {"id":{"name":"spr_benedetto_run_south","path":"sprites/spr_benedetto_run_south/spr_benedetto_run_south.yy",},},
-    {"id":{"name":"spr_benedetto_run_west","path":"sprites/spr_benedetto_run_west/spr_benedetto_run_west.yy",},},
-    {"id":{"name":"spr_benedetto_south_east","path":"sprites/spr_benedetto_south_east/spr_benedetto_south_east.yy",},},
-    {"id":{"name":"spr_benedetto_south_west","path":"sprites/spr_benedetto_south_west/spr_benedetto_south_west.yy",},},
-    {"id":{"name":"spr_benedetto_south","path":"sprites/spr_benedetto_south/spr_benedetto_south.yy",},},
-    {"id":{"name":"spr_benedetto_walk_east","path":"sprites/spr_benedetto_walk_east/spr_benedetto_walk_east.yy",},},
-    {"id":{"name":"spr_benedetto_walk_north_east","path":"sprites/spr_benedetto_walk_north_east/spr_benedetto_walk_north_east.yy",},},
-    {"id":{"name":"spr_benedetto_walk_north_west","path":"sprites/spr_benedetto_walk_north_west/spr_benedetto_walk_north_west.yy",},},
-    {"id":{"name":"spr_benedetto_walk_north","path":"sprites/spr_benedetto_walk_north/spr_benedetto_walk_north.yy",},},
-    {"id":{"name":"spr_benedetto_walk_sluggish_east","path":"sprites/spr_benedetto_walk_sluggish_east/spr_benedetto_walk_sluggish_east.yy",},},
-    {"id":{"name":"spr_benedetto_walk_sluggish_north_east","path":"sprites/spr_benedetto_walk_sluggish_north_east/spr_benedetto_walk_sluggish_north_east.yy",},},
-    {"id":{"name":"spr_benedetto_walk_sluggish_north_west","path":"sprites/spr_benedetto_walk_sluggish_north_west/spr_benedetto_walk_sluggish_north_west.yy",},},
-    {"id":{"name":"spr_benedetto_walk_sluggish_north","path":"sprites/spr_benedetto_walk_sluggish_north/spr_benedetto_walk_sluggish_north.yy",},},
-    {"id":{"name":"spr_benedetto_walk_sluggish_south_east","path":"sprites/spr_benedetto_walk_sluggish_south_east/spr_benedetto_walk_sluggish_south_east.yy",},},
-    {"id":{"name":"spr_benedetto_walk_sluggish_south_west","path":"sprites/spr_benedetto_walk_sluggish_south_west/spr_benedetto_walk_sluggish_south_west.yy",},},
-    {"id":{"name":"spr_benedetto_walk_sluggish_south","path":"sprites/spr_benedetto_walk_sluggish_south/spr_benedetto_walk_sluggish_south.yy",},},
-    {"id":{"name":"spr_benedetto_walk_sluggish_west","path":"sprites/spr_benedetto_walk_sluggish_west/spr_benedetto_walk_sluggish_west.yy",},},
-    {"id":{"name":"spr_benedetto_walk_south_east","path":"sprites/spr_benedetto_walk_south_east/spr_benedetto_walk_south_east.yy",},},
-    {"id":{"name":"spr_benedetto_walk_south_west","path":"sprites/spr_benedetto_walk_south_west/spr_benedetto_walk_south_west.yy",},},
-    {"id":{"name":"spr_benedetto_walk_south","path":"sprites/spr_benedetto_walk_south/spr_benedetto_walk_south.yy",},},
-    {"id":{"name":"spr_benedetto_walk_west","path":"sprites/spr_benedetto_walk_west/spr_benedetto_walk_west.yy",},},
-    {"id":{"name":"spr_benedetto_west","path":"sprites/spr_benedetto_west/spr_benedetto_west.yy",},},
-    {"id":{"name":"spr_boat_abandoned","path":"sprites/spr_boat_abandoned/spr_boat_abandoned.yy",},},
-    {"id":{"name":"spr_boat_rowing","path":"sprites/spr_boat_rowing/spr_boat_rowing.yy",},},
-    {"id":{"name":"spr_bread_board","path":"sprites/spr_bread_board/spr_bread_board.yy",},},
-    {"id":{"name":"spr_bridge_railing","path":"sprites/spr_bridge_railing/spr_bridge_railing.yy",},},
-    {"id":{"name":"spr_bridge_shop_left","path":"sprites/spr_bridge_shop_left/spr_bridge_shop_left.yy",},},
-    {"id":{"name":"spr_bridge_shop_right","path":"sprites/spr_bridge_shop_right/spr_bridge_shop_right.yy",},},
-    {"id":{"name":"spr_cart_covered","path":"sprites/spr_cart_covered/spr_cart_covered.yy",},},
-    {"id":{"name":"spr_cart_loaded","path":"sprites/spr_cart_loaded/spr_cart_loaded.yy",},},
-    {"id":{"name":"spr_citizen_man","path":"sprites/spr_citizen_man/spr_citizen_man.yy",},},
-    {"id":{"name":"spr_citizen_monk","path":"sprites/spr_citizen_monk/spr_citizen_monk.yy",},},
-    {"id":{"name":"spr_citizen_woman","path":"sprites/spr_citizen_woman/spr_citizen_woman.yy",},},
-    {"id":{"name":"spr_city_gate_south","path":"sprites/spr_city_gate_south/spr_city_gate_south.yy",},},
-    {"id":{"name":"spr_city_gate_west","path":"sprites/spr_city_gate_west/spr_city_gate_west.yy",},},
-    {"id":{"name":"spr_clay_jugs","path":"sprites/spr_clay_jugs/spr_clay_jugs.yy",},},
-    {"id":{"name":"spr_clay_pot_large","path":"sprites/spr_clay_pot_large/spr_clay_pot_large.yy",},},
-    {"id":{"name":"spr_crate_stack","path":"sprites/spr_crate_stack/spr_crate_stack.yy",},},
-    {"id":{"name":"spr_duomo_altar","path":"sprites/spr_duomo_altar/spr_duomo_altar.yy",},},
-    {"id":{"name":"spr_duomo_candelabra","path":"sprites/spr_duomo_candelabra/spr_duomo_candelabra.yy",},},
-    {"id":{"name":"spr_duomo_confessional","path":"sprites/spr_duomo_confessional/spr_duomo_confessional.yy",},},
-    {"id":{"name":"spr_duomo_exterior","path":"sprites/spr_duomo_exterior/spr_duomo_exterior.yy",},},
-    {"id":{"name":"spr_duomo_floor_border","path":"sprites/spr_duomo_floor_border/spr_duomo_floor_border.yy",},},
-    {"id":{"name":"spr_duomo_floor_carpet","path":"sprites/spr_duomo_floor_carpet/spr_duomo_floor_carpet.yy",},},
-    {"id":{"name":"spr_duomo_floor_center","path":"sprites/spr_duomo_floor_center/spr_duomo_floor_center.yy",},},
-    {"id":{"name":"spr_duomo_floor_corner","path":"sprites/spr_duomo_floor_corner/spr_duomo_floor_corner.yy",},},
-    {"id":{"name":"spr_duomo_floor_field","path":"sprites/spr_duomo_floor_field/spr_duomo_floor_field.yy",},},
-    {"id":{"name":"spr_duomo_floor_platform","path":"sprites/spr_duomo_floor_platform/spr_duomo_floor_platform.yy",},},
-    {"id":{"name":"spr_duomo_pew","path":"sprites/spr_duomo_pew/spr_duomo_pew.yy",},},
-    {"id":{"name":"spr_duomo_pillar","path":"sprites/spr_duomo_pillar/spr_duomo_pillar.yy",},},
-    {"id":{"name":"spr_duomo_priest","path":"sprites/spr_duomo_priest/spr_duomo_priest.yy",},},
-    {"id":{"name":"spr_duomo_stairs","path":"sprites/spr_duomo_stairs/spr_duomo_stairs.yy",},},
-    {"id":{"name":"spr_duomo_wall_window","path":"sprites/spr_duomo_wall_window/spr_duomo_wall_window.yy",},},
-    {"id":{"name":"spr_emotion_afraid","path":"sprites/spr_emotion_afraid/spr_emotion_afraid.yy",},},
-    {"id":{"name":"spr_emotion_angry","path":"sprites/spr_emotion_angry/spr_emotion_angry.yy",},},
-    {"id":{"name":"spr_emotion_happy","path":"sprites/spr_emotion_happy/spr_emotion_happy.yy",},},
-    {"id":{"name":"spr_emotion_neutral","path":"sprites/spr_emotion_neutral/spr_emotion_neutral.yy",},},
-    {"id":{"name":"spr_emotion_suspicious","path":"sprites/spr_emotion_suspicious/spr_emotion_suspicious.yy",},},
-    {"id":{"name":"spr_emotion_terrified","path":"sprites/spr_emotion_terrified/spr_emotion_terrified.yy",},},
-    {"id":{"name":"spr_enemy_hollow_east","path":"sprites/spr_enemy_hollow_east/spr_enemy_hollow_east.yy",},},
-    {"id":{"name":"spr_enemy_hollow_north_east","path":"sprites/spr_enemy_hollow_north_east/spr_enemy_hollow_north_east.yy",},},
-    {"id":{"name":"spr_enemy_hollow_north_west","path":"sprites/spr_enemy_hollow_north_west/spr_enemy_hollow_north_west.yy",},},
-    {"id":{"name":"spr_enemy_hollow_north","path":"sprites/spr_enemy_hollow_north/spr_enemy_hollow_north.yy",},},
-    {"id":{"name":"spr_enemy_hollow_south_east","path":"sprites/spr_enemy_hollow_south_east/spr_enemy_hollow_south_east.yy",},},
-    {"id":{"name":"spr_enemy_hollow_south_west","path":"sprites/spr_enemy_hollow_south_west/spr_enemy_hollow_south_west.yy",},},
-    {"id":{"name":"spr_enemy_hollow_south","path":"sprites/spr_enemy_hollow_south/spr_enemy_hollow_south.yy",},},
-    {"id":{"name":"spr_enemy_hollow_west","path":"sprites/spr_enemy_hollow_west/spr_enemy_hollow_west.yy",},},
-    {"id":{"name":"spr_enemy_shambler_east","path":"sprites/spr_enemy_shambler_east/spr_enemy_shambler_east.yy",},},
-    {"id":{"name":"spr_enemy_shambler_north_east","path":"sprites/spr_enemy_shambler_north_east/spr_enemy_shambler_north_east.yy",},},
-    {"id":{"name":"spr_enemy_shambler_north_west","path":"sprites/spr_enemy_shambler_north_west/spr_enemy_shambler_north_west.yy",},},
-    {"id":{"name":"spr_enemy_shambler_north","path":"sprites/spr_enemy_shambler_north/spr_enemy_shambler_north.yy",},},
-    {"id":{"name":"spr_enemy_shambler_south_east","path":"sprites/spr_enemy_shambler_south_east/spr_enemy_shambler_south_east.yy",},},
-    {"id":{"name":"spr_enemy_shambler_south_west","path":"sprites/spr_enemy_shambler_south_west/spr_enemy_shambler_south_west.yy",},},
-    {"id":{"name":"spr_enemy_shambler_south","path":"sprites/spr_enemy_shambler_south/spr_enemy_shambler_south.yy",},},
-    {"id":{"name":"spr_enemy_shambler_west","path":"sprites/spr_enemy_shambler_west/spr_enemy_shambler_west.yy",},},
-    {"id":{"name":"spr_florence_arch","path":"sprites/spr_florence_arch/spr_florence_arch.yy",},},
-    {"id":{"name":"spr_florence_barrels","path":"sprites/spr_florence_barrels/spr_florence_barrels.yy",},},
-    {"id":{"name":"spr_florence_building_row","path":"sprites/spr_florence_building_row/spr_florence_building_row.yy",},},
-    {"id":{"name":"spr_florence_campanile","path":"sprites/spr_florence_campanile/spr_florence_campanile.yy",},},
-    {"id":{"name":"spr_florence_cart","path":"sprites/spr_florence_cart/spr_florence_cart.yy",},},
-    {"id":{"name":"spr_florence_cathedral","path":"sprites/spr_florence_cathedral/spr_florence_cathedral.yy",},},
-    {"id":{"name":"spr_florence_church","path":"sprites/spr_florence_church/spr_florence_church.yy",},},
-    {"id":{"name":"spr_florence_cottage","path":"sprites/spr_florence_cottage/spr_florence_cottage.yy",},},
-    {"id":{"name":"spr_florence_cypress","path":"sprites/spr_florence_cypress/spr_florence_cypress.yy",},},
-    {"id":{"name":"spr_florence_flower_bed","path":"sprites/spr_florence_flower_bed/spr_florence_flower_bed.yy",},},
-    {"id":{"name":"spr_florence_gate","path":"sprites/spr_florence_gate/spr_florence_gate.yy",},},
-    {"id":{"name":"spr_florence_grass","path":"sprites/spr_florence_grass/spr_florence_grass.yy",},},
-    {"id":{"name":"spr_florence_guild_banner","path":"sprites/spr_florence_guild_banner/spr_florence_guild_banner.yy",},},
-    {"id":{"name":"spr_florence_house_south","path":"sprites/spr_florence_house_south/spr_florence_house_south.yy",},},
-    {"id":{"name":"spr_florence_market_stall","path":"sprites/spr_florence_market_stall/spr_florence_market_stall.yy",},},
-    {"id":{"name":"spr_florence_noble_tower","path":"sprites/spr_florence_noble_tower/spr_florence_noble_tower.yy",},},
-    {"id":{"name":"spr_florence_olive_tree","path":"sprites/spr_florence_olive_tree/spr_florence_olive_tree.yy",},},
-    {"id":{"name":"spr_florence_packed_earth","path":"sprites/spr_florence_packed_earth/spr_florence_packed_earth.yy",},},
-    {"id":{"name":"spr_florence_pigeon_cluster","path":"sprites/spr_florence_pigeon_cluster/spr_florence_pigeon_cluster.yy",},},
-    {"id":{"name":"spr_florence_plaza_v10","path":"sprites/spr_florence_plaza_v10/spr_florence_plaza_v10.yy",},},
-    {"id":{"name":"spr_florence_plaza_v11","path":"sprites/spr_florence_plaza_v11/spr_florence_plaza_v11.yy",},},
-    {"id":{"name":"spr_florence_plaza_v12","path":"sprites/spr_florence_plaza_v12/spr_florence_plaza_v12.yy",},},
-    {"id":{"name":"spr_florence_plaza_v13","path":"sprites/spr_florence_plaza_v13/spr_florence_plaza_v13.yy",},},
-    {"id":{"name":"spr_florence_plaza_v14","path":"sprites/spr_florence_plaza_v14/spr_florence_plaza_v14.yy",},},
-    {"id":{"name":"spr_florence_plaza_v15","path":"sprites/spr_florence_plaza_v15/spr_florence_plaza_v15.yy",},},
-    {"id":{"name":"spr_florence_plaza_v16","path":"sprites/spr_florence_plaza_v16/spr_florence_plaza_v16.yy",},},
-    {"id":{"name":"spr_florence_plaza_v2","path":"sprites/spr_florence_plaza_v2/spr_florence_plaza_v2.yy",},},
-    {"id":{"name":"spr_florence_plaza_v3","path":"sprites/spr_florence_plaza_v3/spr_florence_plaza_v3.yy",},},
-    {"id":{"name":"spr_florence_plaza_v4","path":"sprites/spr_florence_plaza_v4/spr_florence_plaza_v4.yy",},},
-    {"id":{"name":"spr_florence_plaza_v5","path":"sprites/spr_florence_plaza_v5/spr_florence_plaza_v5.yy",},},
-    {"id":{"name":"spr_florence_plaza_v6","path":"sprites/spr_florence_plaza_v6/spr_florence_plaza_v6.yy",},},
-    {"id":{"name":"spr_florence_plaza_v7","path":"sprites/spr_florence_plaza_v7/spr_florence_plaza_v7.yy",},},
-    {"id":{"name":"spr_florence_plaza_v8","path":"sprites/spr_florence_plaza_v8/spr_florence_plaza_v8.yy",},},
-    {"id":{"name":"spr_florence_plaza_v9","path":"sprites/spr_florence_plaza_v9/spr_florence_plaza_v9.yy",},},
-    {"id":{"name":"spr_florence_plaza","path":"sprites/spr_florence_plaza/spr_florence_plaza.yy",},},
-    {"id":{"name":"spr_florence_residence","path":"sprites/spr_florence_residence/spr_florence_residence.yy",},},
-    {"id":{"name":"spr_florence_road_cobble","path":"sprites/spr_florence_road_cobble/spr_florence_road_cobble.yy",},},
-    {"id":{"name":"spr_florence_road_intersection","path":"sprites/spr_florence_road_intersection/spr_florence_road_intersection.yy",},},
-    {"id":{"name":"spr_florence_row_block","path":"sprites/spr_florence_row_block/spr_florence_row_block.yy",},},
-    {"id":{"name":"spr_florence_stable","path":"sprites/spr_florence_stable/spr_florence_stable.yy",},},
-    {"id":{"name":"spr_florence_statue_dante","path":"sprites/spr_florence_statue_dante/spr_florence_statue_dante.yy",},},
-    {"id":{"name":"spr_florence_statue_david","path":"sprites/spr_florence_statue_david/spr_florence_statue_david.yy",},},
-    {"id":{"name":"spr_florence_statue_marzocco","path":"sprites/spr_florence_statue_marzocco/spr_florence_statue_marzocco.yy",},},
-    {"id":{"name":"spr_florence_statue_saint","path":"sprites/spr_florence_statue_saint/spr_florence_statue_saint.yy",},},
-    {"id":{"name":"spr_florence_stray_cat","path":"sprites/spr_florence_stray_cat/spr_florence_stray_cat.yy",},},
-    {"id":{"name":"spr_florence_street_shrine","path":"sprites/spr_florence_street_shrine/spr_florence_street_shrine.yy",},},
-    {"id":{"name":"spr_florence_street","path":"sprites/spr_florence_street/spr_florence_street.yy",},},
-    {"id":{"name":"spr_florence_thin_wall","path":"sprites/spr_florence_thin_wall/spr_florence_thin_wall.yy",},},
-    {"id":{"name":"spr_florence_tower_house","path":"sprites/spr_florence_tower_house/spr_florence_tower_house.yy",},},
-    {"id":{"name":"spr_florence_tower","path":"sprites/spr_florence_tower/spr_florence_tower.yy",},},
-    {"id":{"name":"spr_florence_wall_band","path":"sprites/spr_florence_wall_band/spr_florence_wall_band.yy",},},
-    {"id":{"name":"spr_florence_wall_gate","path":"sprites/spr_florence_wall_gate/spr_florence_wall_gate.yy",},},
-    {"id":{"name":"spr_florence_wall_section","path":"sprites/spr_florence_wall_section/spr_florence_wall_section.yy",},},
-    {"id":{"name":"spr_florence_wall_torch","path":"sprites/spr_florence_wall_torch/spr_florence_wall_torch.yy",},},
-    {"id":{"name":"spr_florence_wall_tower","path":"sprites/spr_florence_wall_tower/spr_florence_wall_tower.yy",},},
-    {"id":{"name":"spr_florence_washing_line","path":"sprites/spr_florence_washing_line/spr_florence_washing_line.yy",},},
-    {"id":{"name":"spr_florence_water","path":"sprites/spr_florence_water/spr_florence_water.yy",},},
-    {"id":{"name":"spr_florence_well","path":"sprites/spr_florence_well/spr_florence_well.yy",},},
-    {"id":{"name":"spr_hanging_cloth","path":"sprites/spr_hanging_cloth/spr_hanging_cloth.yy",},},
-    {"id":{"name":"spr_hanging_herbs","path":"sprites/spr_hanging_herbs/spr_hanging_herbs.yy",},},
-    {"id":{"name":"spr_inn_banner","path":"sprites/spr_inn_banner/spr_inn_banner.yy",},},
-    {"id":{"name":"spr_inn_bar_counter","path":"sprites/spr_inn_bar_counter/spr_inn_bar_counter.yy",},},
-    {"id":{"name":"spr_inn_bed","path":"sprites/spr_inn_bed/spr_inn_bed.yy",},},
-    {"id":{"name":"spr_inn_candle_green","path":"sprites/spr_inn_candle_green/spr_inn_candle_green.yy",},},
-    {"id":{"name":"spr_inn_candle_lit","path":"sprites/spr_inn_candle_lit/spr_inn_candle_lit.yy",},},
-    {"id":{"name":"spr_inn_candle_unlit","path":"sprites/spr_inn_candle_unlit/spr_inn_candle_unlit.yy",},},
-    {"id":{"name":"spr_inn_candle","path":"sprites/spr_inn_candle/spr_inn_candle.yy",},},
-    {"id":{"name":"spr_inn_chair_east","path":"sprites/spr_inn_chair_east/spr_inn_chair_east.yy",},},
-    {"id":{"name":"spr_inn_chair_north","path":"sprites/spr_inn_chair_north/spr_inn_chair_north.yy",},},
-    {"id":{"name":"spr_inn_chair_south","path":"sprites/spr_inn_chair_south/spr_inn_chair_south.yy",},},
-    {"id":{"name":"spr_inn_chair_west","path":"sprites/spr_inn_chair_west/spr_inn_chair_west.yy",},},
-    {"id":{"name":"spr_inn_fireplace","path":"sprites/spr_inn_fireplace/spr_inn_fireplace.yy",},},
-    {"id":{"name":"spr_inn_floor","path":"sprites/spr_inn_floor/spr_inn_floor.yy",},},
-    {"id":{"name":"spr_inn_keg_group","path":"sprites/spr_inn_keg_group/spr_inn_keg_group.yy",},},
-    {"id":{"name":"spr_inn_meats","path":"sprites/spr_inn_meats/spr_inn_meats.yy",},},
-    {"id":{"name":"spr_inn_mugs","path":"sprites/spr_inn_mugs/spr_inn_mugs.yy",},},
-    {"id":{"name":"spr_inn_oven_corrupt","path":"sprites/spr_inn_oven_corrupt/spr_inn_oven_corrupt.yy",},},
-    {"id":{"name":"spr_inn_oven_green","path":"sprites/spr_inn_oven_green/spr_inn_oven_green.yy",},},
-    {"id":{"name":"spr_inn_oven_lit","path":"sprites/spr_inn_oven_lit/spr_inn_oven_lit.yy",},},
-    {"id":{"name":"spr_inn_plant","path":"sprites/spr_inn_plant/spr_inn_plant.yy",},},
-    {"id":{"name":"spr_inn_rug","path":"sprites/spr_inn_rug/spr_inn_rug.yy",},},
-    {"id":{"name":"spr_inn_staircase","path":"sprites/spr_inn_staircase/spr_inn_staircase.yy",},},
-    {"id":{"name":"spr_inn_stool","path":"sprites/spr_inn_stool/spr_inn_stool.yy",},},
-    {"id":{"name":"spr_inn_table_long","path":"sprites/spr_inn_table_long/spr_inn_table_long.yy",},},
-    {"id":{"name":"spr_inn_table","path":"sprites/spr_inn_table/spr_inn_table.yy",},},
-    {"id":{"name":"spr_inn_window_dawn","path":"sprites/spr_inn_window_dawn/spr_inn_window_dawn.yy",},},
-    {"id":{"name":"spr_inn_window_dusk","path":"sprites/spr_inn_window_dusk/spr_inn_window_dusk.yy",},},
-    {"id":{"name":"spr_inn_window_night","path":"sprites/spr_inn_window_night/spr_inn_window_night.yy",},},
-    {"id":{"name":"spr_inn_window_open","path":"sprites/spr_inn_window_open/spr_inn_window_open.yy",},},
-    {"id":{"name":"spr_inn_window","path":"sprites/spr_inn_window/spr_inn_window.yy",},},
-    {"id":{"name":"spr_inn_wine_shelf","path":"sprites/spr_inn_wine_shelf/spr_inn_wine_shelf.yy",},},
-    {"id":{"name":"spr_item_bread","path":"sprites/spr_item_bread/spr_item_bread.yy",},},
-    {"id":{"name":"spr_locanda_exterior","path":"sprites/spr_locanda_exterior/spr_locanda_exterior.yy",},},
-    {"id":{"name":"spr_marco_stall","path":"sprites/spr_marco_stall/spr_marco_stall.yy",},},
-    {"id":{"name":"spr_mercato_building_a","path":"sprites/spr_mercato_building_a/spr_mercato_building_a.yy",},},
-    {"id":{"name":"spr_mercato_building_b","path":"sprites/spr_mercato_building_b/spr_mercato_building_b.yy",},},
-    {"id":{"name":"spr_mercato_building_c","path":"sprites/spr_mercato_building_c/spr_mercato_building_c.yy",},},
-    {"id":{"name":"spr_mercato_fountain_piazza","path":"sprites/spr_mercato_fountain_piazza/spr_mercato_fountain_piazza.yy",},},
-    {"id":{"name":"spr_mercato_fountain","path":"sprites/spr_mercato_fountain/spr_mercato_fountain.yy",},},
-    {"id":{"name":"spr_mercato_inn","path":"sprites/spr_mercato_inn/spr_mercato_inn.yy",},},
-    {"id":{"name":"spr_mercato_loggia","path":"sprites/spr_mercato_loggia/spr_mercato_loggia.yy",},},
-    {"id":{"name":"spr_mercato_stall_awning","path":"sprites/spr_mercato_stall_awning/spr_mercato_stall_awning.yy",},},
-    {"id":{"name":"spr_merchant_guild","path":"sprites/spr_merchant_guild/spr_merchant_guild.yy",},},
-    {"id":{"name":"spr_npc_innkeeper","path":"sprites/spr_npc_innkeeper/spr_npc_innkeeper.yy",},},
-    {"id":{"name":"spr_npc_marco_east","path":"sprites/spr_npc_marco_east/spr_npc_marco_east.yy",},},
-    {"id":{"name":"spr_npc_marco_north_east","path":"sprites/spr_npc_marco_north_east/spr_npc_marco_north_east.yy",},},
-    {"id":{"name":"spr_npc_marco_north_west","path":"sprites/spr_npc_marco_north_west/spr_npc_marco_north_west.yy",},},
-    {"id":{"name":"spr_npc_marco_north","path":"sprites/spr_npc_marco_north/spr_npc_marco_north.yy",},},
-    {"id":{"name":"spr_npc_marco_south_east","path":"sprites/spr_npc_marco_south_east/spr_npc_marco_south_east.yy",},},
-    {"id":{"name":"spr_npc_marco_south_west","path":"sprites/spr_npc_marco_south_west/spr_npc_marco_south_west.yy",},},
-    {"id":{"name":"spr_npc_marco_south","path":"sprites/spr_npc_marco_south/spr_npc_marco_south.yy",},},
-    {"id":{"name":"spr_npc_marco_west","path":"sprites/spr_npc_marco_west/spr_npc_marco_west.yy",},},
-    {"id":{"name":"spr_npc_rosa","path":"sprites/spr_npc_rosa/spr_npc_rosa.yy",},},
-    {"id":{"name":"spr_npc_stableboy","path":"sprites/spr_npc_stableboy/spr_npc_stableboy.yy",},},
-    {"id":{"name":"spr_obj_archway_rose","path":"sprites/spr_obj_archway_rose/spr_obj_archway_rose.yy",},},
-    {"id":{"name":"spr_obj_bench_stone","path":"sprites/spr_obj_bench_stone/spr_obj_bench_stone.yy",},},
-    {"id":{"name":"spr_obj_fountain","path":"sprites/spr_obj_fountain/spr_obj_fountain.yy",},},
-    {"id":{"name":"spr_obj_urn_terracotta","path":"sprites/spr_obj_urn_terracotta/spr_obj_urn_terracotta.yy",},},
-    {"id":{"name":"spr_palazzo_signoria","path":"sprites/spr_palazzo_signoria/spr_palazzo_signoria.yy",},},
-    {"id":{"name":"spr_parish_church","path":"sprites/spr_parish_church/spr_parish_church.yy",},},
-    {"id":{"name":"spr_ponte_bench","path":"sprites/spr_ponte_bench/spr_ponte_bench.yy",},},
-    {"id":{"name":"spr_ponte_border_serena","path":"sprites/spr_ponte_border_serena/spr_ponte_border_serena.yy",},},
-    {"id":{"name":"spr_ponte_floor_cobble","path":"sprites/spr_ponte_floor_cobble/spr_ponte_floor_cobble.yy",},},
-    {"id":{"name":"spr_ponte_floor_normal","path":"sprites/spr_ponte_floor_normal/spr_ponte_floor_normal.yy",},},
-    {"id":{"name":"spr_ponte_canopy","path":"sprites/spr_ponte_canopy/spr_ponte_canopy.yy",},},
-    {"id":{"name":"spr_ponte_floor_pietra","path":"sprites/spr_ponte_floor_pietra/spr_ponte_floor_pietra.yy",},},
-    {"id":{"name":"spr_ponte_fountain","path":"sprites/spr_ponte_fountain/spr_ponte_fountain.yy",},},
-    {"id":{"name":"spr_ponte_guild_board","path":"sprites/spr_ponte_guild_board/spr_ponte_guild_board.yy",},},
-    {"id":{"name":"spr_ponte_lantern_post","path":"sprites/spr_ponte_lantern_post/spr_ponte_lantern_post.yy",},},
-    {"id":{"name":"spr_ponte_roof_tile","path":"sprites/spr_ponte_roof_tile/spr_ponte_roof_tile.yy",},},
-    {"id":{"name":"spr_ponte_seagull","path":"sprites/spr_ponte_seagull/spr_ponte_seagull.yy",},},
-    {"id":{"name":"spr_ponte_shop_north","path":"sprites/spr_ponte_shop_north/spr_ponte_shop_north.yy",},},
-    {"id":{"name":"spr_ponte_shop_south","path":"sprites/spr_ponte_shop_south/spr_ponte_shop_south.yy",},},
-    {"id":{"name":"spr_ponte_vecchio_exterior","path":"sprites/spr_ponte_vecchio_exterior/spr_ponte_vecchio_exterior.yy",},},
-    {"id":{"name":"spr_ponte_vecchio","path":"sprites/spr_ponte_vecchio/spr_ponte_vecchio.yy",},},
-    {"id":{"name":"spr_river_stone","path":"sprites/spr_river_stone/spr_river_stone.yy",},},
-    {"id":{"name":"spr_row_house_a","path":"sprites/spr_row_house_a/spr_row_house_a.yy",},},
-    {"id":{"name":"spr_row_house_b","path":"sprites/spr_row_house_b/spr_row_house_b.yy",},},
-    {"id":{"name":"spr_row_house_c","path":"sprites/spr_row_house_c/spr_row_house_c.yy",},},
-    {"id":{"name":"spr_sack_pile","path":"sprites/spr_sack_pile/spr_sack_pile.yy",},},
-    {"id":{"name":"spr_stable_floor","path":"sprites/spr_stable_floor/spr_stable_floor.yy",},},
-    {"id":{"name":"spr_stable_hay","path":"sprites/spr_stable_hay/spr_stable_hay.yy",},},
-    {"id":{"name":"spr_stable_horse_black","path":"sprites/spr_stable_horse_black/spr_stable_horse_black.yy",},},
-    {"id":{"name":"spr_stable_horse_brown","path":"sprites/spr_stable_horse_brown/spr_stable_horse_brown.yy",},},
-    {"id":{"name":"spr_stable_horse_grey","path":"sprites/spr_stable_horse_grey/spr_stable_horse_grey.yy",},},
-    {"id":{"name":"spr_stable_lantern","path":"sprites/spr_stable_lantern/spr_stable_lantern.yy",},},
-    {"id":{"name":"spr_stable_sleeping","path":"sprites/spr_stable_sleeping/spr_stable_sleeping.yy",},},
-    {"id":{"name":"spr_stable_tack","path":"sprites/spr_stable_tack/spr_stable_tack.yy",},},
-    {"id":{"name":"spr_stable_trough","path":"sprites/spr_stable_trough/spr_stable_trough.yy",},},
-    {"id":{"name":"spr_stable_wall_tile","path":"sprites/spr_stable_wall_tile/spr_stable_wall_tile.yy",},},
-    {"id":{"name":"spr_stall_dye_merchant","path":"sprites/spr_stall_dye_merchant/spr_stall_dye_merchant.yy",},},
-    {"id":{"name":"spr_stall_flat_green","path":"sprites/spr_stall_flat_green/spr_stall_flat_green.yy",},},
-    {"id":{"name":"spr_stall_herbalist","path":"sprites/spr_stall_herbalist/spr_stall_herbalist.yy",},},
-    {"id":{"name":"spr_stall_produce","path":"sprites/spr_stall_produce/spr_stall_produce.yy",},},
-    {"id":{"name":"spr_stall_striped_blue","path":"sprites/spr_stall_striped_blue/spr_stall_striped_blue.yy",},},
-    {"id":{"name":"spr_stall_striped_cream","path":"sprites/spr_stall_striped_cream/spr_stall_striped_cream.yy",},},
-    {"id":{"name":"spr_stall_striped_green","path":"sprites/spr_stall_striped_green/spr_stall_striped_green.yy",},},
-    {"id":{"name":"spr_stall_striped_purple","path":"sprites/spr_stall_striped_purple/spr_stall_striped_purple.yy",},},
-    {"id":{"name":"spr_stall_striped_red","path":"sprites/spr_stall_striped_red/spr_stall_striped_red.yy",},},
-    {"id":{"name":"spr_stall_weapon_smith","path":"sprites/spr_stall_weapon_smith/spr_stall_weapon_smith.yy",},},
-    {"id":{"name":"spr_statue_angel","path":"sprites/spr_statue_angel/spr_statue_angel.yy",},},
-    {"id":{"name":"spr_statue_david","path":"sprites/spr_statue_david/spr_statue_david.yy",},},
-    {"id":{"name":"spr_statue_lion","path":"sprites/spr_statue_lion/spr_statue_lion.yy",},},
-    {"id":{"name":"spr_statue_madonna","path":"sprites/spr_statue_madonna/spr_statue_madonna.yy",},},
-    {"id":{"name":"spr_tile_rose_pink_v2","path":"sprites/spr_tile_rose_pink_v2/spr_tile_rose_pink_v2.yy",},},
-    {"id":{"name":"spr_tile_rose_pink_v3","path":"sprites/spr_tile_rose_pink_v3/spr_tile_rose_pink_v3.yy",},},
-    {"id":{"name":"spr_tile_rose_pink_v4","path":"sprites/spr_tile_rose_pink_v4/spr_tile_rose_pink_v4.yy",},},
-    {"id":{"name":"spr_tile_rose_pink","path":"sprites/spr_tile_rose_pink/spr_tile_rose_pink.yy",},},
-    {"id":{"name":"spr_tree_cypress_italian","path":"sprites/spr_tree_cypress_italian/spr_tree_cypress_italian.yy",},},
-    {"id":{"name":"spr_tree_flowering","path":"sprites/spr_tree_flowering/spr_tree_flowering.yy",},},
-    {"id":{"name":"spr_tree_olive","path":"sprites/spr_tree_olive/spr_tree_olive.yy",},},
-    {"id":{"name":"spr_ui_codex_cover","path":"sprites/spr_ui_codex_cover/spr_ui_codex_cover.yy",},},
-    {"id":{"name":"spr_ui_dialogue_frame","path":"sprites/spr_ui_dialogue_frame/spr_ui_dialogue_frame.yy",},},
+  "name": "The Inferno's Curse",
+  "resources": [
+    {
+      "id": {
+        "name": "spr_duomo_cross",
+        "path": "sprites/spr_duomo_cross/spr_duomo_cross.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_cross",
+        "path": "objects/obj_duomo_cross/obj_duomo_cross.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_archway",
+        "path": "sprites/spr_ponte_archway/spr_ponte_archway.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_statue",
+        "path": "sprites/spr_ponte_statue/spr_ponte_statue.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_calzolaio",
+        "path": "sprites/spr_sign_calzolaio/spr_sign_calzolaio.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_fabbro",
+        "path": "sprites/spr_sign_fabbro/spr_sign_fabbro.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_fioraio",
+        "path": "sprites/spr_sign_fioraio/spr_sign_fioraio.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_fornaio",
+        "path": "sprites/spr_sign_fornaio/spr_sign_fornaio.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_gilda",
+        "path": "sprites/spr_sign_gilda/spr_sign_gilda.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_libraio",
+        "path": "sprites/spr_sign_libraio/spr_sign_libraio.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_orafo",
+        "path": "sprites/spr_sign_orafo/spr_sign_orafo.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_osteria",
+        "path": "sprites/spr_sign_osteria/spr_sign_osteria.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_pergamene",
+        "path": "sprites/spr_sign_pergamene/spr_sign_pergamene.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_speziere",
+        "path": "sprites/spr_sign_speziere/spr_sign_speziere.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_tessitore",
+        "path": "sprites/spr_sign_tessitore/spr_sign_tessitore.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sign_vetraio",
+        "path": "sprites/spr_sign_vetraio/spr_sign_vetraio.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_barrel",
+        "path": "objects/obj_barrel/obj_barrel.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_battle_manager",
+        "path": "objects/obj_battle_manager/obj_battle_manager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_cart",
+        "path": "objects/obj_cart/obj_cart.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_character_sheet",
+        "path": "objects/obj_character_sheet/obj_character_sheet.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_cypress_tree",
+        "path": "objects/obj_cypress_tree/obj_cypress_tree.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_dialogue_box",
+        "path": "objects/obj_dialogue_box/obj_dialogue_box.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_door_placeholder",
+        "path": "objects/obj_door_placeholder/obj_door_placeholder.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_altar",
+        "path": "objects/obj_duomo_altar/obj_duomo_altar.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_candelabra",
+        "path": "objects/obj_duomo_candelabra/obj_duomo_candelabra.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_confessional",
+        "path": "objects/obj_duomo_confessional/obj_duomo_confessional.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_entrance",
+        "path": "objects/obj_duomo_entrance/obj_duomo_entrance.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_pew",
+        "path": "objects/obj_duomo_pew/obj_duomo_pew.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_pillar",
+        "path": "objects/obj_duomo_pillar/obj_duomo_pillar.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_priest",
+        "path": "objects/obj_duomo_priest/obj_duomo_priest.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_save_point",
+        "path": "objects/obj_duomo_save_point/obj_duomo_save_point.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_scene",
+        "path": "objects/obj_duomo_scene/obj_duomo_scene.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_stairs",
+        "path": "objects/obj_duomo_stairs/obj_duomo_stairs.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_duomo_statue",
+        "path": "objects/obj_duomo_statue/obj_duomo_statue.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_florence_building",
+        "path": "objects/obj_florence_building/obj_florence_building.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_florence_cathedral",
+        "path": "objects/obj_florence_cathedral/obj_florence_cathedral.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_florence_house",
+        "path": "objects/obj_florence_house/obj_florence_house.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_florence_tower",
+        "path": "objects/obj_florence_tower/obj_florence_tower.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_florence_v2_scene",
+        "path": "objects/obj_florence_v2_scene/obj_florence_v2_scene.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_game_manager",
+        "path": "objects/obj_game_manager/obj_game_manager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_garden_archway",
+        "path": "objects/obj_garden_archway/obj_garden_archway.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_garden_bench",
+        "path": "objects/obj_garden_bench/obj_garden_bench.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_garden_cypress",
+        "path": "objects/obj_garden_cypress/obj_garden_cypress.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_garden_fountain",
+        "path": "objects/obj_garden_fountain/obj_garden_fountain.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_garden_tree_flowering",
+        "path": "objects/obj_garden_tree_flowering/obj_garden_tree_flowering.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_garden_tree_olive",
+        "path": "objects/obj_garden_tree_olive/obj_garden_tree_olive.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_garden_urn",
+        "path": "objects/obj_garden_urn/obj_garden_urn.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_inn_candle",
+        "path": "objects/obj_inn_candle/obj_inn_candle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_inn_scene",
+        "path": "objects/obj_inn_scene/obj_inn_scene.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_journal",
+        "path": "objects/obj_journal/obj_journal.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_limbo_tile",
+        "path": "objects/obj_limbo_tile/obj_limbo_tile.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_manifestation",
+        "path": "objects/obj_manifestation/obj_manifestation.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_marco_stall",
+        "path": "objects/obj_marco_stall/obj_marco_stall.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_mercato_exit",
+        "path": "objects/obj_mercato_exit/obj_mercato_exit.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_mercato_prop",
+        "path": "objects/obj_mercato_prop/obj_mercato_prop.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_mercato_scene",
+        "path": "objects/obj_mercato_scene/obj_mercato_scene.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_npc_base",
+        "path": "objects/obj_npc_base/obj_npc_base.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_npc_innkeeper",
+        "path": "objects/obj_npc_innkeeper/obj_npc_innkeeper.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_npc_marco",
+        "path": "objects/obj_npc_marco/obj_npc_marco.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_npc_rosa",
+        "path": "objects/obj_npc_rosa/obj_npc_rosa.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_npc_stableboy",
+        "path": "objects/obj_npc_stableboy/obj_npc_stableboy.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_player",
+        "path": "objects/obj_player/obj_player.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_ponte_scene",
+        "path": "objects/obj_ponte_scene/obj_ponte_scene.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_safe_house",
+        "path": "objects/obj_safe_house/obj_safe_house.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_save_indicator",
+        "path": "objects/obj_save_indicator/obj_save_indicator.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_shrine",
+        "path": "objects/obj_shrine/obj_shrine.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_stable_entrance",
+        "path": "objects/obj_stable_entrance/obj_stable_entrance.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_stable_rest",
+        "path": "objects/obj_stable_rest/obj_stable_rest.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_stable_scene",
+        "path": "objects/obj_stable_scene/obj_stable_scene.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_street_scene",
+        "path": "objects/obj_street_scene/obj_street_scene.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_time_manager",
+        "path": "objects/obj_time_manager/obj_time_manager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_unit_base",
+        "path": "objects/obj_unit_base/obj_unit_base.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_unit_benedetto",
+        "path": "objects/obj_unit_benedetto/obj_unit_benedetto.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_unit_hollow",
+        "path": "objects/obj_unit_hollow/obj_unit_hollow.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_unit_shambler",
+        "path": "objects/obj_unit_shambler/obj_unit_shambler.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_vision_manager",
+        "path": "objects/obj_vision_manager/obj_vision_manager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_wall_stone",
+        "path": "objects/obj_wall_stone/obj_wall_stone.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_wall",
+        "path": "objects/obj_wall/obj_wall.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_well",
+        "path": "objects/obj_well/obj_well.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "room_battle",
+        "path": "rooms/room_battle/room_battle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "Room_duomo",
+        "path": "rooms/Room_duomo/Room_duomo.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "Room_fiorentine_stable",
+        "path": "rooms/Room_fiorentine_stable/Room_fiorentine_stable.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "Room_florence_v2",
+        "path": "rooms/Room_florence_v2/Room_florence_v2.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "Room_locanda_rosa_camuna",
+        "path": "rooms/Room_locanda_rosa_camuna/Room_locanda_rosa_camuna.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "Room_mercato_vecchio",
+        "path": "rooms/Room_mercato_vecchio/Room_mercato_vecchio.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "Room_ponte_vecchio",
+        "path": "rooms/Room_ponte_vecchio/Room_ponte_vecchio.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "__snowstate_config",
+        "path": "scripts/__snowstate_config/__snowstate_config.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_ai",
+        "path": "scripts/scr_ai/scr_ai.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_banner",
+        "path": "scripts/scr_banner/scr_banner.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_battle",
+        "path": "scripts/scr_battle/scr_battle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_camera",
+        "path": "scripts/scr_camera/scr_camera.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_config_load",
+        "path": "scripts/scr_config_load/scr_config_load.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_corruption",
+        "path": "scripts/scr_corruption/scr_corruption.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_debug",
+        "path": "scripts/scr_debug/scr_debug.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_duomo",
+        "path": "scripts/scr_duomo/scr_duomo.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_florence_v2",
+        "path": "scripts/scr_florence_v2/scr_florence_v2.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_fonts",
+        "path": "scripts/scr_fonts/scr_fonts.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_get_sky_color",
+        "path": "scripts/scr_get_sky_color/scr_get_sky_color.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_inn",
+        "path": "scripts/scr_inn/scr_inn.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_journal",
+        "path": "scripts/scr_journal/scr_journal.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_lightmap",
+        "path": "scripts/scr_lightmap/scr_lightmap.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_new_day_corruption_update",
+        "path": "scripts/scr_new_day_corruption_update/scr_new_day_corruption_update.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_npc_framework",
+        "path": "scripts/scr_npc_framework/scr_npc_framework.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_npc_system",
+        "path": "scripts/scr_npc_system/scr_npc_system.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_relief",
+        "path": "scripts/scr_relief/scr_relief.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_room_builder",
+        "path": "scripts/scr_room_builder/scr_room_builder.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_stable",
+        "path": "scripts/scr_stable/scr_stable.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_time_system",
+        "path": "scripts/scr_time_system/scr_time_system.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_transition",
+        "path": "scripts/scr_transition/scr_transition.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_ui_theme",
+        "path": "scripts/scr_ui_theme/scr_ui_theme.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "shd_floor_relief",
+        "path": "shaders/shd_floor_relief/shd_floor_relief.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_update_city_state",
+        "path": "scripts/scr_update_city_state/scr_update_city_state.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_vision",
+        "path": "scripts/scr_vision/scr_vision.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "scr_world_state",
+        "path": "scripts/scr_world_state/scr_world_state.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "SnowState",
+        "path": "scripts/SnowState/SnowState.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_apothecary",
+        "path": "sprites/spr_apothecary/spr_apothecary.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_arno_rowing_boat",
+        "path": "sprites/spr_arno_rowing_boat/spr_arno_rowing_boat.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_arno_stone_bank",
+        "path": "sprites/spr_arno_stone_bank/spr_arno_stone_bank.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_artisan_forge",
+        "path": "sprites/spr_artisan_forge/spr_artisan_forge.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_artisan_workshop_a",
+        "path": "sprites/spr_artisan_workshop_a/spr_artisan_workshop_a.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_artisan_workshop_b",
+        "path": "sprites/spr_artisan_workshop_b/spr_artisan_workshop_b.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_barrel_stack",
+        "path": "sprites/spr_barrel_stack/spr_barrel_stack.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_east",
+        "path": "sprites/spr_benedetto_east/spr_benedetto_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_idle_east",
+        "path": "sprites/spr_benedetto_idle_east/spr_benedetto_idle_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_idle_north_east",
+        "path": "sprites/spr_benedetto_idle_north_east/spr_benedetto_idle_north_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_idle_north_west",
+        "path": "sprites/spr_benedetto_idle_north_west/spr_benedetto_idle_north_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_idle_north",
+        "path": "sprites/spr_benedetto_idle_north/spr_benedetto_idle_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_idle_south_east",
+        "path": "sprites/spr_benedetto_idle_south_east/spr_benedetto_idle_south_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_idle_south_west",
+        "path": "sprites/spr_benedetto_idle_south_west/spr_benedetto_idle_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_idle_south",
+        "path": "sprites/spr_benedetto_idle_south/spr_benedetto_idle_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_idle_west",
+        "path": "sprites/spr_benedetto_idle_west/spr_benedetto_idle_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_jump_east",
+        "path": "sprites/spr_benedetto_jump_east/spr_benedetto_jump_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_jump_south_west",
+        "path": "sprites/spr_benedetto_jump_south_west/spr_benedetto_jump_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_jump_south",
+        "path": "sprites/spr_benedetto_jump_south/spr_benedetto_jump_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_jump_west",
+        "path": "sprites/spr_benedetto_jump_west/spr_benedetto_jump_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_north_east",
+        "path": "sprites/spr_benedetto_north_east/spr_benedetto_north_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_north_west",
+        "path": "sprites/spr_benedetto_north_west/spr_benedetto_north_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_north",
+        "path": "sprites/spr_benedetto_north/spr_benedetto_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_portrait",
+        "path": "sprites/spr_benedetto_portrait/spr_benedetto_portrait.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_run_east",
+        "path": "sprites/spr_benedetto_run_east/spr_benedetto_run_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_run_north_east",
+        "path": "sprites/spr_benedetto_run_north_east/spr_benedetto_run_north_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_run_north_west",
+        "path": "sprites/spr_benedetto_run_north_west/spr_benedetto_run_north_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_run_north",
+        "path": "sprites/spr_benedetto_run_north/spr_benedetto_run_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_run_south_east",
+        "path": "sprites/spr_benedetto_run_south_east/spr_benedetto_run_south_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_run_south_west",
+        "path": "sprites/spr_benedetto_run_south_west/spr_benedetto_run_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_run_south",
+        "path": "sprites/spr_benedetto_run_south/spr_benedetto_run_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_run_west",
+        "path": "sprites/spr_benedetto_run_west/spr_benedetto_run_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_south_east",
+        "path": "sprites/spr_benedetto_south_east/spr_benedetto_south_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_south_west",
+        "path": "sprites/spr_benedetto_south_west/spr_benedetto_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_south",
+        "path": "sprites/spr_benedetto_south/spr_benedetto_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_east",
+        "path": "sprites/spr_benedetto_walk_east/spr_benedetto_walk_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_north_east",
+        "path": "sprites/spr_benedetto_walk_north_east/spr_benedetto_walk_north_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_north_west",
+        "path": "sprites/spr_benedetto_walk_north_west/spr_benedetto_walk_north_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_north",
+        "path": "sprites/spr_benedetto_walk_north/spr_benedetto_walk_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_sluggish_east",
+        "path": "sprites/spr_benedetto_walk_sluggish_east/spr_benedetto_walk_sluggish_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_sluggish_north_east",
+        "path": "sprites/spr_benedetto_walk_sluggish_north_east/spr_benedetto_walk_sluggish_north_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_sluggish_north_west",
+        "path": "sprites/spr_benedetto_walk_sluggish_north_west/spr_benedetto_walk_sluggish_north_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_sluggish_north",
+        "path": "sprites/spr_benedetto_walk_sluggish_north/spr_benedetto_walk_sluggish_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_sluggish_south_east",
+        "path": "sprites/spr_benedetto_walk_sluggish_south_east/spr_benedetto_walk_sluggish_south_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_sluggish_south_west",
+        "path": "sprites/spr_benedetto_walk_sluggish_south_west/spr_benedetto_walk_sluggish_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_sluggish_south",
+        "path": "sprites/spr_benedetto_walk_sluggish_south/spr_benedetto_walk_sluggish_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_sluggish_west",
+        "path": "sprites/spr_benedetto_walk_sluggish_west/spr_benedetto_walk_sluggish_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_south_east",
+        "path": "sprites/spr_benedetto_walk_south_east/spr_benedetto_walk_south_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_south_west",
+        "path": "sprites/spr_benedetto_walk_south_west/spr_benedetto_walk_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_south",
+        "path": "sprites/spr_benedetto_walk_south/spr_benedetto_walk_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_walk_west",
+        "path": "sprites/spr_benedetto_walk_west/spr_benedetto_walk_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_benedetto_west",
+        "path": "sprites/spr_benedetto_west/spr_benedetto_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_boat_abandoned",
+        "path": "sprites/spr_boat_abandoned/spr_boat_abandoned.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_boat_rowing",
+        "path": "sprites/spr_boat_rowing/spr_boat_rowing.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_bread_board",
+        "path": "sprites/spr_bread_board/spr_bread_board.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_bridge_railing",
+        "path": "sprites/spr_bridge_railing/spr_bridge_railing.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_bridge_shop_left",
+        "path": "sprites/spr_bridge_shop_left/spr_bridge_shop_left.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_bridge_shop_right",
+        "path": "sprites/spr_bridge_shop_right/spr_bridge_shop_right.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_cart_covered",
+        "path": "sprites/spr_cart_covered/spr_cart_covered.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_cart_loaded",
+        "path": "sprites/spr_cart_loaded/spr_cart_loaded.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_citizen_man",
+        "path": "sprites/spr_citizen_man/spr_citizen_man.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_citizen_monk",
+        "path": "sprites/spr_citizen_monk/spr_citizen_monk.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_citizen_woman",
+        "path": "sprites/spr_citizen_woman/spr_citizen_woman.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_city_gate_south",
+        "path": "sprites/spr_city_gate_south/spr_city_gate_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_city_gate_west",
+        "path": "sprites/spr_city_gate_west/spr_city_gate_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_clay_jugs",
+        "path": "sprites/spr_clay_jugs/spr_clay_jugs.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_clay_pot_large",
+        "path": "sprites/spr_clay_pot_large/spr_clay_pot_large.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_crate_stack",
+        "path": "sprites/spr_crate_stack/spr_crate_stack.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_altar",
+        "path": "sprites/spr_duomo_altar/spr_duomo_altar.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_candelabra",
+        "path": "sprites/spr_duomo_candelabra/spr_duomo_candelabra.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_confessional",
+        "path": "sprites/spr_duomo_confessional/spr_duomo_confessional.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_exterior",
+        "path": "sprites/spr_duomo_exterior/spr_duomo_exterior.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_floor_border",
+        "path": "sprites/spr_duomo_floor_border/spr_duomo_floor_border.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_floor_carpet",
+        "path": "sprites/spr_duomo_floor_carpet/spr_duomo_floor_carpet.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_floor_center",
+        "path": "sprites/spr_duomo_floor_center/spr_duomo_floor_center.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_floor_corner",
+        "path": "sprites/spr_duomo_floor_corner/spr_duomo_floor_corner.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_floor_field",
+        "path": "sprites/spr_duomo_floor_field/spr_duomo_floor_field.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_floor_platform",
+        "path": "sprites/spr_duomo_floor_platform/spr_duomo_floor_platform.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_pew",
+        "path": "sprites/spr_duomo_pew/spr_duomo_pew.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_pillar",
+        "path": "sprites/spr_duomo_pillar/spr_duomo_pillar.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_priest",
+        "path": "sprites/spr_duomo_priest/spr_duomo_priest.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_stairs",
+        "path": "sprites/spr_duomo_stairs/spr_duomo_stairs.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_wall_window",
+        "path": "sprites/spr_duomo_wall_window/spr_duomo_wall_window.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_emotion_afraid",
+        "path": "sprites/spr_emotion_afraid/spr_emotion_afraid.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_emotion_angry",
+        "path": "sprites/spr_emotion_angry/spr_emotion_angry.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_emotion_happy",
+        "path": "sprites/spr_emotion_happy/spr_emotion_happy.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_emotion_neutral",
+        "path": "sprites/spr_emotion_neutral/spr_emotion_neutral.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_emotion_suspicious",
+        "path": "sprites/spr_emotion_suspicious/spr_emotion_suspicious.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_emotion_terrified",
+        "path": "sprites/spr_emotion_terrified/spr_emotion_terrified.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_hollow_east",
+        "path": "sprites/spr_enemy_hollow_east/spr_enemy_hollow_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_hollow_north_east",
+        "path": "sprites/spr_enemy_hollow_north_east/spr_enemy_hollow_north_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_hollow_north_west",
+        "path": "sprites/spr_enemy_hollow_north_west/spr_enemy_hollow_north_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_hollow_north",
+        "path": "sprites/spr_enemy_hollow_north/spr_enemy_hollow_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_hollow_south_east",
+        "path": "sprites/spr_enemy_hollow_south_east/spr_enemy_hollow_south_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_hollow_south_west",
+        "path": "sprites/spr_enemy_hollow_south_west/spr_enemy_hollow_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_hollow_south",
+        "path": "sprites/spr_enemy_hollow_south/spr_enemy_hollow_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_hollow_west",
+        "path": "sprites/spr_enemy_hollow_west/spr_enemy_hollow_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_shambler_east",
+        "path": "sprites/spr_enemy_shambler_east/spr_enemy_shambler_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_shambler_north_east",
+        "path": "sprites/spr_enemy_shambler_north_east/spr_enemy_shambler_north_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_shambler_north_west",
+        "path": "sprites/spr_enemy_shambler_north_west/spr_enemy_shambler_north_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_shambler_north",
+        "path": "sprites/spr_enemy_shambler_north/spr_enemy_shambler_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_shambler_south_east",
+        "path": "sprites/spr_enemy_shambler_south_east/spr_enemy_shambler_south_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_shambler_south_west",
+        "path": "sprites/spr_enemy_shambler_south_west/spr_enemy_shambler_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_shambler_south",
+        "path": "sprites/spr_enemy_shambler_south/spr_enemy_shambler_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_enemy_shambler_west",
+        "path": "sprites/spr_enemy_shambler_west/spr_enemy_shambler_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_arch",
+        "path": "sprites/spr_florence_arch/spr_florence_arch.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_barrels",
+        "path": "sprites/spr_florence_barrels/spr_florence_barrels.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_building_row",
+        "path": "sprites/spr_florence_building_row/spr_florence_building_row.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_campanile",
+        "path": "sprites/spr_florence_campanile/spr_florence_campanile.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_cart",
+        "path": "sprites/spr_florence_cart/spr_florence_cart.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_cathedral",
+        "path": "sprites/spr_florence_cathedral/spr_florence_cathedral.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_church",
+        "path": "sprites/spr_florence_church/spr_florence_church.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_cottage",
+        "path": "sprites/spr_florence_cottage/spr_florence_cottage.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_cypress",
+        "path": "sprites/spr_florence_cypress/spr_florence_cypress.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_flower_bed",
+        "path": "sprites/spr_florence_flower_bed/spr_florence_flower_bed.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_gate",
+        "path": "sprites/spr_florence_gate/spr_florence_gate.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_grass",
+        "path": "sprites/spr_florence_grass/spr_florence_grass.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_guild_banner",
+        "path": "sprites/spr_florence_guild_banner/spr_florence_guild_banner.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_house_south",
+        "path": "sprites/spr_florence_house_south/spr_florence_house_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_market_stall",
+        "path": "sprites/spr_florence_market_stall/spr_florence_market_stall.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_noble_tower",
+        "path": "sprites/spr_florence_noble_tower/spr_florence_noble_tower.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_olive_tree",
+        "path": "sprites/spr_florence_olive_tree/spr_florence_olive_tree.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_packed_earth",
+        "path": "sprites/spr_florence_packed_earth/spr_florence_packed_earth.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_pigeon_cluster",
+        "path": "sprites/spr_florence_pigeon_cluster/spr_florence_pigeon_cluster.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v10",
+        "path": "sprites/spr_florence_plaza_v10/spr_florence_plaza_v10.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v11",
+        "path": "sprites/spr_florence_plaza_v11/spr_florence_plaza_v11.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v12",
+        "path": "sprites/spr_florence_plaza_v12/spr_florence_plaza_v12.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v13",
+        "path": "sprites/spr_florence_plaza_v13/spr_florence_plaza_v13.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v14",
+        "path": "sprites/spr_florence_plaza_v14/spr_florence_plaza_v14.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v15",
+        "path": "sprites/spr_florence_plaza_v15/spr_florence_plaza_v15.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v16",
+        "path": "sprites/spr_florence_plaza_v16/spr_florence_plaza_v16.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v2",
+        "path": "sprites/spr_florence_plaza_v2/spr_florence_plaza_v2.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v3",
+        "path": "sprites/spr_florence_plaza_v3/spr_florence_plaza_v3.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v4",
+        "path": "sprites/spr_florence_plaza_v4/spr_florence_plaza_v4.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v5",
+        "path": "sprites/spr_florence_plaza_v5/spr_florence_plaza_v5.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v6",
+        "path": "sprites/spr_florence_plaza_v6/spr_florence_plaza_v6.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v7",
+        "path": "sprites/spr_florence_plaza_v7/spr_florence_plaza_v7.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v8",
+        "path": "sprites/spr_florence_plaza_v8/spr_florence_plaza_v8.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza_v9",
+        "path": "sprites/spr_florence_plaza_v9/spr_florence_plaza_v9.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_plaza",
+        "path": "sprites/spr_florence_plaza/spr_florence_plaza.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_residence",
+        "path": "sprites/spr_florence_residence/spr_florence_residence.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_road_cobble",
+        "path": "sprites/spr_florence_road_cobble/spr_florence_road_cobble.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_road_intersection",
+        "path": "sprites/spr_florence_road_intersection/spr_florence_road_intersection.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_row_block",
+        "path": "sprites/spr_florence_row_block/spr_florence_row_block.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_stable",
+        "path": "sprites/spr_florence_stable/spr_florence_stable.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_statue_dante",
+        "path": "sprites/spr_florence_statue_dante/spr_florence_statue_dante.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_statue_david",
+        "path": "sprites/spr_florence_statue_david/spr_florence_statue_david.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_statue_marzocco",
+        "path": "sprites/spr_florence_statue_marzocco/spr_florence_statue_marzocco.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_statue_saint",
+        "path": "sprites/spr_florence_statue_saint/spr_florence_statue_saint.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_stray_cat",
+        "path": "sprites/spr_florence_stray_cat/spr_florence_stray_cat.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_street_shrine",
+        "path": "sprites/spr_florence_street_shrine/spr_florence_street_shrine.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_street",
+        "path": "sprites/spr_florence_street/spr_florence_street.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_thin_wall",
+        "path": "sprites/spr_florence_thin_wall/spr_florence_thin_wall.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_tower_house",
+        "path": "sprites/spr_florence_tower_house/spr_florence_tower_house.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_tower",
+        "path": "sprites/spr_florence_tower/spr_florence_tower.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_wall_band",
+        "path": "sprites/spr_florence_wall_band/spr_florence_wall_band.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_wall_gate",
+        "path": "sprites/spr_florence_wall_gate/spr_florence_wall_gate.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_wall_section",
+        "path": "sprites/spr_florence_wall_section/spr_florence_wall_section.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_wall_torch",
+        "path": "sprites/spr_florence_wall_torch/spr_florence_wall_torch.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_wall_tower",
+        "path": "sprites/spr_florence_wall_tower/spr_florence_wall_tower.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_washing_line",
+        "path": "sprites/spr_florence_washing_line/spr_florence_washing_line.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_water",
+        "path": "sprites/spr_florence_water/spr_florence_water.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_florence_well",
+        "path": "sprites/spr_florence_well/spr_florence_well.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_hanging_cloth",
+        "path": "sprites/spr_hanging_cloth/spr_hanging_cloth.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_hanging_herbs",
+        "path": "sprites/spr_hanging_herbs/spr_hanging_herbs.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_banner",
+        "path": "sprites/spr_inn_banner/spr_inn_banner.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_bar_counter",
+        "path": "sprites/spr_inn_bar_counter/spr_inn_bar_counter.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_bed",
+        "path": "sprites/spr_inn_bed/spr_inn_bed.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_candle_green",
+        "path": "sprites/spr_inn_candle_green/spr_inn_candle_green.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_candle_lit",
+        "path": "sprites/spr_inn_candle_lit/spr_inn_candle_lit.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_candle_unlit",
+        "path": "sprites/spr_inn_candle_unlit/spr_inn_candle_unlit.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_candle",
+        "path": "sprites/spr_inn_candle/spr_inn_candle.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_chair_east",
+        "path": "sprites/spr_inn_chair_east/spr_inn_chair_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_chair_north",
+        "path": "sprites/spr_inn_chair_north/spr_inn_chair_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_chair_south",
+        "path": "sprites/spr_inn_chair_south/spr_inn_chair_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_chair_west",
+        "path": "sprites/spr_inn_chair_west/spr_inn_chair_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_fireplace",
+        "path": "sprites/spr_inn_fireplace/spr_inn_fireplace.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_floor",
+        "path": "sprites/spr_inn_floor/spr_inn_floor.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_keg_group",
+        "path": "sprites/spr_inn_keg_group/spr_inn_keg_group.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_meats",
+        "path": "sprites/spr_inn_meats/spr_inn_meats.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_mugs",
+        "path": "sprites/spr_inn_mugs/spr_inn_mugs.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_oven_corrupt",
+        "path": "sprites/spr_inn_oven_corrupt/spr_inn_oven_corrupt.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_oven_green",
+        "path": "sprites/spr_inn_oven_green/spr_inn_oven_green.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_oven_lit",
+        "path": "sprites/spr_inn_oven_lit/spr_inn_oven_lit.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_plant",
+        "path": "sprites/spr_inn_plant/spr_inn_plant.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_rug",
+        "path": "sprites/spr_inn_rug/spr_inn_rug.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_staircase",
+        "path": "sprites/spr_inn_staircase/spr_inn_staircase.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_stool",
+        "path": "sprites/spr_inn_stool/spr_inn_stool.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_table_long",
+        "path": "sprites/spr_inn_table_long/spr_inn_table_long.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_table",
+        "path": "sprites/spr_inn_table/spr_inn_table.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_window_dawn",
+        "path": "sprites/spr_inn_window_dawn/spr_inn_window_dawn.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_window_dusk",
+        "path": "sprites/spr_inn_window_dusk/spr_inn_window_dusk.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_window_night",
+        "path": "sprites/spr_inn_window_night/spr_inn_window_night.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_window_open",
+        "path": "sprites/spr_inn_window_open/spr_inn_window_open.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_window",
+        "path": "sprites/spr_inn_window/spr_inn_window.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_inn_wine_shelf",
+        "path": "sprites/spr_inn_wine_shelf/spr_inn_wine_shelf.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_item_bread",
+        "path": "sprites/spr_item_bread/spr_item_bread.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_locanda_exterior",
+        "path": "sprites/spr_locanda_exterior/spr_locanda_exterior.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_marco_stall",
+        "path": "sprites/spr_marco_stall/spr_marco_stall.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mercato_building_a",
+        "path": "sprites/spr_mercato_building_a/spr_mercato_building_a.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mercato_building_b",
+        "path": "sprites/spr_mercato_building_b/spr_mercato_building_b.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mercato_building_c",
+        "path": "sprites/spr_mercato_building_c/spr_mercato_building_c.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mercato_fountain_piazza",
+        "path": "sprites/spr_mercato_fountain_piazza/spr_mercato_fountain_piazza.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mercato_fountain",
+        "path": "sprites/spr_mercato_fountain/spr_mercato_fountain.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mercato_inn",
+        "path": "sprites/spr_mercato_inn/spr_mercato_inn.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mercato_loggia",
+        "path": "sprites/spr_mercato_loggia/spr_mercato_loggia.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_mercato_stall_awning",
+        "path": "sprites/spr_mercato_stall_awning/spr_mercato_stall_awning.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_merchant_guild",
+        "path": "sprites/spr_merchant_guild/spr_merchant_guild.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_innkeeper",
+        "path": "sprites/spr_npc_innkeeper/spr_npc_innkeeper.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_marco_east",
+        "path": "sprites/spr_npc_marco_east/spr_npc_marco_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_marco_north_east",
+        "path": "sprites/spr_npc_marco_north_east/spr_npc_marco_north_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_marco_north_west",
+        "path": "sprites/spr_npc_marco_north_west/spr_npc_marco_north_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_marco_north",
+        "path": "sprites/spr_npc_marco_north/spr_npc_marco_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_marco_south_east",
+        "path": "sprites/spr_npc_marco_south_east/spr_npc_marco_south_east.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_marco_south_west",
+        "path": "sprites/spr_npc_marco_south_west/spr_npc_marco_south_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_marco_south",
+        "path": "sprites/spr_npc_marco_south/spr_npc_marco_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_marco_west",
+        "path": "sprites/spr_npc_marco_west/spr_npc_marco_west.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_rosa",
+        "path": "sprites/spr_npc_rosa/spr_npc_rosa.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_npc_stableboy",
+        "path": "sprites/spr_npc_stableboy/spr_npc_stableboy.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_obj_archway_rose",
+        "path": "sprites/spr_obj_archway_rose/spr_obj_archway_rose.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_obj_bench_stone",
+        "path": "sprites/spr_obj_bench_stone/spr_obj_bench_stone.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_obj_fountain",
+        "path": "sprites/spr_obj_fountain/spr_obj_fountain.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_obj_urn_terracotta",
+        "path": "sprites/spr_obj_urn_terracotta/spr_obj_urn_terracotta.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_palazzo_signoria",
+        "path": "sprites/spr_palazzo_signoria/spr_palazzo_signoria.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_parish_church",
+        "path": "sprites/spr_parish_church/spr_parish_church.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_bench",
+        "path": "sprites/spr_ponte_bench/spr_ponte_bench.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_border_serena",
+        "path": "sprites/spr_ponte_border_serena/spr_ponte_border_serena.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_floor_cobble",
+        "path": "sprites/spr_ponte_floor_cobble/spr_ponte_floor_cobble.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_floor_normal",
+        "path": "sprites/spr_ponte_floor_normal/spr_ponte_floor_normal.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_canopy",
+        "path": "sprites/spr_ponte_canopy/spr_ponte_canopy.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_floor_pietra",
+        "path": "sprites/spr_ponte_floor_pietra/spr_ponte_floor_pietra.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_fountain",
+        "path": "sprites/spr_ponte_fountain/spr_ponte_fountain.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_guild_board",
+        "path": "sprites/spr_ponte_guild_board/spr_ponte_guild_board.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_lantern_post",
+        "path": "sprites/spr_ponte_lantern_post/spr_ponte_lantern_post.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_roof_tile",
+        "path": "sprites/spr_ponte_roof_tile/spr_ponte_roof_tile.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_seagull",
+        "path": "sprites/spr_ponte_seagull/spr_ponte_seagull.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_shop_north",
+        "path": "sprites/spr_ponte_shop_north/spr_ponte_shop_north.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_shop_south",
+        "path": "sprites/spr_ponte_shop_south/spr_ponte_shop_south.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_vecchio_exterior",
+        "path": "sprites/spr_ponte_vecchio_exterior/spr_ponte_vecchio_exterior.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ponte_vecchio",
+        "path": "sprites/spr_ponte_vecchio/spr_ponte_vecchio.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_river_stone",
+        "path": "sprites/spr_river_stone/spr_river_stone.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_row_house_a",
+        "path": "sprites/spr_row_house_a/spr_row_house_a.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_row_house_b",
+        "path": "sprites/spr_row_house_b/spr_row_house_b.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_row_house_c",
+        "path": "sprites/spr_row_house_c/spr_row_house_c.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_sack_pile",
+        "path": "sprites/spr_sack_pile/spr_sack_pile.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_floor",
+        "path": "sprites/spr_stable_floor/spr_stable_floor.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_hay",
+        "path": "sprites/spr_stable_hay/spr_stable_hay.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_horse_black",
+        "path": "sprites/spr_stable_horse_black/spr_stable_horse_black.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_horse_brown",
+        "path": "sprites/spr_stable_horse_brown/spr_stable_horse_brown.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_horse_grey",
+        "path": "sprites/spr_stable_horse_grey/spr_stable_horse_grey.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_lantern",
+        "path": "sprites/spr_stable_lantern/spr_stable_lantern.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_sleeping",
+        "path": "sprites/spr_stable_sleeping/spr_stable_sleeping.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_tack",
+        "path": "sprites/spr_stable_tack/spr_stable_tack.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_trough",
+        "path": "sprites/spr_stable_trough/spr_stable_trough.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stable_wall_tile",
+        "path": "sprites/spr_stable_wall_tile/spr_stable_wall_tile.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_dye_merchant",
+        "path": "sprites/spr_stall_dye_merchant/spr_stall_dye_merchant.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_flat_green",
+        "path": "sprites/spr_stall_flat_green/spr_stall_flat_green.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_herbalist",
+        "path": "sprites/spr_stall_herbalist/spr_stall_herbalist.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_produce",
+        "path": "sprites/spr_stall_produce/spr_stall_produce.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_striped_blue",
+        "path": "sprites/spr_stall_striped_blue/spr_stall_striped_blue.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_striped_cream",
+        "path": "sprites/spr_stall_striped_cream/spr_stall_striped_cream.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_striped_green",
+        "path": "sprites/spr_stall_striped_green/spr_stall_striped_green.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_striped_purple",
+        "path": "sprites/spr_stall_striped_purple/spr_stall_striped_purple.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_striped_red",
+        "path": "sprites/spr_stall_striped_red/spr_stall_striped_red.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_stall_weapon_smith",
+        "path": "sprites/spr_stall_weapon_smith/spr_stall_weapon_smith.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_statue_angel",
+        "path": "sprites/spr_statue_angel/spr_statue_angel.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_statue_david",
+        "path": "sprites/spr_statue_david/spr_statue_david.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_statue_lion",
+        "path": "sprites/spr_statue_lion/spr_statue_lion.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_statue_madonna",
+        "path": "sprites/spr_statue_madonna/spr_statue_madonna.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_tile_rose_pink_v2",
+        "path": "sprites/spr_tile_rose_pink_v2/spr_tile_rose_pink_v2.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_tile_rose_pink_v3",
+        "path": "sprites/spr_tile_rose_pink_v3/spr_tile_rose_pink_v3.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_tile_rose_pink_v4",
+        "path": "sprites/spr_tile_rose_pink_v4/spr_tile_rose_pink_v4.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_tile_rose_pink",
+        "path": "sprites/spr_tile_rose_pink/spr_tile_rose_pink.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_tree_cypress_italian",
+        "path": "sprites/spr_tree_cypress_italian/spr_tree_cypress_italian.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_tree_flowering",
+        "path": "sprites/spr_tree_flowering/spr_tree_flowering.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_tree_olive",
+        "path": "sprites/spr_tree_olive/spr_tree_olive.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ui_codex_cover",
+        "path": "sprites/spr_ui_codex_cover/spr_ui_codex_cover.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_ui_dialogue_frame",
+        "path": "sprites/spr_ui_dialogue_frame/spr_ui_dialogue_frame.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_world_map_manager",
+        "path": "objects/obj_world_map_manager/obj_world_map_manager.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_world_map",
+        "path": "sprites/spr_world_map/spr_world_map.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "rm_world_map",
+        "path": "rooms/rm_world_map/rm_world_map.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_floor_marble",
+        "path": "sprites/spr_duomo_floor_marble/spr_duomo_floor_marble.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "spr_duomo_wall_art",
+        "path": "sprites/spr_duomo_wall_art/spr_duomo_wall_art.yy"
+      }
+    },
+    {
+      "id": {
+        "name": "obj_room_occluder",
+        "path": "objects/obj_room_occluder/obj_room_occluder.yy"
+      }
+    }
   ],
-  "resourceType":"GMProject",
-  "resourceVersion":"2.0",
-  "RoomOrderNodes":[
-    {"roomId":{"name":"Room_florence_v2","path":"rooms/Room_florence_v2/Room_florence_v2.yy",},},
-    {"roomId":{"name":"Room_duomo","path":"rooms/Room_duomo/Room_duomo.yy",},},
-    {"roomId":{"name":"Room_ponte_vecchio","path":"rooms/Room_ponte_vecchio/Room_ponte_vecchio.yy",},},
-    {"roomId":{"name":"Room_locanda_rosa_camuna","path":"rooms/Room_locanda_rosa_camuna/Room_locanda_rosa_camuna.yy",},},
-    {"roomId":{"name":"Room_mercato_vecchio","path":"rooms/Room_mercato_vecchio/Room_mercato_vecchio.yy",},},
-    {"roomId":{"name":"Room_fiorentine_stable","path":"rooms/Room_fiorentine_stable/Room_fiorentine_stable.yy",},},
-    {"roomId":{"name":"room_battle","path":"rooms/room_battle/room_battle.yy",},},
+  "resourceType": "GMProject",
+  "resourceVersion": "2.0",
+  "RoomOrderNodes": [
+    {
+      "roomId": {
+        "name": "Room_duomo",
+        "path": "rooms/Room_duomo/Room_duomo.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "Room_florence_v2",
+        "path": "rooms/Room_florence_v2/Room_florence_v2.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "Room_ponte_vecchio",
+        "path": "rooms/Room_ponte_vecchio/Room_ponte_vecchio.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "Room_locanda_rosa_camuna",
+        "path": "rooms/Room_locanda_rosa_camuna/Room_locanda_rosa_camuna.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "Room_mercato_vecchio",
+        "path": "rooms/Room_mercato_vecchio/Room_mercato_vecchio.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "Room_fiorentine_stable",
+        "path": "rooms/Room_fiorentine_stable/Room_fiorentine_stable.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "room_battle",
+        "path": "rooms/room_battle/room_battle.yy"
+      }
+    },
+    {
+      "roomId": {
+        "name": "rm_world_map",
+        "path": "rooms/rm_world_map/rm_world_map.yy"
+      }
+    }
   ],
-  "templateType":"game",
-  "TextureGroups":[
-    {"$GMTextureGroup":"","%Name":"Default","autocrop":true,"border":2,"compressFormat":"bz2","customOptions":"","directory":"","groupParent":null,"isScaled":true,"loadType":"default","mipsToGenerate":0,"name":"Default","resourceType":"GMTextureGroup","resourceVersion":"2.0","targets":-1,},
-  ],
+  "templateType": "game",
+  "TextureGroups": [
+    {
+      "$GMTextureGroup": "",
+      "%Name": "Default",
+      "autocrop": true,
+      "border": 2,
+      "compressFormat": "bz2",
+      "customOptions": "",
+      "directory": "",
+      "groupParent": null,
+      "isScaled": true,
+      "loadType": "default",
+      "mipsToGenerate": 0,
+      "name": "Default",
+      "resourceType": "GMTextureGroup",
+      "resourceVersion": "2.0",
+      "targets": -1
+    }
+  ]
 }

@@ -29,7 +29,9 @@ scr_lightmap_draw();
 if (room == room_battle) exit;
 
 // ── 3 + 4. the moon and the stars ─────────────────────────────────────────────
-if (_L.night > 0.05) {
+var _is_indoors = (room == Room_duomo || room == Room_locanda_rosa_camuna || room == Room_fiorentine_stable);
+
+if (!_is_indoors && _L.night > 0.05) {
     // moon drifts across the top band through the night (21:00 → 05:00)
     var _hf = global.game_hour + global.game_minute / 60;
     var _tn = ((_hf - 21) + 24) mod 24;            // hours since nightfall

@@ -22,8 +22,7 @@ imposing buildings, packed town feel.
 - **Ponte Vecchio interior** rebuilt east-west, 16 packed shops, Marco LIVE with real
   Claude-API dialogue at the Fornaio. Awaiting David's final pass.
 - **Interiors complete & signed off:** Locanda della Rosa Camuna ground floor, Fiorentine Stable.
-- **Duomo interior:** built but queued for FULL REBUILD from `references\duomo_interior_map.png`
-  (12-zone Santa Maria del Fiore plan, ~18x24 — the corruption peak of the game).
+- **Duomo interior:** FULL REBUILD complete, featuring perfect code-driven fog of war blocks for side chapels and void wall entry tunnel.
 - **Lighting (new, UNVERIFIED in-engine):** see GLOBAL LIGHTING below. First thing to test.
 - **Character sheet** (C key), **runtime fonts** (Pixelify Sans + Alagard), also untested in-engine.
 

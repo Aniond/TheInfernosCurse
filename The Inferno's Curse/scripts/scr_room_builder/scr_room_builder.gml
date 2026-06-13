@@ -35,7 +35,7 @@
 // persist until the next deliberate bump. BUMP a room's macro whenever you
 // change that room's code-default layout. (Initial values match the stamps
 // already in save folders, so existing hand-tuned layouts stay valid.)
-#macro DUOMO_LAYOUT_VERSION   10
+#macro DUOMO_LAYOUT_VERSION   14
 #macro INN_LAYOUT_VERSION     16
 #macro PONTE_LAYOUT_VERSION   5
 #macro STABLE_LAYOUT_VERSION  3
@@ -385,6 +385,9 @@ function scr_room_builder_save() {
 function scr_room_builder_point_in(_inst, _mx, _my) {
     if (_inst.object_index == obj_mercato_exit && variable_instance_exists(_inst, "zone_w")) {
         return point_in_rectangle(_mx, _my, _inst.x, _inst.y, _inst.x + _inst.zone_w, _inst.y + _inst.zone_h);
+    }
+    if (_inst.object_index == obj_room_occluder) {
+        return point_in_rectangle(_mx, _my, _inst.x, _inst.y, _inst.x + 64 * _inst.image_xscale, _inst.y + 64 * _inst.image_yscale);
     }
     if (_inst.sprite_index != -1 && sprite_exists(_inst.sprite_index)) {
         return point_in_rectangle(_mx, _my, _inst.bbox_left, _inst.bbox_top, _inst.bbox_right, _inst.bbox_bottom);

@@ -85,6 +85,15 @@ function scr_time_lighting() {
     var _corr = (variable_global_exists("circle_corruption"))
         ? clamp(global.circle_corruption[CIRCLE_LIMBO] / 100, 0, 1) : 0;
 
+    // Force interior rooms to always use dark ambient lighting so torches and candles stand out
+    var _is_indoors = (room == Room_duomo || room == Room_locanda_rosa_camuna || room == Room_fiorentine_stable);
+    if (_is_indoors) {
+        var _na = 0.706;
+        if (_corr >= 1.0)      _na = 0.86;
+        else if (_corr >= 0.5) _na = 0.76;
+        return { col: make_color_rgb(20, 20, 60), alpha: _na, glow: 1.0, night: 1.0, corr: _corr };
+    }
+
     // night overlay deepens with corruption — at 100 the city is swallowed
     var _na = 0.706;                       // rgba alpha 180/255 per spec
     if (_corr >= 1.0)      _na = 0.86;

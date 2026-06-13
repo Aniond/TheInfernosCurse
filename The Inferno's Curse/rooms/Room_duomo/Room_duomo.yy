@@ -6,8 +6,8 @@
   "inheritCreationOrder":false,
   "inheritLayers":false,
   "instanceCreationOrder":[
-    {"name":"inst_duomo_scene","path":"rooms/Room_duomo/Room_duomo.yy",},
     {"name":"inst_duomo_player","path":"rooms/Room_duomo/Room_duomo.yy",},
+    {"name":"inst_duomo_scene","path":"rooms/Room_duomo/Room_duomo.yy",},
   ],
   "isDnd":false,
   "layers":[
@@ -34,10 +34,10 @@
   "resourceType":"GMRoom",
   "resourceVersion":"2.0",
   "roomSettings":{
-    "Height":1408,
+    "Height":2368,
     "inheritRoomSettings":false,
     "persistent":false,
-    "Width":1280,
+    "Width":1920,
   },
   "sequenceId":null,
   "views":[
